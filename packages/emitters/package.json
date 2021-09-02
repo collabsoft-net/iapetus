@@ -1,0 +1,36 @@
+{
+  "name": "@iapetus/emitters",
+  "version": "0.0.0",
+  "description": "Supported event emitters implementations",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "npx eslint . --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
+    "prepack": "npx yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "devDependencies": {
+    "@iapetus/types": "^0.0.0",
+    "@types/uniqid": "^5.3.1"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^2.17.0",
+    "axios": "^0.21.1",
+    "firebase": "^9.0.1",
+    "uniqid": "^5.4.0"
+  }
+}

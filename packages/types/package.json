@@ -1,0 +1,30 @@
+{
+  "name": "@iapetus/types",
+  "version": "0.0.0",
+  "description": "Shared typings",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "npx eslint . --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
+    "prepack": "npx yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.10",
+    "axios": "^0.21.1"
+  }
+}
