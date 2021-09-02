@@ -1,7 +1,5 @@
+import { File, QueryOptions, StorageProvider } from '@collabsoft-net/types';
 import { Bucket, File as BucketFile, GetSignedUrlConfig } from '@google-cloud/storage';
-import { File } from '@iapetus/types';
-import { QueryOptions } from '@iapetus/types';
-import { StorageProvider } from '@iapetus/types';
 import * as Firebase from 'firebase-admin';
 
 export class FirebaseAdminStorageProvider implements StorageProvider {

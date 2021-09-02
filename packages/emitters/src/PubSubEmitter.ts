@@ -2,8 +2,8 @@
 
 // ------------------------------------------------------------------------------------------ Dependencies
 
+import { EntityEvent, Event, EventEmitter, EventListener, PubSubMessage, PubSubOptions } from '@collabsoft-net/types';
 import { Attributes, PubSub, Subscription, Topic } from '@google-cloud/pubsub';
-import { EntityEvent, Event, EventEmitter, EventListener, PubSubMessage, PubSubOptions } from '@iapetus/types';
 import * as fs from 'fs';
 import uniqid from 'uniqid';
 

@@ -1,5 +1,5 @@
 
-import { Event, EventEmitter, EventListener } from '@iapetus/types';
+import { Event, EventEmitter, EventListener } from '@collabsoft-net/types';
 
 export class MemoryEmitter implements EventEmitter {
 

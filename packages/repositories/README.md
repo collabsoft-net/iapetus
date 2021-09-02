@@ -1,1 +1,1 @@
-# `@iapetus/repositories`
+# `@collabsoft-net/repositories`

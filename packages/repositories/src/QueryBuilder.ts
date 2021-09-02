@@ -1,5 +1,5 @@
 
-import { Condition, QueryBuilder as IQueryBuilder, WhereFilterOp } from '@iapetus/types';
+import { Condition, QueryBuilder as IQueryBuilder, WhereFilterOp } from '@collabsoft-net/types';
 
 export class QueryBuilder implements IQueryBuilder {
 

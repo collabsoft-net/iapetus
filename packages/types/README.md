@@ -1,1 +1,1 @@
-# `@iapetus/types`
+# `@collabsoft-net/types`

@@ -1,2 +1,2 @@
-# `@iapetus/emitters`
+# `@collabsoft-net/emitters`
 

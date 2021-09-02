@@ -1,5 +1,5 @@
-import { MemoryEmitter } from '@iapetus/emitters';
-import { Entity, EntityArray, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@iapetus/types';
+import { MemoryEmitter } from '@collabsoft-net/emitters';
+import { Entity, EntityArray, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import uniqid from 'uniqid';
 
 import { QueryBuilder } from './QueryBuilder';

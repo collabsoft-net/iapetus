@@ -1,5 +1,5 @@
 
-import { Event } from '@iapetus/types';
+import { Event } from '@collabsoft-net/types';
 import axios from 'axios';
 import { FirebaseApp } from 'firebase/app';
 import { Auth, getAuth } from 'firebase/auth';

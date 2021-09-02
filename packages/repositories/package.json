@@ -1,5 +1,5 @@
 {
-  "name": "@iapetus/repositories",
+  "name": "@collabsoft-net/repositories",
   "version": "0.0.0",
   "description": "Implementations of supported repositories",
   "author": "CollabSoft <info@collabsoft.net>",
@@ -22,8 +22,8 @@
   "devDependencies": {
     "@firebase/app-types": "0.x",
     "@google-cloud/storage": "^5.14.0",
-    "@iapetus/emitters": "^0.0.0",
-    "@iapetus/types": "^0.0.0",
+    "@collabsoft-net/emitters": "^0.0.0",
+    "@collabsoft-net/types": "^0.0.0",
     "@types/node": "^16.7.10",
     "@types/uniqid": "^5.3.1",
     "firebase-admin": "^9.11.1",

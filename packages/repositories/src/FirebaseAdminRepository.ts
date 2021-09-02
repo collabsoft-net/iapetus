@@ -1,5 +1,5 @@
-import { MemoryEmitter } from '@iapetus/emitters';
-import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@iapetus/types';
+import { MemoryEmitter } from '@collabsoft-net/emitters';
+import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import Firebase, { initializeApp } from 'firebase-admin';
 import uniqid from 'uniqid';
 
