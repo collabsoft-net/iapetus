@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/emitters",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "Supported event emitters implementations",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -25,7 +25,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.0",
+    "@collabsoft-net/types": "^1.0.0-alpha.1",
     "@types/uniqid": "^5.3.1"
   },
   "dependencies": {

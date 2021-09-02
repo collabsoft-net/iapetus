@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/repositories",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "Implementations of supported repositories",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -25,8 +25,8 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/emitters": "^1.0.0-alpha.0",
-    "@collabsoft-net/types": "^1.0.0-alpha.0",
+    "@collabsoft-net/emitters": "^1.0.0-alpha.1",
+    "@collabsoft-net/types": "^1.0.0-alpha.1",
     "@firebase/app-types": "0.x",
     "@google-cloud/storage": "^5.14.0",
     "@types/node": "^16.7.10",
