@@ -1,0 +1,37 @@
+{
+  "name": "@collabsoft-net/services",
+  "version": "1.0.0-alpha.1",
+  "description": "Abstract services to be used for app-specific implementations",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "npx eslint . --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
+    "prepack": "npx yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "dependencies": {
+    "@collabsoft-net/clients": "^1.0.0-alpha.1",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.1",
+    "path-to-regexp": "^6.2.0"
+  },
+  "devDependencies": {
+    "@collabsoft-net/enums": "^1.0.0-alpha.1",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.1",
+    "@collabsoft-net/types": "^1.0.0-alpha.1"
+  }
+}
