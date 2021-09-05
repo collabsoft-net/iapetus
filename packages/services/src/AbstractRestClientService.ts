@@ -50,10 +50,10 @@ export class AbstractRestClientService {
     }
   }
 
-  protected getEndpointFor(endpoint: RestClientEndpoints): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T, pathParams: Record<string, unknown>): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type?: Type<T>|T, pathParams: Record<string, unknown> = {}): string {
+  protected getEndpointFor(endpoint: RestClientEndpoints|string): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T, pathParams: Record<string, unknown>): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type?: Type<T>|T, pathParams: Record<string, unknown> = {}): string {
     let name: string|null = null;
 
     if (type) {
