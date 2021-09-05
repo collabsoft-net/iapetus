@@ -24,10 +24,16 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
+  "devDependencies": {
+    "atlassian-jwt": "^2.0.2",
+    "axios": "^0.21.1"
+  },
   "dependencies": {
     "@collabsoft-net/connect": "^1.0.0-alpha.8",
     "@collabsoft-net/entities": "^1.0.0-alpha.8",
-    "@collabsoft-net/enums": "^1.0.0-alpha.6",
+    "@collabsoft-net/enums": "^1.0.0-alpha.6"
+  },
+  "peerDependencies": {
     "atlassian-jwt": "^2.0.2",
     "axios": "^0.21.1"
   },
