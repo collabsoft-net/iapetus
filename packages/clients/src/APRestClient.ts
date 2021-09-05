@@ -23,15 +23,6 @@ export class APRestClient implements RestClient {
     return this.request(RestClientMethods.DELETE, endpoint, data, params);
   }
 
-  getUrl(endpoint: string, params?: Record<string, string|number|boolean>): string {
-    if (params) {
-      const querystring = qs.stringify(params);
-      endpoint = `${endpoint}?${querystring}`;
-    }
-
-    return endpoint;
-  }
-
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
     const client = this.AP.request;
     try {
@@ -60,4 +51,14 @@ export class APRestClient implements RestClient {
       };
     }
   }
+
+  private getUrl(endpoint: string, params?: Record<string, string|number|boolean>): string {
+    if (params) {
+      const querystring = qs.stringify(params);
+      endpoint = `${endpoint}?${querystring}`;
+    }
+
+    return endpoint;
+  }
+
 }
