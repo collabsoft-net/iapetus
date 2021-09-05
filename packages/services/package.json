@@ -28,13 +28,10 @@
     "@collabsoft-net/clients": "^1.0.0-alpha.6",
     "@collabsoft-net/helpers": "^1.0.0-alpha.6",
     "path-to-regexp": "^6.2.0",
-    "redis": "^3.1.2"
-  },
-  "devDependencies": {
     "@collabsoft-net/enums": "^1.0.0-alpha.6",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.1",
     "@collabsoft-net/types": "^1.0.0-alpha.6",
-    "@types/redis": "^2.8.31"
+    "@types/redis": "^2.8.31",
+    "redis": "^3.1.2"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

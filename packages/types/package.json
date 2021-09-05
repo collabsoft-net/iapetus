@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "devDependencies": {
+  "dependencies": {
     "@types/node": "^16.7.10",
     "axios": "^0.21.1"
   }
