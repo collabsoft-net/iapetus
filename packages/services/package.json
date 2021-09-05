@@ -16,8 +16,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "npx eslint . --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc --project ../../tsconfig.json",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
     "prepack": "npx yarn build"
   },
@@ -35,5 +35,6 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.1",
     "@collabsoft-net/types": "^1.0.0-alpha.1",
     "@types/redis": "^2.8.31"
-  }
+  },
+  "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

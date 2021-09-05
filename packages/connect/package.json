@@ -17,8 +17,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "npx eslint . --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc --project ../../tsconfig.json",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
     "prepack": "npx yarn build"
   },
@@ -36,5 +36,6 @@
     "react": "<17.0.0",
     "react-dom": "<17.0.0",
     "styled-components": "3.2.6"
-  }
+  },
+  "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }
