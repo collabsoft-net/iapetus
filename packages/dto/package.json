@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/dto",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Collection of shared Data Transfer Objects",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -25,6 +25,6 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "dependencies": {
-    "@collabsoft-net/entities": "^1.0.0-alpha.2"
+    "@collabsoft-net/entities": "^1.0.0-alpha.4"
   }
 }
