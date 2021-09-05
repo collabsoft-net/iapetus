@@ -1,5 +1,6 @@
 import { ACInstance } from '@collabsoft-net/entities';
 import { RestClientMethods } from '@collabsoft-net/enums';
+import { RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { stringify } from 'query-string';
@@ -9,7 +10,7 @@ import { AbstractRestClient } from './AbstractRestClient';
 const IMPERSONATION_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 const AUTH_SERVER = 'https://oauth-2-authorization-server.services.atlassian.com';
 
-export class AtlasRestClient extends AbstractRestClient {
+export class AtlasRestClient extends AbstractRestClient implements RestClient {
 
   private _accountId!: string;
   private oauthClientId!: string;

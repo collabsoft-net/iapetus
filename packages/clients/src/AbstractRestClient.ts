@@ -1,9 +1,10 @@
 
 import { RestClientMethods } from '@collabsoft-net/enums';
+import { RestClient } from '@collabsoft-net/types';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import { ParsedQuery } from 'query-string';
 
-export abstract class AbstractRestClient {
+export abstract class AbstractRestClient implements RestClient {
 
   protected client: AxiosInstance;
   private signal = axios.CancelToken.source();

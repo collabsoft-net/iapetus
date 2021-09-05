@@ -1,9 +1,10 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
+import { RestClient as IRestClient } from '@collabsoft-net/types';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { AbstractRestClient } from './AbstractRestClient';
 
-export class RestClient extends AbstractRestClient {
+export class RestClient extends AbstractRestClient implements IRestClient {
 
   constructor(private AP: AP.Instance, baseURL: string, config: AxiosRequestConfig = {}) {
     super(baseURL, config);
