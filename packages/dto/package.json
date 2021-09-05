@@ -17,7 +17,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx tsc --project ../../tsconfig.json",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
     "prepack": "npx yarn build"
   },
