@@ -7,7 +7,7 @@ import { compile } from 'path-to-regexp';
 
 export class AbstractRestClientService {
 
-  constructor(private client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
+  constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
 
   get abortController(): CancelTokenSource {
     return this.client.abortController;
@@ -50,10 +50,10 @@ export class AbstractRestClientService {
     }
   }
 
-  private getEndpointFor(endpoint: RestClientEndpoints): string;
-  private getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T): string;
-  private getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T, pathParams: Record<string, unknown>): string;
-  private getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type?: Type<T>|T, pathParams: Record<string, unknown> = {}): string {
+  protected getEndpointFor(endpoint: RestClientEndpoints): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type: Type<T>|T, pathParams: Record<string, unknown>): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints, type?: Type<T>|T, pathParams: Record<string, unknown> = {}): string {
     let name: string|null = null;
 
     if (type) {

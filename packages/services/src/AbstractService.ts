@@ -2,7 +2,7 @@ import { DefaultService, DTO,Entity, EntityArray, Paginated, QueryBuilder, Query
 
 export abstract class AbstractService<T extends Entity, X extends DTO> implements DefaultService<T, X> {
 
-  constructor(private repository: Repository, private options: QueryOptions) {}
+  constructor(protected repository: Repository, protected options: QueryOptions) {}
 
   abstract toDTO(entity: T): X;
 
