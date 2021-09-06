@@ -30,6 +30,7 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.8",
     "@collabsoft-net/types": "^1.0.0-alpha.8",
     "@types/redis": "^2.8.31",
+    "inversify": "^5.0.0",
     "path-to-regexp": "^6.1.0",
     "redis": "^3.1.2"
   },
@@ -37,6 +38,7 @@
     "@collabsoft-net/clients": "^1.0.0-alpha.11",
     "@collabsoft-net/enums": "^1.0.0-alpha.6",
     "@collabsoft-net/helpers": "^1.0.0-alpha.8",
+    "inversify": "^5.0.0",
     "path-to-regexp": "^6.1.0",
     "redis": "^3.1.2"
   },

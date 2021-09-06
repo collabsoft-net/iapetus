@@ -1,5 +1,7 @@
 import { DefaultService, DTO,Entity, EntityArray, Paginated, QueryBuilder, QueryOptions, Repository, Validator } from '@collabsoft-net/types';
+import { injectable } from 'inversify';
 
+@injectable()
 export abstract class AbstractService<T extends Entity, X extends DTO> implements DefaultService<T, X> {
 
   constructor(protected repository: Repository, protected options: QueryOptions) {}
