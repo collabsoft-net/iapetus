@@ -30,17 +30,13 @@
     "@firebase/app-types": "0.x",
     "@google-cloud/storage": "^4.7.0",
     "@types/node": "^16.7.10",
-    "@types/uniqid": "^5.3.1",
+    "@types/uniqid": "^5.2.0",
     "firebase-admin": "^9.9.0",
     "uniqid": "^5.2.0"
   },
   "peerDependencies": {
     "@collabsoft-net/emitters": "^1.0.0-alpha.8",
-    "@collabsoft-net/types": "^1.0.0-alpha.8",
-    "@firebase/app-types": "0.x",
     "@google-cloud/storage": "^4.7.0",
-    "@types/node": "^16.7.10",
-    "@types/uniqid": "^5.3.1",
     "firebase-admin": "^9.9.0",
     "uniqid": "^5.2.0"
   }
