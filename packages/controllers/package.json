@@ -1,0 +1,47 @@
+{
+  "name": "@collabsoft-net/controllers",
+  "version": "1.0.0-alpha.17",
+  "description": "Shared controllers for Firebase Cloud Functions",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "typings"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
+    "prepack": "npx yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "devDependencies": {
+    "@collabsoft-net/dto": "^1.0.0-alpha.8",
+    "@collabsoft-net/services": "^1.0.0-alpha.17",
+    "@sentry/minimal": "^6.5.1",
+    "@sentry/node": "^6.5.0",
+    "@types/passport": "^1.0.7",
+    "inversify": "^5.0.0",
+    "inversify-express-utils": "^6.3.2",
+    "passport": "^0.4.1"
+  },
+  "peerDependencies": {
+    "@collabsoft-net/dto": "^1.0.0-alpha.8",
+    "@collabsoft-net/services": "^1.0.0-alpha.17",
+    "@sentry/minimal": "^6.5.1",
+    "@sentry/node": "^6.5.0",
+    "inversify": "^5.0.0",
+    "inversify-express-utils": "^6.3.2",
+    "passport": "^0.4.1"
+  }
+}
