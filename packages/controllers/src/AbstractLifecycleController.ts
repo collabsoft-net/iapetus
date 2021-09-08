@@ -9,9 +9,9 @@ import { StatusCodeResult } from 'inversify-express-utils/dts/results';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export abstract class LifecycleController extends AbstractController {
+export abstract class AbstractLifecycleController extends AbstractController {
 
-  abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
   async InstallHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, true);
