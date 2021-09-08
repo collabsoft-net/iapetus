@@ -1,5 +1,3 @@
-import '../environment';
-
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import * as express from 'express';
 import { injectable } from 'inversify';
