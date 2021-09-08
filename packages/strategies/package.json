@@ -1,7 +1,7 @@
 {
-  "name": "@collabsoft-net/types",
-  "version": "1.0.0-alpha.8",
-  "description": "Shared typings",
+  "name": "@collabsoft-net/strategies",
+  "version": "1.0.0-alpha.18",
+  "description": "PassportJS authentication strategies",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "UNLICENSED",
@@ -25,15 +25,29 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
+    "@collabsoft-net/controllers": "^1.0.0-alpha.18",
+    "@collabsoft-net/dto": "^1.0.0-alpha.18",
+    "@collabsoft-net/entities": "^1.0.0-alpha.8",
+    "@collabsoft-net/services": "^1.0.0-alpha.17",
+    "@collabsoft-net/types": "^1.0.0-alpha.8",
     "@types/node": "^16.7.0",
     "@types/passport": "^1.0.0",
-    "axios": "^0.21.0",
+    "@types/passport-http-bearer": "^1.0.34",
+    "@types/passport-jwt": "^3.0.3",
     "express": "^4.17.0",
-    "passport": "^0.4.0"
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^4.0.0"
   },
   "peerDependencies": {
+    "@collabsoft-net/controllers": "^1.0.0-alpha.18",
+    "@collabsoft-net/dto": "^1.0.0-alpha.18",
+    "@collabsoft-net/entities": "^1.0.0-alpha.8",
+    "@collabsoft-net/services": "^1.0.0-alpha.17",
     "axios": "^0.21.0",
     "express": "^4.17.0",
-    "passport": "^0.4.0"
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^4.0.0"
   }
 }
