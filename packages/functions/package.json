@@ -1,0 +1,54 @@
+{
+  "name": "@collabsoft-net/functions",
+  "version": "1.0.0-alpha.20",
+  "description": "Firebase Cloud functions application server",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
+    "prepack": "npx yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "peerDependencies": {
+    "@collabsoft-net/helpers": "^1.0.0-alpha.19",
+    "@gdn/envify-nconf": "^1.2.1",
+    "@sentry/minimal": "^6.5.1",
+    "@sentry/node": "^6.5.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.0",
+    "passport": "^0.4.0",
+    "firebase-admin": "^9.9.0",
+    "firebase-functions": "^3.14.1",
+    "inversify": "^5.0.0",
+    "inversify-express-utils": "^6.3.2"
+  },
+  "devDependencies": {
+    "@collabsoft-net/helpers": "^1.0.0-alpha.19",
+    "@gdn/envify-nconf": "^1.2.1",
+    "@sentry/minimal": "^6.5.1",
+    "@sentry/node": "^6.5.0",
+    "@types/cookie-parser": "^1.4.2",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.0",
+    "passport": "^0.4.0",
+    "firebase-admin": "^9.9.0",
+    "firebase-functions": "^3.14.1",
+    "inversify": "^5.0.0",
+    "inversify-express-utils": "^6.3.2"
+  }
+}
