@@ -40,5 +40,6 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.21",
     "express": "^4.17.0",
     "passport": "^0.4.1"
-  }
+  },
+  "gitHead": "2f650aaeeb32be90bf6b942e9ea5b58d11737fbf"
 }
