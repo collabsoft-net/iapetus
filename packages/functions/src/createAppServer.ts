@@ -3,6 +3,8 @@ import { isProduction } from '@collabsoft-net/helpers';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import { captureException, Handlers as Sentry } from '@sentry/node';
 import cookies from 'cookie-parser';
+import * as express from 'express';
+import { https } from 'firebase-functions';
 import { error, info } from 'firebase-functions/lib/logger';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -10,7 +12,7 @@ import * as passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: Express.Application) => void): Express.Application => {
+export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: Express.Application) => void): (req: https.Request, resp: express.Response) => void | Promise<void> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.getAll<IStrategy>(Strategy);
 
