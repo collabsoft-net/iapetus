@@ -5,9 +5,11 @@
     "packages/*"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules && npx lerna clean",
+    "clean": "rm -rf node_modules && npx lerna clean -y",
     "build": "npx lerna run build",
-    "reinstall": "npx yarn clean && yarn && npx lerna exec yarn"
+    "reinstall": "npx yarn clean && yarn && npx lerna exec yarn",
+    "start": "npx nodemon --watch ./**/src -e '.ts' --exec 'npx lerna run build'",
+    "prerelease": "npx lerna publish prerelease -y"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.30.0",
@@ -15,6 +17,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "lerna": "^4.0.0",
+    "nodemon": "^2.0.12",
     "typescript": "^4.4.2"
   }
 }
