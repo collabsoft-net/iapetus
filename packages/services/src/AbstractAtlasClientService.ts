@@ -8,9 +8,9 @@ import { compile } from 'path-to-regexp';
 export abstract class AbstractAtlasClientService {
 
   constructor(
-    private client: AtlasRestClient,
-    private endpoints: AtlasEndpoints,
-    private mode: Modes) {}
+    protected client: AtlasRestClient,
+    protected endpoints: AtlasEndpoints,
+    protected mode: Modes) {}
 
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService {
     const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
