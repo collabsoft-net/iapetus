@@ -28,6 +28,7 @@
     "@collabsoft-net/controllers": "^1.0.0-alpha.21",
     "@collabsoft-net/dto": "^1.0.0-alpha.19",
     "@collabsoft-net/entities": "^1.0.0-alpha.19",
+    "@collabsoft-net/functions": "^1.0.0-alpha.23",
     "@collabsoft-net/services": "^1.0.0-alpha.21",
     "@collabsoft-net/types": "^1.0.0-alpha.19",
     "@types/node": "^16.7.0",

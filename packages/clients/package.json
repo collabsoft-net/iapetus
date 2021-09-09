@@ -26,16 +26,17 @@
   },
   "devDependencies": {
     "atlassian-jwt": "^2.0.2",
-    "axios": "^0.21.1"
-  },
-  "dependencies": {
+    "axios": "^0.21.1",
     "@collabsoft-net/connect": "^1.0.0-alpha.19",
     "@collabsoft-net/entities": "^1.0.0-alpha.19",
     "@collabsoft-net/enums": "^1.0.0-alpha.6"
   },
   "peerDependencies": {
     "atlassian-jwt": "^2.0.2",
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "@collabsoft-net/connect": "^1.0.0-alpha.19",
+    "@collabsoft-net/entities": "^1.0.0-alpha.19",
+    "@collabsoft-net/enums": "^1.0.0-alpha.6"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

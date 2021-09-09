@@ -26,6 +26,7 @@
   },
   "peerDependencies": {
     "@collabsoft-net/helpers": "^1.0.0-alpha.19",
+    "@collabsoft-net/services": "^1.0.0-alpha.21",
     "@gdn/envify-nconf": "^1.2.1",
     "@sentry/minimal": "^6.5.1",
     "@sentry/node": "^6.5.0",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@collabsoft-net/helpers": "^1.0.0-alpha.21",
+    "@collabsoft-net/services": "^1.0.0-alpha.21",
     "@gdn/envify-nconf": "^1.2.1",
     "@sentry/minimal": "^6.5.1",
     "@sentry/node": "^6.5.0",

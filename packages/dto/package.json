@@ -24,7 +24,10 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@collabsoft-net/entities": "^1.0.0-alpha.19"
+  },
+  "peerDependencies": {
     "@collabsoft-net/entities": "^1.0.0-alpha.19"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
