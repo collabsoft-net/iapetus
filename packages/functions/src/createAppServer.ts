@@ -10,8 +10,11 @@ import * as passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (container: inversify.interfaces.Container, configure: (app: Express.Application) => void): Express.Application => {
-  return new InversifyExpressServer(container).setConfig((app) => {
+export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: Express.Application) => void): Express.Application => {
+  const appContainer = typeof container === 'function' ? container() : container;
+  const strategies = appContainer.getAll<IStrategy>(Strategy);
+
+  return new InversifyExpressServer(appContainer).setConfig((app) => {
     try {
       app.set('trust proxy', 1);
       app.disable('x-powered-by');
@@ -28,7 +31,6 @@ export const createAppServer = (container: inversify.interfaces.Container, confi
 
       app.use(passport.initialize());
 
-      const strategies = container.getAll<IStrategy>(Strategy);
       strategies.forEach((instance) => {
         passport.use(instance.strategy)
         !isProduction && info(`Registering strategy [${instance.name}]`);
@@ -43,7 +45,9 @@ export const createAppServer = (container: inversify.interfaces.Container, confi
         });
       });
 
-      configure(app);
+      if (configure) {
+        configure(app);
+      }
     } catch (exp) {
       captureException(exp);
       error('Server error', { exp });
