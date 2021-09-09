@@ -1,0 +1,6 @@
+
+export enum SupportedPermissions {
+  SYSTEM_ADMIN = 'SYSTEM_ADMIN',
+  ADMINISTER = 'ADMINISTER',
+  BROWSE_PROJECTS = 'BROWSE_PROJECTS'
+}

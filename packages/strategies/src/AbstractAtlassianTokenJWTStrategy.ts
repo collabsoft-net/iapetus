@@ -1,3 +1,5 @@
+import '@collabsoft-net/functions';
+
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';

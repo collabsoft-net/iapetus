@@ -1,3 +1,5 @@
+import '@collabsoft-net/functions';
+
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -20,7 +22,7 @@ export abstract class AbstractJWTStrategy<T> implements IStrategy {
   get strategy(): passport.Strategy {
     return new Strategy(this.strategyOptions, async (token: T, done: (err: Error|null, session?: Session) => void) => {
       try {
-        const session = this.process(token);
+        const session = await this.process(token);
         done(null, session);
       } catch (error) {
         done(error as Error);

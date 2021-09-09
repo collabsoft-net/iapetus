@@ -1,3 +1,5 @@
+import '@collabsoft-net/functions';
+
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
@@ -23,7 +25,8 @@ export abstract class AbstractBearerStrategy implements IStrategy {
   get strategy(): passport.Strategy {
     return new Strategy(async (token: string, done: (err: Error|null, session?: Session) => void) => {
       try {
-        done(null, this.process(token));
+        const session = await this.process(token);
+        done(null, session);
       } catch (error) {
         done(error as Error);
       }

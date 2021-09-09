@@ -1,4 +1,5 @@
 
+export * from './AtlasEndpoints';
 export * from './Atlassian';
 export * from './BaseService';
 export * from './ConnectHelper';

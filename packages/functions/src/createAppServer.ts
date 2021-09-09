@@ -8,7 +8,7 @@ import { https } from 'firebase-functions';
 import { error, info } from 'firebase-functions/lib/logger';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import * as passport from 'passport';
+import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
@@ -52,7 +52,7 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
       }
     } catch (exp) {
       captureException(exp);
-      error('Server error', { exp });
+      error('Server error', { error: JSON.stringify(exp) });
     }
   }).build();
 }
