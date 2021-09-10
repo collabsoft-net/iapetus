@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/middleware",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.31",
   "description": "Express middleware",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -25,7 +25,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.30",
+    "@collabsoft-net/controllers": "^1.0.0-alpha.31",
     "@collabsoft-net/enums": "^1.0.0-alpha.24",
     "@collabsoft-net/functions": "^1.0.0-alpha.29",
     "@collabsoft-net/helpers": "^1.0.0-alpha.29",
