@@ -5,10 +5,10 @@ import { injectable } from 'inversify';
 import { BaseHttpController, interfaces } from 'inversify-express-utils';
 
 @injectable()
-export class AbstractController extends BaseHttpController implements interfaces.Controller {
+export class AbstractController<T extends Session> extends BaseHttpController implements interfaces.Controller {
 
-  protected get session(): Session {
-    return this.httpContext.request.user as Session;
+  protected get session(): T {
+    return this.httpContext.request.user as T;
   }
 
 }

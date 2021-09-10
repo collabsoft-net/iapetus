@@ -10,7 +10,7 @@ import * as passport from 'passport';
 import { Strategy } from 'passport-http-bearer';
 
 @injectable()
-export abstract class AbstractBearerStrategy implements IStrategy {
+export abstract class AbstractBearerStrategy<T extends Session> implements IStrategy {
 
   get name(): string {
     return 'bearer';
@@ -23,7 +23,7 @@ export abstract class AbstractBearerStrategy implements IStrategy {
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
   get strategy(): passport.Strategy {
-    return new Strategy(async (token: string, done: (err: Error|null, session?: Session) => void) => {
+    return new Strategy(async (token: string, done: (err: Error|null, session?: T) => void) => {
       try {
         const session = await this.process(token);
         done(null, session);
@@ -33,7 +33,7 @@ export abstract class AbstractBearerStrategy implements IStrategy {
     });
   }
 
-  protected abstract process(token: string): Promise<Session>;
+  protected abstract process(token: string): Promise<T>;
 
   next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
     next();

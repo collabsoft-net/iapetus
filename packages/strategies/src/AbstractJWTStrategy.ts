@@ -7,7 +7,7 @@ import * as passport from 'passport';
 import { Strategy, StrategyOptions } from 'passport-jwt';
 
 @injectable()
-export abstract class AbstractJWTStrategy<T> implements IStrategy {
+export abstract class AbstractJWTStrategy<T, X extends Session> implements IStrategy {
 
   get name(): string {
     return 'jwt';
@@ -20,7 +20,7 @@ export abstract class AbstractJWTStrategy<T> implements IStrategy {
   protected abstract get strategyOptions(): StrategyOptions
 
   get strategy(): passport.Strategy {
-    return new Strategy(this.strategyOptions, async (token: T, done: (err: Error|null, session?: Session) => void) => {
+    return new Strategy(this.strategyOptions, async (token: T, done: (err: Error|null, session?: X) => void) => {
       try {
         const session = await this.process(token);
         done(null, session);
@@ -30,7 +30,7 @@ export abstract class AbstractJWTStrategy<T> implements IStrategy {
     });
   }
 
-  protected abstract process(token: T): Promise<Session>;
+  protected abstract process(token: T): Promise<X>;
 
   next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
     next();
