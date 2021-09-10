@@ -1,5 +1,5 @@
 
-export interface AtlasEndpoints {
+export interface AtlasEndpoints extends Record<string, string> {
   CURRENTUSER: string;
   USER: string;
   MYPERMISSIONS: string;
