@@ -9,7 +9,7 @@ import { StatusCodeResult } from 'inversify-express-utils/dts/results';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export abstract class AbstractServiceController<T extends Entity, X extends DTO> extends AbstractController {
+export abstract class AbstractServiceController<T extends Entity, X extends DTO, Y extends Session> extends AbstractController<Y> {
 
   protected abstract service: DefaultService<T, X>;
 

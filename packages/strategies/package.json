@@ -51,5 +51,5 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.0"
   },
-  "gitHead": "e466d694e76d4e219186db8201a6bb711595052e"
+  "gitHead": "34d2b00e50ac472953b2d0e5bb8916f8e9904558"
 }
