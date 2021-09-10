@@ -10,7 +10,7 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenJWTStrategy extends AbstractJWTStrategy<Atlassian.JWT> {
+export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> extends AbstractJWTStrategy<Atlassian.JWT, T> {
 
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
@@ -30,7 +30,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy extends AbstractJWTStrat
     };
   }
 
-  protected async process(payload: Atlassian.JWT): Promise<Session> {
+  protected async process(payload: Atlassian.JWT): Promise<T> {
     const { iss } = payload;
 
     const instance = await this.service.findById(iss);
@@ -41,6 +41,6 @@ export abstract class AbstractAtlassianTokenJWTStrategy extends AbstractJWTStrat
     }
   }
 
-  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<Session>;
+  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<T>;
 
 }

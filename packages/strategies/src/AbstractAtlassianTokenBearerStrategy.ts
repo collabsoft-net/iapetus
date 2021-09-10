@@ -9,11 +9,11 @@ import { injectable } from 'inversify';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenBearerStrategy extends AbstractBearerStrategy {
+export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> extends AbstractBearerStrategy<T> {
 
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
-  protected async process(token: string): Promise<Session> {
+  protected async process(token: string): Promise<T> {
     const { iss, exp } = decodeSymmetric(token, '', SymmetricAlgorithm.HS256, true);
 
     const now = Math.round(new Date().getTime() / 1000);
@@ -28,6 +28,6 @@ export abstract class AbstractAtlassianTokenBearerStrategy extends AbstractBeare
     }
   }
 
-  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<Session>;
+  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<T>;
 
 }

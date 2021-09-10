@@ -45,5 +45,6 @@
     "inversify": "^5.0.0",
     "inversify-express-utils": "^6.3.2",
     "passport": "^0.4.1"
-  }
+  },
+  "gitHead": "e466d694e76d4e219186db8201a6bb711595052e"
 }
