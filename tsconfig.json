@@ -6,7 +6,6 @@
       "es2015",
       "es2017"
     ],
-    "module": "esnext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
@@ -18,8 +17,7 @@
     "noUnusedParameters": true,
     "jsx": "preserve",
     "jsxFactory": "h",
-    "skipLibCheck": true,
-    "outDir": "dist"
+    "skipLibCheck": true
   },
   "include": [
     "./src/**/*.ts",

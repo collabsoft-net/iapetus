@@ -6,8 +6,9 @@
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "UNLICENSED",
   "sideEffects": false,
-  "module": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "module": "./dist/es2020/index.js",
+  "main": "./dist/cjs/index.js",
+  "typings": "./dist/cjs/index.d.ts",
   "files": [
     "dist",
     "typings"
@@ -19,7 +20,9 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx tsc",
+    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
+    "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
     "prepack": "npx yarn build"
   },
