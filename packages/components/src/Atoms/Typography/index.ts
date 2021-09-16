@@ -1,7 +1,7 @@
 
-import { AtlaskitThemeProps, CustomThemeProps, fontFamily, fontSize, NoThemeProps } from '@atlaskit/theme';
+import { fontFamily, fontSize } from '@atlaskit/theme';
 import { h100, h200, h300, h400, h500, h600, h700, h800, h900 } from '@atlaskit/theme/typography';
-import styled, { css, FlattenInterpolation, ThemedStyledProps } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { withProps } from '../Styled';
 
@@ -12,51 +12,18 @@ export interface HeadingProps {
   margin?: string;
 }
 
-const fixAtlasKit = (themes: Array<FlattenInterpolation<ThemedStyledProps<AtlaskitThemeProps | CustomThemeProps | NoThemeProps | undefined, unknown>>>) => {
-  const result: Array<string> = [];
-  let intermediateResult = '';
-  themes.forEach(theme => {
-    let value;
-
-    const valueOf = theme?.valueOf();
-    if (typeof valueOf === 'function') {
-      value = valueOf();
-    } else {
-      value = valueOf;
-    }
-
-    if (typeof value === 'string') {
-      if (value.trim().endsWith(';')) {
-        if (intermediateResult !== '') {
-          intermediateResult += value;
-          if (intermediateResult.trim().endsWith(';')) {
-            result.push(intermediateResult);
-            intermediateResult = '';
-          }
-        } else {
-          result.push(value);
-        }
-      } else {
-        intermediateResult += value;
-      }
-    }
-  });
-
-  return result.join('\n');
-};
-
 const heading = withProps<HeadingProps>()(css)`
   display: ${props => props.display || 'block'};
   font-family: ${fontFamily()};
-  ${props => props.weight === 'h100' && fixAtlasKit(h100())}
-  ${props => props.weight === 'h200' && fixAtlasKit(h200())}
-  ${props => props.weight === 'h300' && fixAtlasKit(h300())}
-  ${props => props.weight === 'h400' && fixAtlasKit(h400())}
-  ${props => props.weight === 'h500' && fixAtlasKit(h500())}
-  ${props => props.weight === 'h600' && fixAtlasKit(h600())}
-  ${props => props.weight === 'h700' && fixAtlasKit(h700())}
-  ${props => props.weight === 'h800' && fixAtlasKit(h800())}
-  ${props => props.weight === 'h900' && fixAtlasKit(h900())}
+  ${props => props.weight === 'h100' && h100()}
+  ${props => props.weight === 'h200' && h200()}
+  ${props => props.weight === 'h300' && h300()}
+  ${props => props.weight === 'h400' && h400()}
+  ${props => props.weight === 'h500' && h500()}
+  ${props => props.weight === 'h600' && h600()}
+  ${props => props.weight === 'h700' && h700()}
+  ${props => props.weight === 'h800' && h800()}
+  ${props => props.weight === 'h900' && h900()}
   ${props => props.margin ? `margin: ${props.margin};` : 'margin-top: 0;'}
   ${props => props.color && `color: ${props.color};`}
   -webkit-font-smoothing: antialiased;

@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "es2015",
+      "es2017"
+    ],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "rootDirs": [
+      "./src",
+    ],
+    "outDir": "./dist",
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./typings/*.d.ts",
+    "./typings/**/*.d.ts",
+    "./node_modules/**/*.d.ts",
+    "../../node_modules/**/*.d.ts",
+  ],
+  "compileOnSave": false
+}
