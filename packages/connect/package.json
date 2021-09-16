@@ -6,7 +6,7 @@
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "UNLICENSED",
   "sideEffects": false,
-  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "files": [
     "dist",
