@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2019",
     "lib": [
       "dom",
       "es2015",
       "es2017"
     ],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
