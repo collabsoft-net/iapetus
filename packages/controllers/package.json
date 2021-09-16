@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/controllers",
-  "version": "1.0.0-alpha.39",
+  "version": "1.0.0-alpha.40",
   "description": "Shared controllers for Firebase Cloud Functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -20,7 +20,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
+    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",
+    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
@@ -30,10 +31,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/dto": "^1.0.0-alpha.39",
-    "@collabsoft-net/functions": "^1.0.0-alpha.39",
-    "@collabsoft-net/services": "^1.0.0-alpha.39",
-    "@collabsoft-net/types": "^1.0.0-alpha.39",
+    "@collabsoft-net/dto": "^1.0.0-alpha.40",
+    "@collabsoft-net/functions": "^1.0.0-alpha.40",
+    "@collabsoft-net/services": "^1.0.0-alpha.40",
+    "@collabsoft-net/types": "^1.0.0-alpha.40",
     "@sentry/minimal": "^6.5.1",
     "@sentry/node": "^6.5.0",
     "@types/passport": "^1.0.7",

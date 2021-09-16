@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/connect",
-  "version": "1.0.0-alpha.39",
+  "version": "1.0.0-alpha.40",
   "description": "Atlassian Connect polyfill (incl. Javascript API)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -20,7 +20,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
+    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",
+    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
@@ -31,7 +32,7 @@
   },
   "devDependencies": {
     "@atlaskit/modal-dialog": "^12.0.1",
-    "@collabsoft-net/types": "^1.0.0-alpha.39",
+    "@collabsoft-net/types": "^1.0.0-alpha.40",
     "@types/react": "<17.0.0",
     "@types/react-dom": "<17.0.0",
     "react": "<17.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/services",
-  "version": "1.0.0-alpha.39",
+  "version": "1.0.0-alpha.40",
   "description": "Abstract services to be used for app-specific implementations",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -19,7 +19,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
+    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",
+    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
@@ -29,10 +30,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/clients": "^1.0.0-alpha.39",
-    "@collabsoft-net/enums": "^1.0.0-alpha.39",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.39",
-    "@collabsoft-net/types": "^1.0.0-alpha.39",
+    "@collabsoft-net/clients": "^1.0.0-alpha.40",
+    "@collabsoft-net/enums": "^1.0.0-alpha.40",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.40",
+    "@collabsoft-net/types": "^1.0.0-alpha.40",
     "@types/redis": "^2.8.31",
     "inversify": "^5.0.0",
     "path-to-regexp": "^6.1.0",
