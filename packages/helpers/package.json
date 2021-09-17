@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@collabsoft-net/helpers",
-  "version": "1.0.0-alpha.40",
+  "version": "1.0.0-alpha.43",
   "description": "Collection of helper functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -31,6 +31,6 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.40"
+    "@collabsoft-net/types": "^1.0.0-alpha.43"
   }
 }

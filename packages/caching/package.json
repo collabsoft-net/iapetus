@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@collabsoft-net/caching",
-  "version": "1.0.0-alpha.42",
+  "version": "1.0.0-alpha.43",
   "description": "Collection of classes to implement caching on Firebase Cloud Functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@collabsoft-net/functions",
-  "version": "1.0.0-alpha.42",
+  "version": "1.0.0-alpha.43",
   "description": "Firebase Cloud functions application server",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -45,8 +45,8 @@
     "passport": "^0.4.0"
   },
   "devDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.40",
-    "@collabsoft-net/services": "^1.0.0-alpha.42",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.43",
+    "@collabsoft-net/services": "^1.0.0-alpha.43",
     "@gdn/envify-nconf": "^1.2.1",
     "@sentry/minimal": "^6.5.1",
     "@sentry/node": "^6.5.0",
