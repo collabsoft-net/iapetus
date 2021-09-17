@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/services",
   "version": "1.0.0-alpha.43",
   "description": "Abstract services to be used for app-specific implementations",

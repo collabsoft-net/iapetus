@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/emitters",
   "version": "1.0.0-alpha.43",
   "description": "Supported event emitters implementations",

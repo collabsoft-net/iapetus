@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/repositories",
   "version": "1.0.0-alpha.43",
   "description": "Implementations of supported repositories",

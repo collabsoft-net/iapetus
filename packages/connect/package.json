@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/connect",
   "version": "1.0.0-alpha.43",
   "description": "Atlassian Connect polyfill (incl. Javascript API)",

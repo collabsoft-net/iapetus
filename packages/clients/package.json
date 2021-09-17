@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/clients",
   "version": "1.0.0-alpha.43",
   "description": "Rest clients to be used in Server, Cloud functions and client-side (with support for AP.request and Atlassian REST API, incl. impersonation)",

@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/dto",
   "version": "1.0.0-alpha.43",
   "description": "Collection of shared Data Transfer Objects",

@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/types",
   "version": "1.0.0-alpha.43",
   "description": "Shared typings",

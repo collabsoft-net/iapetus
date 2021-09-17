@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/components",
   "version": "1.0.0-alpha.43",
   "description": "Collection of React frontend components",

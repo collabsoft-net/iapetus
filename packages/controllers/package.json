@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/controllers",
   "version": "1.0.0-alpha.43",
   "description": "Shared controllers for Firebase Cloud Functions",

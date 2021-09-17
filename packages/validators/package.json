@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "@collabsoft-net/validators",
   "version": "1.0.0-alpha.43",
   "description": "Common validators for entities",
