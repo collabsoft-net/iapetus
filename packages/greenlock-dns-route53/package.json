@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@collabsoft-net/greenlock-dns-route53",
   "version": "1.0.0-alpha.40",
   "description": "Rest clients to be used in Server, Cloud functions and client-side (with support for AP.request and Atlassian REST API, incl. impersonation)",
@@ -8,7 +9,7 @@
   "sideEffects": false,
   "module": "./dist/es2020/index.js",
   "main": "./dist/cjs/index.js",
-  "typings": "./dist/cjs/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
   ],
