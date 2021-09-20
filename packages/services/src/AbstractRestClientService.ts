@@ -3,8 +3,10 @@ import { RestClientEndpoints } from '@collabsoft-net/enums';
 import { isTypeOf } from '@collabsoft-net/helpers';
 import { DTO, Paginated, Type } from '@collabsoft-net/types';
 import { CancelTokenSource } from 'axios';
+import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
+@injectable()
 export class AbstractRestClientService {
 
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
