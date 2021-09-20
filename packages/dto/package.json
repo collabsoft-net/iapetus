@@ -24,16 +24,17 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/dto"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/entities": "^1.0.0-alpha.44"
+    "@collabsoft-net/entities": "1.0.0-alpha.44"
   },
   "peerDependencies": {
-    "@collabsoft-net/entities": "^1.0.0-alpha.19"
+    "@collabsoft-net/entities": "1.0.0-alpha.44"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

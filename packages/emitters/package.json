@@ -24,25 +24,26 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/emitters"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.44",
-    "@google-cloud/pubsub": "^2.17.0",
-    "@types/uniqid": "^5.3.1",
-    "axios": "^0.21.1",
-    "firebase": "^9.0.1",
-    "uniqid": "^5.4.0"
+    "@collabsoft-net/types": "1.0.0-alpha.44",
+    "@google-cloud/pubsub": "2.17.0",
+    "@types/uniqid": "5.3.1",
+    "axios": "0.21.1",
+    "firebase": "9.0.1",
+    "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.19",
-    "@google-cloud/pubsub": "^2.17.0",
-    "@types/uniqid": "^5.3.1",
-    "axios": "^0.21.1",
-    "firebase": "^9.0.1",
-    "uniqid": "^5.4.0"
+    "axios": "0.21.1",
+    "uniqid": "5.4.0"
+  },
+  "optionalDependencies": {
+    "@google-cloud/pubsub": "2.17.0",
+    "firebase": "9.0.1"
   }
 }

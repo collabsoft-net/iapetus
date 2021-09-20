@@ -24,38 +24,39 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/functions"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "peerDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.19",
-    "@collabsoft-net/services": "^1.0.0-alpha.21",
-    "@gdn/envify-nconf": "^1.2.1",
-    "@sentry/minimal": "^6.5.1",
-    "@sentry/node": "^6.5.0",
-    "cookie-parser": "^1.4.4",
-    "express": "^4.17.0",
-    "firebase-admin": "^9.9.0",
-    "firebase-functions": "^3.14.1",
-    "inversify": "^5.0.0",
-    "inversify-express-utils": "^6.3.2",
-    "passport": "^0.4.0"
-  },
   "devDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.44",
-    "@collabsoft-net/services": "^1.0.0-alpha.45",
-    "@gdn/envify-nconf": "^1.2.1",
-    "@sentry/minimal": "^6.5.1",
-    "@sentry/node": "^6.5.0",
-    "@types/cookie-parser": "^1.4.2",
-    "cookie-parser": "^1.4.4",
-    "express": "^4.17.0",
-    "firebase-admin": "^9.9.0",
-    "firebase-functions": "^3.14.1",
-    "inversify": "^5.0.0",
-    "inversify-express-utils": "^6.3.2",
-    "passport": "^0.4.0"
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "@collabsoft-net/services": "1.0.0-alpha.45",
+    "@gdn/envify-nconf": "1.2.1",
+    "@sentry/minimal": "6.5.1",
+    "@sentry/node": "6.5.1",
+    "@types/cookie-parser": "1.4.2",
+    "cookie-parser": "1.4.4",
+    "express": "4.17.0",
+    "firebase-admin": "9.9.0",
+    "firebase-functions": "3.14.1",
+    "inversify": "5.1.1",
+    "inversify-express-utils": "6.3.2",
+    "passport": "0.4.1"
+  },
+  "peerDependencies": {
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "@collabsoft-net/services": "1.0.0-alpha.45",
+    "@gdn/envify-nconf": "1.2.1",
+    "@sentry/minimal": "6.5.1",
+    "@sentry/node": "6.5.1",
+    "cookie-parser": "1.4.4",
+    "express": "4.17.0",
+    "firebase-admin": "9.9.0",
+    "firebase-functions": "3.14.1",
+    "inversify": "5.1.1",
+    "inversify-express-utils": "6.3.2",
+    "passport": "0.4.1"
   }
 }

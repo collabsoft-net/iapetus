@@ -31,6 +31,6 @@
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015",
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.44"
+    "@collabsoft-net/types": "1.0.0-alpha.44"
   }
 }

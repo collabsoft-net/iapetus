@@ -24,16 +24,17 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/components"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@atlaskit/avatar": "^20.0.0",
-    "@atlaskit/button": "^16.1.2",
-    "@atlaskit/theme": "^12.0.0",
-    "@types/node": "10.17.43",
+    "@atlaskit/avatar": "20.0.0",
+    "@atlaskit/button": "16.1.2",
+    "@atlaskit/theme": "12.0.0",
+    "@types/node": "12.20.25",
     "@types/react": "16.9.54",
     "@types/react-dom": "16.9.9",
     "react": "16.14.0",
@@ -41,9 +42,9 @@
     "styled-components": "3.2.6"
   },
   "peerDependencies": {
-    "@atlaskit/avatar": "^20.0.0",
-    "@atlaskit/button": "^16.1.2",
-    "@atlaskit/theme": "^12.0.0",
+    "@atlaskit/avatar": "20.0.0",
+    "@atlaskit/button": "16.1.2",
+    "@atlaskit/theme": "12.0.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "styled-components": "3.2.6"

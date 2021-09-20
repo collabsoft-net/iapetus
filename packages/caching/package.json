@@ -24,15 +24,16 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/caching"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "peerDependencies": {
-    "redis": "^3.1.2"
+    "redis": "3.1.2"
   },
   "devDependencies": {
-    "redis": "^3.1.2"
+    "redis": "3.1.2"
   }
 }

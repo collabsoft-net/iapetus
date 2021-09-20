@@ -25,31 +25,33 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/controllers"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/dto": "^1.0.0-alpha.44",
-    "@collabsoft-net/functions": "^1.0.0-alpha.45",
-    "@collabsoft-net/services": "^1.0.0-alpha.45",
-    "@collabsoft-net/types": "^1.0.0-alpha.44",
-    "@sentry/minimal": "^6.5.1",
-    "@sentry/node": "^6.5.0",
-    "@types/passport": "^1.0.7",
-    "inversify": "^5.0.0",
-    "inversify-express-utils": "^6.3.2",
-    "passport": "^0.4.1"
+    "@collabsoft-net/dto": "1.0.0-alpha.44",
+    "@collabsoft-net/functions": "1.0.0-alpha.45",
+    "@collabsoft-net/services": "1.0.0-alpha.45",
+    "@collabsoft-net/types": "1.0.0-alpha.44",
+    "@sentry/minimal": "6.5.1",
+    "@sentry/node": "6.5.1",
+    "@types/passport": "1.0.7",
+    "inversify": "5.1.1",
+    "inversify-express-utils": "6.3.2",
+    "passport": "0.4.1"
   },
   "peerDependencies": {
-    "@collabsoft-net/dto": "^1.0.0-alpha.8",
-    "@collabsoft-net/services": "^1.0.0-alpha.17",
-    "@sentry/minimal": "^6.5.1",
-    "@sentry/node": "^6.5.0",
-    "inversify": "^5.0.0",
-    "inversify-express-utils": "^6.3.2",
-    "passport": "^0.4.1"
+    "@collabsoft-net/dto": "1.0.0-alpha.44",
+    "@collabsoft-net/functions": "1.0.0-alpha.45",
+    "@collabsoft-net/services": "1.0.0-alpha.45",
+    "@sentry/minimal": "6.5.1",
+    "@sentry/node": "6.5.1",
+    "inversify": "5.1.1",
+    "inversify-express-utils": "6.3.2",
+    "passport": "0.4.1"
   },
   "gitHead": "34d2b00e50ac472953b2d0e5bb8916f8e9904558"
 }

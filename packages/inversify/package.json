@@ -24,18 +24,19 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/inversify"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "inversify": "^5.0.0",
-    "inversify-inject-decorators": "^3.1.0"
+    "inversify": "5.1.1",
+    "inversify-inject-decorators": "3.1.0"
   },
   "peerDependencies": {
-    "inversify": "^5.0.0",
-    "inversify-inject-decorators": "^3.1.0"
+    "inversify": "5.1.1",
+    "inversify-inject-decorators": "3.1.0"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

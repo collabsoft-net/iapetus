@@ -24,26 +24,26 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/services"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/clients": "^1.0.0-alpha.45",
-    "@collabsoft-net/enums": "^1.0.0-alpha.43",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.44",
-    "@collabsoft-net/types": "^1.0.0-alpha.44",
-    "@types/redis": "^2.8.31",
-    "inversify": "^5.0.0",
-    "path-to-regexp": "^6.1.0"
+    "@collabsoft-net/clients": "1.0.0-alpha.45",
+    "@collabsoft-net/enums": "1.0.0-alpha.43",
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "@collabsoft-net/types": "1.0.0-alpha.44",
+    "inversify": "5.1.1",
+    "path-to-regexp": "6.1.0"
   },
   "peerDependencies": {
-    "@collabsoft-net/clients": "^1.0.0-alpha.11",
-    "@collabsoft-net/enums": "^1.0.0-alpha.6",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.8",
-    "inversify": "^5.0.0",
-    "path-to-regexp": "^6.1.0"
+    "@collabsoft-net/clients": "1.0.0-alpha.11",
+    "@collabsoft-net/enums": "1.0.0-alpha.43",
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "inversify": "5.1.1",
+    "path-to-regexp": "6.1.0"
   },
   "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015"
 }

@@ -24,27 +24,29 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/middleware"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.45",
-    "@collabsoft-net/enums": "^1.0.0-alpha.43",
-    "@collabsoft-net/functions": "^1.0.0-alpha.45",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.44",
-    "@collabsoft-net/types": "^1.0.0-alpha.44",
-    "@types/passport": "^1.0.7",
-    "express": "^4.17.0",
-    "passport": "^0.4.1"
+    "@collabsoft-net/controllers": "1.0.0-alpha.45",
+    "@collabsoft-net/enums": "1.0.0-alpha.43",
+    "@collabsoft-net/functions": "1.0.0-alpha.45",
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "@collabsoft-net/types": "1.0.0-alpha.44",
+    "@types/passport": "1.0.7",
+    "express": "4.17.0",
+    "passport": "0.4.1"
   },
   "peerDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.21",
-    "@collabsoft-net/enums": "^1.0.0-alpha.6",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.21",
-    "express": "^4.17.0",
-    "passport": "^0.4.1"
+    "@collabsoft-net/controllers": "1.0.0-alpha.45",
+    "@collabsoft-net/enums": "1.0.0-alpha.43",
+    "@collabsoft-net/functions": "1.0.0-alpha.45",
+    "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "express": "4.17.0",
+    "passport": "0.4.1"
   },
   "gitHead": "34d2b00e50ac472953b2d0e5bb8916f8e9904558"
 }

@@ -24,25 +24,26 @@
     "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
     "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
     "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "prepack": "npx yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/repositories"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/emitters": "^1.0.0-alpha.44",
-    "@collabsoft-net/types": "^1.0.0-alpha.44",
+    "@collabsoft-net/emitters": "1.0.0-alpha.44",
+    "@collabsoft-net/types": "1.0.0-alpha.44",
     "@firebase/app-types": "0.x",
-    "@google-cloud/storage": "^5.3.0",
-    "@types/node": "^16.7.10",
-    "@types/uniqid": "^5.2.0",
-    "firebase-admin": "^9.9.0",
-    "uniqid": "^5.2.0"
+    "@google-cloud/storage": "5.3.0",
+    "@types/node": "12.20.25",
+    "@types/uniqid": "5.2.0",
+    "firebase-admin": "9.9.0",
+    "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "@collabsoft-net/emitters": "^1.0.0-alpha.8",
-    "@google-cloud/storage": "^5.3.0",
-    "firebase-admin": "^9.9.0",
-    "uniqid": "^5.2.0"
+    "@collabsoft-net/emitters": "1.0.0-alpha.44",
+    "@google-cloud/storage": "5.3.0",
+    "firebase-admin": "9.9.0",
+    "uniqid": "5.4.0"
   }
 }
