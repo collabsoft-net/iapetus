@@ -25,7 +25,7 @@ export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
   }
 };
 
-export const go = ({ data }: MessageEvent, modules: { [key: string]: string }, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const go = ({ data }: MessageEvent, modules: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
     const { target, context } = JSON.parse(data);
     switch (target as AP.NavigatorTargetJira|AP.NavigatorTargetConfluence) {
         case 'addonModule':

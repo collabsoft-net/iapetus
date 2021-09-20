@@ -17,7 +17,7 @@ const DialogFrame = styled.iframe`
   width: 100%;
 `;
 
-export const processDialogEvent = (event: MessageEvent, dialogs: { [key: string]: string }, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
     const { eventType, name, action, type } = JSON.parse(event.data);
     switch (eventType) {
 
