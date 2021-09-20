@@ -3,6 +3,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "license": "UNLICENSED",
   "scripts": {
     "clean": "rm -rf node_modules && npx lerna clean -y",
     "build": "npx lerna run build",
