@@ -46,7 +46,7 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
     options.headers = options.headers || {};
     options.headers['Content-Type'] = 'application/json';
     options.headers['Authorization'] = this.impersonate
-      ? `Bearer ${this.getAccessToken()}`
+      ? `Bearer ${await this.getAccessToken()}`
       : `JWT ${this.getSignedJWT(options)}`;
 
       return this.client(endpoint, options);
@@ -85,7 +85,7 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
           iat: now,
           sub: `urn:atlassian:connect:useraccountid:${this.accountId}`,
           exp: now + 60,
-          tnt: this.instance.baseURL,
+          tnt: this.instance.baseUrl,
           aud: AUTH_SERVER
         }, this.sharedSecret, SymmetricAlgorithm.HS256)
       }),
