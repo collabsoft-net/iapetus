@@ -34,6 +34,8 @@
     "redis": "3.1.2"
   },
   "devDependencies": {
+    "@types/redis": "^2.8.32",
     "redis": "3.1.2"
-  }
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

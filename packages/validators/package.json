@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "gitHead": "712258cdee7ac1c0fb434257b9f4b54bd0991015",
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
   "devDependencies": {
     "@collabsoft-net/types": "^1.0.0-alpha.46"
   }

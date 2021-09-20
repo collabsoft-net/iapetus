@@ -58,5 +58,6 @@
     "inversify": "5.1.1",
     "inversify-express-utils": "6.3.2",
     "passport": "0.4.1"
-  }
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

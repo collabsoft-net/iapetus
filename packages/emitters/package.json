@@ -45,5 +45,6 @@
   "optionalDependencies": {
     "@google-cloud/pubsub": "2.17.0",
     "firebase": "9.0.1"
-  }
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

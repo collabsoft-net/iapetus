@@ -39,5 +39,6 @@
   "peerDependencies": {
     "axios": "0.21.1",
     "express": "4.17.0"
-  }
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

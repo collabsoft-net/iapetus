@@ -45,5 +45,6 @@
     "@google-cloud/storage": "5.3.0",
     "firebase-admin": "9.9.0",
     "uniqid": "5.4.0"
-  }
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
