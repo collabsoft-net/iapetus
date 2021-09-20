@@ -11,16 +11,20 @@ export const checkPermissions = async (user: Express.User, projectId?: string, .
       hasAllRequiredPermissions = await impersonatedService.hasPermissions(requiredPermissions, projectId);
     } else if (productType === 'confluence') {
       hasAllRequiredPermissions = await requiredPermissions.reduce(async (previous, permission) => {
-        const value = await previous;
-        if (!value) return value;
+        try {
+          const value = await previous;
+          if (!value) return value;
 
-        switch (permission) {
-          case SupportedPermissions.ADMINISTER:
-            return await impersonatedService.memberOf('administrators');
-          case SupportedPermissions.SYSTEM_ADMIN:
-            return await impersonatedService.memberOf('system-administrators');
-          default:
-            return true;
+          switch (permission) {
+            case SupportedPermissions.ADMINISTER:
+              return await impersonatedService.memberOf('administrators');
+            case SupportedPermissions.SYSTEM_ADMIN:
+              return await impersonatedService.memberOf('system-administrators');
+            default:
+              return true;
+          }
+        } catch (error) {
+          return false;
         }
       }, Promise.resolve(true));
     }
