@@ -4,7 +4,7 @@ import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
 import qs from 'query-string';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 
 import { findSource } from './iframe';
 import { SupportedEvents } from './SupportedEvents';
@@ -104,6 +104,12 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<str
                 ])
         ]) : React.createElement('div');
     };
+
+    injectGlobal`
+        .atlaskit-portal div[role="presentation"] > div {
+            width: inherit;
+        }
+    `;
 
     ReactDOM.render(React.createElement(ModalComponent), modalContainer);
 };
