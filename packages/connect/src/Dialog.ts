@@ -48,7 +48,7 @@ export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, 
 
 export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
     const { dialogId, options } = JSON.parse(data);
-    const { key, customData, size, closeOnEscape, chrome, header } = options as AP.DialogOptions<unknown>;
+    const { key, customData, size, closeOnEscape, chrome, header, width, height } = options as AP.DialogOptions<unknown>;
 
     dialogCustomData.set(dialogId, customData);
     const modalContainer = document.getElementById(`ac-polyfill-dialog-${dialogId}`) || document.createElement('div');
@@ -78,8 +78,8 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<str
                     setOpen(false);
                 },
                 shouldCloseOnEscapePress: closeOnEscape,
-                height: size === 'fullscreen' ? '100%' : undefined,
-                width: size === 'fullscreen' ? '100%' : size
+                height: height ? height : size === 'fullscreen' ? '100%' : undefined,
+                width: width ? width : size === 'fullscreen' ? '100%' : size
             }, chrome ? [
                     ...header ? [ React.createElement(ModalHeader, {}, [ header ])] : [],
                     React.createElement(ModalBody, {
