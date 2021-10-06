@@ -40,14 +40,16 @@
     "inversify": "5.1.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "styled-components": "3.2.6"
+    "styled-components": "3.2.6",
+    "query-string": "^7.0.1"
   },
   "peerDependencies": {
     "@atlaskit/modal-dialog": "12.0.1",
     "inversify": "5.1.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "styled-components": "3.2.6"
+    "styled-components": "3.2.6",
+    "query-string": "^7.0.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
