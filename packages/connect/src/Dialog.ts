@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import Modal, { ModalBody, ModalHeader, ModalTransition } from '@atlaskit/modal-dialog';
 import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
 import qs from 'query-string';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 
 import { findSource } from './iframe';
 import { SupportedEvents } from './SupportedEvents';
@@ -45,9 +46,9 @@ export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, 
     }
 };
 
-export const createDialog = ({ source, data }: MessageEvent, dialogs: { [key: string]: string }, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
     const { dialogId, options } = JSON.parse(data);
-    const { key, customData, size, closeOnEscape, chrome, header } = options as AP.DialogOptions<unknown>;
+    const { key, customData, size, closeOnEscape, chrome, header, width, height } = options as AP.DialogOptions<unknown>;
 
     dialogCustomData.set(dialogId, customData);
     const modalContainer = document.getElementById(`ac-polyfill-dialog-${dialogId}`) || document.createElement('div');
@@ -70,32 +71,47 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: { [key: st
     const ModalComponent: React.FC = () => {
         const [ isOpen, setOpen ] = useState(true);
 
-        return isOpen ? (
-            <ModalTransition>
-                <Modal
-                    onClose={ () => {
-                        notifyWhenClosed();
-                        setOpen(false);
-                    }}
-                    shouldCloseOnEscapePress={ closeOnEscape }
-                    height={ size === 'fullscreen' ? '100%' : undefined }
-                    width={ size === 'fullscreen' ? '100%' : size }>
-                        { chrome ? (
-                            <>
-                                {header && (<ModalHeader>{ header }</ModalHeader>)}
-                                <ModalBody>
-                                    <DialogFrame src={getUrl(`/plugins/servlet/app.figma/ac?${querystring}`)} data-ac-polyfill data-dialogid={ dialogId } data-fullscreen={ size === 'fullscreen' ? 'true' : 'false' }></DialogFrame>
-                                </ModalBody>
-                            </>
-                        ) : (
-                            <DialogFrame src={getUrl(`/plugins/servlet/app.figma/ac?${querystring}`)} data-ac-polyfill data-dialogid={ dialogId } data-fullscreen={ size === 'fullscreen' ? 'true' : 'false' }></DialogFrame>
-                        )}
-                </Modal>
-            </ModalTransition>
-        ) : <div />;
+        return isOpen ? React.createElement(ModalTransition, {}, [
+            React.createElement(Modal, {
+                onClose: () => {
+                    notifyWhenClosed();
+                    setOpen(false);
+                },
+                shouldCloseOnEscapePress: closeOnEscape,
+                height: height ? height : size === 'fullscreen' ? '100%' : undefined,
+                width: width ? width : size === 'fullscreen' ? '100%' : size
+            }, chrome ? [
+                    ...header ? [ React.createElement(ModalHeader, {}, [ header ])] : [],
+                    React.createElement(ModalBody, {
+                        children: [
+                            React.createElement(DialogFrame, {
+                                src: getUrl(`/plugins/servlet/app.figma/ac?${querystring}`),
+                                // @ts-ignore
+                                'data-ac-polyfill': '',
+                                'data-dialogid': dialogId,
+                                'data-fullscreen': size === 'fullscreen' ? 'true' : 'false'
+                            })
+                        ]
+                    }, [])
+                ] : [
+                    React.createElement(DialogFrame, {
+                        src: getUrl(`/plugins/servlet/app.figma/ac?${querystring}`),
+                        // @ts-ignore
+                        'data-ac-polyfill': '',
+                        'data-dialogid': dialogId,
+                        'data-fullscreen': size === 'fullscreen' ? 'true' : 'false'
+                    })
+                ])
+        ]) : React.createElement('div');
     };
 
-    ReactDOM.render(<ModalComponent />, modalContainer);
+    injectGlobal`
+        .atlaskit-portal div[role="presentation"] > div {
+            width: inherit;
+        }
+    `;
+
+    ReactDOM.render(React.createElement(ModalComponent), modalContainer);
 };
 
 export const closeDialog = ({ source, data }: MessageEvent): void => {
