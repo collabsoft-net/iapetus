@@ -1,18 +1,18 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
-import Firebase, { initializeApp } from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import uniqid from 'uniqid';
 
 import { QueryBuilder } from './QueryBuilder';
 
 export class FirebaseAdminRepository implements Repository {
 
-  private fb: Firebase.app.App;
-  private firestore: Firebase.firestore.Firestore;
+  private fb: admin.app.App;
+  private firestore: admin.firestore.Firestore;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(options: Firebase.AppOptions, name: string) {
-    this.fb = initializeApp(options, name);
+  constructor(options: admin.AppOptions, name: string) {
+    this.fb = admin.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
   }
@@ -43,7 +43,7 @@ export class FirebaseAdminRepository implements Repository {
     return Promise.reject('This feature is not supported in "admin" mode');
   }
 
-  async verifyIdToken(token: string): Promise<Firebase.auth.DecodedIdToken> {
+  async verifyIdToken(token: string): Promise<admin.auth.DecodedIdToken> {
     return await this.fb.auth().verifyIdToken(token);
   }
 
@@ -88,7 +88,7 @@ export class FirebaseAdminRepository implements Repository {
       throw new Error('You can only search within collections, not individual documents');
     }
 
-    let collection: Firebase.firestore.Query = this.firestore.collection(options.path);
+    let collection: admin.firestore.Query = this.firestore.collection(options.path);
     const queryBuilder = qb(new QueryBuilder());
 
     queryBuilder.conditions.forEach((condition) => {
