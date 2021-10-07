@@ -1,6 +1,7 @@
 
 import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
 
+import { getContext } from './Context';
 import { processDialogEvent } from './Dialog';
 import { findSource } from './iframe';
 import { getCloseMacroEditorEventHandler, getMacroData, getSaveMacroEventHandler } from './Macro';
@@ -25,6 +26,14 @@ export const Host = async (modules: Record<string, string>, dialogs: Record<stri
                                 if (requestId) {
                                     frame.contentWindow.postMessage({requestId}, '*');
                                 }
+                            }
+                            break;
+
+                        case SupportedEvents.CONTEXT_EVENT:
+                            if (name === 'getContext') {
+                                getContext(event);
+                            } else if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() !== 'production') {
+                                console.log('[AC] Received unsupport event', event);
                             }
                             break;
 
@@ -60,7 +69,7 @@ export const Host = async (modules: Record<string, string>, dialogs: Record<stri
                             }
                             break;
 
-                            default:
+                        default:
                             if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() !== 'production') {
                                 console.log('[AC] Received unsupport event type', eventType);
                             }
