@@ -1,0 +1,67 @@
+version: 2.1
+jobs:
+
+  prerelease:
+    executor: nodejs
+    steps:
+      - prerelease
+
+  release:
+    executor: nodejs
+    steps:
+      - release
+
+executors:
+
+  nodejs:
+    docker:
+      - image: cimg/node:12.22.6
+    working_directory: ~/iapetus
+
+commands:
+
+  prerelease:
+    steps:
+      - checkout:
+          path: ~/iapetus
+
+      - run: 
+          name: Install dependencies
+          command: |
+            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npx yarn reinstall
+
+      - run: 
+          name: Publish prerelease
+          command: |
+            npx yarn prerelease
+
+  release:
+    steps:
+      - checkout:
+          path: ~/iapetus
+
+      - run: 
+          name: Install dependencies
+          command: |
+            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npx yarn reinstall
+
+      - run: 
+          name: Publish
+          command: |
+            npx lerna version --conventional-commits
+            npx lerna publish --from-git
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - prerelease:
+          filters:
+            branches:
+              only: develop
+      - release:
+          filters:
+            branches:
+              only: main
