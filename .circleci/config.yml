@@ -24,13 +24,13 @@ commands:
 
   configure:
     steps:
-      - checkout:
-          path: ~/iapetus
-
       - add_ssh_keys:
           fingerprints:
             - "30:af:ba:bc:9b:61:64:66:68:aa:ed:0d:aa:9b:bd:cf"
-      
+
+      - checkout:
+          path: ~/iapetus
+            
       - run:
           name: Setup environment
           command: |
