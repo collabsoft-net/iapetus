@@ -26,6 +26,10 @@ commands:
     steps:
       - checkout:
           path: ~/iapetus
+
+      - add_ssh_keys:
+          fingerprints:
+            - "30:af:ba:bc:9b:61:64:66:68:aa:ed:0d:aa:9b:bd:cf"
       
       - run:
           name: Setup environment
@@ -40,8 +44,6 @@ commands:
           name: Install dependencies
           command: npx yarn reinstall
 
-      - add_ssh_keys
-
       - run: 
           name: Publish prerelease
           command: npx yarn prerelease
@@ -51,8 +53,6 @@ commands:
       - run: 
           name: Install dependencies
           command: npx yarn reinstall
-
-      - add_ssh_keys
 
       - run: 
           name: Publish
