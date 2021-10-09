@@ -26,8 +26,6 @@ commands:
     steps:
       - checkout:
           path: ~/iapetus
-
-      - add_ssh_keys
       
       - run:
           name: Setup environment
@@ -42,6 +40,8 @@ commands:
           name: Install dependencies
           command: npx yarn reinstall
 
+      - add_ssh_keys
+
       - run: 
           name: Publish prerelease
           command: npx yarn prerelease
@@ -51,6 +51,8 @@ commands:
       - run: 
           name: Install dependencies
           command: npx yarn reinstall
+
+      - add_ssh_keys
 
       - run: 
           name: Publish
