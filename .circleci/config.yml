@@ -24,6 +24,9 @@ commands:
 
   configure:
     steps:
+      - checkout:
+          path: ~/iapetus
+
       - run:
           name: Setup environment
           command: |
@@ -33,9 +36,6 @@ commands:
 
   prerelease:
     steps:
-      - checkout:
-          path: ~/iapetus
-
       - run: 
           name: Install dependencies
           command: npx yarn reinstall
@@ -46,9 +46,6 @@ commands:
 
   release:
     steps:
-      - checkout:
-          path: ~/iapetus
-
       - run: 
           name: Install dependencies
           command: npx yarn reinstall
