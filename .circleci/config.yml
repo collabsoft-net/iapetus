@@ -27,6 +27,8 @@ commands:
       - checkout:
           path: ~/iapetus
 
+      - add_ssh_keys
+      
       - run:
           name: Setup environment
           command: |
