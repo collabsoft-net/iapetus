@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "clean": "npx lerna clean -y && rm -rf node_modules",
-    "build": "npx lerna run build",
+    "lint": "npx lerna run lint",
+    "build": "npx yarn lint && npx lerna run build",
     "reinstall": "npx yarn clean && yarn && npx lerna exec yarn",
     "start": "npx nodemon --watch ./**/src -e '.ts' --exec 'npx lerna run build'",
     "prerelease": "npx lerna publish prerelease -y"

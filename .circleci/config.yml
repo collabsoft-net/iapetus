@@ -45,6 +45,10 @@ commands:
           command: npx yarn reinstall
 
       - run: 
+          name: Build
+          command: npx yarn build
+
+      - run: 
           name: Publish prerelease
           command: npx yarn prerelease
 
@@ -53,6 +57,10 @@ commands:
       - run: 
           name: Install dependencies
           command: npx yarn reinstall
+
+      - run: 
+          name: Build
+          command: npx yarn build
 
       - run: 
           name: Publish
