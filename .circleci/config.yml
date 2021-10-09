@@ -4,11 +4,13 @@ jobs:
   prerelease:
     executor: nodejs
     steps:
+      - configure
       - prerelease
 
   release:
     executor: nodejs
     steps:
+      - configure
       - release
 
 executors:
@@ -20,6 +22,15 @@ executors:
 
 commands:
 
+  configure:
+    steps:
+      - run:
+          name: Setup environment
+          command: |
+            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            git config user.email "github@collabsoft.net"
+            git config user.name "CollabSoft Bot"
+
   prerelease:
     steps:
       - checkout:
@@ -27,14 +38,11 @@ commands:
 
       - run: 
           name: Install dependencies
-          command: |
-            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            npx yarn reinstall
+          command: npx yarn reinstall
 
       - run: 
           name: Publish prerelease
-          command: |
-            npx yarn prerelease
+          command: npx yarn prerelease
 
   release:
     steps:
@@ -43,9 +51,7 @@ commands:
 
       - run: 
           name: Install dependencies
-          command: |
-            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            npx yarn reinstall
+          command: npx yarn reinstall
 
       - run: 
           name: Publish
