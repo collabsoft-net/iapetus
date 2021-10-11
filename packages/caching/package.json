@@ -34,6 +34,7 @@
     "redis": "3.1.2"
   },
   "devDependencies": {
+    "@collabsoft-net/types": "^1.0.0-alpha.47",
     "@types/redis": "^2.8.32",
     "redis": "3.1.2"
   },

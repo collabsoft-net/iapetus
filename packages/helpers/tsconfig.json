@@ -6,8 +6,6 @@
   "include": [
     "./src/**/*.ts",
     "./typings/*.d.ts",
-    "./typings/**/*.d.ts",
-    "./node_modules/**/*.d.ts",
-    "../../node_modules/**/*.d.ts",
+    "./typings/**/*.d.ts"
   ]
 }
