@@ -1,6 +1,12 @@
 version: 2.1
 jobs:
 
+  build:
+    executor: nodejs
+    steps:
+      - configure
+      - build
+
   prerelease:
     executor: nodejs
     steps:
@@ -38,7 +44,7 @@ commands:
             git config user.email "github@collabsoft.net"
             git config user.name "CollabSoft Bot"
 
-  prerelease:
+  build:
     steps:
       - run: 
           name: Install dependencies
@@ -47,6 +53,10 @@ commands:
       - run: 
           name: Build
           command: npx yarn build
+
+  prerelease:
+    steps:
+      - build
 
       - run: 
           name: Publish prerelease
@@ -54,13 +64,7 @@ commands:
 
   release:
     steps:
-      - run: 
-          name: Install dependencies
-          command: npx yarn reinstall
-
-      - run: 
-          name: Build
-          command: npx yarn build
+      - build
 
       - run: 
           name: Publish
@@ -72,6 +76,13 @@ workflows:
   version: 2
   deploy:
     jobs:
+      - build:
+          filters:
+            branches:
+              ignore: 
+                - develop
+                - main
+
       - prerelease:
           filters:
             branches:
