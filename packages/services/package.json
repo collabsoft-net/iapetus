@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/services",
-  "version": "1.0.0-alpha.54",
+  "version": "1.0.0-alpha.57",
   "description": "Abstract services to be used for app-specific implementations",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -31,7 +31,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/clients": "^1.0.0-alpha.54",
+    "@collabsoft-net/clients": "^1.0.0-alpha.57",
     "@collabsoft-net/enums": "^1.0.0-alpha.54",
     "@collabsoft-net/helpers": "^1.0.0-alpha.54",
     "@collabsoft-net/types": "^1.0.0-alpha.54",
