@@ -11,11 +11,11 @@ export interface Repository extends EventEmitter {
   signOut(): Promise<void>;
 
   findAll(options?: QueryOptions): Promise<Paginated<Entity>>;
-  findAllByProperty(key: string, value: string, options?: QueryOptions): Promise<Paginated<Entity>>;
+  findAllByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<Entity>>;
   findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<Paginated<Entity>>;
 
   findById(id: string, options?: QueryOptions): Promise<Entity|null>;
-  findByProperty(key: string, value: string, options?: QueryOptions): Promise<Entity|null>;
+  findByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Entity|null>;
   findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<Entity|null>;
 
   saveAll(entities: Array<Entity>, options?: QueryOptions): Promise<Array<Entity>>;
