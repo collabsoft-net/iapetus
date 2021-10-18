@@ -1,6 +1,4 @@
 
-import { Entity, Reference } from './Entity';
-
 export abstract class Event {
   name: string; // The name of the event
   attributes: Map<string, string> = new Map<string, string>();
@@ -15,35 +13,36 @@ export abstract class Event {
   }
 }
 
-export abstract class EntityEvent extends Event {
-  entity: Entity; // The entity involved
-  prevEntity?: Entity; // The previous version of the entity involved;
-  reference?: Reference; // The reference of the entity involved;
-
-  constructor(entity: Entity, name?: string) {
+export class SystemEvent extends Event {
+  constructor(name: string) {
     super(name);
-    this.entity = entity;
   }
 }
 
-export class CustomEvent extends Event {
-  data?: unknown;
-
-  constructor(name: string, data?: unknown) {
+export class CustomEvent<T extends TenantAwareEvent> extends Event {
+  constructor(name: string, public data: T) {
     super(name);
-    this.data = data;
   }
+}
+
+export interface TenantAwareEvent {
+  tenantId: string;
 }
 
 export interface EventEmitter {
-  on(name: typeof Event|string, listener: EventListener|EntityEventListener): Promise<void>;
+  on(name: typeof Event|string, listener: EventListener): Promise<void>;
+  emit(event: Event): Promise<void>;
+}
+
+export interface CustomEventEmitter<T extends TenantAwareEvent> {
+  on(name: typeof Event|string, listener: CustomEventListener<T>): Promise<void>;
   emit(event: Event): Promise<void>;
 }
 
 export interface EventListener {
-  (event: Event): Promise<void>;
+  (event: Event|SystemEvent): Promise<void>;
 }
 
-export interface EntityEventListener {
-  (event: EntityEvent): Promise<void>;
+export interface CustomEventListener<T extends TenantAwareEvent> {
+  (event: SystemEvent|CustomEvent<T>): Promise<void>;
 }
