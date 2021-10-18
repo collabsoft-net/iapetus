@@ -14,4 +14,4 @@ export interface Condition {
   value: string|number|boolean|Array<unknown>;
 }
 
-export type WhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | 'array-contains';
+export type WhereFilterOp = '<' | '<=' | '==' | '>=' | '>' | '!=' | 'array-contains' | 'array-contains-any' | 'in' | 'not-in';
