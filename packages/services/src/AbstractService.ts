@@ -37,7 +37,7 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findById(id, Object.assign({}, this.options, options)) as Promise<T|null>;
   }
 
-  async findByProperty(key: string, value: string, options: QueryOptions = {}): Promise<T|null> {
+  async findByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
     return this.repository.findByProperty(key, value, Object.assign({}, this.options, options)) as Promise<T|null>;
   }
 
@@ -49,7 +49,7 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findAll(Object.assign({}, this.options, options)) as Promise<Paginated<T>>;
   }
 
-  async findAllByProperty(key: string, value: string, options: QueryOptions = {}): Promise<Paginated<T>> {
+  async findAllByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<Paginated<T>> {
     return this.repository.findAllByProperty(key, value, Object.assign({}, this.options, options)) as Promise<Paginated<T>>;
   }
 

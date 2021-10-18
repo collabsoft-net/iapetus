@@ -76,7 +76,7 @@ export class FirebaseAdminRepository implements Repository {
     };
   }
 
-  async findAllByProperty(key: string, value: string, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByProperty(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }
@@ -123,7 +123,7 @@ export class FirebaseAdminRepository implements Repository {
     return ref ? <Entity>ref.data() : null;
   }
 
-  async findByProperty(key: string, value: string, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Entity|null> {
+  async findByProperty(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Entity|null> {
     await this.validateQueryOptions(options);
     const { values } = await this.findAllByProperty(key, value, options);
     return values[0];

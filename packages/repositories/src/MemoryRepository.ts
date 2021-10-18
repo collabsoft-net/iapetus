@@ -70,7 +70,7 @@ export class MemoryRepository implements Repository {
     };
   }
 
-  async findAllByProperty(key: keyof Entity, value: string, options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByProperty(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
     const { values: items } = await this.findAll(options);
     const result = items.filter((item) => item[key] === value);
@@ -156,7 +156,7 @@ export class MemoryRepository implements Repository {
     return (Object.entries(item).length > 0) ? item : null;
   }
 
-  async findByProperty(key: keyof Entity, value: string, options: MemoryQueryOptions = { path: '/' }): Promise<Entity|null> {
+  async findByProperty(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<Entity|null> {
     await this.validateQueryOptions(options);
     const { values: items } = await this.findAllByProperty(key, value, options);
     return items[0];
