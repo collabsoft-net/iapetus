@@ -43,6 +43,6 @@ export interface EventListener {
   (event: Event|SystemEvent): Promise<void>;
 }
 
-export interface CustomEventListener<T extends TenantAwareEvent> {
-  (event: SystemEvent|CustomEvent<T>): Promise<void>;
+export interface CustomEventListener<T extends TenantAwareEvent> extends EventListener {
+  (event: Event | SystemEvent | CustomEvent<T>): Promise<void>;
 }

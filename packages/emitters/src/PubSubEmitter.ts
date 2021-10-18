@@ -2,7 +2,7 @@
 
 // ------------------------------------------------------------------------------------------ Dependencies
 
-import { EntityEvent, Event, EventEmitter, EventListener, PubSubMessage, PubSubOptions } from '@collabsoft-net/types';
+import { Event, EventEmitter, EventListener, PubSubMessage, PubSubOptions } from '@collabsoft-net/types';
 import { Attributes, PubSub, Subscription, Topic } from '@google-cloud/pubsub';
 import * as fs from 'fs';
 import uniqid from 'uniqid';
@@ -33,7 +33,7 @@ export class PubSubEmitter implements EventEmitter {
       const subscription = await this.getSubscription(event);
       subscription.on('message', async (message: PubSubMessage) => {
         try {
-          const event: Event|EntityEvent = JSON.parse(Buffer.from(message.data).toString('utf-8'));
+          const event: Event = JSON.parse(Buffer.from(message.data).toString('utf-8'));
           await listener(event);
           message.ack();
         } catch (error) {
