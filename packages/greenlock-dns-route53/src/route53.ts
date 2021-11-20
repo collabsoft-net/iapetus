@@ -35,6 +35,7 @@ const sleep = (ms: number) => {
 type Config = {
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
+  AWS_REGION: string;
   debug: boolean;
   ensureSync: boolean;
 };
@@ -43,11 +44,13 @@ const create = function(
   config: Config = {
     AWS_ACCESS_KEY_ID: '',
     AWS_SECRET_ACCESS_KEY: '',
+    AWS_REGION: 'us-east-1',
     debug: false,
     ensureSync: false
   }
 ): any {
   const client = new Route53Client({
+    region: config.AWS_REGION,
     credentials: {
       accessKeyId: config.AWS_ACCESS_KEY_ID,
       secretAccessKey: config.AWS_SECRET_ACCESS_KEY
