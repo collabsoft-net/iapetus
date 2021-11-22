@@ -235,8 +235,8 @@ declare global {
       }
     }
 
-    type NavigatorTargetJira = 'dashboard'|'issue'|'addonModule'|'userProfile'|'projectAdminSummary'|'projectAdminTabPanel';
-    type NavigatorTargetConfluence = 'contentview'|'contentedit'|'spaceview'|'spacetools'|'dashboard'|'userProfile'|'addonModule'|'contentlist';
+    type NavigatorTargetJira = 'dashboard'|'issue'|'addonModule'|'userProfile'|'projectAdminSummary'|'projectAdminTabPanel'|'site';
+    type NavigatorTargetConfluence = 'contentview'|'contentedit'|'spaceview'|'spacetools'|'dashboard'|'userProfile'|'addonModule'|'contentlist'|'site';
 
     interface NavigatorContext {
       contentId?: string;
@@ -251,9 +251,11 @@ declare global {
       issueKey?: string;
       adminPageKey?: string;
       projectId?: string;
-      customData?: { [key: string]: string|number };
+      customData?: Record<string, string|number>;
       versionOverride?: string;
       embeddedContentRender?: string;
+      relativeUrl?: string;
+      absoluteUrl?: string;
     }
 
   }
