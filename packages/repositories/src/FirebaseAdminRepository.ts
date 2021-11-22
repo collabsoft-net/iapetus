@@ -3,18 +3,21 @@ import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, Stor
 import * as admin from 'firebase-admin';
 import uniqid from 'uniqid';
 
+import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
 import { QueryBuilder } from './QueryBuilder';
 
 export class FirebaseAdminRepository implements Repository {
 
   private fb: admin.app.App;
   private firestore: admin.firestore.Firestore;
+  private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
   constructor(options: admin.AppOptions, name: string) {
     this.fb = admin.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
+    this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
   }
 
   async on(event: typeof Event|string, listener: EventListener): Promise<void> {
@@ -30,7 +33,7 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   get storage(): StorageProvider {
-    throw new Error('This feature is not supported in "admin" mode');
+    return this.storageProvider;
   }
 
   // ==========================================================================
