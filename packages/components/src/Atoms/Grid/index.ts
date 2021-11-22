@@ -3,10 +3,12 @@ import styled from 'styled-components';
 
 interface PageProps {
   background?: string;
+  padding?: string;
 }
 
 export const Page = styled.div<PageProps>`
   ${props => props.background && `background: ${props.background};`} 
+  ${props => props.padding && `background: ${props.padding};`} 
   background-color: #fff; 
   height: 100%; 
   width: 100%;
@@ -67,6 +69,7 @@ export interface ColumnProps {
   align?: string;
   height?: string;
   width?: string;
+  minWidth?: string;
 }
 
 export const Column = styled.div<ColumnProps>`
@@ -79,6 +82,7 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.stretched && !props.height && `height: 100%`}
   ${props => props.height && `height: ${props.height};`}
   ${props => props.width && `width: ${props.width};`}
+  ${props => props.minWidth && `width: ${props.minWidth};`}
   box-sizing: border-box;
   --component: column;
 `;
