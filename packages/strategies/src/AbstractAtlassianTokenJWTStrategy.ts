@@ -27,7 +27,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
         }
       },
       jwtFromRequest: (req) => {
-        return ExtractJwt.fromAuthHeader()(req) || ExtractJwt.fromUrlQueryParameter('jwt')(req);
+        return ExtractJwt.fromAuthHeaderWithScheme('JWT')(req) || ExtractJwt.fromUrlQueryParameter('jwt')(req);
       }
     };
   }
