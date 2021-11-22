@@ -35,6 +35,10 @@ export abstract class AbstractRestClient implements RestClient {
     return this.request<T>(RestClientMethods.PUT, endpoint, data, params, config);
   }
 
+  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return this.request<T>(RestClientMethods.PATCH, endpoint, data, params, config);
+  }
+
   async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     return this.request<T>(RestClientMethods.DELETE, endpoint, data, params, config);
   }

@@ -19,6 +19,10 @@ export class APRestClient implements RestClient {
     return this.request(RestClientMethods.PUT, endpoint, data, params);
   }
 
+  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
+    return this.request(RestClientMethods.PATCH, endpoint, data, params);
+  }
+
   async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
     return this.request(RestClientMethods.DELETE, endpoint, data, params);
   }
