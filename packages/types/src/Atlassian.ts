@@ -20,6 +20,22 @@ declare global {
       iat: number;
     }
 
+    namespace Connect {
+
+      namespace AppDescriptor {
+
+        interface Webhook {
+          key?: string;
+          event: string;
+          url: string;
+          excludeBody?: boolean;
+          filter?: string;
+        }
+
+      }
+
+    }
+
   }
 
   namespace Confluence {
