@@ -189,6 +189,8 @@ declare global {
       cache?: boolean;
       data?: string;
       contentType?: string;
+      experimental?: boolean;
+      binaryAttachment?: boolean;
       headers?: RequestHeaders;
       success?: (responseText: string, statusText: string, xhr: RequestResponseXHRObject) => void;
       error?: (xhr: RequestResponseXHRObject, statusText: string, errorThrown: Error) => void;

@@ -35,9 +35,7 @@ export class APRestClient implements RestClient {
         url: this.getUrl(url, params),
         data: data ? JSON.stringify(data) : undefined,
         contentType: 'application/json',
-        headers: {
-          'X-ExperimentalApi': 'opt-in'
-        }
+        experimental: true
       });
 
       return {
