@@ -57,6 +57,11 @@ export abstract class AbstractRestClient implements RestClient {
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    config = config || {};
+    const headers = config.headers || {};
+    headers['X-ExperimentalApi'] = 'opt-in';
+    config.headers = headers;
+
     return await this.client({
       ...config,
       method,

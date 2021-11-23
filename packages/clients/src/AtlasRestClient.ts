@@ -45,6 +45,7 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
     };
     options.headers = options.headers || {};
     options.headers['Content-Type'] = 'application/json';
+    options.headers['X-ExperimentalApi'] = 'opt-in';
     options.headers['Authorization'] = this.impersonate
       ? `Bearer ${await this.getAccessToken()}`
       : `JWT ${this.getSignedJWT(options)}`;
