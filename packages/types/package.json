@@ -33,11 +33,11 @@
   "devDependencies": {
     "@types/node": "12.20.25",
     "@types/passport": "1.0.0",
-    "axios": "0.21.1",
+    "axios": "0.24.0",
     "express": "4.17.0"
   },
   "peerDependencies": {
-    "axios": "0.21.1",
+    "axios": "0.24.0",
     "express": "4.17.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
