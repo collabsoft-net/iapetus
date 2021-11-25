@@ -28,7 +28,7 @@
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "atlassian-jwt": "2.0.2",
-    "axios": "0.21.1",
+    "axios": "0.24.0",
     "cookie-parser": "1.4.4",
     "express": "4.17.0",
     "firebase": "9.0.1",

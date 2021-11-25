@@ -1,6 +1,6 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
 import { RestClient } from '@collabsoft-net/types';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, AxiosResponseHeaders } from 'axios';
 import qs from 'query-string';
 
 export class APRestClient implements RestClient {
@@ -41,7 +41,7 @@ export class APRestClient implements RestClient {
       return {
         status: xhr.status,
         statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders().split('\r\n'),
+        headers: this.getHeaders(xhr),
         config: {},
         data: JSON.parse(body)
       };
@@ -50,7 +50,7 @@ export class APRestClient implements RestClient {
       return {
         status: xhr.status,
         statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders().split('\r\n'),
+        headers: this.getHeaders(xhr),
         config: {},
         data: err as unknown as T
       };
@@ -64,6 +64,16 @@ export class APRestClient implements RestClient {
     }
 
     return endpoint;
+  }
+
+  private getHeaders(xhr: AP.RequestResponseXHRObject) {
+    const result: AxiosResponseHeaders = {};
+    const headers = xhr.getAllResponseHeaders().split('\r\n');
+    headers.forEach(item => {
+      const [ name, ...value ] = item.split(':');
+      result[name] = value.join(';');
+    });
+    return result;
   }
 
 }
