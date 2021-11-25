@@ -8,7 +8,7 @@ interface PageProps {
 
 export const Page = styled.div<PageProps>`
   ${props => props.background && `background: ${props.background};`} 
-  ${props => props.padding && `background: ${props.padding};`} 
+  ${props => props.padding && `padding: ${props.padding};`} 
   background-color: #fff; 
   height: 100%; 
   width: 100%;
