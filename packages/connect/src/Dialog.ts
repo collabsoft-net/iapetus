@@ -18,12 +18,12 @@ const DialogFrame = styled.iframe`
   width: 100%;
 `;
 
-export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: JiraHelper|ConfluenceHelper): void => {
     const { eventType, name, action, type } = JSON.parse(event.data);
     switch (eventType) {
 
         case SupportedEvents.DIALOG_CREATE:
-            createDialog(event, dialogs, { getUrl });
+            createDialog(event, dialogs, { getUrl, getServletPattern });
             break;
 
         case SupportedEvents.DIALOG_EVENT:
@@ -46,7 +46,7 @@ export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, 
     }
 };
 
-export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: JiraHelper|ConfluenceHelper): void => {
     const { dialogId, options } = JSON.parse(data);
     const { key, customData, size, closeOnEscape, chrome, header, width, height } = options as AP.DialogOptions<unknown>;
 
@@ -85,7 +85,7 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<str
                     React.createElement(ModalBody, {
                         children: [
                             React.createElement(DialogFrame, {
-                                src: getUrl(`/plugins/servlet/app.figma/ac?${querystring}`),
+                                src: getUrl(`/plugins/servlet/${getServletPattern()}?${querystring}`),
                                 // @ts-ignore
                                 'data-ac-polyfill': '',
                                 'data-dialogid': dialogId,
@@ -95,7 +95,7 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<str
                     }, [])
                 ] : [
                     React.createElement(DialogFrame, {
-                        src: getUrl(`/plugins/servlet/app.figma/ac?${querystring}`),
+                        src: getUrl(`/plugins/servlet/${getServletPattern()}?${querystring}`),
                         // @ts-ignore
                         'data-ac-polyfill': '',
                         'data-dialogid': dialogId,
