@@ -8,7 +8,6 @@ export class RestClient extends AbstractRestClient implements IRestClient {
 
   constructor(private AP: AP.Instance, baseURL: string, config: AxiosRequestConfig = {}) {
     super(baseURL, config);
-    this.AP = AP;
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
