@@ -40,7 +40,20 @@ declare global {
 
   namespace Confluence {
 
-    interface User extends Record<string, unknown> {}
+    interface User {
+      type: 'known'|'unknown'|'anonymous'|'user';
+      username: string;
+      userKey: string;
+      accountId: string;
+      accountType: 'atlassian'|'app';
+      email: string;
+      publicName: string;
+      profilePicture: string;
+      displayName: string;
+      timeZone: string;
+      isExternalCollaborator: boolean;
+      externalCollaborator: boolean;
+    }
 
     interface GroupArray {
       results: Array<Group>;
