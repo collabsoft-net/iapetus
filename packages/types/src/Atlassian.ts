@@ -246,10 +246,15 @@ declare global {
     interface Version {
       self: string;
       id: string;
-      description: string;
       name: string;
+      description: string;
       archived: boolean;
       released: boolean;
+      releaseDate: string;
+      overdue: boolean;
+      userReleaseDate: string;
+      projectId: number;
+      startDate: string;
     }
 
     interface Status {
@@ -273,6 +278,16 @@ declare global {
       self: string;
       id: string;
       name: string;
+      description: string;
+      lead: ApplicationUser;
+      leadAccountId: string;
+      assigneeType: 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
+      assignee: ApplicationUser;
+      realAssigneeType: string;
+      realAssignee: ApplicationUser;
+      isAssigneeTypeValid: boolean;
+      project: string;
+      projectId: number;
     }
 
     interface Comments {
@@ -424,6 +439,16 @@ declare global {
       values: Array<T>;
     }
 
+    interface PagedResponse2<T> {
+      self: string;
+      nextPage: string;
+      maxResults: number;
+      startAt: number;
+      total: number;
+      isLast: boolean;
+      values: Array<T>;
+    }
+
     interface Servicedesk {
       id: string;
       projectId: string;
@@ -483,6 +508,61 @@ declare global {
       label: string;
       children: Array<RequestTypeFieldValueDTO>;
     }
+
+    interface Release extends Omit<Version, 'releaseDate'|'startDate'> {
+      operations: Array<{ href: string, label: string, styleClass: string }>;
+      releaseDate: { formatted: string, iso: string, datePickerFormatted: string };
+      startDate: { formatted: string, iso: string, datePickerFormatted: string };
+      status: {
+        [key in 'complete'|'inProgress'|'toDo'|'unmapped']: {
+          count: number;
+          jqlUrl: string;
+        }
+      };
+      url: string;
+    }
+
+    interface Board {
+      id: number;
+      self: string;
+      name: string;
+      type: string;
+      admins: {
+        users: Array<Jira.ApplicationUser>;
+        groups: Array<{ name: string; self: string }>
+      };
+      location: {
+        projectId: number;
+        userId: number;
+        userAccountId: string;
+        displayName: string;
+        projectName: string;
+        projectKey: string;
+        projectTypeKey: string;
+        avatarURI: string;
+        name: string;
+      };
+      canEdit: boolean;
+      isPrivate: boolean;
+      favourite: boolean;
+    }
+
+    interface Features {
+      features: Array<Feature>;
+    }
+
+    interface Feature {
+      boardFeature: 'SIMPLE_ROADMAP'|'BACKLOG'|'SPRINTS'|'DEVTOOLS'|'REPORTS'|'ESTIMATION'|'PAGES'|'CODE'|'RELEASES'|'DEPLOYMENTS'|'ISSUE_NAVIGATOR'|'ON_CALL_SCHEDULE';
+      boardId: number;
+      state: 'ENABLED'|'DISABLED'|'COMING_SOON';
+      localisedName: string;
+      localisedDescription: string;
+      learnMoreLink: string;
+      imageUri: string;
+      toggleLocked: boolean;
+      feature: string;
+    }
+
 
     interface EntityProperty<T> {
       key: string;
