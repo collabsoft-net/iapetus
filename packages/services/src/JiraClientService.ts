@@ -9,15 +9,15 @@ import { AbstractAtlasClientService } from '.';
 @injectable()
 export class JiraClientService extends AbstractAtlasClientService {
 
-  async currentUser(): Promise<Confluence.User> {
-    const { data } = await this.client.get<Confluence.User>(this.endpoints.CURRENTUSER);
+  async currentUser(): Promise<Jira.User> {
+    const { data } = await this.client.get<Jira.User>(this.endpoints.CURRENTUSER);
     return data;
   }
 
-  async getUser(accountId: string): Promise<Confluence.User> {
+  async getUser(accountId: string): Promise<Jira.User> {
     const { data } = this.mode === Modes.CONNECT
-      ? await this.client.get<Confluence.User>(this.endpoints.USER, { accountId })
-      : await this.client.get<Confluence.User>(this.endpoints.USER, { key: accountId });
+      ? await this.client.get<Jira.User>(this.endpoints.USER, { accountId })
+      : await this.client.get<Jira.User>(this.endpoints.USER, { key: accountId });
     return data;
   }
 
