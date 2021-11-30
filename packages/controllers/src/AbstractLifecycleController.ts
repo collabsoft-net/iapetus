@@ -33,7 +33,7 @@ export abstract class AbstractLifecycleController<T extends Session> extends Abs
     return this.statusCode(NO_CONTENT);
   }
 
-  private async createOrUpdate(instance: ACInstance, active: boolean) {
+  protected async createOrUpdate(instance: ACInstance, active: boolean): Promise<void> {
     const current = await this.service.findById(instance.clientKey) || {};
     await this.service.save({ ...current, ...instance,  active });
   }
