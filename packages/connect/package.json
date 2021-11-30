@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/connect",
-  "version": "1.0.0-alpha.72",
+  "version": "1.0.0-alpha.73",
   "description": "Atlassian Connect polyfill (incl. Javascript API)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@atlaskit/modal-dialog": "12.0.1",
-    "@collabsoft-net/types": "^1.0.0-alpha.72",
+    "@collabsoft-net/types": "^1.0.0-alpha.73",
     "@types/node": "12.20.25",
     "@types/react": "16.9.54",
     "@types/react-dom": "16.9.9",
