@@ -53,6 +53,20 @@ declare global {
       timeZone: string;
       isExternalCollaborator: boolean;
       externalCollaborator: boolean;
+      operations?: Array<OperationCheckResult>|null;
+    }
+
+    interface UserArray {
+      results: Array<User>;
+      start?: number;
+      limit?: number;
+      size: number;
+    }
+
+    interface Group {
+      id: string;
+      type: 'group';
+      name: string;
     }
 
     interface GroupArray {
@@ -62,11 +76,374 @@ declare global {
       size: number;
     }
 
-    interface Group {
-      id: string;
-      type: 'group';
-      name: string;
+    interface Content {
+      id?: string;
+      type: 'page'|'blogpost'|'attachment'|'content';
+      status: string;
+      title?: string;
+      space?: Space;
+      history?: ContentHistory;
+      version?: Version;
+      ancestors?: Array<Content>;
+      operations?: Array<OperationCheckResult>;
+      children?: ContentChildren;
+      childTypes?: ContentChildType;
+      descendants?: ContentChildren;
+      container?: unknown;
+      body?: {
+        view?: ContentBody;
+        export_view?: ContentBody;
+        styled_view?: ContentBody;
+        storage?: ContentBody;
+        wiki?: ContentBody;
+        editor?: ContentBody;
+        editor2?: ContentBody;
+        anonymous_export_view?: ContentBody;
+        atlas_doc_format?: ContentBody;
+        dynamic?: ContentBody;
+      };
+      restrictions?: {
+        read?: ContentRestriction;
+        update?: ContentRestriction
+      }
+      metadata?: ContentMetadata;
+      macroRenderedOutput?: unknown;
+      extensions?: unknown;
     }
+
+    interface ContentBody {
+      value: string;
+      representation: 'view'|'export_view'|'styled_view'|'storage'|'editor'|'editor2'|'anonymous_export_view'|'wiki'|'atlas_doc_format';
+      embeddedContent?: Array<EmbeddedContent>;
+      webresource?: WebResourceDependencies;
+      mediaToken?: {
+        collectionIds?: Array<string>;
+        contentId?: string;
+        expiryDateTime?: string;
+        fileIds?: Array<string>;
+        token?: string;
+      }
+    }
+
+    interface EmbeddedContent {
+      entityId?: number;
+      entityType?: string;
+      entity?: unknown;
+    }
+
+    interface WebResourceDependencies {
+      keys?: Array<string>;
+      contexts?: Array<string>;
+      uris?: {
+        all?: Array<string>|string;
+        css?: Array<string>|string;
+        js?: Array<string>|string;
+      };
+      tags?: {
+        all?: string;
+        css?: string;
+        data?: string;
+        js?: string;
+      };
+      superbatch: {
+        uris?: {
+          all?: Array<string>|string;
+          css?: Array<string>|string;
+          js?: Array<string>|string;
+        };
+        tags?: {
+          all?: string;
+          css?: string;
+          data?: string;
+          js?: string;
+        };
+        metatags?: string;
+      }
+    }
+
+    interface ContentRestriction {
+      operation: ContentOperation;
+      restrictions?: {
+        user: UserArray;
+        group: GroupArray;
+      };
+      content?: Content;
+    }
+
+    interface ContentMetadata {
+      currentuser?: {
+        favourited?: { isFavourite?: boolean; favouritedDate?: string; };
+        lastmodified?: { version?: Version; friendlyLastModified?: string; };
+        lastcontributed?: { status?: string; when?: string; };
+        viewed?: { lastSeen?: string; friendlyLastSeen?: string; };
+        scheduled?: unknown;
+      }
+      properties?: unknown;
+      frontend?: unknown;
+      labels?: LabelArray | Array<Label>;
+    }
+
+    interface ContentChildType {
+      attachment: { value: boolean };
+      comment: { value: boolean };
+      page: { value: boolean };
+    }
+
+    interface ContentChildren {
+      attachment?: ContentArray;
+      comment?: ContentArray;
+      page?: ContentArray;
+    }
+
+    interface ContentArray {
+      results: Array<Content>;
+      start?: number;
+      limit?: number;
+      size: number;
+    }
+
+
+    interface ContentHistory {
+      latest: boolean;
+      createdBy?: User;
+      createdDate?: string;
+      lastUpdated?: Version;
+      previousVersion?: Version;
+      contributors?: { publishers: UsersUserKeys; };
+      nextVersion?: Version;
+    }
+
+    interface Version {
+      by?: User;
+      when: string;
+      friendlyWhen?: string;
+      message?: string;
+      number: number;
+      minorEdit: boolean;
+      Content?: Content;
+      collaborators?: UsersUserKeys;
+      contentTypeModified?: boolean;
+      confRev?: string;
+      syncRev?: string;
+      syncRevSource?: string;
+    }
+
+    interface UsersUserKeys {
+      users?: Array<User>;
+      userKeys: Array<string>;
+    }
+
+    interface Space {
+      id?: number;
+      key: string;
+      name: string;
+      icon?: Icon;
+      description?: {
+        plain: SpaceDescription;
+        view: SpaceDescription;
+      };
+      homepage?: Content;
+      type: string;
+      metadata?: {
+        label: LabelArray;
+      }
+      operations?: Array<OperationCheckResult>|null;
+      permissions?: Array<SpacePermission>|null;
+      status: string;
+      settings?: SpaceSettings;
+      theme?: Theme;
+      lookAndFeel?: LookAndFeel;
+      history?: {
+        createdDate: string;
+        createdBy?: User;
+      };
+    }
+
+    interface Icon {
+      path: string;
+      width: number;
+      height: number;
+      isDefault: boolean;
+    }
+
+    interface LabelArray {
+      results: Array<Label>;
+      start?: number;
+      limit?: number;
+      size: number;
+    }
+
+    interface Label {
+      prefix: string;
+      name: string;
+      id: string;
+      label: string;
+    }
+
+    interface SpaceDescription {
+      value: string;
+      representation: 'plain'|'view';
+      embeddedContent: Array<Content>;
+    }
+
+    interface SpaceSettings {
+      routeOverrideEnabled: boolean;
+      editor: {
+        page: string;
+        blogpost: string;
+        default: string;
+      }
+    }
+
+    interface SpacePermission {
+      id: number;
+      subjects: {
+        user: {
+          results: Array<User>;
+          size: number;
+          start?: number;
+          limit?: number;
+        };
+        group: {
+          results: Array<Group>;
+          size: number;
+          start?: number;
+          limit?: number;
+        }
+      };
+      operation: OperationCheckResult;
+      anonymousAccess: boolean;
+      unlicensedAccess: boolean;
+    }
+
+    interface OperationCheckResult {
+      operation: ContentOperation;
+      targetType: 'application'|'page'|'blogpost'|'comment'|'attachment'|'space';
+    }
+
+    interface PermissionSubjectWithGroupId {
+      type: 'user'|'group';
+      identifier: string;
+    }
+
+    interface PermissionCheckResponse {
+      hasPermission: boolean;
+      errors?: Array<Message>;
+    }
+
+    interface Message {
+      translation?: string;
+      args: Array<string|unknown>;
+    }
+
+    interface Theme {
+      themeKey: string;
+      name?: string;
+      description?: string;
+      icon?: Icon;
+    }
+
+    interface LookAndFeel {
+      headings: { color: string; };
+      links: { color: string; };
+      menus: MenusLookAndFeel;
+      header: HeaderLookAndFeel;
+      horizontalHeader?: HorizontalHeaderLookAndFeel;
+      content: ContentLookAndFeel;
+      bordersAndDividers: { color: string; };
+      spaceReference?: unknown;
+    }
+
+    interface MenusLookAndFeel {
+      hoverOrFocus: { backgroundColor: string; };
+      color: string;
+    }
+
+    interface HeaderLookAndFeel {
+      backgroundColor: string;
+      button: ButtonLookAndFeel;
+      primaryNavigation: NavigationLookAndFeel;
+      secondaryNavigation: NavigationLookAndFeel;
+      search: SearchFieldLookAndFeel;
+    }
+
+    interface ButtonLookAndFeel {
+      backgroundColor: string;
+      color: string;
+    }
+
+    interface NavigationLookAndFeel {
+      color: string;
+      highlightColor?: string;
+      hoverOrFocus: {
+        backgroundColor: string;
+        color: string;
+      }
+    }
+
+    interface SearchFieldLookAndFeel {
+      backgroundColor: string;
+      color: string;
+    }
+
+    interface HorizontalHeaderLookAndFeel {
+      backgroundColor: string;
+      button?: ButtonLookAndFeel;
+      primaryNavigation: TopNavigationLookAndFeel;
+      secondaryNavigation?: NavigationLookAndFeel;
+      search?: SearchFieldLookAndFeel;
+    }
+
+    interface TopNavigationLookAndFeel {
+      color?: string;
+      highlightColor: string;
+      hoverOrFocus: {
+        backgroundColor: string;
+        color: string;
+      }
+    }
+
+    interface ContentLookAndFeel {
+      screen?: ScreenLookAndFeel;
+      container?: ContainerLookAndFeel;
+      header?: ContainerLookAndFeel;
+      body?: ContainerLookAndFeel;
+    }
+
+    interface ScreenLookAndFeel {
+      background: string;
+      backgroundAttachment?: string;
+      backgroundBlendMode?: string;
+      backgroundClip?: string;
+      backgroundColor?: string;
+      backgroundImage?: string;
+      backgroundOrigin?: string;
+      backgroundPosition?: string;
+      backgroundRepeat?: string;
+      backgroundSize?: string;
+      layer?: { width: string; height: string };
+      gutterTop?: string;
+      gutterRight?: string;
+      gutterBottom?: string;
+      gutterLeft?: string;
+    }
+
+    interface ContainerLookAndFeel {
+      background: string;
+      backgroundAttachment?: string;
+      backgroundBlendMode?: string;
+      backgroundClip?: string;
+      backgroundColor: string;
+      backgroundImage: string;
+      backgroundOrigin?: string;
+      backgroundPosition?: string;
+      backgroundRepeat?: string;
+      backgroundSize: string;
+      padding: string;
+      borderRadius: string;
+    }
+
+    type ContentOperation = 'administer'|'archive'|'clear_permissions'|'copy'|'create'|'create_space'|'delete'|'export'|'move'|'purge'|'purge_version'|'read'|'restore'|'restrict_content'|'update'|'use';
 
   }
 

@@ -36,14 +36,16 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.71",
     "@collabsoft-net/types": "^1.0.0-alpha.71",
     "inversify": "5.1.1",
-    "path-to-regexp": "6.1.0"
+    "path-to-regexp": "6.1.0",
+    "http-status-codes": "^2.1.4"
   },
   "peerDependencies": {
     "@collabsoft-net/clients": "1.0.0-alpha.11",
     "@collabsoft-net/enums": "1.0.0-alpha.43",
     "@collabsoft-net/helpers": "1.0.0-alpha.44",
     "inversify": "5.1.1",
-    "path-to-regexp": "6.1.0"
+    "path-to-regexp": "6.1.0",
+    "http-status-codes": "^2.1.4"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -10,30 +10,19 @@ import { AbstractRestClient } from './AbstractRestClient';
 const IMPERSONATION_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 const AUTH_SERVER = 'https://oauth-2-authorization-server.services.atlassian.com';
 
-export class AtlasRestClient extends AbstractRestClient implements RestClient {
+export abstract class AbstractAtlasRestClient extends AbstractRestClient implements RestClient {
 
-  private _accountId!: string;
-  private oauthClientId!: string;
-  private sharedSecret!: string;
-  private impersonate: boolean;
+  protected _accountId?: string;
 
-  constructor(private addonKey: string, private instance: ACInstance, private config: AxiosRequestConfig = {}) {
+  constructor(protected instance: ACInstance, protected config: AxiosRequestConfig = {}) {
     super(instance.baseUrl, config);
-    this.impersonate = false;
   }
 
-  get accountId(): string {
+  get accountId(): string|undefined {
     return this._accountId;
   }
 
-  as(accountId: string, oauthClientId: string, sharedSecret: string): AtlasRestClient {
-    const instance = new AtlasRestClient(this.addonKey, this.instance, this.config);
-    instance._accountId = accountId;
-    instance.oauthClientId = oauthClientId;
-    instance.sharedSecret = sharedSecret;
-    instance.impersonate = true;
-    return instance;
-  }
+  abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient;
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, headers?: Record<string, string>): Promise<AxiosResponse<T>> {
     const options: AxiosRequestConfig = {
@@ -46,7 +35,7 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
     options.headers = options.headers || {};
     options.headers['Content-Type'] = 'application/json';
     options.headers['X-ExperimentalApi'] = 'opt-in';
-    options.headers['Authorization'] = this.impersonate
+    options.headers['Authorization'] = this.accountId
       ? `Bearer ${await this.getAccessToken()}`
       : `JWT ${this.getSignedJWT(options)}`;
 
@@ -59,9 +48,10 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
 
   private createJwtPayload(options: AxiosRequestConfig) {
     const now = new Date().getTime();
+    const { key, clientKey } = this.instance;
 
     return {
-      iss: this.addonKey,
+      iss: key,
       iat: now,
       exp: now + (15 * 60 * 1000),
       qsh: createQueryStringHash({
@@ -69,12 +59,13 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
         pathname: options.url,
         query: this.normalizeQuery(options.params)
       }),
-      aud: [ this.instance.clientKey ]
+      aud: [ clientKey ]
     };
   }
 
   private async getAccessToken() {
     const now = Math.floor(Date.now() / 1000);
+    const { oauthClientId, sharedSecret } = this.instance;
 
     const { data: { access_token } } = await this.client({
       method: RestClientMethods.POST,
@@ -82,13 +73,13 @@ export class AtlasRestClient extends AbstractRestClient implements RestClient {
       data: stringify({
         grant_type: IMPERSONATION_GRANT_TYPE,
         assertion: encodeSymmetric({
-          iss: `urn:atlassian:connect:clientid:${this.oauthClientId}`,
+          iss: `urn:atlassian:connect:clientid:${oauthClientId}`,
           iat: now,
           sub: `urn:atlassian:connect:useraccountid:${this.accountId}`,
           exp: now + 60,
           tnt: this.instance.baseUrl,
           aud: AUTH_SERVER
-        }, this.sharedSecret, SymmetricAlgorithm.HS256)
+        }, sharedSecret, SymmetricAlgorithm.HS256)
       }),
       headers: { 'accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' }
     });

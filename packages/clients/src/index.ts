@@ -1,5 +1,7 @@
 
 export * from './AbstractRestClient';
 export * from './APRestClient';
-export * from './AtlasRestClient';
+export * from './AbstractAtlasRestClient';
+export * from './JiraRestClient';
+export * from './ConfluenceRestClient';
 export * from './RestClient';
