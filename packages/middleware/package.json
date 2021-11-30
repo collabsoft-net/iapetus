@@ -35,6 +35,7 @@
     "@collabsoft-net/enums": "^1.0.0-alpha.54",
     "@collabsoft-net/functions": "^1.0.0-alpha.71",
     "@collabsoft-net/helpers": "^1.0.0-alpha.71",
+    "@collabsoft-net/services": "^1.0.0-alpha.71",
     "@collabsoft-net/types": "^1.0.0-alpha.71",
     "@types/passport": "1.0.7",
     "express": "4.17.0",
@@ -43,8 +44,9 @@
   "peerDependencies": {
     "@collabsoft-net/controllers": "1.0.0-alpha.45",
     "@collabsoft-net/enums": "1.0.0-alpha.43",
-    "@collabsoft-net/functions": "1.0.0-alpha.45",
+    "@collabsoft-net/functions": "1.0.0-alpha.71",
     "@collabsoft-net/helpers": "1.0.0-alpha.44",
+    "@collabsoft-net/services": "^1.0.0-alpha.71",
     "express": "4.17.0",
     "passport": "0.4.1"
   },
