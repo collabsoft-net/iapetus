@@ -635,7 +635,7 @@ declare global {
 
     interface Version {
       self: string;
-      id: string;
+      id?: string;
       name: string;
       description: string;
       archived: boolean;
@@ -666,7 +666,7 @@ declare global {
 
     interface Component {
       self: string;
-      id: string;
+      id?: string;
       name: string;
       description: string;
       lead: ApplicationUser;
