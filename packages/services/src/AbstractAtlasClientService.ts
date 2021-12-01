@@ -1,7 +1,7 @@
-import { AbstractAtlasRestClient, AbstractRestClient } from '@collabsoft-net/clients';
+import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { AtlasEndpoints } from '@collabsoft-net/types';
+import { AtlasEndpoints, RestClient } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
@@ -9,7 +9,7 @@ import { compile } from 'path-to-regexp';
 export abstract class AbstractAtlasClientService {
 
   constructor(
-    protected client: AbstractRestClient,
+    protected client: RestClient,
     protected endpoints: AtlasEndpoints,
     protected mode: Modes) {}
 
