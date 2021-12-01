@@ -1,5 +1,6 @@
-import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
+import { AbstractAtlasRestClient, AbstractRestClient } from '@collabsoft-net/clients';
 import { Modes } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
 import { AtlasEndpoints } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
@@ -8,13 +9,17 @@ import { compile } from 'path-to-regexp';
 export abstract class AbstractAtlasClientService {
 
   constructor(
-    protected client: AbstractAtlasRestClient,
+    protected client: AbstractRestClient,
     protected endpoints: AtlasEndpoints,
     protected mode: Modes) {}
 
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService {
-    const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
-    return this.getInstance(impersonatedClient, this.endpoints, this.mode);
+    if (isOfType<AbstractAtlasRestClient>(this.client, 'as')) {
+      const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
+      return this.getInstance(impersonatedClient, this.endpoints, this.mode);
+    } else {
+      throw new Error('The provided REST client implementation does not support impersonation');
+    }
   }
 
   async getApp(): Promise<UPM.App> {
