@@ -1,5 +1,6 @@
-import { ConfluenceRestClient } from '@collabsoft-net/clients';
+import { AbstractAtlasRestClient, ConfluenceRestClient } from '@collabsoft-net/clients';
 import { Modes } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
 import { AtlasEndpoints } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
@@ -57,8 +58,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   async memberOf(groupName: string): Promise<boolean>;
   async memberOf(accountId: string, groupName: string): Promise<boolean>;
   async memberOf(accountIdOrGroupname: string, groupName?: string): Promise<boolean> {
-
-    let accountId = this.client.accountId;
+    let accountId = isOfType<AbstractAtlasRestClient>(this.client, 'as') ? this.client.accountId : undefined;
     if (!accountId && groupName !== undefined) accountId = accountIdOrGroupname;
     if (!accountId) throw new Error('Required parameter accountId is missing, please either run this method using impersonation or provide accountId');
     const name = groupName !== undefined ? groupName : accountIdOrGroupname;
