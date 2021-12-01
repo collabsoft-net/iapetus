@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/middleware",
-  "version": "1.0.0-alpha.75",
+  "version": "1.0.0-alpha.76",
   "description": "Express middleware",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -31,12 +31,12 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.75",
+    "@collabsoft-net/controllers": "^1.0.0-alpha.76",
     "@collabsoft-net/enums": "^1.0.0-alpha.54",
-    "@collabsoft-net/functions": "^1.0.0-alpha.75",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.75",
-    "@collabsoft-net/services": "^1.0.0-alpha.75",
-    "@collabsoft-net/types": "^1.0.0-alpha.75",
+    "@collabsoft-net/functions": "^1.0.0-alpha.76",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.76",
+    "@collabsoft-net/services": "^1.0.0-alpha.76",
+    "@collabsoft-net/types": "^1.0.0-alpha.76",
     "@types/passport": "1.0.7",
     "express": "4.17.0",
     "passport": "0.4.1"
