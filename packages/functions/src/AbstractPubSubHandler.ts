@@ -28,7 +28,7 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
       const { name, data } = message.json as CustomEvent<T>;
       if (name !== this.topic) throw new Error(`Event ${name} does not match ${this.topic}, ignoring`);
 
-      const instance = await this.instanceService.findById(data.tenantId);
+      const instance = await this.instanceService.findById(data.tenantId) || await this.instanceService.findByProperty('clientId', data.tenantId);
       if (!instance) throw new Error(`Could not process event, cannot find instance for ID ${data.tenantId}`);
       if (!instance.active) throw new Error(`Customer instance ${data.tenantId} not active, skipping PubSub message`);
       this._session = await this.toSession(instance);
