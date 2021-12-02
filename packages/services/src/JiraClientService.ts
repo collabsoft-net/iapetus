@@ -145,7 +145,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async hasPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
+  async hasPermissions(accountId?: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
     if (!projectPermissions && !globalPermissions) return false;
 
     const { data } = await this.client.post<Jira.BulkPermissionGrants>(this.endpoints.PERMISSIONS_CHECK, {
