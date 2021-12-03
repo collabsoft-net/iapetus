@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/services",
-  "version": "1.0.0-alpha.78",
+  "version": "1.0.0-alpha.79",
   "description": "Abstract services to be used for app-specific implementations",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
