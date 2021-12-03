@@ -119,7 +119,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getBoardFeatures(boardId: number): Promise<Jira.Features> {
-    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES), { boardId: `${boardId}` });
+    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES, { boardId }));
     return data;
   }
 
