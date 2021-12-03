@@ -31,7 +31,7 @@ export class AbstractRestClientService {
     return { ...data, values: data.values.map(item => new type(item)) };
   }
 
-  async createOrUpdate<T extends DTO>(type: Type<T>, item: T): Promise<T> {
+  async createOrUpdate<T extends DTO>(type: Type<T>, item: T, params: Record<string, string|number|boolean|undefined> = {}): Promise<T> {
     if (item.id === '-1') {
       delete item.id;
     }
@@ -40,13 +40,13 @@ export class AbstractRestClientService {
       ? this.getEndpointFor(RestClientEndpoints.CREATE, item)
       : this.getEndpointFor(RestClientEndpoints.UPDATE, item, { id: item.id });
 
-    const { data } = await this.client.post<T>(url, item);
+    const { data } = await this.client.post<T>(url, item, params);
     return new type(data);
   }
 
-  async remove<T extends DTO>(item: T): Promise<void> {
+  async remove<T extends DTO>(item: T, params: Record<string, string|number|boolean|undefined> = {}): Promise<void> {
     const url = this.getEndpointFor(RestClientEndpoints.DELETE, item, { id: item.id });
-    const { status, statusText } = await this.client.delete(url);
+    const { status, statusText } = await this.client.delete(url, undefined, params);
     if (status !== 204) {
       throw new Error(statusText);
     }
