@@ -164,16 +164,25 @@ export class JiraClientService extends AbstractAtlasClientService {
         projectPermission.permissions.every(permission => {
           const hasPermission = data.projectPermissions.find(item => item.permission === permission);
           if (hasPermission) {
-            if (projectPermission.projects) {
-              const hasProjectPermission = projectPermission.projects.every(hasPermission.projects.includes);
-              if (!hasProjectPermission) return false;
+
+            if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
+              if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
+                const hasProjectPermission = projectPermission.projects.every(item => hasPermission.projects.includes(item));
+                if (!hasProjectPermission) return false;
+              }
             }
-            if (projectPermission.issues) {
-              const hasIssuePermission = projectPermission.issues.every(hasPermission.issues.includes);
-              if (!hasIssuePermission) return false;
+
+            if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
+              if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
+                const hasIssuePermission = projectPermission.issues.every(item => hasPermission.issues.includes(item));
+                if (!hasIssuePermission) return false;
+              }
             }
+
             return true;
           }
+
+          return false;
         })
       );
       if (!hasAllProjectPermissions) return false;
