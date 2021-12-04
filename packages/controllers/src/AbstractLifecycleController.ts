@@ -1,7 +1,7 @@
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
-import { NO_CONTENT } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { requestBody } from 'inversify-express-utils';
 import { StatusCodeResult } from 'inversify-express-utils/dts/results';
@@ -15,22 +15,22 @@ export abstract class AbstractLifecycleController<T extends Session> extends Abs
 
   async InstallHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, true);
-    return this.statusCode(NO_CONTENT);
+    return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
   async UninstallHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, false);
-    return this.statusCode(NO_CONTENT);
+    return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
   async EnabledHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, true);
-    return this.statusCode(NO_CONTENT);
+    return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
   async DisabledHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, false);
-    return this.statusCode(NO_CONTENT);
+    return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
   protected async createOrUpdate(instance: ACInstance, active: boolean): Promise<void> {

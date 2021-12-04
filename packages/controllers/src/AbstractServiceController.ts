@@ -1,7 +1,7 @@
 import { PageDTO } from '@collabsoft-net/dto';
 import { DefaultService, DTO, Entity, Paginated, QueryBuilder } from '@collabsoft-net/types';
 import { captureException } from '@sentry/minimal';
-import { BAD_REQUEST, NO_CONTENT, NOT_FOUND } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { requestBody, requestParam } from 'inversify-express-utils';
 import { StatusCodeResult } from 'inversify-express-utils/dts/results';
@@ -20,14 +20,14 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
       return this.service.toDTO(result);
     } catch (error) {
       captureException(error);
-      return this.statusCode(BAD_REQUEST);
+      return this.statusCode(StatusCodes.BAD_REQUEST);
     }
   }
 
   async read(@requestParam('id') id?: string): Promise<X|StatusCodeResult|Paginated<X>> {
     if (id) {
       const result = await this.service.findById(id);
-      return result ? this.service.toDTO(result) : this.statusCode(NOT_FOUND);
+      return result ? this.service.toDTO(result) : this.statusCode(StatusCodes.NOT_FOUND);
     } else {
       const { query } = this.httpContext.request;
       // Remove pagination params from query
@@ -63,18 +63,18 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
       return this.service.toDTO(result);
     } catch (error) {
       captureException(error);
-      return this.statusCode(BAD_REQUEST);
+      return this.statusCode(StatusCodes.BAD_REQUEST);
     }
   }
 
   async remove(@requestParam('id') id: string): Promise<StatusCodeResult> {
     try {
-      if (!id) return this.statusCode(BAD_REQUEST);
+      if (!id) return this.statusCode(StatusCodes.BAD_REQUEST);
       await this.service.deleteById(id);
-      return this.statusCode(NO_CONTENT);
+      return this.statusCode(StatusCodes.NO_CONTENT);
     } catch (error) {
       captureException(error);
-      return this.statusCode(BAD_REQUEST);
+      return this.statusCode(StatusCodes.BAD_REQUEST);
     }
   }
 
