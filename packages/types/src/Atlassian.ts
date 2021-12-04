@@ -645,6 +645,28 @@ declare global {
       userReleaseDate: string;
       projectId: number;
       startDate: string;
+      issuesStatusForFixVersion?: VersionIssuesStatus;
+    }
+
+    interface VersionIssuesStatus {
+      unmapped: number;
+      toDo: number;
+      inProgress: number;
+      done: number;
+    }
+
+    interface VersionIssueCounts {
+      self?: string;
+      issuesFixedCount: number;
+      issuesAffectedCount: number;
+      issueCountWithCustomFieldsShowingVersion: number;
+      customFieldUsage: Array<VersionUsageInCustomField>;
+    }
+
+    interface VersionUsageInCustomField {
+      fieldName: string;
+      customFieldId: number;
+      issueCountWithVersionInCustomField: number;
     }
 
     interface Status {

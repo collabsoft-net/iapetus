@@ -12,6 +12,7 @@ export interface AtlasEndpoints extends Record<string, string> {
   VERSION_CREATE: string;
   VERSION_UPDATE: string;
   VERSION_DELETE: string;
+  VERSION_ISSUE_COUNTS: string;
   ALL_RELEASES: string;
   RELEASE_DETAILS: string;
   LIST_COMPONENTS: string;

@@ -31,8 +31,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getVersion(id: string|number): Promise<Jira.Version> {
-    const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id }));
+  async getVersion(id: string|number, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
+    const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id }), { expand: expand?.join(',') });
     return data;
   }
 
@@ -59,6 +59,11 @@ export class JiraClientService extends AbstractAtlasClientService {
   async deleteVersion(id: string): Promise<void> {
     const { status } = await this.client.post(this.getEndpointFor(this.endpoints.VERSION_DELETE, { versionId: id }), {});
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
+  }
+
+  async getVersionRelatedIssuesCount(id: string): Promise<Jira.VersionIssueCounts> {
+    const { data } = await this.client.get<Jira.VersionIssueCounts>(this.getEndpointFor(this.endpoints.VERSION_ISSUE_COUNTS, { id }));
+    return data;
   }
 
   async getAllReleases(projectKey: string): Promise<Array<Jira.Release>> {
