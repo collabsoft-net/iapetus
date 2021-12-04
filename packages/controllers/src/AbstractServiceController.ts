@@ -30,20 +30,13 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
       return result ? this.service.toDTO(result) : this.statusCode(StatusCodes.NOT_FOUND);
     } else {
       const { query } = this.httpContext.request;
-      // Remove pagination params from query
-      delete query.limit;
-      delete query.offset;
       if (query && Object.keys(query).length > 0) {
         const result = await this.service.findAllByQuery(qb => {
           let queryBuilder = qb;
           Object.keys(query).forEach((key) => {
             const value = query[key];
             if (value && typeof value === 'string') {
-              if (key === 'limit') {
-                queryBuilder = queryBuilder.limit(parseInt(value));
-              } else if(key !== 'offset' && key !== 'order') {
-                queryBuilder = this.toQuery(key, value, queryBuilder);
-              }
+              queryBuilder = this.toQuery(key, value, queryBuilder);
             }
           });
           return queryBuilder;
