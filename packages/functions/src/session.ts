@@ -1,7 +1,6 @@
 
 import { ACInstance } from '@collabsoft-net/entities';
 import { Modes } from '@collabsoft-net/enums';
-import { AtlasEndpoints } from '@collabsoft-net/types';
 
 export {};
 
@@ -11,7 +10,6 @@ declare global {
   interface Session extends Record<string, unknown> {
     accountId: string;
     instance: ACInstance;
-    atlasEndpoints: AtlasEndpoints;
     mode: Modes;
   }
 
