@@ -1,6 +1,5 @@
 import { JiraRestClient } from '@collabsoft-net/clients';
 import { Modes } from '@collabsoft-net/enums';
-import { AtlasEndpoints } from '@collabsoft-net/types';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
@@ -36,13 +35,13 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getVersions(projectId: string|number): Promise<Array<Jira.Version>> {
-    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey: projectId }));
+  async getVersions(projectIdOrKey: string|number): Promise<Array<Jira.Version>> {
+    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey }));
     return data;
   }
 
-  async getVersionsPaginatedFor(projectId: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Version>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey: projectId }), { startAt, maxResults, query });
+  async getVersionsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Version>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
     return data;
   }
 
@@ -52,12 +51,12 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async updateVersion(version: Jira.Version): Promise<Jira.Version> {
-    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { versionId: version.id }), version);
+    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { id: version.id }), version);
     return data;
   }
 
   async deleteVersion(id: string): Promise<void> {
-    const { status } = await this.client.post(this.getEndpointFor(this.endpoints.VERSION_DELETE, { versionId: id }), {});
+    const { status } = await this.client.post(this.getEndpointFor(this.endpoints.VERSION_DELETE, { id: id }), {});
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
   }
 
@@ -76,13 +75,13 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getComponentsFor(projectId: string|number): Promise<Array<Jira.Component>> {
-    const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey: projectId }));
+  async getComponentsFor(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {
+    const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey }));
     return data;
   }
 
-  async getComponentsPaginatedFor(projectId: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey: projectId }), { startAt, maxResults, query });
+  async getComponentsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
     return data;
   }
 
@@ -98,12 +97,12 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async updateComponent(component: Jira.Component): Promise<Jira.Component> {
-    const { data } = await this.client.put<Jira.Component>(this.getEndpointFor(this.endpoints.COMPONENT_UPDATE, { componentId: component.id }), component);
+    const { data } = await this.client.put<Jira.Component>(this.getEndpointFor(this.endpoints.COMPONENT_UPDATE, { id: component.id }), component);
     return data;
   }
 
   async deleteComponent(id: string): Promise<void> {
-    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.COMPONENT_DELETE, { componentId: id }));
+    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.COMPONENT_DELETE, { id: id }));
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
   }
 
@@ -196,8 +195,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return true;
   }
 
-  protected getInstance(client: JiraRestClient, endpoints: AtlasEndpoints, mode: Modes): JiraClientService {
-    return new JiraClientService(client, endpoints, mode);
+  protected getInstance(client: JiraRestClient, mode: Modes): JiraClientService {
+    return new JiraClientService(client, mode);
   }
 
 }

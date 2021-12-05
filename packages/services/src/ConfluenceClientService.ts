@@ -1,12 +1,9 @@
 import { AbstractAtlasRestClient, ConfluenceRestClient } from '@collabsoft-net/clients';
 import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { AtlasEndpoints } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
-
-
 
 @injectable()
 export class ConfluenceClientService extends AbstractAtlasClientService {
@@ -67,8 +64,8 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data.results.some(group => group.name === name);
   }
 
-  protected getInstance(client: ConfluenceRestClient, endpoints: AtlasEndpoints, mode: Modes): ConfluenceClientService {
-    return new ConfluenceClientService(client, endpoints, mode);
+  protected getInstance(client: ConfluenceRestClient, mode: Modes): ConfluenceClientService {
+    return new ConfluenceClientService(client, mode);
   }
 
 }

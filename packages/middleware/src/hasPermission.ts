@@ -8,12 +8,12 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
     let hasAllRequiredPermissions = false;
 
     if (user) {
-      const { accountId, instance, atlasEndpoints, mode } = user as Session;
+      const { accountId, instance, mode } = user as Session;
       if (instance.productType === 'jira') {
-        const service = new JiraClientService(new JiraRestClient(instance), atlasEndpoints, mode);
+        const service = new JiraClientService(new JiraRestClient(instance), mode);
         hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
       } else if (instance.productType === 'confluence') {
-        const service = new ConfluenceClientService(new JiraRestClient(instance), atlasEndpoints, mode);
+        const service = new ConfluenceClientService(new JiraRestClient(instance), mode);
         hasAllRequiredPermissions = await permissions.reduce(async (previous, permission) => {
           const hasPermission = await previous;
           if (!hasPermission) return hasPermission;
@@ -36,11 +36,11 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
     let hasAllRequiredPermissions = false;
 
     if (user) {
-      const { accountId, instance, atlasEndpoints, mode } = user as Session;
+      const { accountId, instance, mode } = user as Session;
       const entityId = (user as Session)[paramName] || query[paramName] || params[paramName];
       if (entityId && typeof entityId === 'string') {
         if (instance.productType === 'jira') {
-          const service = new JiraClientService(new JiraRestClient(instance), atlasEndpoints, mode);
+          const service = new JiraClientService(new JiraRestClient(instance), mode);
           const permissions: Jira.BulkProjectPermissions = {
             projects: entityType === 'project' ? [ Number(entityId) ] : undefined,
             issues: entityType === 'issue' ? [ Number(entityId) ] : undefined,
@@ -48,7 +48,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
           };
           hasAllRequiredPermissions = await service.hasPermissions(accountId, [ permissions ]);
         } else if (instance.productType === 'confluence' && !Array.isArray(permission)) {
-          const service = new ConfluenceClientService(new JiraRestClient(instance), atlasEndpoints, mode);
+          const service = new ConfluenceClientService(new JiraRestClient(instance), mode);
           if (entityType === 'content') {
             hasAllRequiredPermissions = await service.hasContentPermission(entityId, {
               type: 'user',
