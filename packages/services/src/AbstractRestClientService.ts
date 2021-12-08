@@ -1,8 +1,6 @@
-import { RestClient } from '@collabsoft-net/clients';
 import { RestClientEndpoints } from '@collabsoft-net/enums';
 import { isTypeOf } from '@collabsoft-net/helpers';
-import { DTO, Paginated, Type } from '@collabsoft-net/types';
-import { CancelTokenSource } from 'axios';
+import { DTO, Paginated, RestClient, Type } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
@@ -10,10 +8,6 @@ import { compile } from 'path-to-regexp';
 export class AbstractRestClientService {
 
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
-
-  get abortController(): CancelTokenSource {
-    return this.client.abortController;
-  }
 
   async get<T extends DTO>(type: Type<T>, id: string, params: Record<string, string|number|boolean|undefined> = {}): Promise<T> {
     const { data } = await this.client.get<T>(this.getEndpointFor(RestClientEndpoints.READ, type, { id }), params);
