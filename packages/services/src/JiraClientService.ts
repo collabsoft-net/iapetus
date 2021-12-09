@@ -152,47 +152,88 @@ export class JiraClientService extends AbstractAtlasClientService {
   async hasPermissions(accountId?: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
     if (!projectPermissions && !globalPermissions) return false;
 
-    const { data } = await this.client.post<Jira.BulkPermissionGrants>(this.endpoints.PERMISSIONS_CHECK, {
-      accountId,
-      projectPermissions,
-      globalPermissions
-    });
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.post<Jira.BulkPermissionGrants>(this.endpoints.PERMISSIONS_CHECK, {
+        accountId,
+        projectPermissions,
+        globalPermissions
+      });
 
-    if (globalPermissions) {
-      const hasAllGlobalPermissions = data.globalPermissions.every(globalPermissions.includes)
-      if (!hasAllGlobalPermissions) return false;
-    }
+      if (globalPermissions) {
+        const hasAllGlobalPermissions = data.globalPermissions.every(globalPermissions.includes)
+        if (!hasAllGlobalPermissions) {
+          return false;
+        }
+      }
 
-    if (projectPermissions) {
-      const hasAllProjectPermissions = projectPermissions.every(projectPermission =>
-        projectPermission.permissions.every(permission => {
-          const hasPermission = data.projectPermissions.find(item => item.permission === permission);
-          if (hasPermission) {
+      if (projectPermissions) {
+        const hasAllProjectPermissions = projectPermissions.every(projectPermission =>
+          projectPermission.permissions.every(permission => {
+            const hasPermission = data.projectPermissions.find(item => item.permission === permission);
+            if (!hasPermission) {
+              return false;
+            }
 
             if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
               if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
                 const hasProjectPermission = projectPermission.projects.every(item => hasPermission.projects.includes(item));
-                if (!hasProjectPermission) return false;
+                if (!hasProjectPermission) {
+                  return false;
+                }
               }
             }
 
             if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
               if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
                 const hasIssuePermission = projectPermission.issues.every(item => hasPermission.issues.includes(item));
-                if (!hasIssuePermission) return false;
+                if (!hasIssuePermission) {
+                  return false;
+                }
               }
             }
 
             return true;
-          }
+          })
+        );
 
+        if (!hasAllProjectPermissions) {
           return false;
-        })
-      );
-      if (!hasAllProjectPermissions) return false;
+        }
+      }
+
+      // If we reached this part, nether global or project specific permissions returned false
+      // So you probably have access?!
+      return true;
+
+    } else if (this.mode === Modes.P2) {
+      let hasAllPermissions = true;
+
+      for await (const bulkPermission of projectPermissions || []) {
+        const { projects, issues, permissions } = bulkPermission || {};
+
+        for await (const projectId of projects || []) {
+          if (!hasAllPermissions) break;
+          const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { projectId });
+          hasAllPermissions = permissions.every(permission => data.permissions[permission] && data.permissions[permission].havePermission);
+        }
+
+        for await (const issueId of issues || []) {
+          if (!hasAllPermissions) break;
+          const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { issueId });
+          hasAllPermissions = permissions.every(permission => data.permissions[permission] && data.permissions[permission].havePermission);
+        }
+      }
+
+      for await (const permission of globalPermissions || []) {
+        if (!hasAllPermissions) break;
+        const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS);
+        hasAllPermissions = data.permissions[permission] && data.permissions[permission].havePermission;
+      }
+
+      return hasAllPermissions;
     }
 
-    return true;
+    return false;
   }
 
   protected getInstance(client: JiraRestClient, mode: Modes): JiraClientService {
