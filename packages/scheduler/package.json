@@ -1,7 +1,7 @@
 {
-  "name": "@collabsoft-net/helpers",
-  "version": "1.0.0-alpha.91",
-  "description": "Collection of helper functions",
+  "name": "@collabsoft-net/scheduler",
+  "version": "1.0.0-alpha.90",
+  "description": "Scheduler implementation",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "UNLICENSED",
@@ -30,7 +30,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.85"
+    "@collabsoft-net/types": "^1.0.0-alpha.85",
+    "@google-cloud/scheduler": "2.3.0"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
+  "peerDependencies": {
+    "@google-cloud/scheduler": "2.3.0"
+  }
 }
