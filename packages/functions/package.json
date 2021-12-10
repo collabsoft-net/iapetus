@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@collabsoft-net/helpers": "^1.0.0-alpha.91",
+    "@collabsoft-net/scheduler": "^1.0.0-alpha.90",
     "@collabsoft-net/services": "^1.0.0-alpha.91",
     "@gdn/envify-nconf": "1.2.1",
     "@sentry/minimal": "6.5.1",
@@ -46,8 +47,9 @@
     "passport": "0.4.1"
   },
   "peerDependencies": {
-    "@collabsoft-net/helpers": "1.0.0-alpha.44",
-    "@collabsoft-net/services": "1.0.0-alpha.45",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.91",
+    "@collabsoft-net/scheduler": "^1.0.0-alpha.90",
+    "@collabsoft-net/services": "^1.0.0-alpha.91",
     "@gdn/envify-nconf": "1.2.1",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",

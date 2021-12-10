@@ -1,6 +1,6 @@
 
 import { isProduction } from '@collabsoft-net/helpers';
-import { getName, getParent, hasJob, scheduler } from '@collabsoft-net/helpers';
+import { getName, getParent, hasJob, scheduler } from '@collabsoft-net/scheduler';
 import { PubSubHandler, ScheduledPubSubHandler, SystemEvent } from '@collabsoft-net/types';
 import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/lib/logger';
