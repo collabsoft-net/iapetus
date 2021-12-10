@@ -33,5 +33,8 @@
     "@collabsoft-net/types": "^1.0.0-alpha.85",
     "@google-cloud/scheduler": "2.3.0"
   },
+  "peerDependencies": {
+    "@google-cloud/scheduler": "2.3.0"
+  },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
