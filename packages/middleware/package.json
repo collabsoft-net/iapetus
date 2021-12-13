@@ -38,8 +38,11 @@
     "@collabsoft-net/services": "^1.0.0-alpha.92",
     "@collabsoft-net/types": "^1.0.0-alpha.85",
     "@types/passport": "1.0.7",
+    "atlassian-jwt": "2.0.2",
+    "axios": "0.24.0",
     "express": "4.17.0",
-    "passport": "0.4.1"
+    "passport": "0.4.1",
+    "passport-jwt": "4.0.0"
   },
   "peerDependencies": {
     "@collabsoft-net/controllers": "1.0.0-alpha.72",
@@ -47,6 +50,7 @@
     "@collabsoft-net/functions": "1.0.0-alpha.72",
     "@collabsoft-net/helpers": "1.0.0-alpha.72",
     "@collabsoft-net/services": "^1.0.0-alpha.72",
+    "atlassian-jwt": "2.0.2",
     "express": "4.17.0",
     "passport": "0.4.1"
   },

@@ -12,6 +12,7 @@ declare global {
   namespace Atlassian {
 
     interface JWT {
+      aud?: string;
       sub: string;
       qsh: string;
       iss: string;
@@ -1062,16 +1063,6 @@ declare global {
       fieldType: string;
       field: string;
     }
-
-    interface JWT {
-      sub: string;
-      qsh: string;
-      iss: string;
-      context: Record<string, unknown>;
-      exp: number;
-      iat: number;
-    }
-
 
   }
 
