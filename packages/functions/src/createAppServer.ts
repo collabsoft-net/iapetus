@@ -27,7 +27,8 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
 
       // Disable caching for the API as all these endpoints are about authentication
       app.use((_req, res, next) => {
-        res.setHeader('Cache-Control', 'private');
+        res.setHeader('strict-transport-security', 'max-age=31556926');
+        res.setHeader('Cache-Control', 'no-cache,no-store,must-revalidate,max-age=0');
         next();
       });
 
