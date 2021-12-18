@@ -30,6 +30,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getIssue(issueIdOrKey: string|number): Promise<Jira.Issue> {
+    const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }));
+    return data;
+  }
+
   async getVersion(id: string|number, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
     const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id }), { expand: expand?.join(',') });
     return data;

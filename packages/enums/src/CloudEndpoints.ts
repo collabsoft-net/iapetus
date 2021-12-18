@@ -7,6 +7,8 @@ export enum CloudEndpoints {
   PERMISSIONS = '/rest/api/3/permissions',
   PERMISSIONS_CHECK = '/rest/api/3/permissions/check',
 
+  READ_ISSUE = '/rest/api/3/issue/:issueIdOrKey',
+
   READ_PROJECT = '/rest/api/3/project/:projectIdOrKey',
   LIST_PROJECTS = '/rest/api/3/project',
 

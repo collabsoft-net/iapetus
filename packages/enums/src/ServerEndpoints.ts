@@ -10,6 +10,8 @@ export enum ServerEndpoints {
   READ_PROJECT = '/rest/api/2/project/:projectIdOrKey',
   LIST_PROJECTS = '/rest/api/2/project',
 
+  READ_ISSUE = '/rest/api/2/issue/:issueIdOrKey',
+
   READ_VERSION = '/rest/api/2/version/:id',
   LIST_VERSIONS = '/rest/api/2/project/:projectIdOrKey/versions',
   LIST_VERSIONS_PAGINATED = '/rest/api/2/project/:projectIdOrKey/version',

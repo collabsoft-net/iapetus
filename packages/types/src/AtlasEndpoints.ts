@@ -6,6 +6,9 @@ export interface AtlasEndpoints extends Record<string, string> {
 
   READ_PROJECT: string;
   LIST_PROJECTS: string;
+
+  READ_ISSUE: string;
+
   READ_VERSION: string;
   LIST_VERSIONS: string;
   LIST_VERSIONS_PAGINATED: string;
