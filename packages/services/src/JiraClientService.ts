@@ -164,44 +164,52 @@ export class JiraClientService extends AbstractAtlasClientService {
         globalPermissions
       });
 
-      if (globalPermissions) {
-        const hasAllGlobalPermissions = data.globalPermissions.every(globalPermissions.includes)
-        if (!hasAllGlobalPermissions) {
+      if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
+        if (data.globalPermissions && Array.isArray(data.globalPermissions)) {
+          const hasAllGlobalPermissions = data.globalPermissions.every(item => globalPermissions.includes(item));
+          if (!hasAllGlobalPermissions) {
+            return false;
+          }
+        } else {
           return false;
         }
       }
 
-      if (projectPermissions) {
-        const hasAllProjectPermissions = projectPermissions.every(projectPermission =>
-          projectPermission.permissions.every(permission => {
-            const hasPermission = data.projectPermissions.find(item => item.permission === permission);
-            if (!hasPermission) {
-              return false;
-            }
+      if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
+        if (data.projectPermissions && Array.isArray(data.projectPermissions)) {
+          const hasAllProjectPermissions = projectPermissions.every(projectPermission =>
+            projectPermission.permissions.every(permission => {
+              const hasPermission = data.projectPermissions.find(item => item.permission === permission);
+              if (!hasPermission) {
+                return false;
+              }
 
-            if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
-              if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
-                const hasProjectPermission = projectPermission.projects.every(item => hasPermission.projects.includes(item));
-                if (!hasProjectPermission) {
-                  return false;
+              if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
+                if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
+                  const hasProjectPermission = projectPermission.projects.every(item => hasPermission.projects.includes(item));
+                  if (!hasProjectPermission) {
+                    return false;
+                  }
                 }
               }
-            }
 
-            if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
-              if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
-                const hasIssuePermission = projectPermission.issues.every(item => hasPermission.issues.includes(item));
-                if (!hasIssuePermission) {
-                  return false;
+              if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
+                if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
+                  const hasIssuePermission = projectPermission.issues.every(item => hasPermission.issues.includes(item));
+                  if (!hasIssuePermission) {
+                    return false;
+                  }
                 }
               }
-            }
 
-            return true;
-          })
-        );
+              return true;
+            })
+          );
 
-        if (!hasAllProjectPermissions) {
+          if (!hasAllProjectPermissions) {
+            return false;
+          }
+        } else {
           return false;
         }
       }
