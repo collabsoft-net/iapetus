@@ -1,4 +1,4 @@
-import { decodeSymmetric, getKeyId, SymmetricAlgorithm } from 'atlassian-jwt';
+import { AsymmetricAlgorithm, decodeAsymmetric, getKeyId } from 'atlassian-jwt';
 import axios from 'axios';
 import * as express from 'express';
 import { ExtractJwt, JwtFromRequestFunction } from 'passport-jwt';
@@ -19,9 +19,9 @@ export const isSignedByAtlassian = (baseUrl: string, extractor: JwtFromRequestFu
       if (!publicKey|| !(typeof publicKey === 'string')) throw new Error('Could not find verify JWT, matching public key not found');
 
       // Verify JWT token using public key, expiration date and audience claim
-      const { aud, exp }: Atlassian.JWT = decodeSymmetric(token, publicKey, SymmetricAlgorithm.HS256) || {};
-      if (!exp || exp < new Date().getTime()) throw new Error('Could not verify JWT, the token has expired');
-      if (!aud || aud !== baseUrl) throw new Error('Could not verify JWT, base URL does not match audience claim');
+      const { aud, exp }: Atlassian.JWT = decodeAsymmetric(token, publicKey, AsymmetricAlgorithm.RS256) || {};
+      if (!exp || (exp * 1000) < new Date().getTime()) throw new Error(`Could not verify JWT, the token has expired (${exp * 1000} < ${new Date().getTime()})`);
+      if (!aud || (Array.isArray(aud) && !aud.includes(baseUrl)) || aud !== baseUrl) throw new Error(`Could not verify JWT, base URL ${baseUrl} does not match audience claim ${aud}`);
 
       // If we haven't run into errors at this point, we're good
       next();
