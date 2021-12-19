@@ -36,5 +36,5 @@ export enum ServerEndpoints {
   CONTENT_PERMISSIONS = '/rest/api/content',
   SPACE = '/rest/api/space',
   MEMBEROF = '/rest/api/user/memberof',
-  APP = '/rest/plugins/1.0/:addonKey-key'
+  APP = '/rest/plugins/1.0/:appKey-key'
 }

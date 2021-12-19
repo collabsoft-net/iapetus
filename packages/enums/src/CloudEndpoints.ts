@@ -36,5 +36,5 @@ export enum CloudEndpoints {
   CONTENT_PERMISSIONS = '/rest/api/content/:id/permission/check',
   SPACE = '/rest/api/space/:spaceKey',
   MEMBEROF = '/rest/api/user/memberof',
-  APP = '/rest/atlassian-connect/1/addons/:addonKey'
+  APP = '/rest/atlassian-connect/1/addons/:appKey'
 }
