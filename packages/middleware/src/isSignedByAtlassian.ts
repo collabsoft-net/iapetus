@@ -1,6 +1,7 @@
 import { AsymmetricAlgorithm, decodeAsymmetric, getKeyId } from 'atlassian-jwt';
 import axios from 'axios';
 import * as express from 'express';
+import { warn } from 'firebase-functions/lib/logger';
 import { ExtractJwt, JwtFromRequestFunction } from 'passport-jwt';
 
 export const isSignedByAtlassian = (baseUrl: string, extractor: JwtFromRequestFunction = ExtractJwt.fromAuthHeaderWithScheme('JWT')) =>
@@ -21,11 +22,14 @@ export const isSignedByAtlassian = (baseUrl: string, extractor: JwtFromRequestFu
       // Verify JWT token using public key, expiration date and audience claim
       const { aud, exp }: Atlassian.JWT = decodeAsymmetric(token, publicKey, AsymmetricAlgorithm.RS256) || {};
       if (!exp || (exp * 1000) < new Date().getTime()) throw new Error(`Could not verify JWT, the token has expired (${exp * 1000} < ${new Date().getTime()})`);
-      if (!aud || (Array.isArray(aud) && !aud.includes(baseUrl)) || aud !== baseUrl) throw new Error(`Could not verify JWT, base URL ${baseUrl} does not match audience claim ${aud}`);
+
+      const validAudienceClaim = Array.isArray(aud) ? aud.includes(baseUrl) : aud === baseUrl;
+      if (!validAudienceClaim) throw new Error(`Could not verify JWT, base URL ${baseUrl} does not match audience claim ${aud}`);
 
       // If we haven't run into errors at this point, we're good
       next();
     } catch (error) {
+      warn(`Failed to verify Atlassian public key signature`, error);
       res.status(403).send('Unauthorized!');
     }
   };
