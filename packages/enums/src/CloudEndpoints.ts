@@ -1,8 +1,10 @@
 
-export enum CloudEndpoints {
-  CURRENTUSER = '/rest/api/3/myself',
+export enum JiraCloudEndpoints {
+  APP = '/rest/atlassian-connect/1/addons/:appKey',
   USER = '/rest/api/3/user',
   USER_PROPERTY_BY_KEY = '/rest/api/3/user/properties/:propertyKey',
+  CURRENTUSER = '/rest/api/3/myself',
+
   MYPERMISSIONS = '/rest/api/3/mypermissions',
   PERMISSIONS = '/rest/api/3/permissions',
   PERMISSIONS_CHECK = '/rest/api/3/permissions/check',
@@ -31,10 +33,17 @@ export enum CloudEndpoints {
   RELEASE_DETAILS = '/rest/api/3/version/:versionId',
 
   BOARDS = '/rest/agile/1.0/board',
-  BOARD_FEATURES = '/rest/agile/1.0/board/:boardId/features',
+  BOARD_FEATURES = '/rest/agile/1.0/board/:boardId/features'
+}
+
+
+export enum ConfluenceCloudEndpoints {
+  APP = '/rest/atlassian-connect/1/addons/:appKey',
+  USER = '/rest/api/user',
+  CURRENTUSER = '/rest/api/myself',
+  MEMBEROF = '/rest/api/user/memberof',
 
   CONTENT_PERMISSIONS = '/rest/api/content/:id/permission/check',
-  SPACE = '/rest/api/space/:spaceKey',
-  MEMBEROF = '/rest/api/user/memberof',
-  APP = '/rest/atlassian-connect/1/addons/:appKey'
+
+  SPACE = '/rest/api/space/:spaceKey'
 }

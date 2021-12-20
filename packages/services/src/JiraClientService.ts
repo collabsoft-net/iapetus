@@ -1,5 +1,6 @@
 import { JiraRestClient } from '@collabsoft-net/clients';
-import { Modes } from '@collabsoft-net/enums';
+import { JiraCloudEndpoints, Modes, ServerEndpoints } from '@collabsoft-net/enums';
+import { RestClient } from '@collabsoft-net/types';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
@@ -7,6 +8,11 @@ import { AbstractAtlasClientService } from '.';
 
 @injectable()
 export class JiraClientService extends AbstractAtlasClientService {
+
+  constructor(protected client: RestClient, protected mode: Modes) {
+    super(client, mode);
+    this.endpoints = mode === Modes.CONNECT ? JiraCloudEndpoints : ServerEndpoints;
+  }
 
   async currentUser(): Promise<Jira.User> {
     const { data } = await this.client.get<Jira.User>(this.endpoints.CURRENTUSER);

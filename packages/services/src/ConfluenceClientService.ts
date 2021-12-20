@@ -1,12 +1,18 @@
 import { AbstractAtlasRestClient, ConfluenceRestClient } from '@collabsoft-net/clients';
-import { Modes } from '@collabsoft-net/enums';
+import { ConfluenceCloudEndpoints, Modes, ServerEndpoints } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
+import { RestClient } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
 
 @injectable()
 export class ConfluenceClientService extends AbstractAtlasClientService {
+
+  constructor(protected client: RestClient, protected mode: Modes) {
+    super(client, mode);
+    this.endpoints = mode === Modes.CONNECT ? ConfluenceCloudEndpoints : ServerEndpoints;
+  }
 
   async currentUser(expand?: Array<string>): Promise<Confluence.User> {
     const { data } = await this.client.get<Confluence.User>(this.endpoints.CURRENTUSER, { expand: expand?.join(',') });
