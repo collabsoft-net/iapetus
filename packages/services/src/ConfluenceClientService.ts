@@ -8,8 +8,8 @@ import { AbstractAtlasClientService } from '.';
 @injectable()
 export class ConfluenceClientService extends AbstractAtlasClientService {
 
-  async currentUser(): Promise<Confluence.User> {
-    const { data } = await this.client.get<Confluence.User>(this.endpoints.CURRENTUSER);
+  async currentUser(expand?: Array<string>): Promise<Confluence.User> {
+    const { data } = await this.client.get<Confluence.User>(this.endpoints.CURRENTUSER, { expand: expand?.join(',') });
     return data;
   }
 
@@ -45,10 +45,14 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   }
 
   async hasApplicationPermission(accountId: string, operation: Confluence.ContentOperation): Promise<boolean> {
-    const user = await this.getUser(accountId, [ 'operations' ]);
+    const user = this.client instanceof ConfluenceRestClient
+      ? (await this.client.as(accountId).get<Confluence.User>(this.endpoints.CURRENTUSER, { expand: 'operations' })).data
+      : await this.getUser(accountId, [ 'operations' ]);
+
     if (user && user.operations) {
       return user.operations.some(permission => permission.operation === operation && permission.targetType === 'application');
     }
+
     return false;
   }
 

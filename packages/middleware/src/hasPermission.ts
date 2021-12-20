@@ -1,4 +1,4 @@
-import { JiraRestClient } from '@collabsoft-net/clients';
+import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
 import { warn } from 'firebase-functions/lib/logger';
@@ -15,7 +15,7 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
           const service = new JiraClientService(new JiraRestClient(instance), mode);
           hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
         } else if (instance.productType === 'confluence') {
-          const service = new ConfluenceClientService(new JiraRestClient(instance), mode);
+          const service = new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
           hasAllRequiredPermissions = await permissions.reduce(async (previous, permission) => {
             const hasPermission = await previous;
             if (!hasPermission) return hasPermission;
