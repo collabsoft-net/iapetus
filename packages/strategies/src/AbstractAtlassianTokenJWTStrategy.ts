@@ -37,6 +37,9 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
 
     const instance = await this.service.findById(iss);
     if (instance) {
+      instance.lastActive = new Date().getTime();
+      await this.service.save(instance);
+
       return this.toSession(payload, instance);
     } else {
       throw new Error('Customer instance not found');

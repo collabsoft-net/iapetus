@@ -15,6 +15,7 @@ export class ACInstanceDTO extends DTO implements Omit<ACInstance, 'id'> {
   serviceEntitlementNumber: string;
   eventType: 'installed' | 'uninstalled' | 'enabled' | 'disabled';
   oauthClientId: string;
+  lastActive: number;
 
   constructor(data: ACInstance|ACInstanceDTO) {
     super(data.id);
@@ -29,6 +30,7 @@ export class ACInstanceDTO extends DTO implements Omit<ACInstance, 'id'> {
     this.serviceEntitlementNumber = data.serviceEntitlementNumber;
     this.eventType = data.eventType;
     this.oauthClientId = data.oauthClientId;
+    this.lastActive = data.lastActive;
   }
 
 }

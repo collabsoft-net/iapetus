@@ -13,4 +13,5 @@ export interface ACInstance extends Entity {
   oauthClientId: string;
   serviceEntitlementNumber: string;
   eventType: 'installed' | 'uninstalled' | 'enabled' | 'disabled';
+  lastActive: number;
 }

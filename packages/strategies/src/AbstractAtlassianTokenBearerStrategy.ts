@@ -21,6 +21,9 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> ex
 
     const instance = await this.service.findById(iss);
     if (instance) {
+      instance.lastActive = new Date().getTime();
+      await this.service.save(instance);
+
       const payload = decodeSymmetric(token, instance.sharedSecret, SymmetricAlgorithm.HS256);
       return this.toSession(payload, instance);
     } else {

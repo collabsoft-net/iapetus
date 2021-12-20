@@ -35,6 +35,7 @@ export abstract class AbstractLifecycleController<T extends Session> extends Abs
 
   protected async createOrUpdate(instance: ACInstance, active: boolean): Promise<void> {
     const current = await this.service.findById(instance.clientKey) || {};
+    current.lastActive = new Date().getTime();
     await this.service.save({ ...current, ...instance,  active });
   }
 
