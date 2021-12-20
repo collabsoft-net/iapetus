@@ -40,7 +40,7 @@ export enum JiraCloudEndpoints {
 export enum ConfluenceCloudEndpoints {
   APP = '/rest/atlassian-connect/1/addons/:appKey',
   USER = '/rest/api/user',
-  CURRENTUSER = '/rest/api/myself',
+  CURRENTUSER = '/rest/api/user/current',
   MEMBEROF = '/rest/api/user/memberof',
 
   CONTENT_PERMISSIONS = '/rest/api/content/:id/permission/check',

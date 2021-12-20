@@ -55,7 +55,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
             };
             hasAllRequiredPermissions = await service.hasPermissions(accountId, [ permissions ]);
           } else if (instance.productType === 'confluence' && !Array.isArray(permission)) {
-            const service = new ConfluenceClientService(new JiraRestClient(instance), mode);
+            const service = new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
             if (entityType === 'content') {
               hasAllRequiredPermissions = await service.hasContentPermission(entityId, {
                 type: 'user',

@@ -51,15 +51,12 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   }
 
   async hasApplicationPermission(accountId: string, operation: Confluence.ContentOperation): Promise<boolean> {
-    const user = this.client instanceof ConfluenceRestClient
-      ? (await this.client.as(accountId).get<Confluence.User>(this.endpoints.CURRENTUSER, { expand: 'operations' })).data
-      : await this.getUser(accountId, [ 'operations' ]);
-
-    if (user && user.operations) {
-      return user.operations.some(permission => permission.operation === operation && permission.targetType === 'application');
-    }
-
-    return false;
+    const user = await this.getUser(accountId, [ 'operations' ]);
+    return user && user.operations
+      ? user.operations
+        .filter(({ targetType }) => targetType === 'application')
+        .some(permission => permission.operation.toLowerCase() === operation.toLowerCase())
+      : false;
   }
 
   async memberOf(groupName: string): Promise<boolean>;
