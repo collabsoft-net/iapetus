@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/connect",
-  "version": "1.0.0-alpha.104",
+  "version": "1.0.0-alpha.105",
   "description": "Atlassian Connect polyfill (incl. Javascript API)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
