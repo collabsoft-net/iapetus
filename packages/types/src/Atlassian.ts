@@ -110,6 +110,7 @@ declare global {
       metadata?: ContentMetadata;
       macroRenderedOutput?: unknown;
       extensions?: unknown;
+      _links: Record<string, string>;
     }
 
     interface ContentBody {
