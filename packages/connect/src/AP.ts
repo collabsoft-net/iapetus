@@ -178,7 +178,8 @@ declare global {
         contentId: number,
         contentType: string;
         spaceKey: string;
-      }
+      },
+      href: string;
     }
 
     // https://developer.atlassian.com/cloud/jira/platform/jsapi/request/
