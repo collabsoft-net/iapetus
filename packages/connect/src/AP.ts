@@ -173,12 +173,12 @@ declare global {
     }
 
     interface NavigatorLocation {
-      target: 'contentview'|'contentedit',
+      target: 'contentview'|'contentedit';
       context: {
         contentId: number,
         contentType: string;
         spaceKey: string;
-      },
+      };
       href: string;
     }
 
