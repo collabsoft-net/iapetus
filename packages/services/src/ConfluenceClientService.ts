@@ -26,6 +26,11 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getContent(contentId: number): Promise<Confluence.Content> {
+    const { data } = await this.client.get<Confluence.Content>(`/rest/api/content/${contentId}`);
+    return data;
+  }
+
   async hasContentPermission(contentId: string, subject: Confluence.PermissionSubjectWithGroupId, operation: Confluence.ContentOperation): Promise<boolean> {
     const { data: permission } = await this.client.post<Confluence.PermissionCheckResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId }), {
       subject,
