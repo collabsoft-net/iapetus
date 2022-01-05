@@ -36,12 +36,22 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getStatuses(projectIdOrKey: string): Promise<Array<Jira.IssueTypeWithStatus>> {
+    const { data } = await this.client.get<Array<Jira.IssueTypeWithStatus>>(this.getEndpointFor(this.endpoints.STATUSES, { projectIdOrKey }));
+    return data;
+  }
+
+  async getStatus(idOrName: string): Promise<Jira.StatusDetails | null> {
+    const { data } = await this.client.get<Jira.StatusDetails>(this.getEndpointFor(this.endpoints.STATUSDETAILS, { idOrName }));
+    return data;
+  }
+
   async getIssue(issueIdOrKey: string|number): Promise<Jira.Issue> {
     const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }));
     return data;
   }
 
-  async editIssue(issueIdOrKey: string|number, data: Jira.EditIssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
+  async updateIssue(issueIdOrKey: string|number, data: Jira.EditIssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
     const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey }), data, options as Record<string, string|number|boolean|undefined>);
     if (status !== StatusCodes.NO_CONTENT) {
       throw new Error(statusText);
@@ -62,18 +72,23 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getCommentsFor(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', fetchAll = true): Promise<Array<Jira.Comment>> {
+  async getComments(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', expand: Array<string> = [], fetchAll = true): Promise<Array<Jira.Comment>> {
     const result: Array<Jira.Comment> = [];
-    const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy });
+    const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy, expand: expand.join(',') });
     result.push(...data.comments);
     if (fetchAll && data.total > (data.startAt + data.maxResults)) {
-      result.push(...await this.getCommentsFor(issueIdOrKey, (startAt + maxResults), maxResults, orderBy, fetchAll));
+      result.push(...await this.getComments(issueIdOrKey, (startAt + maxResults), maxResults, orderBy, expand, fetchAll));
     }
     return result;
   }
 
   async getComment(issueIdOrKey: string|number, commentId: string, options?: Jira.GetCommentRequestParameters): Promise<Jira.Comment> {
     const { data } = await this.client.get<Jira.Comment>(this.getEndpointFor(this.endpoints.READ_COMMENT, { issueIdOrKey, commentId }), options as Record<string, string|number|boolean|undefined>|undefined);
+    return data;
+  }
+
+  async createComment(issueIdOrKey: string, body: string|Record<string, unknown>, expand: Array<string> = []): Promise<Jira.Comment> {
+    const { data } = await this.client.post<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_CREATE, { issueIdOrKey }), { body }, { expand: expand.join(',') });
     return data;
   }
 
@@ -132,12 +147,12 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getComponentsFor(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {
+  async getComponents(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {
     const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey }));
     return data;
   }
 
-  async getComponentsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
+  async getComponentsPaginated(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
     const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
     return data;
   }

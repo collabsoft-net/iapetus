@@ -13,6 +13,12 @@ export enum JiraCloudEndpoints {
   ISSUE_PROPERTY_BY_KEY = '/rest/api/3/issue/:issueIdOrKey/properties/:propertyKey',
   COMMENT_PROPERTY_BY_KEY = '/rest/api/3/comment/:commentId/properties/:propertyKey',
 
+  READ_PROJECT = '/rest/api/3/project/:projectIdOrKey',
+  LIST_PROJECTS = '/rest/api/3/project',
+
+  STATUSES = '/rest/api/3/project/:projectIdOrKey/statuses',
+  STATUSDETAILS = '/rest/api/3/status/:idOrName',
+
   READ_ISSUE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_CREATE = '/rest/api/3/issue',
   ISSUE_UPDATE = '/rest/api/3/issue/:issueIdOrKey',
@@ -21,12 +27,10 @@ export enum JiraCloudEndpoints {
 
   READ_COMMENT = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
   LIST_COMMENTS = '/rest/api/3/issue/:issueIdOrKey/comment',
+  COMMENT_CREATE = '/rest/api/3/issue/:issueIdOrKey/comment',
   COMMENT_UPDATE = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
 
   READ_ATTACHMENT = '/rest/api/3/attachment/:attachmentId',
-
-  READ_PROJECT = '/rest/api/3/project/:projectIdOrKey',
-  LIST_PROJECTS = '/rest/api/3/project',
 
   READ_VERSION = '/rest/api/3/version/:id',
   LIST_VERSIONS = '/rest/api/3/project/:projectIdOrKey/versions',
