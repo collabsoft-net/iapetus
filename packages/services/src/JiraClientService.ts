@@ -41,6 +41,52 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async editIssue(issueIdOrKey: string|number, data: Jira.EditIssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
+    const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey }), data, options as Record<string, string|number|boolean|undefined>);
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async searchIssues(jql: string, startAt = 0, maxResults = 50, validateQuery: 'strict'|'warn'|'none' = 'strict', fields = ['*navigable'], expand: Array<string> = [], properties: Array<string> = [], fieldsByKeys = false): Promise<Jira.SearchResults> {
+    const { data } = await this.client.post<Jira.SearchResults>(this.getEndpointFor(this.endpoints.ISSUE_SEARCH), {
+      jql,
+      startAt,
+      maxResults,
+      validateQuery,
+      fields,
+      expand,
+      properties,
+      fieldsByKeys
+    });
+    return data;
+  }
+
+  async getCommentsFor(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', fetchAll = true): Promise<Array<Jira.Comment>> {
+    const result: Array<Jira.Comment> = [];
+    const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy });
+    result.push(...data.comments);
+    if (fetchAll && data.total > (data.startAt + data.maxResults)) {
+      result.push(...await this.getCommentsFor(issueIdOrKey, (startAt + maxResults), maxResults, orderBy, fetchAll));
+    }
+    return result;
+  }
+
+  async getComment(issueIdOrKey: string|number, commentId: string, options?: Jira.GetCommentRequestParameters): Promise<Jira.Comment> {
+    const { data } = await this.client.get<Jira.Comment>(this.getEndpointFor(this.endpoints.READ_COMMENT, { issueIdOrKey, commentId }), options as Record<string, string|number|boolean|undefined>|undefined);
+    return data;
+  }
+
+  async updateComment<T>(issueIdOrKey: string|number, commentId: string, body: string|Record<string, unknown>, properties?: Array<Jira.EntityProperty<T>>): Promise<Jira.Comment> {
+    const { data } = await this.client.put<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_UPDATE, { issueIdOrKey, commentId }), { body, properties });
+    return data;
+  }
+
+  async getAttachment(attachmentId: string): Promise<Jira.Attachment> {
+    const { data } = await this.client.get<Jira.Attachment>(this.getEndpointFor(this.endpoints.READ_ATTACHMENT, { attachmentId }));
+    return data;
+  }
+
   async getVersion(id: string|number, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
     const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id }), { expand: expand?.join(',') });
     return data;
@@ -138,7 +184,16 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getUserProperty<T>(propertyKey: string, userKeyOrAccountId?: string): Promise<Jira.EntityProperty<T>|null> {
+  async getEntityProperty<T>(entityType: 'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+    switch (entityType) {
+      case 'user': return this.getUserProperty(entityId, propertyKey);
+      case 'project': return this.getProjectProperty(entityId, propertyKey);
+      case 'issue': return this.getIssueProperty(entityId, propertyKey);
+      case 'comment': return this.getCommentProperty(entityId, propertyKey);
+    }
+  }
+
+  async getUserProperty<T>(userKeyOrAccountId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
     try {
       const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
       const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
@@ -150,11 +205,68 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async setUserProperty<T>(property: Jira.EntityProperty<T>, userKeyOrAccountId?: string): Promise<void> {
+  async getProjectProperty<T>(projectIdOrKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async getIssueProperty<T>(issueIdOrKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async getCommentProperty<T>(commentId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async setEntityProperty<T>(entityType: 'user'|'project'|'issue'|'comment', entityId: string, property: Jira.EntityProperty<T>): Promise<void> {
+    switch (entityType) {
+      case 'user': return this.setUserProperty(entityId, property);
+      case 'project': return this.setProjectProperty(entityId, property);
+      case 'issue': return this.setIssueProperty(entityId, property);
+      case 'comment': return this.setCommentProperty(entityId, property);
+    }
+  }
+
+  async setUserProperty<T>(userKeyOrAccountId: string, property: Jira.EntityProperty<T>): Promise<void> {
     const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
     const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
 
     const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, params);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async setProjectProperty<T>(projectIdOrKey: string, property: Jira.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async setIssueProperty<T>(issueIdOrKey: string, property: Jira.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async setCommentProperty<T>(commentId: string, property: Jira.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey: property.key }), property.value);
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
