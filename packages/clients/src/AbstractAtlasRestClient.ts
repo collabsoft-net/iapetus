@@ -29,7 +29,7 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
       method,
       url: endpoint,
       data,
-      params,
+      params: params ? this.normalizeQuery(params) : undefined,
       headers
     };
     options.headers = options.headers || {};

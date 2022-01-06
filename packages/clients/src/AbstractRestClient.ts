@@ -2,7 +2,6 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
 import { RestClient } from '@collabsoft-net/types';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
-import { ParsedQuery } from 'query-string';
 
 export abstract class AbstractRestClient implements RestClient {
 
@@ -43,8 +42,8 @@ export abstract class AbstractRestClient implements RestClient {
     return this.request<T>(RestClientMethods.DELETE, endpoint, data, params, config);
   }
 
-  protected normalizeQuery(params: ParsedQuery): ParsedQuery {
-    const query: ParsedQuery = {};
+  protected normalizeQuery(params: Record<string, string|number|boolean|undefined>): Record<string, string|number|boolean|undefined> {
+    const query: Record<string, string|number|boolean|undefined> = {};
     if (params) {
       Object.entries(params).forEach(([ key, value ]) => {
         if (typeof value === undefined || value === undefined || value === null) return;
