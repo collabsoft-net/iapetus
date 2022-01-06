@@ -12,8 +12,8 @@ export const ScheduledPubSubHandlers = Symbol.for('ScheduledPubSubHandlers');
 export const registerPubSubHandlers = async (container: inversify.interfaces.Container | (() => inversify.interfaces.Container)): Promise<void> => {
   const appContainer = typeof container === 'function' ? container() : container;
 
-  const pubSubHandlers = appContainer.getAll<PubSubHandler>(PubSubHandlers);
-  const scheduledPubSubHandlers = appContainer.getAll<ScheduledPubSubHandler>(ScheduledPubSubHandlers);
+  const pubSubHandlers = appContainer.isBound(PubSubHandlers) ? appContainer.getAll<PubSubHandler>(PubSubHandlers) : [];
+  const scheduledPubSubHandlers = appContainer.isBound(ScheduledPubSubHandlers) ? appContainer.getAll<ScheduledPubSubHandler>(ScheduledPubSubHandlers) : [];
 
   pubSubHandlers.forEach(handler => {
     const name = handler.name || handler.topic;
