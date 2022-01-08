@@ -26,6 +26,7 @@ declare global {
       request(url: string, options?: AP.RequestOptions): Promise<AP.RequestResponse>;
       request(options: AP.RequestOptions): Promise<AP.RequestResponse>;
       history: AP.History;
+      host: AP.Host;
       navigator: AP.Navigator;
 
       _data: Record<string, unknown>;
@@ -164,6 +165,10 @@ declare global {
       getState: () => string;
       pushState: (newState: Record<string, unknown>, title?: string, url?: string) => void;
       replaceState: (url: string) => void;
+    }
+
+    interface Host {
+      getSelectedText: (callback: (selection: string) => void) => void;
     }
 
     interface Navigator {
