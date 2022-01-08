@@ -198,6 +198,10 @@ const history: AP.History = {
   replaceState: (_url: string): void => { throw new Error('replaceState(): This AP method is not yet implemented'); },
 };
 
+const host: AP.Host = {
+  getSelectedText: (): void => { throw new Error('getSelectedText(): This AP method is not yet implemented'); },
+}
+
 const navigator: AP.Navigator = {
   getLocation: (callback: (location: AP.NavigatorLocation) => void) => {
     const requestId = uniqid();
@@ -223,6 +227,7 @@ const polyfill: AP.Instance = {
   jira,
   request,
   history,
+  host,
   navigator,
   _data: {},
   isPolyfill: true
