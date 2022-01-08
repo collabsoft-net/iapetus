@@ -17,6 +17,7 @@ declare global {
       hideFooter(hideFooter?: boolean): void;
 
       context: AP.Context;
+      cookie: AP.Cookie;
       events: AP.Events;
       dialog: AP.Dialog;
       confluence: AP.Confluence;
@@ -36,6 +37,14 @@ declare global {
     interface Context {
       getToken: (callback?: () => string) => Promise<string>;
       getContext: <T> (callback?: () => unknown) => Promise<T>;
+    }
+
+    interface Cookie {
+      saveLocalStorage: (addonKey: string, name: string, value: string, expireDays: number) => void;
+      readLocalStorage: (addonKey: string, name: string) => string|undefined;
+      save: (name: string, value: string, expires: number) => void;
+      read: (name: string, callback: (value: string|undefined) => void) => void;
+      erase: (name: string) => void;
     }
 
     interface JiraContext {
