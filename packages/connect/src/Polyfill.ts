@@ -71,6 +71,14 @@ const context: AP.Context = {
   },
 };
 
+const cookie: AP.Cookie = {
+  saveLocalStorage: (): void => { throw new Error('saveLocalStorage(): This AP method is not yet implemented'); },
+  readLocalStorage: (): string|undefined => { throw new Error('readLocalStorage(): This AP method is not yet implemented'); },
+  save: (): void => { throw new Error('save(): This AP method is not yet implemented'); },
+  read: (): void => { throw new Error('read(): This AP method is not yet implemented'); },
+  erase: (): void => { throw new Error('erase(): This AP method is not yet implemented'); }
+}
+
 const events: AP.Events = {
   on: (_name: string, _listener: (data?: unknown) => void): void => { throw new Error('on(): This AP method is not yet implemented'); },
   onPublic: (_name: string, _listener: (data?: unknown) => void, _filter: (event: unknown) => boolean): void => { throw new Error('onPublic(): This AP method is not yet implemented'); },
@@ -220,6 +228,7 @@ const polyfill: AP.Instance = {
   sizeToParent,
   hideFooter,
   context,
+  cookie,
   events,
   dialog,
   confluence,
