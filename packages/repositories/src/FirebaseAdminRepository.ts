@@ -13,7 +13,7 @@ export class FirebaseAdminRepository implements Repository {
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(options: admin.AppOptions, name: string) {
+  constructor(name: string, options?: admin.AppOptions) {
     this.fb = admin.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
