@@ -1,3 +1,4 @@
+import { isProduction } from '@collabsoft-net/helpers';
 import { load } from '@gdn/envify-nconf';
 import * as functions from 'firebase-functions';
 import { info } from 'firebase-functions/lib/logger';
@@ -9,9 +10,19 @@ export const setEnv = (): void => {
   }
   load(cwd);
 
-  process.env = Object.assign({}, process.env, functions.config().env || {});
-  Object.keys(process.env).forEach((key) => {
-    info(`[Environment] detected variable '${key.toUpperCase()}' from config`);
-    process.env[key.toUpperCase()] = process.env[key];
+  process.env = { ...process.env, ...(functions.config().env || {}) };
+
+  if (process.env.FIREBASE_CONFIG) {
+    const config: Record<string, string> = JSON.parse(process.env.FIREBASE_CONFIG);
+    Object.entries(config).forEach(([ key, value ]) => {
+      process.env[`FB_${key.toUpperCase()}`] = value;
+    });
+  }
+
+  Object.entries(process.env).forEach(([ key, value ]) => {
+    if (!isProduction) {
+      info(`[Environment] detected variable '${key.toUpperCase()}' from config`);
+    }
+    process.env[key.toUpperCase()] = value;
   });
 }
