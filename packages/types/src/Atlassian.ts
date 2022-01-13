@@ -1067,7 +1067,16 @@ declare global {
 
   }
 
-  namespace BitBucket {
+  namespace Bitbucket {
+
+    interface Paginated<T> {
+      start: number;
+      size: number;
+      total: number;
+      values: Array<T>;
+      isLastPage: boolean;
+      nextPageStart: number;
+    }
 
     interface User {
       name: string;
