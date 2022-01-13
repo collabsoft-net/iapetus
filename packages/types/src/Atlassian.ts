@@ -1067,6 +1067,77 @@ declare global {
 
   }
 
+  namespace BitBucket {
+
+    interface User {
+      name: string;
+      emailAddress: string;
+      id: number;
+      displayName: string;
+      active: boolean;
+      slug: string;
+      type: string;
+    }
+
+    interface Project {
+      key: string;
+      id: number;
+      name: string;
+      description: string;
+      public: boolean;
+      type: string;
+    }
+
+    interface Repository {
+      slug: string;
+      id: number;
+      name: string;
+      description: string;
+      hierarchyId: string;
+      scmId: string;
+      state: string;
+      statusMessage: string;
+      forkable: boolean;
+      project: Project;
+      public: boolean;
+    }
+
+    interface Ref {
+      id: string;
+      displayId: string;
+      type: 'BRANCH'|'TAG';
+      latestCommit: string;
+      latestChangeset: string;
+
+    }
+
+    interface Branch extends Ref {
+      isDefault: boolean;
+    }
+
+    interface Tag extends Ref {
+      hash: string;
+    }
+
+    interface Commit {
+      id: string;
+      displayId: string;
+      author: {
+        name: string;
+        emailAddress: string;
+      },
+      authorTimestamp: number;
+      committer: {
+        name: string;
+        emailAddress: string;
+      },
+      committerTimestamp: number,
+      message: string;
+      parents: Array<{ id: string; displayId: string; }>;
+    }
+
+  }
+
   namespace UPM {
 
     interface App {
