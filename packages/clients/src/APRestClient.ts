@@ -28,7 +28,7 @@ export class APRestClient implements RestClient {
   }
 
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
-    const client = this.AP.request;
+    const client = this.AP.request || new Promise<AP.Request>((resolve) => this.AP.require<AP.Request>('request', resolve));
     try {
       const { body, xhr } = await client({
         type,

@@ -24,8 +24,9 @@ declare global {
       flag: AP.Flag;
       jira: AP.Jira;
 
-      request(url: string, options?: AP.RequestOptions): Promise<AP.RequestResponse>;
-      request(options: AP.RequestOptions): Promise<AP.RequestResponse>;
+      require<T>(name: string, callback: (response: T) => void): void;
+      request: AP.Request;
+
       history: AP.History;
       host: AP.Host;
       navigator: AP.Navigator;
@@ -165,6 +166,11 @@ declare global {
     interface DialogButtonOptions {
       text: string,
       identifier: string;
+    }
+
+    interface Request {
+      (url: string, options?: AP.RequestOptions): Promise<AP.RequestResponse>;
+      (options: AP.RequestOptions): Promise<AP.RequestResponse>;
     }
 
     interface History {

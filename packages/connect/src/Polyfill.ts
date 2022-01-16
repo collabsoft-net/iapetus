@@ -195,6 +195,7 @@ const flag: AP.Flag = {
 
 const jira: AP.Jira = {};
 
+const requireDeprecated = (): void => { throw new Error('require(): This AP method is not yet implemented'); };
 const request = async (_urlOroptions: string | AP.RequestOptions, _options?: AP.RequestOptions): Promise<AP.RequestResponse> => { throw new Error('request(): This AP method is not yet implemented'); };
 
 const history: AP.History = {
@@ -234,6 +235,7 @@ const polyfill: AP.Instance = {
   confluence,
   flag,
   jira,
+  require: requireDeprecated,
   request,
   history,
   host,
