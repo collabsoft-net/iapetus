@@ -1078,10 +1078,35 @@ declare global {
       nextPageStart: number;
     }
 
+    interface Page<T> {
+      size: number;
+      page: number;
+      pagelen: number;
+      next: string;
+      previous: string;
+      values: Array<T>;
+    }
+
+    interface Account {
+      uuid: string
+      username: string;
+      nickname: string;
+      account_status: string;
+      display_name: string;
+      website: string;
+      has_2fa_enabled: boolean;
+      location: string;
+      created_on: string;
+      links: {
+        avatar: {href: string; }
+      }
+    }
+
     interface User {
       name: string;
       emailAddress: string;
       id: number;
+      account_id: string;
       displayName: string;
       active: boolean;
       slug: string;
@@ -1100,24 +1125,48 @@ declare global {
     interface Repository {
       slug: string;
       id: number;
+      uuid: string;
       name: string;
+      full_name: string;
       description: string;
       hierarchyId: string;
+      scm: 'git';
       scmId: string;
       state: string;
       statusMessage: string;
       forkable: boolean;
       project: Project;
       public: boolean;
+      is_private: boolean;
+      created_on: string;
+      updated_on: string;
+      parent: Repository;
+      owner: Account;
+      size: number;
+      language: string;
+      has_issues: boolean;
+      has_wiki: string;
+      fork_policy: 'allow_forks'|'no_public_forks'|'no_forks';
+      mainbranch: Ref & Branch;
     }
 
     interface Ref {
       id: string;
+      name: string;
       displayId: string;
       type: 'BRANCH'|'TAG';
       latestCommit: string;
       latestChangeset: string;
-
+      target: BaseCommit & {
+        repository: Repository;
+        particpants: Array<{
+          user: Account & User;
+          role: 'PARTICIPANT'|'REVIEWER';
+          approved: boolean;
+          state: 'approved'|'changes_requested'|null;
+          participated_on: string;
+        }>
+      };
     }
 
     interface Branch extends Ref {
@@ -1126,6 +1175,19 @@ declare global {
 
     interface Tag extends Ref {
       hash: string;
+    }
+
+    interface BaseCommit {
+      type: string;
+      hash: string;
+      date: string;
+      author: {
+        raw: string;
+        user: Account;
+      };
+      message: string;
+      summery: string;
+      parents: Array<BaseCommit>;
     }
 
     interface Commit {
