@@ -5,7 +5,7 @@ import qs from 'query-string';
 
 export class APRestClient implements RestClient {
 
-  constructor(private AP: AP.Instance) {}
+  constructor(protected AP: AP.Instance) {}
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
     return this.request(RestClientMethods.GET, endpoint, undefined, params);
@@ -28,17 +28,15 @@ export class APRestClient implements RestClient {
   }
 
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
-    const client = this.AP.request || await new Promise<AP.Request>((resolve) => this.AP.require<AP.Request>('request', resolve));
+    const client = this.AP.request;
     try {
-      const { body, xhr } = await new Promise<AP.RequestResponse>((resolve, reject) => client({
+      const { body, xhr } = await client({
         type,
         url: this.getUrl(url, params),
         data: data ? JSON.stringify(data) : undefined,
         contentType: 'application/json',
-        success: (responseText, _statusText, xhr) => resolve({ body: responseText, xhr }),
-        error: (xhr, _statusText, errorThrown: Error) => reject({ err: errorThrown, xhr }),
         experimental: true
-      }));
+      });
 
       return {
         status: xhr.status,
@@ -59,7 +57,7 @@ export class APRestClient implements RestClient {
     }
   }
 
-  private getUrl(endpoint: string, params?: Record<string, string|number|boolean>): string {
+  protected getUrl(endpoint: string, params?: Record<string, string|number|boolean>): string {
     if (params) {
       const querystring = qs.stringify(params);
       endpoint = `${endpoint}?${querystring}`;
@@ -68,13 +66,15 @@ export class APRestClient implements RestClient {
     return endpoint;
   }
 
-  private getHeaders(xhr: AP.RequestResponseXHRObject) {
+  protected getHeaders(xhr: AP.RequestResponseXHRObject): AxiosResponseHeaders {
     const result: AxiosResponseHeaders = {};
-    const headers = xhr.getAllResponseHeaders().split('\r\n');
-    headers.forEach(item => {
-      const [ name, ...value ] = item.split(':');
-      result[name] = value.join(';');
-    });
+    if (typeof xhr.getAllResponseHeaders === 'function') {
+      const headers = xhr.getAllResponseHeaders().split('\r\n');
+      headers.forEach(item => {
+        const [ name, ...value ] = item.split(':');
+        result[name] = value.join(';');
+      });
+    }
     return result;
   }
 
