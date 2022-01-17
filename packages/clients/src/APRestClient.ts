@@ -30,13 +30,15 @@ export class APRestClient implements RestClient {
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>): Promise<AxiosResponse<T>> {
     const client = this.AP.request || await new Promise<AP.Request>((resolve) => this.AP.require<AP.Request>('request', resolve));
     try {
-      const { body, xhr } = await client({
+      const { body, xhr } = await new Promise<AP.RequestResponse>((resolve, reject) => client({
         type,
         url: this.getUrl(url, params),
         data: data ? JSON.stringify(data) : undefined,
         contentType: 'application/json',
+        success: (responseText, _statusText, xhr) => resolve({ body: responseText, xhr }),
+        error: (xhr, _statusText, errorThrown: Error) => reject({ err: errorThrown, xhr }),
         experimental: true
-      });
+      }));
 
       return {
         status: xhr.status,
