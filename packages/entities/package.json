@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/entities",
-  "version": "1.0.0-alpha.117",
+  "version": "1.0.0-alpha.123",
   "description": "Shared entities",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -30,7 +30,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.117"
+    "@collabsoft-net/types": "^1.0.0-alpha.123"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
