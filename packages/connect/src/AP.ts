@@ -10,6 +10,13 @@ declare global {
 
   namespace AP {
 
+    interface FrameOptions {
+      resize?: boolean;
+      sizeToParent?: boolean;
+      margin?: boolean;
+      base?: boolean;
+    }
+
     interface Instance {
       getLocation(callback: (location: string) => void): void;
       resize(width: string, height: string): void;

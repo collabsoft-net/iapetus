@@ -3,10 +3,10 @@ import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
 
 import { getContext } from './Context';
 import { processDialogEvent } from './Dialog';
-import { findSource } from './iframe';
+import { findSource, getFrame, getOptions } from './iframe';
 import { getCloseMacroEditorEventHandler, getMacroData, getSaveMacroEventHandler } from './Macro';
 import { getNavigatorLocation, go } from './Navigator';
-import { resize } from './Resize';
+import { getResizeObserver, resize, sizeToParent } from './Resize';
 import { SupportedEvents } from './SupportedEvents';
 
 export const Host = async (modules: Record<string, string>, dialogs: Record<string, string>, helper: ConfluenceHelper|JiraHelper): Promise<void> => {
@@ -80,6 +80,47 @@ export const Host = async (modules: Record<string, string>, dialogs: Record<stri
                 console.log('[AC] Received unsupport event payload', data);
             }
         });
+
+        const options: AP.FrameOptions|null = await getOptions();
+        console.log('[AC] detecting frame options', options);
+        if (options) {
+            if (options.resize) {
+                const acFrame = await getFrame();
+                const parent = acFrame?.parentElement;
+                if (acFrame && parent) {
+                    console.log('[AC] Enabling automatic resize of iframe');
+                    const ResizeObserver = await getResizeObserver();
+                    new ResizeObserver(() => {
+                        console.log('[AC] Resizing iframe to parent')
+
+                        const computedStyle = getComputedStyle(parent);
+                        const innerHeight = parent.clientHeight - (parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom));
+                        const differenceInHeight = innerHeight - acFrame.clientHeight;
+
+                        if (differenceInHeight > 10) {
+                            acFrame.setAttribute('height', `${innerHeight}px`);
+                        }
+                        if (acFrame.clientWidth !== parent.clientWidth) {
+                            acFrame.setAttribute('width', `${parent.clientWidth}px`);
+                        }
+                    }).observe(parent, { box: 'border-box' });
+                }
+            }
+
+            if (options.sizeToParent) {
+                console.log('[AC] Resizing iframe to parent container');
+                sizeToParent({ source: window });
+            }
+
+            if (options.base) {
+                console.log('[AC] frame option "base" is currently not implemented');
+            }
+
+            if (options.margin) {
+                console.log('[AC] frame option "margin" is currently not implemented');
+            }
+        }
+
     } catch (error) {
         console.log('[AC] An unexpected error occurred', error);
     }
