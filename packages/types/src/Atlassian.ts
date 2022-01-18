@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 export interface Atlassian {
-  HOSTNAME: 'confluence'|'jira';
-  PRODUCTNAME: 'Confluence'|'Jira';
+  HOSTNAME: 'confluence'|'jira'|'bitbucket';
+  PRODUCTNAME: 'Confluence'|'Jira'|'Bitbucket';
   getUrl: (path: string) => string;
 }
 
