@@ -19,7 +19,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
       secretOrKeyProvider: async (_: Express.Request, rawJwtToken: string, done: (err: Error|null, payload?: string) => void) => {
         try {
           const payload = decodeSymmetric(rawJwtToken, '', SymmetricAlgorithm.HS256, true);
-          const instance = await this.service.findById(payload.iss);
+          const instance = await this.service.findById(payload.iss) || await this.service.findByProperty('clientKey', payload.iss);
           if (!instance) throw new Error('Could not find customer instance, unauthorized access not allowed');
           done(null, instance.sharedSecret);
         } catch (error) {
@@ -35,7 +35,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
   protected async process(payload: Atlassian.JWT): Promise<T> {
     const { iss } = payload;
 
-    const instance = await this.service.findById(iss);
+    const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
     if (instance) {
       instance.lastActive = new Date().getTime();
       await this.service.save(instance);

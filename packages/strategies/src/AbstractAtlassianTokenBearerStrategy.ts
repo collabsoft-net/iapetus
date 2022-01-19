@@ -19,7 +19,7 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> ex
     const now = Math.round(new Date().getTime() / 1000);
     if (exp < now) throw new Error('Session expired');
 
-    const instance = await this.service.findById(iss);
+    const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
     if (instance) {
       instance.lastActive = new Date().getTime();
       await this.service.save(instance);
