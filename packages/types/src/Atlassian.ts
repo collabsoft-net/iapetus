@@ -1148,6 +1148,15 @@ declare global {
       has_wiki: string;
       fork_policy: 'allow_forks'|'no_public_forks'|'no_forks';
       mainbranch: Ref & Branch;
+      workspace: Workspace;
+    }
+
+    interface Workspace {
+      links: Record<string, { href: string; }>;
+      name: string;
+      slug: string;
+      type: 'workspace'
+      uuid: string;
     }
 
     interface Ref {
