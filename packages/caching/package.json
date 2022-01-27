@@ -31,12 +31,11 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "peerDependencies": {
-    "redis": "3.1.2"
+    "redis": "4.0.2"
   },
   "devDependencies": {
     "@collabsoft-net/types": "^1.0.0-alpha.125",
-    "@types/redis": "^2.8.32",
-    "redis": "3.1.2"
+    "redis": "4.0.2"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -1,14 +1,14 @@
 import { Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
-import { ClientOpts, createClient, RedisClient } from 'redis';
+import { createClient, RedisClientOptions, RedisClientType, RedisModules, RedisScripts } from 'redis';
 
 export class RedisService {
 
-  private client: RedisClient;
+  private client: RedisClientType<RedisModules, RedisScripts>;
   private ready = false;
   private timeout = false;
 
-  constructor(options: ClientOpts) {
+  constructor(options: RedisClientOptions<RedisModules, RedisScripts>) {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.timeout = true; });
@@ -23,37 +23,34 @@ export class RedisService {
 
     if (forceRefresh === true) {
       console.log(`[REDIS] forcing reload of key ${key}`);
-      await new Promise(resolve => this.client.del(key, resolve));
+      await this.client.del(key);
     }
 
-    return new Promise<T|null>(resolve =>
-      this.client.get(key, async (_, reply) => {
-          if (reply) {
-            try {
-              console.log(`[REDIS] hit from cache for key ${key}`);
-              const result: T = JSON.parse(reply);
-              resolve(new type(result));
-            } catch (error) {
-              console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
-              this.client.del(key, async () => {
-                const result = await loader();
-                resolve(new type(result));
-              });
-            }
-          } else {
-            try {
-              console.log(`[REDIS] miss from cache for key ${key}`);
-              const result = await loader();
-              if (result === null) throw new Error(`Failed to retrieve data from loader`);
+    const reply = await this.client.get(key);
+    if (reply) {
+      try {
+        console.log(`[REDIS] hit from cache for key ${key}`);
+        const result: T = JSON.parse(reply);
+        return new type(result);
+      } catch (error) {
+        console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        await this.flush(key);
+        const result = await loader();
+        return new type(result);
+      }
+    } else {
+      try {
+        console.log(`[REDIS] miss from cache for key ${key}`);
+        const result = await loader();
+        if (result === null) throw new Error(`Failed to retrieve data from loader`);
 
-              await this.set(key, result);
-              resolve(new type(result));
-            } catch (error) {
-              console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
-              resolve(null);
-            }
-          }
-      }));
+        await this.set(key, result);
+        return new type(result);
+      } catch (error) {
+        console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        return null;
+      }
+    }
   }
 
   public async set<T>(key: string, data: T): Promise<Error|null> {
@@ -64,15 +61,18 @@ export class RedisService {
     }
 
     console.log(`[REDIS] caching data for key ${key}`);
-    return new Promise<Error|null>(resolve => {
-      try {
-        const payload = JSON.stringify(data);
-        this.client.setex(key, 30 * 60 * 1000, payload, resolve);
-      } catch (error) {
-        console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
-        resolve(error as Error);
-      }
-    });
+    try {
+      const payload = JSON.stringify(data);
+      await this.client.setEx(key, 30 * 60 * 1000, payload);
+      return null;
+    } catch (error) {
+      console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
+      return error as Error;
+    }
+  }
+
+  public async flush(key: string): Promise<void> {
+    await this.client.del(key);
   }
 
   public static generateKey(...args: Array<string|number|undefined>): string {
