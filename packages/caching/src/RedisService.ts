@@ -6,12 +6,11 @@ export class RedisService {
 
   private client: RedisClientType<RedisModules, RedisScripts>;
   private ready = false;
-  private timeout = false;
 
   constructor(options: RedisClientOptions<RedisModules, RedisScripts>) {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
-    this.client.on('error', () => { this.timeout = true; });
+    this.client.on('error', () => { this.ready = false; });
   }
 
   public async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null> {
@@ -22,8 +21,7 @@ export class RedisService {
     }
 
     if (forceRefresh === true) {
-      console.log(`[REDIS] forcing reload of key ${key}`);
-      await this.client.del(key);
+      await this.flush(key);
     }
 
     const reply = await this.client.get(key);
@@ -72,7 +70,13 @@ export class RedisService {
   }
 
   public async flush(key: string): Promise<void> {
-    await this.client.del(key);
+    await this.isReady();
+    if (!this.ready) {
+      console.log(`[REDIS] cannot flush key ${key}, server is not ready`);
+    } else {
+      console.log(`[REDIS] flushing key ${key}`);
+      await this.client.del(key);
+    }
   }
 
   public static generateKey(...args: Array<string|number|undefined>): string {
@@ -80,10 +84,16 @@ export class RedisService {
   }
 
   private async isReady() {
-    if (this.ready || this.timeout) {
+    if (this.ready) {
       return;
     } else {
-      await this.client.connect();
+      try {
+        await this.client.connect();
+      } catch (error) {
+        this.ready = false;
+        return;
+      }
+
       return new Promise<void>(resolve => {
         let count = 0;
         const interval = setInterval(() => {
