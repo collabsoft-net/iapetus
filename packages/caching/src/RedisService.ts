@@ -83,6 +83,7 @@ export class RedisService {
     if (this.ready || this.timeout) {
       return;
     } else {
+      await this.client.connect();
       return new Promise<void>(resolve => {
         let count = 0;
         const interval = setInterval(() => {
