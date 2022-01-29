@@ -5,7 +5,7 @@ import { injectable } from 'inversify';
 import * as passport from 'passport';
 
 @injectable()
-export abstract class AbstractOAuthStrategy implements Strategy {
+export abstract class AbstractOAuthStrategy<T> implements Strategy {
 
   abstract get name(): string;
 
@@ -16,9 +16,10 @@ export abstract class AbstractOAuthStrategy implements Strategy {
   abstract get strategy(): passport.Strategy;
 
   protected callback() {
-    return async (_req: express.Request, accessToken: string, refreshToken: string, profile: unknown, done: (err: Error|null, profile?: unknown) => void): Promise<void> => {
+    return async (req: express.Request, accessToken: string, refreshToken: string, profile: T, done: (err: Error|null, profile?: unknown) => void): Promise<void> => {
       try {
-        const user = await this.process(accessToken, refreshToken, profile);
+        const state = typeof req.query['state'] === 'string' ? req.query['state'] : undefined;
+        const user = await this.process(accessToken, refreshToken, profile, state);
         done(null, user);
       } catch (error) {
         done(error as Error);
@@ -26,7 +27,7 @@ export abstract class AbstractOAuthStrategy implements Strategy {
     };
   }
 
-  abstract process<T>(accessToken: string, refreshToken: string, profile: T): Promise<T>;
+  abstract process(accessToken: string, refreshToken: string, profile: T, state?: string): Promise<T>;
 
   next(_req: express.Request, res: express.Response): void {
     res.redirect(`/`);
