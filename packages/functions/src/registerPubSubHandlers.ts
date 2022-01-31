@@ -17,13 +17,12 @@ export const registerPubSubHandlers = async (container: inversify.interfaces.Con
 
   pubSubHandlers.forEach(handler => {
     const name = handler.name || handler.topic;
-    !isProduction && log(`[${name}] Registering PubSub subscription for topic ${handler.topic}`)
+    !isProduction() && log(`[${name}] Registering PubSub subscription for topic ${handler.topic}`)
     module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.topic(handler.topic).onPublish((message) => handler.process(message));
   });
 
   for await (const handler of scheduledPubSubHandlers) {
     const { name, schedule } = handler;
-    if (!isProduction) {
       log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule}`);
       const scheduleName = getName('system', name);
       await hasJob(scheduleName).then((isTrue) => !isTrue
@@ -44,6 +43,7 @@ export const registerPubSubHandlers = async (container: inversify.interfaces.Con
         log(`[${name}] Failed to register scheduled PubSub subscription for schedule ${schedule}`, error);
       })
       module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.topic(name).onPublish(() => handler.process());
+    if (!isProduction()) {
     } else {
       module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.schedule(schedule).onRun(() => handler.process());
     }

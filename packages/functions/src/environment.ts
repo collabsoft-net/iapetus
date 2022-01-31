@@ -21,7 +21,7 @@ export const setEnv = (): void => {
   }
 
   Object.entries(process.env).forEach(([ key, value ]) => {
-    if (!isProduction) {
+    if (!isProduction()) {
       info(`[Environment] detected variable '${key.toUpperCase()}' from config`);
     }
     process.env[key.toUpperCase()] = value;

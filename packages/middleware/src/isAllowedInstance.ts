@@ -5,7 +5,7 @@ import { warn } from 'firebase-functions/lib/logger';
 
 export const isAllowedInstance = (productionProjectId: string, allowedInstances: Array<string>) => {
   return (req: express.Request, res: express.Response, next: express.NextFunction): void => {
-    if (!isProduction || !process.env.FB_PROJECTID || process.env.FB_PROJECTID !== productionProjectId) {
+    if (!isProduction() || !process.env.FB_PROJECTID || process.env.FB_PROJECTID !== productionProjectId) {
       const { body } = req;
       if (body && body.baseUrl) {
         if (!allowedInstances.some(instance => body.baseUrl.startsWith(instance))) {

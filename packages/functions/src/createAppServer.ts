@@ -36,7 +36,7 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
 
       strategies.forEach((instance) => {
         passport.use(instance.strategy)
-        !isProduction && info(`Registering strategy [${instance.name}]`);
+        !isProduction() && info(`Registering strategy [${instance.name}]`);
         app.get(`/api/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
           const options = instance.options;
           options.state = req.query ? Buffer.from(JSON.stringify(req.query)).toString('base64') : undefined;
