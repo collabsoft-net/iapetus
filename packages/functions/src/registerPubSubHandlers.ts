@@ -1,7 +1,7 @@
 
 import { isProduction } from '@collabsoft-net/helpers';
-import { getName, getParent, hasJob, scheduler } from '@collabsoft-net/scheduler';
-import { PubSubHandler, ScheduledPubSubHandler, SystemEvent } from '@collabsoft-net/types';
+import { PubSubHandler, ScheduledPubSubHandler } from '@collabsoft-net/types';
+import { CronJob } from 'cron';
 import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/lib/logger';
 import * as inversify from 'inversify';
@@ -23,28 +23,12 @@ export const registerPubSubHandlers = async (container: inversify.interfaces.Con
 
   for await (const handler of scheduledPubSubHandlers) {
     const { name, schedule } = handler;
-      log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule}`);
-      const scheduleName = getName('system', name);
-      await hasJob(scheduleName).then((isTrue) => !isTrue
-        ? scheduler.createJob({
-            parent: getParent(),
-            job: {
-              name: scheduleName,
-              schedule: schedule,
-              httpTarget: {
-                uri: `${process.env.AC_BASEURL}/api/scheduler`,
-                httpMethod: 'POST',
-                body: Buffer.from(JSON.stringify(new SystemEvent(name))),
-              }
-            }
-          })
-        : Promise.resolve(undefined)
-      ).catch((error: Error) => {
-        log(`[${name}] Failed to register scheduled PubSub subscription for schedule ${schedule}`, error);
-      })
-      module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.topic(name).onPublish(() => handler.process());
     if (!isProduction()) {
+      log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Cron)`);
+      const job = new CronJob(schedule, () => handler.process());
+      job.start();
     } else {
+      log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Google Cloud Scheduler)`);
       module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.schedule(schedule).onRun(() => handler.process());
     }
   }

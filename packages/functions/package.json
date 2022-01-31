@@ -32,12 +32,12 @@
   },
   "devDependencies": {
     "@collabsoft-net/helpers": "^1.0.0-alpha.128",
-    "@collabsoft-net/scheduler": "^1.0.0-alpha.128",
     "@collabsoft-net/services": "^1.0.0-alpha.128",
     "@gdn/envify-nconf": "1.2.1",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "@types/cookie-parser": "1.4.2",
+    "@types/cron": "^1.7.3",
     "cookie-parser": "1.4.4",
     "express": "4.17.0",
     "firebase-admin": "9.9.0",
@@ -48,12 +48,12 @@
   },
   "peerDependencies": {
     "@collabsoft-net/helpers": "^1.0.0-alpha.91",
-    "@collabsoft-net/scheduler": "^1.0.0-alpha.90",
     "@collabsoft-net/services": "^1.0.0-alpha.91",
     "@gdn/envify-nconf": "1.2.1",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "cookie-parser": "1.4.4",
+    "cron": "^1.8.2",
     "express": "4.17.0",
     "firebase-admin": "9.9.0",
     "firebase-functions": "3.14.1",
@@ -61,5 +61,7 @@
     "inversify-express-utils": "6.3.2",
     "passport": "0.4.1"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
+  "dependencies": {
+  }
 }
