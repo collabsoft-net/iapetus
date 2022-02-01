@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/functions",
-  "version": "1.0.0-alpha.128",
+  "version": "1.0.0-alpha.132",
   "description": "Firebase Cloud functions application server",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -61,7 +61,5 @@
     "inversify-express-utils": "6.3.2",
     "passport": "0.4.1"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
-  "dependencies": {
-  }
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
