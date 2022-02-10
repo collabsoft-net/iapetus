@@ -34,13 +34,15 @@
     "@collabsoft-net/connect": "^1.0.0-alpha.128",
     "@collabsoft-net/entities": "^1.0.0-alpha.128",
     "@collabsoft-net/enums": "^1.0.0-alpha.109",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.128",
     "atlassian-jwt": "2.0.2",
     "query-string": "^7.0.1"
   },
   "peerDependencies": {
-    "@collabsoft-net/connect": "1.0.0-alpha.44",
-    "@collabsoft-net/entities": "1.0.0-alpha.44",
-    "@collabsoft-net/enums": "1.0.0-alpha.43",
+    "@collabsoft-net/connect": "1.0.0-alpha.128",
+    "@collabsoft-net/entities": "1.0.0-alpha.128",
+    "@collabsoft-net/enums": "1.0.0-alpha.109",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.128",
     "atlassian-jwt": "2.0.2",
     "query-string": "^7.0.1"
   },

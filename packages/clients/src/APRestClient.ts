@@ -1,4 +1,5 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
 import { AxiosResponse, AxiosResponseHeaders } from 'axios';
 import qs from 'query-string';
@@ -38,22 +39,39 @@ export class APRestClient implements RestClient {
         experimental: true
       });
 
+      let result;
+      try {
+        result = JSON.parse(body)
+      } catch (error) {
+        result = body;
+      }
+
       return {
         status: xhr.status,
         statusText: xhr.statusText,
         headers: this.getHeaders(xhr),
         config: {},
-        data: JSON.parse(body)
+        data: result
       };
     } catch (error) {
-      const { err, xhr } = error as AP.RequestResponseError;
-      return {
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: this.getHeaders(xhr),
-        config: {},
-        data: err as unknown as T
-      };
+      if (isOfType<AP.RequestResponseError>(error, 'xhr')) {
+        const { err, xhr } = error as AP.RequestResponseError;
+        return {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: this.getHeaders(xhr),
+          config: {},
+          data: err as unknown as T
+        };
+      } else {
+        return {
+          status: 500,
+          statusText: '',
+          headers: {},
+          config: {},
+          data: error as unknown as T
+        };
+      }
     }
   }
 
