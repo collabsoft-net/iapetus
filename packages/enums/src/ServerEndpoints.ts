@@ -1,5 +1,6 @@
 
-export enum ServerEndpoints {
+
+export enum JiraServerEndpoints {
   CURRENTUSER = '/rest/api/2/myself',
   USER = '/rest/api/2/user',
   USER_PROPERTY_BY_KEY = '/rest/api/2/user/properties/:propertyKey',
@@ -32,6 +33,17 @@ export enum ServerEndpoints {
 
   BOARDS = 'rest/agile/1.0/board',
   BOARD_FEATURES = 'rest/agile/1.0/board/:boardId/features',
+
+  CONTENT_PERMISSIONS = '/rest/api/content',
+  SPACE = '/rest/api/space',
+  MEMBEROF = '/rest/api/user/memberof',
+  APP = '/rest/plugins/1.0/:appKey-key'
+}
+
+export enum ConfluenceServerEndpoints {
+  USER = '/rest/api/user',
+  CURRENTUSER = '/rest/api/user/current',
+  USER_PROPERTY_BY_KEY = '/rest/api/user/properties/:propertyKey',
 
   CONTENT_PERMISSIONS = '/rest/api/content',
   SPACE = '/rest/api/space',

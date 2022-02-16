@@ -1,5 +1,5 @@
 import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
-import { ConfluenceCloudEndpoints, JiraCloudEndpoints, Modes, ServerEndpoints } from '@collabsoft-net/enums';
+import { ConfluenceCloudEndpoints, ConfluenceServerEndpoints,JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
@@ -11,7 +11,7 @@ export abstract class AbstractAtlasClientService {
   protected endpoints: Record<string, string>;
 
   constructor(protected client: RestClient, protected mode: Modes) {
-    this.endpoints = mode === Modes.CONNECT ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : ServerEndpoints;
+    this.endpoints = mode === Modes.CONNECT ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
   }
 
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService {
