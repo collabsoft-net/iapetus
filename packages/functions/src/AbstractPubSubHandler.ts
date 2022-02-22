@@ -11,6 +11,7 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
 
   abstract name: string;
   abstract topic: string;
+  requireActiveInstance = true;
   private _session?: X;
 
   get session(): X {
@@ -30,7 +31,7 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
 
       const instance = await this.instanceService.findById(data.tenantId) || await this.instanceService.findByProperty('clientId', data.tenantId);
       if (!instance) throw new Error(`Could not process event, cannot find instance for ID ${data.tenantId}`);
-      if (!instance.active) throw new Error(`Customer instance ${data.tenantId} not active, skipping PubSub message`);
+      if (this.requireActiveInstance && !instance.active) throw new Error(`Customer instance ${data.tenantId} not active, skipping PubSub message`);
       this._session = await this.toSession(instance);
       await this.run(data);
     } catch (err) {
