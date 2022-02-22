@@ -6,10 +6,12 @@ import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/lib/logger';
 import * as inversify from 'inversify';
 
+const localJobs: Record<string, CronJob> = {};
+
 export const PubSubHandlers = Symbol.for('PubSubHandlers');
 export const ScheduledPubSubHandlers = Symbol.for('ScheduledPubSubHandlers');
 
-export const registerPubSubHandlers = async (container: inversify.interfaces.Container | (() => inversify.interfaces.Container)): Promise<void> => {
+export const registerPubSubHandlers = async (module: NodeModule, container: inversify.interfaces.Container | (() => inversify.interfaces.Container)): Promise<void> => {
   const appContainer = typeof container === 'function' ? container() : container;
 
   const pubSubHandlers = appContainer.isBound(PubSubHandlers) ? appContainer.getAll<PubSubHandler>(PubSubHandlers) : [];
@@ -25,8 +27,11 @@ export const registerPubSubHandlers = async (container: inversify.interfaces.Con
     const { name, schedule } = handler;
     if (!isProduction()) {
       log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Cron)`);
-      const job = new CronJob(schedule, () => handler.process());
-      job.start();
+      if (!localJobs[name]) {
+        const job = new CronJob(schedule, () => handler.process());
+        localJobs[name] = job;
+        job.start();
+      }
     } else {
       log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Google Cloud Scheduler)`);
       module.exports[name] = functions.runWith({ memory: '4GB', timeoutSeconds: 540 }).pubsub.schedule(schedule).onRun(() => handler.process());
