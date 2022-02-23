@@ -27,9 +27,19 @@ export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
 
 export const go = ({ data }: MessageEvent, modules: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
     const { target, context } = JSON.parse(data);
+    const ctx: AP.NavigatorContext = context as AP.NavigatorContext;
     switch (target as AP.NavigatorTargetJira|AP.NavigatorTargetConfluence) {
         case 'addonModule':
             window.location.href = getUrl(getLocation(modules[context.moduleKey], context.customData));
+            break;
+        case 'site':
+            if (ctx.absoluteUrl) {
+                window.location.href = ctx.absoluteUrl;
+            } else if (ctx.relativeUrl) {
+                window.location.href = getUrl(ctx.relativeUrl);
+            } else {
+                console.log('[AC] Received unsupport context for AP.navigator.go() site event', ctx);
+            }
             break;
         default:
             console.log('[AC] Received unsupport target or AP.navigator.go() event', target);
