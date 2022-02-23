@@ -12,12 +12,14 @@ export class FirebaseAdminRepository implements Repository {
   private firestore: admin.firestore.Firestore;
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
+  private readOnly?: boolean;
 
-  constructor(name: string, options?: admin.AppOptions) {
+  constructor(name: string, options?: admin.AppOptions, readOnly?: boolean) {
     this.fb = admin.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
     this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
+    this.readOnly = readOnly;
   }
 
   async on(event: typeof Event|string, listener: EventListener): Promise<void> {
@@ -139,11 +141,13 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   async saveAll(entities: Array<Entity>, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Array<Entity>> {
+    if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     await this.validateQueryOptions(options);
     return Promise.all(entities.map((entity: Entity) => this.save(entity, options)));
   }
 
   async save(entity: Entity, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Entity> {
+    if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     entity.id = entity.id || uniqid();
     await this.validateQueryOptions(options);
 
@@ -156,6 +160,7 @@ export class FirebaseAdminRepository implements Repository {
   async deleteAll(options: FirebaseAdminQueryOptions): Promise<void>;
   async deleteAll(entities: Array<Entity>, options?: FirebaseAdminQueryOptions): Promise<void>;
   async deleteAll(entities: Array<Entity>|FirebaseAdminQueryOptions, options?: FirebaseAdminQueryOptions): Promise<void> {
+    if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     const _options = (!options) ? entities as FirebaseAdminQueryOptions : options;
 
     if (Array.isArray(entities)) {
@@ -170,10 +175,13 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   async delete(entity: Entity, options: FirebaseAdminQueryOptions): Promise<void> {
+    if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     return this.deleteById(entity.id, options);
   }
 
   async deleteById(id: string, options: FirebaseAdminQueryOptions): Promise<void> {
+    if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
+
     if (!id) {
       return Promise.reject('`id` is a required parameter');
     }
