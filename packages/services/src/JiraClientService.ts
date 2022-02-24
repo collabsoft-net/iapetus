@@ -51,7 +51,12 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async updateIssue(issueIdOrKey: string|number, data: Jira.EditIssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
+  async createIssue(data: Jira.IssueRequest): Promise<Jira.CreatedIssue> {
+    const { data: issue } = await this.client.post<Jira.CreatedIssue>(this.endpoints.ISSUE_CREATE, data);
+    return issue;
+  }
+
+  async updateIssue(issueIdOrKey: string|number, data: Jira.IssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
     const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey }), data, options as Record<string, string|number|boolean|undefined>);
     if (status !== StatusCodes.NO_CONTENT) {
       throw new Error(statusText);

@@ -59,7 +59,9 @@ export enum JiraCloudEndpoints {
 }
 
 export enum JSMCloudEndpoints {
-
+  LIST_DYNAMIC_MODULES = '/rest/atlassian-connect/1/app/module/dynamic',
+  REGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
+  UNREGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
 }
 
 
@@ -71,5 +73,9 @@ export enum ConfluenceCloudEndpoints {
 
   CONTENT_PERMISSIONS = '/rest/api/content/:id/permission/check',
 
-  SPACE = '/rest/api/space/:spaceKey'
+  SPACE = '/rest/api/space/:spaceKey',
+
+  LIST_DYNAMIC_MODULES = '/rest/atlassian-connect/1/app/module/dynamic',
+  REGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
+  UNREGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
 }
