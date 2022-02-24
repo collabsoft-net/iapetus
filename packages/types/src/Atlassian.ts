@@ -547,7 +547,7 @@ declare global {
         summary: string;
         description: string;
         status: Status;
-        issuetype: IssueType;
+        issuetype: IssueTypeDetails;
         components: Array<Component>;
         versions: Array<Version>;
         fixVersions: Array<Version>;
@@ -568,15 +568,16 @@ declare global {
       self: string;
     }
 
-    interface IssueType {
-      avatarId: number;
-      description: string;
-      entityId: string;
-      iconUrl: string;
-      id: string;
-      name: string;
+    interface IssueTypeDetails {
       self: string;
+      id: string;
+      description: string;
+      iconUrl: string;
+      name: string;
       subtask: boolean;
+      avatarId: string;
+      entityId: string;
+      hierarchyLevel: number;
     }
 
     interface TimeTracking {
@@ -820,6 +821,10 @@ declare global {
       simplified?: boolean;
       style?: 'classic'|'next-gen';
       projectTypeKey?: 'software'|'service_desk'|'business';
+      description: string;
+      issueTypes: Array<IssueTypeDetails>;
+      lead: User;
+      issueTypeHierarchy: unknown;
     }
 
     interface PageOfComments {
