@@ -635,6 +635,27 @@ declare global {
       accountType: string;
     }
 
+    interface CreatedIssue {
+      id: string;
+      key: string;
+      self: string;
+      transition: unknown;
+    }
+
+    interface IssueRequest {
+      transition?: unknown;
+      fields?: unknown;
+      update?: unknown;
+      historyMetadata?: unknown;
+      properties?: unknown;
+    }
+
+    interface EditIssueRequestParameters {
+      notifyUsers?: boolean;
+      overrideScreenSecurity?: boolean;
+      overrideEditableFlag?: boolean;
+    }
+
     interface Version {
       self: string;
       id?: string;
@@ -799,20 +820,6 @@ declare global {
       simplified?: boolean;
       style?: 'classic'|'next-gen';
       projectTypeKey?: 'software'|'service_desk'|'business';
-    }
-
-    interface EditIssueRequestParameters {
-      notifyUsers?: boolean;
-      overrideScreenSecurity?: boolean;
-      overrideEditableFlag?: boolean;
-    }
-
-    interface EditIssueRequest {
-      transition?: unknown;
-      fields?: unknown;
-      update?: unknown;
-      historyMetadata?: unknown;
-      properties?: unknown;
     }
 
     interface PageOfComments {
