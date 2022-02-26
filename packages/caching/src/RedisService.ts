@@ -38,12 +38,14 @@ export class RedisService {
       }
     } else {
       try {
-        console.log(`[REDIS] miss from cache for key ${key}`);
+        console.log(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
         const result = await loader();
-        if (result === null) throw new Error(`Failed to retrieve data from loader`);
-
-        await this.set(key, result);
-        return new type(result);
+        if (result) {
+          await this.set(key, result);
+          return new type(result);
+        }
+        console.log(`[REDIS] miss from loader for key ${key}`);
+        return null;
       } catch (error) {
         console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         return null;
@@ -51,17 +53,17 @@ export class RedisService {
     }
   }
 
-  public async set<T>(key: string, data: T): Promise<Error|null> {
+  public async set<T>(key: string, data: T, expiresInSeconds: number = 30 * 60): Promise<Error|null> {
     await this.isReady();
     if (!this.ready) {
       console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
-    console.log(`[REDIS] caching data for key ${key}`);
+    console.log(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
     try {
       const payload = JSON.stringify(data);
-      await this.client.setEx(key, 30 * 60 * 1000, payload);
+      await this.client.setEx(key, expiresInSeconds, payload);
       return null;
     } catch (error) {
       console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
