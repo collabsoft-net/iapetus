@@ -304,7 +304,7 @@ export class JiraClientService extends AbstractAtlasClientService {
 
       if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
         if (data.globalPermissions && Array.isArray(data.globalPermissions)) {
-          const hasAllGlobalPermissions = data.globalPermissions.every(item => globalPermissions.includes(item));
+          const hasAllGlobalPermissions = globalPermissions.every(item => data.globalPermissions.includes(item));
           if (!hasAllGlobalPermissions) {
             return false;
           }
