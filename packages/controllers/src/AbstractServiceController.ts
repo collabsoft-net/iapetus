@@ -41,10 +41,10 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
           });
           return queryBuilder;
         });
-        return new PageDTO(result.values.map(this.service.toDTO));
+        return new PageDTO(result.values.map(item => this.service.toDTO(item)));
       } else {
         const result = await this.service.findAll();
-        return { ...result, values: result.values.map(this.service.toDTO) };
+        return { ...result, values: result.values.map(item => this.service.toDTO(item)) };
       }
     }
   }
