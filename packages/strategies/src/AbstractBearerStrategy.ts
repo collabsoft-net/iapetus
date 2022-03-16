@@ -23,7 +23,10 @@ export abstract class AbstractBearerStrategy<T extends Session> implements IStra
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
   get strategy(): passport.Strategy {
-    return new Strategy(async (token: string, done: (err: Error|null, session?: T) => void) => {
+    const _name = this.name;
+    return new (class BearerStrategy extends Strategy {
+      name = _name;
+    })(async (token: string, done: (err: Error|null, session?: T) => void) => {
       try {
         const session = await this.process(token);
         done(null, session);

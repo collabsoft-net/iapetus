@@ -20,7 +20,10 @@ export abstract class AbstractJWTStrategy<T, X extends Session> implements IStra
   protected abstract get strategyOptions(): StrategyOptions
 
   get strategy(): passport.Strategy {
-    return new Strategy(this.strategyOptions, async (token: T, done: (err: Error|null, session?: X) => void) => {
+    const _name = this.name;
+    return new (class JWTStrategy extends Strategy {
+      name = _name;
+    })(this.strategyOptions, async (token: T, done: (err: Error|null, session?: X) => void) => {
       try {
         const session = await this.process(token);
         done(null, session);
