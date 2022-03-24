@@ -63,7 +63,7 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
     };
   }
 
-  private async getAccessToken() {
+  protected async getAccessToken(): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
     const { oauthClientId, sharedSecret } = this.instance;
 
