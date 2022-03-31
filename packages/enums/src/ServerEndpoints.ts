@@ -27,6 +27,7 @@ export enum JiraServerEndpoints {
   COMPONENT_CREATE = '/rest/api/2/component',
   COMPONENT_UPDATE = '/rest/api/2/component/:id',
   COMPONENT_DELETE = '/rest/api/2/component/:id',
+  COMPONENT_ISSUE_COUNTS = '/rest/api/2/component/:id/relatedIssueCounts',
 
   ALL_RELEASES = '/rest/projects/1.0/project/:projectKey/release/allversions',
   RELEASE_DETAILS = '/rest/projects/1.0/project/:projectKey/release/details/:versionId',

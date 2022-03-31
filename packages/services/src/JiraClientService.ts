@@ -102,6 +102,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getComponentRelatedIssuesCount(id: string): Promise<Jira.ComponentIssuesCount> {
+    const { data } = await this.client.get<Jira.ComponentIssuesCount>(this.getEndpointFor(this.endpoints.COMPONENT_ISSUE_COUNTS, { id }));
+    return data;
+  }
+
   async getAttachment(attachmentId: string): Promise<Jira.Attachment> {
     const { data } = await this.client.get<Jira.Attachment>(this.getEndpointFor(this.endpoints.READ_ATTACHMENT, { attachmentId }));
     return data;

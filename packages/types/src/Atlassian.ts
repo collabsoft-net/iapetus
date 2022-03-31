@@ -726,6 +726,11 @@ declare global {
       projectId: number;
     }
 
+    interface ComponentIssuesCount {
+      self?: string;
+      issueCount: number;
+    }
+
     interface Comments {
       comments: Array<Comment>;
       maxResults: number;
