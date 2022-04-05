@@ -297,6 +297,46 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
+  async deleteEntityProperty(entityType: 'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<void> {
+    switch (entityType) {
+      case 'user': return this.deleteUserProperty(entityId, propertyKey);
+      case 'project': return this.deleteProjectProperty(entityId, propertyKey);
+      case 'issue': return this.deleteIssueProperty(entityId, propertyKey);
+      case 'comment': return this.deleteCommentProperty(entityId, propertyKey);
+    }
+  }
+
+  async deleteUserProperty(userKeyOrAccountId: string, propertyKey: string): Promise<void> {
+    const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
+    const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
+
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteProjectProperty(projectIdOrKey: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteIssueProperty(issueIdOrKey: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteCommentProperty(commentId: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
   async hasPermissions(accountId?: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
     if (!projectPermissions && !globalPermissions) return false;
 
