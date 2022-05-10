@@ -1,8 +1,8 @@
 import { colors } from '@atlaskit/theme';
 import React from 'react';
 
-import { Link } from '../../Atoms';
 import { Grid, Row } from '../../Atoms/Grid';
+import { Link } from '../../Atoms/Link';
 import { Header, Paragraph } from '../../Atoms/Typography';
 import { Image } from '../Image';
 

@@ -2,8 +2,8 @@ import Avatar from '@atlaskit/avatar';
 import React from 'react';
 import styled from 'styled-components';
 
-import { Link } from '../../Atoms';
 import { Column, Grid } from '../../Atoms/Grid';
+import { Link } from '../../Atoms/Link';
 
 interface RecommendedAppProps {
   logo: string;
