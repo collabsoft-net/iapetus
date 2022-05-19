@@ -1,8 +1,8 @@
-import Button from '@atlaskit/button';
 import { colors } from '@atlaskit/theme';
 import React from 'react';
 
 import { Grid, Row } from '../../Atoms/Grid';
+import { Link } from '../../Atoms/Link';
 import { Header, Paragraph } from '../../Atoms/Typography';
 import { Image } from '../Image';
 
@@ -26,7 +26,7 @@ export const RecommendedApps = ({ title, description, apps }: RecommendedAppsPro
       { apps.map(({ icon, url, name }) => (
         <Row key={name} margin='8px 0 0 0'>
           <Image src={ icon } size='medium' margin='0 8px 0 0' appearance='square' align='center'>
-            <Button appearance='link' target='_blank' spacing='none' href={url}>{ name }</Button>
+            <Link href={url}>{ name }</Link>
           </Image>
         </Row>
       ))}
