@@ -15,6 +15,8 @@ export const getContext = ({ source, data }: MessageEvent): void => {
   }
 };
 
+// This strongly depends on context managers to provide META information
+// TODO: also make the ContextManager, WebAction and ContextProviders part of either iapetus or a generic AC implementation Java package
 const generateContext = () => {
   // eslint-disable-next-line
   const JIRA = (window as any).JIRA || null;
@@ -25,15 +27,15 @@ const generateContext = () => {
     return {
       jira: {
         issue: {
-          id: getIssueId(),
+          id: getMetaData('issue-id'),
           issueType: {
             id: null
           },
-          key: null
+          key: getMetaData('issue-key')
         },
         project: {
-          id: null,
-          key: null
+          id: getMetaData('project-id'),
+          key: getMetaData('project-key')
         }
       },
       license: {
@@ -64,15 +66,6 @@ const generateContext = () => {
   }
 }
 
-const getIssueId = () => {
-  // eslint-disable-next-line
-  const JIRA = (window as any).JIRA || null;
-
-  if (JIRA && JIRA.Issue && JIRA.Issue.getIssueId && typeof JIRA.Issue.getIssueId === 'function') {
-    return JIRA.Issue.getIssueId();
-  } else if (AJS) {
-    return AJS.Meta.get('issue-key');
-  } else {
-    return null;
-  }
-};
+const getMetaData = (key: string) => {
+  return AJS?.Meta?.get(key) as string || null;
+}
