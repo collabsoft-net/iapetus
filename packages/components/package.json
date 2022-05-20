@@ -31,6 +31,8 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
+    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
+    "@collabsoft-net/services": "^1.0.0-alpha.159",
     "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@atlaskit/avatar": "20.0.0",
     "@atlaskit/button": "16.1.2",
@@ -43,6 +45,8 @@
     "styled-components": "3.2.6"
   },
   "peerDependencies": {
+    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
+    "@collabsoft-net/services": "^1.0.0-alpha.159",
     "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@atlaskit/avatar": "20.0.0",
     "@atlaskit/button": "16.1.2",
