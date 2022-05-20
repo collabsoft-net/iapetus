@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/entities",
-  "version": "1.0.0-alpha.160",
+  "version": "1.0.0-alpha.161",
   "description": "Shared entities",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -30,7 +30,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.160",
+    "@collabsoft-net/types": "^1.0.0-alpha.161",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
     "typescript": "4.6.4"
