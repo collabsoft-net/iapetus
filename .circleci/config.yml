@@ -49,8 +49,9 @@ commands:
             (cd ~/iapetus && yarn install --immutable)
 
       - run:
-          name: Setup environment
+          name: Configure Git
           command: |
+            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
             git config user.email "github@collabsoft.net"
             git config user.name "CollabSoft Bot"
 
