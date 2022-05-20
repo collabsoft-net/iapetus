@@ -43,11 +43,6 @@ commands:
             npm install --prefix=$HOME/.local yarn@berry -g
             yarn --version
 
-      - run: 
-          name: Install dependencies
-          command: |
-            (cd ~/iapetus && yarn install --immutable)
-
       - run:
           name: Configure Git
           command: |
