@@ -57,6 +57,7 @@ commands:
           command: |
             npx lerna clean -y && rm -rf node_modules;
             yarn;
+            yarn workspaces foreach install;
 
       - run: 
           name: Build
