@@ -6,11 +6,11 @@
   ],
   "license": "UNLICENSED",
   "scripts": {
-    "clean": "npx lerna clean -y && rm -rf node_modules",
-    "build": "npx lerna run build --concurrency 2",
-    "reinstall": "npx yarn clean && yarn && npx lerna exec yarn",
-    "start": "npx nodemon --watch ./**/src -e '.ts' --exec 'npx lerna run build'",
-    "prerelease": "npx lerna publish prerelease -y"
+    "clean": "yarn run lerna clean -y && rm -rf node_modules",
+    "build": "yarn run lerna run build --concurrency 2",
+    "reinstall": "yarn clean && yarn && yarn run lerna exec yarn",
+    "start": "yarn run nodemon --watch ./**/src -e '.ts' --exec 'yarn run lerna run build'",
+    "prerelease": "yarn run lerna publish prerelease -y"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "4.30.0",

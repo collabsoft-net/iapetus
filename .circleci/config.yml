@@ -4,19 +4,19 @@ jobs:
   build:
     executor: nodejs
     steps:
-      - configure
+      - prepare
       - build
 
   prerelease:
     executor: nodejs
     steps:
-      - configure
+      - prepare
       - prerelease
 
   release:
     executor: nodejs
     steps:
-      - configure
+      - prepare
       - release
 
 executors:
@@ -28,7 +28,7 @@ executors:
 
 commands:
 
-  configure:
+  prepare:
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -36,11 +36,21 @@ commands:
 
       - checkout:
           path: ~/iapetus
-            
+
       - run:
           name: Setup environment
           command: |
-            echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npm install --prefix=$HOME/.local yarn@berry -g
+            yarn --version
+
+      - run: 
+          name: Install dependencies
+          command: |
+            (cd ~/iapetus && yarn install --immutable)
+
+      - run:
+          name: Setup environment
+          command: |
             git config user.email "github@collabsoft.net"
             git config user.name "CollabSoft Bot"
 
@@ -48,11 +58,11 @@ commands:
     steps:
       - run: 
           name: Install dependencies
-          command: npx yarn reinstall
+          command: yarn reinstall
 
       - run: 
           name: Build
-          command: npx yarn build
+          command: yarn build
 
   prerelease:
     steps:
@@ -60,7 +70,7 @@ commands:
 
       - run: 
           name: Publish prerelease
-          command: npx yarn prerelease
+          command: yarn prerelease
 
   release:
     steps:
@@ -69,8 +79,8 @@ commands:
       - run: 
           name: Publish
           command: |
-            npx lerna version --conventional-commits
-            npx lerna publish --from-git
+            yarn run lerna version --conventional-commits
+            yarn run lerna publish --from-git
 
 workflows:
   version: 2
@@ -87,6 +97,7 @@ workflows:
           filters:
             branches:
               only: develop
+              
       - release:
           filters:
             branches:

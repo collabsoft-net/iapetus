@@ -18,13 +18,13 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "npx eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
-    "build": "npx yarn clean && npx yarn lint && npx yarn build:cjs && npx yarn build:es2020 && npx yarn build:types",
-    "build:cjs": "npx tsc --module commonjs --outDir dist/cjs",
-    "build:es2020": "npx tsc --module es2020 --outDir dist/es2020",
-    "build:types": "npx tsc --emitDeclarationOnly --outDir dist/types",
-    "start": "npx nodemon --watch src -e '.ts' --exec 'npx yarn build'",
-    "prepack": "npx yarn build"
+    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
+    "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
+    "build:types": "yarn run tsc --emitDeclarationOnly --outDir dist/types",
+    "start": "yarn run nodemon --watch src -e '.ts' --exec 'yarn build'",
+    "prepack": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
