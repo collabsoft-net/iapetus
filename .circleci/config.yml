@@ -54,7 +54,7 @@ commands:
     steps:
       - run: 
           name: Install dependencies
-          command: yarn reinstall
+          command: yarn && yarn reinstall
 
       - run: 
           name: Build
