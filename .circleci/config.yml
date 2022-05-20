@@ -54,7 +54,10 @@ commands:
     steps:
       - run: 
           name: Install dependencies
-          command: yarn && yarn reinstall
+          command: |
+            npx lerna clean -y && rm -rf node_modules;
+            yarn;
+            yarn run lerna exec yarn;
 
       - run: 
           name: Build
