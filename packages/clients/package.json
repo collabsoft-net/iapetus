@@ -35,8 +35,8 @@
     "@collabsoft-net/entities": "1.0.0-alpha.159",
     "@collabsoft-net/enums": "1.0.0-alpha.159",
     "@collabsoft-net/helpers": "1.0.0-alpha.159",
-    "axios": "0.24.0",
     "atlassian-jwt": "2.0.2",
+    "axios": "0.24.0",
     "query-string": "7.0.1"
   },
   "peerDependencies": {
@@ -44,8 +44,8 @@
     "@collabsoft-net/entities": "1.0.0-alpha.159",
     "@collabsoft-net/enums": "1.0.0-alpha.159",
     "@collabsoft-net/helpers": "1.0.0-alpha.159",
-    "axios": "0.24.0",
     "atlassian-jwt": "2.0.2",
+    "axios": "0.24.0",
     "query-string": "7.0.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"

@@ -31,12 +31,12 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
-    "@collabsoft-net/services": "^1.0.0-alpha.159",
-    "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@atlaskit/avatar": "20.0.0",
     "@atlaskit/button": "16.1.2",
     "@atlaskit/theme": "12.0.0",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
+    "@collabsoft-net/services": "^1.0.0-alpha.159",
+    "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@types/node": "12.20.25",
     "@types/react": "16.9.54",
     "@types/react-dom": "16.9.9",
@@ -45,12 +45,12 @@
     "styled-components": "3.2.6"
   },
   "peerDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
-    "@collabsoft-net/services": "^1.0.0-alpha.159",
-    "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@atlaskit/avatar": "20.0.0",
     "@atlaskit/button": "16.1.2",
     "@atlaskit/theme": "12.0.0",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.159",
+    "@collabsoft-net/services": "^1.0.0-alpha.159",
+    "@collabsoft-net/types": "^1.0.0-alpha.159",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "styled-components": "3.2.6"
