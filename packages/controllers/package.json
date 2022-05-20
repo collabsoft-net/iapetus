@@ -39,9 +39,12 @@
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "@types/passport": "1.0.7",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
+    "eslint": "8.15.0",
     "inversify": "6.0.1",
     "inversify-express-utils": "6.3.2",
-    "passport": "0.4.1"
+    "passport": "0.4.1",
+    "typescript": "4.6.4"
   },
   "peerDependencies": {
     "@collabsoft-net/dto": "1.0.0-alpha.44",

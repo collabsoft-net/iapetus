@@ -12,8 +12,8 @@ export interface DefaultService<T extends Entity, X extends DTO> extends BaseSer
 
   toDTO(entity: T): X;
   toEntityArray<Y extends Entity>(items: Array<Y>): EntityArray<Y>;
-  toObjectArray<Y extends unknown>(items: Array<Y>, keyProp: string): ObjectArray<Y>;
-  toArray<Y extends unknown>(items: ObjectArray<Y>): Array<Y>;
+  toObjectArray<Y>(items: Array<Y>, keyProp: string): ObjectArray<Y>;
+  toArray<Y>(items: ObjectArray<Y>): Array<Y>;
   toArray<Y extends Entity>(items: EntityArray<Y>): Array<Y>;
 
   save(entity: T|X): Promise<T>;

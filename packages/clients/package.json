@@ -35,9 +35,12 @@
     "@collabsoft-net/entities": "1.0.0-alpha.159",
     "@collabsoft-net/enums": "1.0.0-alpha.159",
     "@collabsoft-net/helpers": "1.0.0-alpha.159",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
     "atlassian-jwt": "2.0.2",
     "axios": "0.24.0",
-    "query-string": "7.0.1"
+    "eslint": "8.15.0",
+    "query-string": "7.0.1",
+    "typescript": "4.6.4"
   },
   "peerDependencies": {
     "@collabsoft-net/connect": "1.0.0-alpha.159",

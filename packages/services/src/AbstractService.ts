@@ -16,10 +16,10 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return entities;
   }
 
-  toObjectArray<Y extends unknown>(items: Array<Y>, keyProp = 'id'): Record<string, Y> {
+  toObjectArray<Y>(items: Array<Y>, keyProp = 'id'): Record<string, Y> {
     const result = {} as Record<string, Y>;
     items.forEach((item: Y) => {
-      const keyPropValue = (item as Record<string, string>)[keyProp];
+      const keyPropValue = (item as unknown as Record<string, string>)[keyProp];
       result[keyPropValue] = item;
     });
     return result;

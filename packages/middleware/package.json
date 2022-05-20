@@ -38,11 +38,14 @@
     "@collabsoft-net/services": "^1.0.0-alpha.159",
     "@collabsoft-net/types": "^1.0.0-alpha.159",
     "@types/passport": "1.0.7",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
     "atlassian-jwt": "2.0.2",
     "axios": "0.24.0",
+    "eslint": "8.15.0",
     "express": "4.17.0",
     "passport": "0.4.1",
-    "passport-jwt": "4.0.0"
+    "passport-jwt": "4.0.0",
+    "typescript": "4.6.4"
   },
   "peerDependencies": {
     "@collabsoft-net/controllers": "1.0.0-alpha.72",

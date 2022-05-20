@@ -31,7 +31,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/entities": "^1.0.0-alpha.159"
+    "@collabsoft-net/entities": "^1.0.0-alpha.159",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
+    "eslint": "8.15.0",
+    "typescript": "4.6.4"
   },
   "peerDependencies": {
     "@collabsoft-net/entities": "1.0.0-alpha.159"
