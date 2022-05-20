@@ -31,23 +31,22 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/connect": "^1.0.0-alpha.157",
-    "@collabsoft-net/entities": "^1.0.0-alpha.157",
-    "@collabsoft-net/enums": "^1.0.0-alpha.157",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.157",
+    "@collabsoft-net/connect": "1.0.0-alpha.157",
+    "@collabsoft-net/entities": "1.0.0-alpha.157",
+    "@collabsoft-net/enums": "1.0.0-alpha.157",
+    "@collabsoft-net/helpers": "1.0.0-alpha.157",
+    "axios": "0.24.0",
     "atlassian-jwt": "2.0.2",
-    "query-string": "^7.0.1"
+    "query-string": "7.0.1"
   },
   "peerDependencies": {
-    "@collabsoft-net/connect": "1.0.0-alpha.128",
-    "@collabsoft-net/entities": "1.0.0-alpha.128",
-    "@collabsoft-net/enums": "1.0.0-alpha.109",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.128",
+    "@collabsoft-net/connect": "1.0.0-alpha.157",
+    "@collabsoft-net/entities": "1.0.0-alpha.157",
+    "@collabsoft-net/enums": "1.0.0-alpha.157",
+    "@collabsoft-net/helpers": "1.0.0-alpha.157",
+    "axios": "0.24.0",
     "atlassian-jwt": "2.0.2",
-    "query-string": "^7.0.1"
+    "query-string": "7.0.1"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
-  "dependencies": {
-    "axios": "^0.24.0"
-  }
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

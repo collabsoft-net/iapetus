@@ -106,6 +106,10 @@ export class FirebaseAdminStorageProvider implements StorageProvider {
     return directory.endsWith('/') ? directory.substr(0, path.length - 1) : directory;
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('FirebaseAdminStorageProvider');
+  }
+
 }
 
 export interface FirebaseAdminStorageQueryOptions extends QueryOptions {

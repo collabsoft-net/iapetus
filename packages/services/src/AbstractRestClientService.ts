@@ -5,7 +5,7 @@ import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
 @injectable()
-export class AbstractRestClientService {
+export abstract class AbstractRestClientService {
 
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
 

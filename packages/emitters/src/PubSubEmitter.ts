@@ -124,4 +124,8 @@ export class PubSubEmitter implements EventEmitter {
     return topic;
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('PubSubEmitter');
+  }
+
 }

@@ -52,4 +52,8 @@ export class RequiredFieldValidator extends AbstractValidator {
     }
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('RequiredFieldValidator');
+  }
+
 }

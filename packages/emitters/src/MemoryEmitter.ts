@@ -18,4 +18,8 @@ export class MemoryEmitter implements EventEmitter {
     await Promise.all(promises);
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('MemoryEmitter');
+  }
+
 }

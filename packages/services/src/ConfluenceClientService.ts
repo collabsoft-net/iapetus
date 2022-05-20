@@ -80,4 +80,8 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return new ConfluenceClientService(client, mode);
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('ConfluenceClientService');
+  }
+
 }

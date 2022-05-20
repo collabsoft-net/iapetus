@@ -21,4 +21,8 @@ export class RestClient extends AbstractRestClient implements IRestClient {
     });
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('RestClient');
+  }
+
 }

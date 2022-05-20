@@ -40,4 +40,8 @@ export class FirebaseEmitter extends MemoryEmitter {
     }
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('FirebaseEmitter');
+  }
+
 }

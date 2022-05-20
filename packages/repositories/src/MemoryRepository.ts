@@ -285,6 +285,10 @@ export class MemoryRepository implements Repository {
     return Object.keys(items).filter((id: string) => Object.keys(items[id]).length > 0).map((id: string) => items[id]);
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('MemoryRepository');
+  }
+
 }
 
 export interface MemoryQueryOptions extends QueryOptions {

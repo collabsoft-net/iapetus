@@ -9,4 +9,8 @@ export class JiraRestClient extends AbstractAtlasRestClient {
     return instance;
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('JiraRestClient');
+  }
+
 }

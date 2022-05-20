@@ -219,6 +219,10 @@ export class FirebaseAdminRepository implements Repository {
     return entity;
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('FirebaseAdminRepository');
+  }
+
 }
 
 export interface FirebaseAdminQueryOptions extends QueryOptions {

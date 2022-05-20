@@ -41,4 +41,9 @@ export class QueryBuilder implements IQueryBuilder {
       default: return false;
     }
   }
+
+  static getIdentifier(): symbol {
+    return Symbol.for('QueryBuilder');
+  }
+
 }

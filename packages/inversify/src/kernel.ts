@@ -6,36 +6,37 @@ import { BindingLifecyclePhases } from './BindingLifecyclePhases';
 
 export class Kernel extends Container implements Kernel {
 
-  private _hooks = new Map<BindingLifecyclePhases, Array<ContainerModule>>();
-  private _asyncHooks = new Map<BindingLifecyclePhases, Array<AsyncContainerModule>>();
-  private _initialized = false;
+  private hooks = new Map<BindingLifecyclePhases, Array<ContainerModule>>();
+  private asyncHooks = new Map<BindingLifecyclePhases, Array<AsyncContainerModule>>();
+  private initialized = false;
+  private listeners: Array<() => void> = [];
 
   registerHook(lifecyclePhase: BindingLifecyclePhases, registry: ContainerModule): Kernel {
-    const hooks = this._hooks.get(lifecyclePhase) || [];
+    const hooks = this.hooks.get(lifecyclePhase) || [];
     hooks.push(registry);
-    this._hooks.set(lifecyclePhase, hooks);
+    this.hooks.set(lifecyclePhase, hooks);
     return this;
   }
 
   registerAsyncHook(lifecyclePhase: BindingLifecyclePhases, registry: AsyncContainerModule): Kernel {
-    const hooks = this._asyncHooks.get(lifecyclePhase) || [];
+    const hooks = this.asyncHooks.get(lifecyclePhase) || [];
     hooks.push(registry);
-    this._hooks.set(lifecyclePhase, hooks);
+    this.hooks.set(lifecyclePhase, hooks);
     return this;
   }
 
   async build(): Promise<void> {
-    if (!this._initialized) {
-      this._initialized = true;
+    if (!this.initialized) {
+      this.initialized = true;
 
-      const initHooks = this._hooks.get(BindingLifecyclePhases.INIT) || [];
-      const initHooksAsync = this._asyncHooks.get(BindingLifecyclePhases.INIT) || [];
+      const initHooks = this.hooks.get(BindingLifecyclePhases.INIT) || [];
+      const initHooksAsync = this.asyncHooks.get(BindingLifecyclePhases.INIT) || [];
 
-      const apiHooks = this._hooks.get(BindingLifecyclePhases.API_LOADED) || [];
-      const apiHooksAsync = this._asyncHooks.get(BindingLifecyclePhases.API_LOADED) || [];
+      const apiHooks = this.hooks.get(BindingLifecyclePhases.API_LOADED) || [];
+      const apiHooksAsync = this.asyncHooks.get(BindingLifecyclePhases.API_LOADED) || [];
 
-      const uiHooks = this._hooks.get(BindingLifecyclePhases.UI_LOADED) || [];
-      const uiHooksAsync = this._asyncHooks.get(BindingLifecyclePhases.UI_LOADED) || [];
+      const uiHooks = this.hooks.get(BindingLifecyclePhases.UI_LOADED) || [];
+      const uiHooksAsync = this.asyncHooks.get(BindingLifecyclePhases.UI_LOADED) || [];
 
       this.load(...initHooks);
       await this.loadAsync(...initHooksAsync);
@@ -45,9 +46,15 @@ export class Kernel extends Container implements Kernel {
 
       this.load(...uiHooks.filter((item) => item instanceof ContainerModule));
       await this.loadAsync(...uiHooksAsync);
+
+      this.listeners.forEach(listener => listener());
     }
   }
 
+  onReady(listener: () => void): void {
+    this.listeners.push(listener);
+    if (this.initialized) listener();
+  }
 }
 
 const instance = new Kernel();

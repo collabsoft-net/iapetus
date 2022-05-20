@@ -39,7 +39,7 @@
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "@types/passport": "1.0.7",
-    "inversify": "5.1.1",
+    "inversify": "6.0.1",
     "inversify-express-utils": "6.3.2",
     "passport": "0.4.1"
   },
@@ -49,7 +49,7 @@
     "@collabsoft-net/services": "1.0.0-alpha.45",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
-    "inversify": "5.1.1",
+    "inversify": "6.0.1",
     "inversify-express-utils": "6.3.2",
     "passport": "0.4.1"
   },

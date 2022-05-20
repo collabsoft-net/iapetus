@@ -31,11 +31,11 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "inversify": "5.1.1",
+    "inversify": "6.0.1",
     "inversify-inject-decorators": "3.1.0"
   },
   "peerDependencies": {
-    "inversify": "5.1.1",
+    "inversify": "6.0.1",
     "inversify-inject-decorators": "3.1.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"

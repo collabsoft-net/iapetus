@@ -96,4 +96,8 @@ export class APRestClient implements RestClient {
     return result;
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('APRestClient');
+  }
+
 }

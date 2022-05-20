@@ -1,13 +1,13 @@
 import { Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
-import { createClient, RedisClientOptions, RedisClientType, RedisModules, RedisScripts } from 'redis';
+import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
 
 export class RedisService {
 
-  private client: RedisClientType<RedisModules, RedisScripts>;
+  private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
 
-  constructor(options: RedisClientOptions<RedisModules, RedisScripts>) {
+  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>) {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.ready = false; });
@@ -107,6 +107,10 @@ export class RedisService {
         }, 100);
       });
     }
+  }
+
+  static getIdentifier(): symbol {
+    return Symbol.for('RedisService');
   }
 
 }

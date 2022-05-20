@@ -436,4 +436,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return new JiraClientService(client, mode);
   }
 
+  static getIdentifier(): symbol {
+    return Symbol.for('JiraClientService');
+  }
+
 }
