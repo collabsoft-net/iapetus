@@ -6,10 +6,9 @@ import kernel from '@collabsoft-net/inversify';
 import { ConfluenceClientService } from '@collabsoft-net/services';
 import { JiraClientService } from '@collabsoft-net/services';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'src/Atoms';
 import styled from 'styled-components';
 
-import { Paragraph } from '../../Atoms/Typography';
+import { Link, Paragraph } from '../../Atoms';
 
 let service: JiraClientService|ConfluenceClientService;
 
