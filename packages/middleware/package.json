@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/middleware",
-  "version": "1.0.0-alpha.161",
+  "version": "1.0.0-alpha.162",
   "description": "Express middleware",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -31,11 +31,11 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.161",
+    "@collabsoft-net/controllers": "^1.0.0-alpha.162",
     "@collabsoft-net/enums": "^1.0.0-alpha.161",
-    "@collabsoft-net/functions": "^1.0.0-alpha.161",
+    "@collabsoft-net/functions": "^1.0.0-alpha.162",
     "@collabsoft-net/helpers": "^1.0.0-alpha.161",
-    "@collabsoft-net/services": "^1.0.0-alpha.161",
+    "@collabsoft-net/services": "^1.0.0-alpha.162",
     "@collabsoft-net/types": "^1.0.0-alpha.161",
     "@types/passport": "1.0.7",
     "@typescript-eslint/eslint-plugin": "5.25.0",
