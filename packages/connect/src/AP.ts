@@ -44,7 +44,7 @@ declare global {
 
     interface Context {
       getToken: (callback?: () => string) => Promise<string>;
-      getContext: <T> (callback?: () => unknown) => Promise<T>;
+      getContext: <T> (callback?: (context: T) => unknown) => Promise<T>;
     }
 
     interface Cookie {
