@@ -8,6 +8,16 @@ import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms/';
 
+let service: JiraClientService;
+
+kernel.onReady(() => {
+  if (kernel.isBound(JiraClientService.getIdentifier())) {
+    service = kernel.get<JiraClientService>(JiraClientService.getIdentifier());
+  } else {
+    throw new Error(`Could not find instance of JiraClientService, please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()"`);
+  }
+});
+
 const Wrapper = styled.div`
   display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};
   align-items: center;
@@ -40,18 +50,9 @@ const memcache = new Map<number|string, Jira.Project>();
 
 export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
 
-  const [ service, setService ] = useState<JiraClientService>();
   const [ project, setProject ] = useState<Jira.Project|null>(null);
   const [ isArchived, setArchived ] = useState<boolean>(false);
   const [ isLoading, setLoading ] = useState<boolean>(true);
-
-  kernel.onReady(() => {
-    if (kernel.isBound(JiraClientService.getIdentifier())) {
-      setService(kernel.get<JiraClientService>(JiraClientService.getIdentifier()));
-    } else {
-      throw new Error(`Could not find instance of JiraClientService, please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()"`);
-    }
-  });
 
   useEffect(() => {
     if (memcache.has(projectId)) {

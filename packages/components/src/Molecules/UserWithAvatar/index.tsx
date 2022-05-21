@@ -11,6 +11,18 @@ import styled from 'styled-components';
 
 import { Paragraph } from '../../Atoms/Typography';
 
+let service: JiraClientService|ConfluenceClientService;
+
+kernel.onReady(() => {
+  if (kernel.isBound(JiraClientService.getIdentifier())) {
+    service = kernel.get<JiraClientService>(JiraClientService.getIdentifier());
+  } else if (kernel.isBound(ConfluenceClientService.getIdentifier())) {
+    service = kernel.get<ConfluenceClientService>(ConfluenceClientService.getIdentifier());
+  } else {
+    throw new Error(`Could not find instance of JiraClientService or ConfluenceClientService. Please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()" or "ConfluenceClientService.getIdentifier()"`);
+  }
+});
+
 const Wrapper = styled.div`
   display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};
   align-items: center;
@@ -39,19 +51,10 @@ const memcache = new Map<number|string, Jira.User|Confluence.User>();
 
 export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, component }: UserWithAvatarProps): JSX.Element => {
 
-  const [ service, setService ] = useState<JiraClientService|ConfluenceClientService>();
   const [ user, setUser ] = useState<Jira.User|Confluence.User|null>(null);
   const [ name, setName ] = useState<string>();
   const [ avatar, setAvatar ] = useState<string>();
   const [ isLoading, setLoading ] = useState<boolean>(true);
-
-  kernel.onReady(() => {
-    if (kernel.isBound(JiraClientService.getIdentifier())) {
-      setService(kernel.get<JiraClientService>(JiraClientService.getIdentifier()));
-    } else if (kernel.isBound(ConfluenceClientService.getIdentifier())) {
-      setService(kernel.get<ConfluenceClientService>(ConfluenceClientService.getIdentifier()));
-    }
-  });
 
   useEffect(() => {
     if (memcache.has(accountId)) {
