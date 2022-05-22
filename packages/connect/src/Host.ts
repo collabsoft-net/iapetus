@@ -1,5 +1,5 @@
 
-import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
+import { ConnectHelper } from '@collabsoft-net/types';
 
 import { getContext } from './Context';
 import { processDialogEvent } from './Dialog';
@@ -9,7 +9,7 @@ import { getNavigatorLocation, go } from './Navigator';
 import { getResizeObserver, resize, sizeToParent } from './Resize';
 import { SupportedEvents } from './SupportedEvents';
 
-export const Host = async (modules: Record<string, string>, dialogs: Record<string, string>, helper: ConfluenceHelper|JiraHelper): Promise<void> => {
+export const Host = async (modules: Record<string, string>, dialogs: Record<string, string>, helper: ConnectHelper): Promise<void> => {
     try {
         console.log('[AC] Initializing Atlassian Connect polyfill');
         window.addEventListener('message', (event) => {

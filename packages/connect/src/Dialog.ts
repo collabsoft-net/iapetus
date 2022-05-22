@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import Modal, { ModalBody, ModalHeader, ModalTransition } from '@atlaskit/modal-dialog';
-import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
+import { ConnectHelper } from '@collabsoft-net/types';
 import qs from 'query-string';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -18,7 +18,7 @@ const DialogFrame = styled.iframe`
   width: 100%;
 `;
 
-export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: JiraHelper|ConfluenceHelper): void => {
+export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: ConnectHelper): void => {
     const { eventType, name, action, type } = JSON.parse(event.data);
     switch (eventType) {
 
@@ -46,7 +46,7 @@ export const processDialogEvent = (event: MessageEvent, dialogs: Record<string, 
     }
 };
 
-export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: JiraHelper|ConfluenceHelper): void => {
+export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<string, string>, { getUrl, getServletPattern }: ConnectHelper): void => {
     const { dialogId, options } = JSON.parse(data);
     const { key, customData, size, closeOnEscape, chrome, header, width, height } = options as AP.DialogOptions<unknown>;
 

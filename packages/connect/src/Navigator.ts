@@ -1,4 +1,4 @@
-import { ConfluenceHelper, JiraHelper } from '@collabsoft-net/types';
+import { ConnectHelper } from '@collabsoft-net/types';
 import AJS from 'AJS';
 import qs from 'query-string';
 
@@ -25,7 +25,7 @@ export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
   }
 };
 
-export const go = ({ data }: MessageEvent, modules: Record<string, string>, { getUrl }: JiraHelper|ConfluenceHelper): void => {
+export const go = ({ data }: MessageEvent, modules: Record<string, string>, { getUrl }: ConnectHelper): void => {
     const { target, context } = JSON.parse(data);
     const ctx: AP.NavigatorContext = context as AP.NavigatorContext;
     switch (target as AP.NavigatorTargetJira|AP.NavigatorTargetConfluence) {
