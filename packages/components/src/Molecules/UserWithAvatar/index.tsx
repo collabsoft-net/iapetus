@@ -33,12 +33,13 @@ const AvatarWrapper = styled.div`
 `;
 
 export type UserWithAvatarProps = {
+  accountId?: string;
   size?: SizeType;
   isDisabled?: boolean;
-  accountId: string;
   inline?: boolean
   href?: string;
   component?: (state: UserWithAvatarState) => JSX.Element;
+  onError?: () => void;
 };
 
 interface UserWithAvatarState {
@@ -48,7 +49,7 @@ interface UserWithAvatarState {
 
 const memcache = new Map<number|string, Jira.User|Confluence.User>();
 
-export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, component }: UserWithAvatarProps): JSX.Element => {
+export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, component, onError }: UserWithAvatarProps): JSX.Element => {
 
   const [ user, setUser ] = useState<Jira.User|Confluence.User|null>(null);
   const [ name, setName ] = useState<string>();
@@ -56,27 +57,33 @@ export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, comp
   const [ isLoading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
-    if (memcache.has(accountId)) {
-      const result = memcache.get(accountId) as Jira.User;
-      setUser(result);
-      setLoading(false);
-    } else if (service) {
-      service.getUser(accountId).then(setUser).finally(() => setLoading(false));
-    }
-  }, [ service ]);
-
-  useEffect(() => {
-    if (!isLoading && user) {
-      memcache.set(accountId, user);
-      if (isOfType<Jira.User>(user, 'avatarUrls')) {
-        setName(user.name || user.displayName);
-        setAvatar(user.avatarUrls['32x32']);
-      } else {
-        setName(user.displayName || user.publicName || user.username);
-        setAvatar(user.profilePicture);
+    if (accountId) {
+      if (memcache.has(accountId)) {
+        const result = memcache.get(accountId) as Jira.User;
+        setUser(result);
+        setLoading(false);
+      } else if (service) {
+        service.getUser(accountId).then(setUser).finally(() => setLoading(false));
       }
     }
-  }, [ user ]);
+  }, [ accountId, service ]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (accountId && user) {
+        memcache.set(accountId, user);
+        if (isOfType<Jira.User>(user, 'avatarUrls')) {
+          setName(user.name || user.displayName);
+          setAvatar(user.avatarUrls['32x32']);
+        } else {
+          setName(user.displayName || user.publicName || user.username);
+          setAvatar(user.profilePicture);
+        }
+      } else {
+        onError && onError();
+      }
+    }
+  }, [ accountId, user ]);
 
 
   return component ? component({ user, isLoading }) : (

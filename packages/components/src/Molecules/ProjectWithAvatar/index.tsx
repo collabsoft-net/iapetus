@@ -32,7 +32,7 @@ export type ProjectWithAvatarProps = {
   size?: SizeType;
   isValidating?: boolean;
   isDisabled?: boolean;
-  projectId: number|string;
+  projectId?: number|string;
   inline?: boolean
   href?: string;
   component?: (state: ProjectWithAvatarState) => JSX.Element;
@@ -55,25 +55,27 @@ export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled,
   const [ isLoading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
-    if (memcache.has(projectId)) {
-      const result = memcache.get(projectId) as Jira.Project;
-      setProject(result);
-      setLoading(false);
-    } else if (service) {
-      service.getProject(projectId).then(setProject).finally(() => setLoading(false));
+    if (projectId) {
+      if (memcache.has(projectId)) {
+        const result = memcache.get(projectId) as Jira.Project;
+        setProject(result);
+        setLoading(false);
+      } else if (service) {
+        service.getProject(projectId).then(setProject).finally(() => setLoading(false));
+      }
     }
-  }, [ service ]);
+  }, [ projectId, service ]);
 
   useEffect(() => {
     if (!isLoading) {
-      if (project) {
+      if (projectId && project) {
         setArchived(project?.archived || false);
         memcache.set(projectId, project);
       } else {
         onError && onError();
       }
     }
-  }, [ project ]);
+  }, [ projectId, project ]);
 
   return component ? component({ project, isLoading, isValidating, isArchived }) : (
     <Wrapper inline={inline}>
