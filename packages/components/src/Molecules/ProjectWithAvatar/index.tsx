@@ -56,7 +56,10 @@ export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled,
   const [ isLoading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
-    if (projectId !== undefined && typeof projectId === 'string' && !isNullOrEmpty(projectId)) {
+    if (projectId !== undefined && (
+        (typeof projectId === 'number' && projectId > 0) ||
+        (typeof projectId === 'string' && !isNullOrEmpty(projectId)))) {
+
       if (memcache.has(projectId)) {
         const result = memcache.get(projectId) as Jira.Project;
         if (result) {
