@@ -1381,6 +1381,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/repositories@workspace:packages/repositories"
   dependencies:
+    "@collabsoft-net/dto": ^1.0.0-alpha.165
     "@collabsoft-net/emitters": ^1.0.0-alpha.165
     "@collabsoft-net/types": ^1.0.0-alpha.165
     "@firebase/app-types": 0.x
@@ -1393,6 +1394,7 @@ __metadata:
     typescript: 4.6.4
     uniqid: 5.4.0
   peerDependencies:
+    "@collabsoft-net/dto": ^1.0.0-alpha.165
     "@collabsoft-net/emitters": 1.0.0-alpha.44
     "@google-cloud/storage": 5.3.0
     firebase-admin: 9.9.0
