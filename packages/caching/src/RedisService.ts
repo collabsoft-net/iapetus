@@ -1,8 +1,8 @@
-import { Type } from '@collabsoft-net/types';
+import { CachingService, Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
 import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
 
-export class RedisService {
+export class RedisService implements CachingService {
 
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
@@ -13,11 +13,33 @@ export class RedisService {
     this.client.on('error', () => { this.ready = false; });
   }
 
-  public async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null> {
+  async has(key: string|Array<string>): Promise<boolean> {
     await this.isReady();
+    const result = await this.client.exists(key);
+    return result > 0;
+  }
+
+  async get<T>(key: string): Promise<T|null>;
+  async get<T>(key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(type: Type<T>, key: string): Promise<T|null>;
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T|null>), loaderOrForceRefresh?: boolean|(() => Promise<T|null>), forced?: boolean): Promise<T|null> {
+    await this.isReady();
+
+    const { type, key, loader, forceRefresh } = {
+      type: typeof typeOrKey === 'string' ? null : typeOrKey,
+      key: typeof typeOrKey === 'string' ? typeOrKey : typeof keyOrLoader === 'string' ? keyOrLoader : null,
+      loader: typeof keyOrLoader === 'function' ? keyOrLoader : typeof loaderOrForceRefresh === 'function' ? loaderOrForceRefresh : null,
+      forceRefresh: typeof loaderOrForceRefresh === 'boolean' ? loaderOrForceRefresh : typeof forced === 'boolean' ? forced : null
+    }
+
+    if (!key) {
+      throw new Error('[REDIS] Invalid argument, required parameter `key` is missing');
+    }
+
     if (!this.ready) {
       console.log(`[REDIS] miss from cache for key ${key}, server is not ready`);
-      return loader();
+      return loader ? loader() : null;
     }
 
     if (forceRefresh === true) {
@@ -29,20 +51,22 @@ export class RedisService {
       try {
         console.log(`[REDIS] hit from cache for key ${key}`);
         const result: T = JSON.parse(reply);
-        return new type(result);
+        return type ? new type(result) : result;
       } catch (error) {
         console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         await this.flush(key);
-        const result = await loader();
-        return new type(result);
+        const result = loader ? loader() : null;
+        if (result) {
+          return type ? new type(result) : result;
+        }
       }
-    } else {
+    } else if (loader) {
       try {
         console.log(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
         const result = await loader();
         if (result) {
           await this.set(key, result);
-          return new type(result);
+          return type ? new type(result) : result;
         }
         console.log(`[REDIS] miss from loader for key ${key}`);
         return null;
@@ -51,9 +75,11 @@ export class RedisService {
         return null;
       }
     }
+
+    return null;
   }
 
-  public async set<T>(key: string, data: T, expiresInSeconds: number = 30 * 60): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = 30 * 60): Promise<Error|null> {
     await this.isReady();
     if (!this.ready) {
       console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
@@ -71,17 +97,26 @@ export class RedisService {
     }
   }
 
-  public async flush(key: string): Promise<void> {
+  async flush(key: string): Promise<void> {
     await this.isReady();
     if (!this.ready) {
       console.log(`[REDIS] cannot flush key ${key}, server is not ready`);
     } else {
       console.log(`[REDIS] flushing key ${key}`);
-      await this.client.del(key);
+      await this.client.unlink(key);
     }
   }
 
-  public static generateKey(...args: Array<string|number|undefined>): string {
+  async flushAll() {
+    await this.isReady();
+    if (!this.ready) {
+      console.log(`[REDIS] cannot flush, server is not ready`);
+    } else {
+      await this.client.flushAll();
+    }
+  }
+
+  toCacheKey(...args: Array<string|number|undefined>): string {
     return createHash('md5').update(args.filter(item => item !== undefined).join('-')).digest('hex');
   }
 

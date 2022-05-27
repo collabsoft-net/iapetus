@@ -2,6 +2,7 @@
 export * from './AtlasEndpoints';
 export * from './Atlassian';
 export * from './BaseService';
+export * from './CachingService';
 export * from './ConnectHelper';
 export * from './DefaultService';
 export * from './DTO';
