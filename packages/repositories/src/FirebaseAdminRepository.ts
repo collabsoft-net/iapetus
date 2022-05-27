@@ -86,7 +86,9 @@ export class FirebaseAdminRepository implements Repository {
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }
 
-  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByQuery(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<Entity>>;
+  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<Entity>>;
+  async findAllByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
@@ -94,7 +96,7 @@ export class FirebaseAdminRepository implements Repository {
     }
 
     let collection: admin.firestore.Query = this.firestore.collection(options.path);
-    const queryBuilder = qb(new QueryBuilder());
+    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
       if (condition.key === 'orderBy') {
@@ -134,9 +136,14 @@ export class FirebaseAdminRepository implements Repository {
     return values[0];
   }
 
-  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Entity|null> {
+  async findByQuery(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Entity|null>;
+  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Entity|null>;
+  async findByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Entity|null> {
     await this.validateQueryOptions(options);
-    const { values } = await this.findAllByQuery(qb, options);
+
+    const { values } = typeof qb === 'function'
+      ? await this.findAllByQuery(qb as (qb: QueryBuilder) => QueryBuilder, options)
+      : await this.findAllByQuery(qb as QueryBuilder, options);
     return values[0];
   }
 

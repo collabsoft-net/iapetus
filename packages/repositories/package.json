@@ -31,6 +31,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
+    "@collabsoft-net/dto": "^1.0.0-alpha.165",
     "@collabsoft-net/emitters": "^1.0.0-alpha.165",
     "@collabsoft-net/types": "^1.0.0-alpha.165",
     "@firebase/app-types": "0.x",
@@ -44,6 +45,7 @@
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
+    "@collabsoft-net/dto": "^1.0.0-alpha.165",
     "@collabsoft-net/emitters": "1.0.0-alpha.44",
     "@google-cloud/storage": "5.3.0",
     "firebase-admin": "9.9.0",
