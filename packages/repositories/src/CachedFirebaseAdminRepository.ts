@@ -166,9 +166,10 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
   private async registerQueryBasedCacheKey(key: string) {
     const cacheKey = this.cacheService.toCacheKey(this.name, 'QueryBasedCacheKeys');
-    const queryBasedCacheKeys = await this.cacheService.get<Set<string>>(Set, cacheKey) || new Set<string>();
+    const result = await this.cacheService.get<Array<string>>(cacheKey) || [];
+    const queryBasedCacheKeys = new Set<string>(result);
     queryBasedCacheKeys.add(key);
-    await this.cacheService.set(cacheKey, queryBasedCacheKeys, 365 * 24 * 60 * 60);
+    await this.cacheService.set(cacheKey, Array.from(queryBasedCacheKeys), 365 * 24 * 60 * 60);
   }
 
   private async flushQueryBasedCacheKeys() {
