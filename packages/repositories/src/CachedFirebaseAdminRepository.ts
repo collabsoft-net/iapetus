@@ -9,7 +9,6 @@ const DEFAULT_CACHE_TIMEOUT_IN_SECONDS = 300;
 
 export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
-
   constructor(name: string, private cacheService: CachingService, options?: admin.AppOptions, readOnly?: boolean) {
     super(name, options, readOnly);
   }
@@ -37,6 +36,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const entities = await super.findAll(options);
     const entityIds = entities.values.map(entity => entity.id);
     await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.registerQueryBasedCacheKey(cacheKey);
     return entities;
   }
 
@@ -61,6 +61,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const entities = await super.findAllByProperty(key, value, options);
     const entityIds = entities.values.map(entity => entity.id);
     await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.registerQueryBasedCacheKey(cacheKey);
     return entities;
   }
 
@@ -88,6 +89,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const entities = await super.findAllByQuery(queryBuilder, options);
     const entityIds = entities.values.map(entity => entity.id);
     await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.registerQueryBasedCacheKey(cacheKey);
     return entities;
   }
 
@@ -109,6 +111,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const entity = await super.findByProperty(key, value, options);
     if (entity) {
       await this.cacheService.set(cacheKey, entity.id, options.expiresInSeconds);
+      await this.registerQueryBasedCacheKey(cacheKey);
     }
 
     return entity;
@@ -131,6 +134,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const entity = await super.findByQuery(queryBuilder, options);
     if (entity) {
       await this.cacheService.set(cacheKey, entity.id, options.expiresInSeconds);
+      await this.registerQueryBasedCacheKey(cacheKey);
     }
 
     return entity;
@@ -139,6 +143,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
   async save(entity: Entity, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Entity> {
     const result = await super.save(entity, options);
     await this.cacheService.set(this.cacheService.toCacheKey(options.path, result.id), result, options.expiresInSeconds);
+    await this.flushQueryBasedCacheKeys();
     return result;
   }
 
@@ -156,6 +161,19 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
   async deleteById(id: string, options: FirebaseAdminQueryOptionsWithCache): Promise<void> {
     await super.deleteById(id, options);
     await this.cacheService.flush(this.cacheService.toCacheKey(options.path, id));
+    await this.flushQueryBasedCacheKeys();
+  }
+
+  private async registerQueryBasedCacheKey(key: string) {
+    const cacheKey = this.cacheService.toCacheKey(this.name, 'QueryBasedCacheKeys');
+    const queryBasedCacheKeys = await this.cacheService.get<Set<string>>(Set, cacheKey) || new Set<string>();
+    queryBasedCacheKeys.add(key);
+    await this.cacheService.set(cacheKey, queryBasedCacheKeys, 365 * 24 * 60 * 60);
+  }
+
+  private async flushQueryBasedCacheKeys() {
+    const cacheKey = this.cacheService.toCacheKey(this.name, 'QueryBasedCacheKeys');
+    await this.cacheService.flush(cacheKey);
   }
 
 }

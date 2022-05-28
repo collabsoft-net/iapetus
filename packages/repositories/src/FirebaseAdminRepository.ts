@@ -12,9 +12,8 @@ export class FirebaseAdminRepository implements Repository {
   private firestore: admin.firestore.Firestore;
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
-  private readOnly?: boolean;
 
-  constructor(name: string, options?: admin.AppOptions, readOnly?: boolean) {
+  constructor(protected name: string, options?: admin.AppOptions, protected readOnly?: boolean) {
     this.fb = admin.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
