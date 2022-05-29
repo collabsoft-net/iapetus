@@ -1,7 +1,7 @@
 import { DTO, Entity, Paginated } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { httpDelete, httpGet, httpPost, requestBody, requestParam } from 'inversify-express-utils';
-import { StatusCodeResult } from 'inversify-express-utils/dts/results';
+import { StatusCodeResult } from 'inversify-express-utils/lib/results';
 
 import { AbstractServiceController } from '.';
 

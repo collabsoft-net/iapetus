@@ -4,7 +4,7 @@ import { AbstractService } from '@collabsoft-net/services';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { requestBody } from 'inversify-express-utils';
-import { StatusCodeResult } from 'inversify-express-utils/dts/results';
+import { StatusCodeResult } from 'inversify-express-utils/lib/results';
 
 import { AbstractController } from './AbstractController';
 
