@@ -41,6 +41,7 @@
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
     "inversify": "6.0.1",
+    "nodemon": "2.0.16",
     "query-string": "7.0.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",

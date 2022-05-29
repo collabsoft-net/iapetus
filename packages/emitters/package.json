@@ -38,6 +38,7 @@
     "axios": "0.24.0",
     "eslint": "8.15.0",
     "firebase": "9.0.1",
+    "nodemon": "2.0.16",
     "typescript": "4.6.4",
     "uniqid": "5.4.0"
   },

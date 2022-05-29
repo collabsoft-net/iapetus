@@ -34,6 +34,7 @@
     "@collabsoft-net/entities": "^1.0.0-alpha.170",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
+    "nodemon": "2.0.16",
     "typescript": "4.6.4"
   },
   "peerDependencies": {

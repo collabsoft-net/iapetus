@@ -45,6 +45,7 @@
     "axios": "0.24.0",
     "eslint": "8.15.0",
     "express": "4.17.0",
+    "nodemon": "2.0.16",
     "passport": "0.4.1",
     "passport-http-bearer": "1.0.1",
     "passport-jwt": "4.0.0",
