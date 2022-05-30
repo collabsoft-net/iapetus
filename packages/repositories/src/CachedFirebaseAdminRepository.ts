@@ -173,10 +173,12 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
   }
 
   private async flushQueryBasedCacheKeys(options: FirebaseAdminQueryOptionsWithCache) {
-    const cacheKey = this.cacheService.toCacheKey(this.name, options.path, 'QueryBasedCacheKeys');
-    const queryBasedCacheKeys = await this.cacheService.get<Array<string>>(cacheKey) || [];
-    for await (const key of queryBasedCacheKeys) {
-      await this.cacheService.flush(key);
+    try {
+      const cacheKey = this.cacheService.toCacheKey(this.name, options.path, 'QueryBasedCacheKeys');
+      const queryBasedCacheKeys = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      await this.cacheService.flush(queryBasedCacheKeys);
+    } catch (err) {
+      // We can ignore this
     }
   }
 

@@ -97,7 +97,7 @@ export class RedisService implements CachingService {
     }
   }
 
-  async flush(key: string): Promise<void> {
+  async flush(key: string|Array<string>): Promise<void> {
     await this.isReady();
     if (!this.ready) {
       console.log(`[REDIS] cannot flush key ${key}, server is not ready`);

@@ -7,7 +7,7 @@ export interface CachingService {
   get<T>(type: Type<T>, key: string): Promise<T|null>;
   get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
   set<T>(key: string, data: T, expiresInSeconds: number): Promise<Error|null>;
-  flush(key: string): Promise<void>;
+  flush(key: string|Array<string>): Promise<void>;
   flushAll(): Promise<void>;
   toCacheKey(...args: Array<string|number|boolean|undefined>): string;
 }
