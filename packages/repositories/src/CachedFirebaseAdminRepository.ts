@@ -1,4 +1,5 @@
 import { PageDTO } from '@collabsoft-net/dto';
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { CachingService, Entity, Paginated, QueryOptions } from '@collabsoft-net/types';
 import * as admin from 'firebase-admin';
 
@@ -21,9 +22,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds) {
+      if (cachedEntityIds && cachedEntityIds.length > 0) {
         const result = [];
-        for await (const entityId of cachedEntityIds) {
+        for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
           if (entity) {
             result.push(entity);
@@ -46,9 +47,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds) {
+      if (cachedEntityIds && cachedEntityIds.length > 0) {
         const result = [];
-        for await (const entityId of cachedEntityIds) {
+        for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
           if (entity) {
             result.push(entity);
@@ -74,9 +75,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds) {
+      if (cachedEntityIds && cachedEntityIds.length > 0) {
         const result = [];
-        for await (const entityId of cachedEntityIds) {
+        for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
           if (entity) {
             result.push(entity);
@@ -94,7 +95,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
   }
 
   async findById(id: string, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Entity|null> {
-    return this.cacheService.get<Entity>(this.cacheService.toCacheKey(this.name, options.path, id), () => super.findById(id, options));
+    return !isNullOrEmpty(id) ? this.cacheService.get<Entity>(this.cacheService.toCacheKey(this.name, options.path, id), () => super.findById(id, options)) : null;
   }
 
   async findByProperty(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Entity|null> {
@@ -103,7 +104,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityId = await this.cacheService.get<string>(cacheKey);
-      if (cachedEntityId) {
+      if (cachedEntityId && !isNullOrEmpty(cachedEntityId)) {
         return this.findById(cachedEntityId, options);
       }
     }
@@ -127,7 +128,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityId = await this.cacheService.get<string>(cacheKey);
-      if (cachedEntityId) {
+      if (cachedEntityId && !isNullOrEmpty(cachedEntityId)) {
         return this.findById(cachedEntityId, options);
       }
     }
