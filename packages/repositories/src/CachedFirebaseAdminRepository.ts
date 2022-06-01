@@ -21,8 +21,8 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds && cachedEntityIds.length > 0) {
+      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
@@ -46,8 +46,8 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds && cachedEntityIds.length > 0) {
+      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
@@ -74,8 +74,8 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey);
-      if (cachedEntityIds && cachedEntityIds.length > 0) {
+      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
           const entity = await this.findById(entityId, options);
@@ -104,7 +104,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityId = await this.cacheService.get<string>(cacheKey);
-      if (cachedEntityId && !isNullOrEmpty(cachedEntityId)) {
+      if (cachedEntityId && typeof cachedEntityId === 'string' && !isNullOrEmpty(cachedEntityId)) {
         return this.findById(cachedEntityId, options);
       }
     }
@@ -128,7 +128,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
     if (isCached) {
       const cachedEntityId = await this.cacheService.get<string>(cacheKey);
-      if (cachedEntityId && !isNullOrEmpty(cachedEntityId)) {
+      if (cachedEntityId && typeof cachedEntityId === 'string' && !isNullOrEmpty(cachedEntityId)) {
         return this.findById(cachedEntityId, options);
       }
     }
