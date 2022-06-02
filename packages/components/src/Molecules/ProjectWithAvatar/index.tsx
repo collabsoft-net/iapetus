@@ -1,7 +1,7 @@
 import Avatar, { SizeType } from '@atlaskit/avatar';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
-import { isNullOrEmpty } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import kernel from '@collabsoft-net/inversify';
 import { JiraClientService } from '@collabsoft-net/services';
 import React, { useEffect, useState } from 'react';
@@ -62,7 +62,7 @@ export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled,
 
       if (memcache.has(projectId)) {
         const result = memcache.get(projectId) as Jira.Project;
-        if (result) {
+        if (isOfType<Jira.Project>(result, 'id')) {
           setProject(result);
           setLoading(false);
           return;
@@ -70,7 +70,11 @@ export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled,
       }
 
       if (service) {
-        service.getProject(projectId).then(setProject).finally(() => setLoading(false));
+        service.getProject(projectId).then(result => {
+          if (isOfType<Jira.Project>(result, 'id')) {
+            setProject(result);
+          }
+        }).catch(() => {}).finally(() => setLoading(false));
       }
     }
   }, [ projectId, service ]);

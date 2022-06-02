@@ -60,10 +60,19 @@ export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, comp
     if (accountId) {
       if (memcache.has(accountId)) {
         const result = memcache.get(accountId) as Jira.User;
-        setUser(result);
-        setLoading(false);
-      } else if (service) {
-        service.getUser(accountId).then(setUser).finally(() => setLoading(false));
+        if (isOfType<Jira.User>(result, 'name') || isOfType<Confluence.User>(result, 'displayName')) {
+          setUser(result);
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (service) {
+        service.getUser(accountId).then(result => {
+          if (isOfType<Jira.User>(result, 'name') || isOfType<Confluence.User>(result, 'displayName')) {
+            setUser(result);
+          }
+        }).catch(() => {}).finally(() => setLoading(false));
       }
     }
   }, [ accountId, service ]);
