@@ -13,33 +13,37 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
 
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
-  protected async process(request: express.Request): Promise<T> {
-    const instance = await this.findInstanceFromRequest(request);
-    if (instance) {
-      // Only update the lastActive if non-existant or less than 24 hours ago
-      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
-        instance.lastActive = new Date().getTime();
-        await this.service.save(instance);
-      }
+  protected abstract get clientIdentifierKey(): string;
 
-      return this.toSession(request, instance);
+  protected async process(request: express.Request): Promise<T> {
+    const identifier = await this.findIdentifier(request);
+    if (identifier) {
+      const instance = await this.service.findByProperty(this.clientIdentifierKey, identifier);
+      if (instance) {
+        // Only update the lastActive if non-existant or less than 24 hours ago
+        if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
+          instance.lastActive = new Date().getTime();
+          await this.service.save(instance);
+        }
+
+        return this.toSession(request, instance);
+      } else {
+        throw new Error('Customer instance not found');
+      }
     } else {
-      throw new Error('Customer instance not found');
+      throw new Error(`No supported client idenfitier found on request query, expected one of 'clientId', 'clientKey' or 'tenantId'`);
     }
   }
 
   protected abstract toSession(request: express.Request, instance: ACInstance): Promise<T>;
 
-  private async findInstanceFromRequest(request: express.Request): Promise<ACInstance|null> {
+  private async findIdentifier(request: express.Request): Promise<string|null> {
     const { clientId, clientKey, tenantId } = request.query;
-    if (clientId && typeof clientId === 'string') {
-      return this.service.findById(clientId) || this.service.findByProperty('clientKey', clientId);
-    } else if (clientKey && typeof clientKey === 'string') {
-      return this.service.findByProperty('clientKey', clientKey) || this.service.findById(clientKey);
-    } else if (tenantId && typeof tenantId === 'string') {
-      return this.service.findByProperty('clientKey', tenantId) || this.service.findById(tenantId);
-    }
-    return null;
+    return (
+      clientId && typeof clientId === 'string' ? clientId :
+      clientKey && typeof clientKey === 'string' ? clientKey :
+      tenantId && typeof tenantId === 'string' ? tenantId : null
+    );
   }
 
 }
