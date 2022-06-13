@@ -63,5 +63,8 @@
     "passport-http-bearer": "1.0.1",
     "passport-jwt": "4.0.0"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
+  "dependencies": {
+    "passport-custom": "^1.1.1"
+  }
 }
