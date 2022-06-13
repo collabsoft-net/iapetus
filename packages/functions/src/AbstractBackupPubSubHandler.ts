@@ -6,8 +6,12 @@ import { getFirebaseAdminOptions } from './environment';
 
 export abstract class AbstractBackupPubSubHandler extends AbstractScheduledPubSubHandler {
 
+  schedule = '0 * * * *';
+  name = 'HourlyBackupEventHandler';
+
   get projectId(): string|undefined {
-    return process.env.FB_PROJECTID || process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
+    const options = getFirebaseAdminOptions();
+    return options?.projectId || process.env.FB_PROJECTID || process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
   }
 
   get bucketName(): string|undefined {
