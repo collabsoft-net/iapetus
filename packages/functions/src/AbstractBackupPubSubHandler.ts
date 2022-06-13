@@ -6,9 +6,6 @@ import { getFirebaseAdminOptions } from './environment';
 
 export abstract class AbstractBackupPubSubHandler extends AbstractScheduledPubSubHandler {
 
-  schedule = '0 * * * *';
-  name = 'HourlyBackupEventHandler';
-
   get projectId(): string|undefined {
     const options = getFirebaseAdminOptions();
     return options?.projectId || process.env.FB_PROJECTID || process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
