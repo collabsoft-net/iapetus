@@ -1,4 +1,5 @@
 
+export * from './AbstractBackupPubSubHandler';
 export * from './AbstractPubSubHandler';
 export * from './AbstractScheduledPubSubHandler';
 export * from './AbstractScheduledTenantIteratorPubSubHandler';
