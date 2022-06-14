@@ -6,7 +6,10 @@ import { AbstractBackupPubSubHandler } from '.';
 @injectable()
 export class HourlyBackupPubSubHandler extends AbstractBackupPubSubHandler {
 
-  schedule = '0 * * * *';
   name = 'HourlyBackupEventHandler';
+
+  constructor(public schedule: string = '0 * * * *') {
+    super();
+  }
 
 }
