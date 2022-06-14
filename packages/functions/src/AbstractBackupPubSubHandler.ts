@@ -1,21 +1,45 @@
+import { ScheduledPubSubHandler } from '@collabsoft-net/types';
 import firestore from '@google-cloud/firestore';
+import { AppOptions } from 'firebase-admin';
 import { error,info } from 'firebase-functions/lib/logger';
 import { injectable } from 'inversify';
 
-import { AbstractScheduledPubSubHandler } from '.';
-import { getFirebaseAdminOptions } from './environment';
-
 @injectable()
-export abstract class AbstractBackupPubSubHandler extends AbstractScheduledPubSubHandler {
+export abstract class AbstractBackupPubSubHandler implements ScheduledPubSubHandler {
+
+  abstract name: string;
+  abstract schedule: string;
+
+  get options(): AppOptions|undefined {
+    if (process.env.FIREBASE_CONFIG) {
+      try {
+        return JSON.parse(process.env.FIREBASE_CONFIG) as AppOptions;
+      } catch (err) {
+        return undefined;
+      }
+    }
+    return undefined;
+  }
 
   get projectId(): string|undefined {
-    const options = getFirebaseAdminOptions();
-    return options?.projectId || process.env.FB_PROJECTID || process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
+    return this.options?.projectId || process.env.FB_PROJECTID || process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
   }
 
   get bucketName(): string|undefined {
-    const options = getFirebaseAdminOptions();
-    return options?.storageBucket;
+    return this.options?.storageBucket || process.env.FB_STORAGEBUCKET;
+  }
+
+  async process(): Promise<void> {
+    try {
+      info(`==> Start processing ${this.name}`);
+      await this.run();
+    } catch (err) {
+      error('======================== Event processing failed ========================');
+      error(`==> Failed to process ${this.name}`, err);
+      error('=========================================================================');
+    } finally {
+      info(`==> Finished processing ${this.name}`);
+    }
   }
 
   async run(): Promise<void> {
