@@ -1,9 +1,11 @@
 import firestore from '@google-cloud/firestore';
 import { error,info } from 'firebase-functions/lib/logger';
+import { injectable } from 'inversify';
 
 import { AbstractScheduledPubSubHandler } from '.';
 import { getFirebaseAdminOptions } from './environment';
 
+@injectable()
 export abstract class AbstractBackupPubSubHandler extends AbstractScheduledPubSubHandler {
 
   get projectId(): string|undefined {
