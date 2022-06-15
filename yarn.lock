@@ -1186,12 +1186,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.187, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/controllers@^1.0.0-alpha.188, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
     "@collabsoft-net/dto": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.187
+    "@collabsoft-net/functions": ^1.0.0-alpha.188
     "@collabsoft-net/services": ^1.0.0-alpha.176
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@sentry/minimal": 6.5.1
@@ -1278,7 +1278,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.187, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.188, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
@@ -1295,6 +1295,7 @@ __metadata:
     express: 4.17.0
     firebase-admin: 9.9.0
     firebase-functions: 3.14.1
+    http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
     nodemon: 2.0.16
@@ -1311,6 +1312,7 @@ __metadata:
     express: 4.17.0
     firebase-admin: 9.9.0
     firebase-functions: 3.14.1
+    http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
     passport: 0.4.1
@@ -1364,9 +1366,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.187
+    "@collabsoft-net/controllers": ^1.0.0-alpha.188
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/functions": ^1.0.0-alpha.187
+    "@collabsoft-net/functions": ^1.0.0-alpha.188
     "@collabsoft-net/helpers": ^1.0.0-alpha.176
     "@collabsoft-net/services": ^1.0.0-alpha.176
     "@collabsoft-net/types": ^1.0.0-alpha.176
@@ -1464,10 +1466,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.187
+    "@collabsoft-net/controllers": ^1.0.0-alpha.188
     "@collabsoft-net/dto": ^1.0.0-alpha.176
     "@collabsoft-net/entities": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.187
+    "@collabsoft-net/functions": ^1.0.0-alpha.188
     "@collabsoft-net/services": ^1.0.0-alpha.176
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/node": 12.20.25
@@ -1480,7 +1482,7 @@ __metadata:
     express: 4.17.0
     nodemon: 2.0.16
     passport: 0.4.1
-    passport-custom: ^1.1.1
+    passport-custom: 1.1.1
     passport-http-bearer: 1.0.1
     passport-jwt: 4.0.0
     typescript: 4.6.4
@@ -1493,6 +1495,7 @@ __metadata:
     axios: 0.24.0
     express: 4.17.0
     passport: 0.4.1
+    passport-custom: 1.1.1
     passport-http-bearer: 1.0.1
     passport-jwt: 4.0.0
   languageName: unknown
@@ -7358,6 +7361,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"http-status-codes@npm:2.2.0":
+  version: 2.2.0
+  resolution: "http-status-codes@npm:2.2.0"
+  checksum: 31e1d730856210445da0907d9b484629e69e4fe92ac032478a7aa4d89e5b215e2b4e75d7ebce40d0537b6850bd281b2f65c7cc36cc2677e5de056d6cea1045ce
+  languageName: node
+  linkType: hard
+
 "http-status-codes@npm:^2.1.4":
   version: 2.1.4
   resolution: "http-status-codes@npm:2.1.4"
@@ -9791,7 +9801,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"passport-custom@npm:^1.1.1":
+"passport-custom@npm:1.1.1":
   version: 1.1.1
   resolution: "passport-custom@npm:1.1.1"
   dependencies:
