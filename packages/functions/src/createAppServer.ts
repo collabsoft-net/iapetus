@@ -6,6 +6,7 @@ import cookies from 'cookie-parser';
 import * as express from 'express';
 import { https } from 'firebase-functions';
 import { error, info } from 'firebase-functions/lib/logger';
+import { StatusCodes } from 'http-status-codes';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import passport from 'passport';
@@ -30,6 +31,11 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
         res.setHeader('strict-transport-security', 'max-age=31556926');
         res.setHeader('Cache-Control', 'no-cache,no-store,must-revalidate,max-age=0');
         next();
+      });
+
+      // Add global healtcheck endpoint to all apps
+      app.get('/healthcheck', (_req, res) => {
+        res.sendStatus(StatusCodes.OK);
       });
 
       app.use(passport.initialize());
