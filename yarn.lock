@@ -10339,7 +10339,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:latest":
+"node-gyp@npm:^9.0.0, node-gyp@npm:latest":
   version: 9.0.0
   resolution: "node-gyp@npm:9.0.0"
   dependencies:
@@ -12214,6 +12214,7 @@ fsevents@~2.3.2:
     eslint: 8.15.0
     eslint-plugin-simple-import-sort: 7.0.0
     lerna: 4.0.0
+    node-gyp: ^9.0.0
     nodemon: 2.0.16
     typescript: 4.6.4
   languageName: unknown
