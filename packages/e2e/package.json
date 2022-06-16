@@ -1,0 +1,49 @@
+{
+  "name": "@collabsoft-net/e2e",
+  "version": "1.0.0-alpha.188",
+  "description": "Collection of shared WebDriver.io testing functions",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "module": "./dist/es2020/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
+    "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
+    "build:types": "yarn run tsc --emitDeclarationOnly --outDir dist/types",
+    "start": "yarn run nodemon --watch src -e '.ts' --exec 'yarn build'",
+    "prepack": "yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/e2e"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "peerDependencies": {
+    "@wdio/cli": "7.20.2",
+    "@wdio/sync": "7.20.2",
+    "chai": "4.3.6",
+    "chai-string": "1.5.0"
+  },
+  "devDependencies": {
+    "@types/chai": "4.3.1",
+    "@types/chai-string": "1.4.2",
+    "@wdio/cli": "7.20.2",
+    "@wdio/sync": "7.20.2",
+    "chai": "4.3.6",
+    "chai-string": "1.5.0",
+    "eslint": "8.17.0",
+    "typescript": "4.7.3"
+  }
+}
