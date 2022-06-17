@@ -210,18 +210,19 @@ export const getBaseConfig = (baseUrl: string): WebdriverIO.Config => ({
         browser.addCommand('fetch', (url: string, options?: RequestInit): Promise<unknown> => commands.fetch(url, options));
         browser.addCommand('use', (selector?: string|Array<string>): Promise<void> => commands.use(selector));
         browser.addCommand('waitUntil', (condition: () => boolean|Promise<boolean>, timeout?: number, timeoutMsg?: string, interval?: number): Promise<true | void> => commands.waitUntil(condition, timeout, timeoutMsg, interval));
-        browser.addCommand('waitForDisplayed', (selector: string|Array<string>, timeout?: number): Promise<true | void> => commands.waitForDisplayed(selector, timeout));
+        browser.addCommand('waitForDisplayed', (selector: string|Array<string>, timeout?: number): Promise<boolean> => commands.waitForDisplayed(selector, timeout));
         browser.addCommand('exists', (selector: string|Array<string>, assert = true): Promise<boolean> => commands.exists(selector, assert));
         browser.addCommand('isVisible', (selector: string|Array<string>, assert = true): Promise<boolean> => commands.isVisible(selector, assert));
         browser.addCommand('isEnabled', (selector: string|Array<string>, assert = true): Promise<boolean> => commands.isEnabled(selector, assert));
-        browser.addCommand('getText', (selector: string|Array<string>): Promise<string> => commands.getText(selector));
+        browser.addCommand('getText', (selector: string|Array<string>): Promise<string|Array<string>|undefined> => commands.getText(selector));
         browser.addCommand('hasText', (selector: string|Array<string>, value: string, assert?: boolean): Promise<boolean> => commands.hasText(selector, value, assert));
+        browser.addCommand('getValue', (selector: string|Array<string>): Promise<string|Array<string>|undefined> => commands.getValue(selector));
         browser.addCommand('setValue', (selector: string|Array<string>, value: string): Promise<void> => commands.setValue(selector, value));
         browser.addCommand('hasValue', (selector: string|Array<string>, value: string, assert?: boolean): Promise<boolean> => commands.hasValue(selector, value, assert));
         browser.addCommand('clearValue', (selector: string|Array<string>): Promise<void> => commands.clearValue(selector));
-        browser.addCommand('hasAttribute', (selector: string|Array<string>, name: string, value?: string|RegExp): Promise<void> => commands.hasAttribute(selector, name, value));
-        browser.addCommand('click', (selector: string|Array<string>, waitForElement?: string|Array<string>, timeout?: number): Promise<void> => commands.click(selector, waitForElement, timeout));
-        browser.addCommand('hasChildren', (selector: string|Array<string>, expected?: number): Promise<void> => commands.hasChildren(selector, expected));
+        browser.addCommand('hasAttribute', (selector: string|Array<string>, name: string, value?: string|RegExp): Promise<boolean> => commands.hasAttribute(selector, name, value));
+        browser.addCommand('click', (selector: string, waitForElement?: string|Array<string>, timeout?: number): Promise<void> => commands.click(selector, waitForElement, timeout));
+        browser.addCommand('hasChildren', (selector: string|Array<string>, expected?: number): Promise<boolean> => commands.hasChildren(selector, expected));
         browser.addCommand('captureScreenshot', (name: string): void => commands.captureScreenshot(name));
     },
     /**

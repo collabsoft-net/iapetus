@@ -2,6 +2,7 @@ import { expect, should, use as chaiUse } from 'chai';
 import chaiString from 'chai-string';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
+import { Element } from 'webdriverio/build/types';
 chaiUse(chaiString);
 should();
 
@@ -25,12 +26,22 @@ export async function fetch(url: string, options: RequestInit = {}): Promise<unk
   return result;
 }
 
+export async function findElement(selector: string|Array<string>) {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  for await (const item of items) {
+    const isValidSelector = await exists(item, false);
+    if (isValidSelector) {
+      return browser.$(item);
+    }
+  }
+}
+
 export async function use(selector?: string|Array<string>): Promise<void> {
   if (!selector) {
     browser.switchToParentFrame();
   } else {
     await waitUntil(async () => exists(selector), 60000, undefined, 200);
-    browser.switchToFrame(await browser.$(toSelector(selector)));
+    browser.switchToFrame(await findElement(selector));
   }
 }
 
@@ -38,114 +49,166 @@ export async function waitUntil(condition: () => boolean|Promise<boolean>, timeo
   return browser.waitUntil(condition, { timeout, interval, timeoutMsg });
 }
 
-export async function waitForDisplayed(selector: string|Array<string>, timeout = 10000): Promise<true | void> {
-  const CSSSelector = toSelector(selector);
-  const elm = await browser.$(CSSSelector);
-  if (!elm) throw new Error(`Could not find element by ${CSSSelector}`);
-  return elm.waitForDisplayed({ timeout });
+export async function waitForDisplayed(selector: string|Array<string>, timeout = 10000): Promise<boolean> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  await Promise.all(items.map(item => browser.$(item).then((elm: Element<'sync'>) => elm.waitForDisplayed({ timeout })).catch(() => {})));
+  return exists(selector);
 }
 
 export async function exists(selector: string|Array<string>, assert = true): Promise<boolean> {
-  const exists = await exec(toSelector(selector), 'isExisting');
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let exists = false;
+
+  for await(const item of items) {
+    const isExisting = await exec(item, 'isExisting');
+    if (isExisting) exists = true;
+  }
+
   if (assert) { expect(exists, `Expected ${selector} to exists, but it does not`).to.be.true; }
   return exists;
 }
 
 export async function isVisible(selector: string|Array<string>, assert = true): Promise<boolean> {
-  const visible = await exec(toSelector(selector), 'isDisplayed');
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let visible = false;
+
+  for await(const item of items) {
+    const isDisplayed = await exec(item, 'isDisplayed');
+    if (isDisplayed) visible = true;
+  }
+
   if (assert) expect(visible, `Expected '${selector}' to be visible, but it is not`).to.be.true;
   return visible;
 }
 
 export async function isEnabled(selector: string|Array<string>, assert = true): Promise<boolean> {
-  const enabled = await exec(toSelector(selector), 'isEnabled');
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let enabled = false;
+
+  for await(const item of items) {
+    const isEnabled = await exec(item, 'isEnabled');
+    if (isEnabled) enabled = true;
+  }
+
   if (assert) expect(enabled, `Expected ${selector} to be enabled, but it is not`).to.be.true;
   return enabled;
 }
 
-export async function getText(selector: string|Array<string>): Promise<string> {
-  return await exec(toSelector(selector), 'getText');
-}
-
-export async function getValue(selector: string|Array<string>): Promise<string> {
-  return await exec(toSelector(selector), 'getValue');
-}
-
 export async function hasText(selector: string|Array<string>, value: string, assert = true): Promise<boolean> {
-  const text = await getText(toSelector(selector));
-  if (assert) text.should.be.equal(value);
-  return text === value;
-}
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let hasText = false;
 
-export async function setValue(selector: string|Array<string>, value: string): Promise<void> {
-  await exec(toSelector(selector), 'setValue', value);
-  await browser.pause(200);
+  for await(const item of items) {
+    const text = await getText(item);
+    if (text === value) hasText = true;
+  }
+
+  if (assert) expect(hasText, `Expected ${selector} text to equal value ${value}, but it does not`).to.be.true;
+  return hasText;
 }
 
 export async function hasValue(selector: string|Array<string>, value: string, assert = true): Promise<boolean> {
-  const text = await getValue(toSelector(selector));
-  if (assert) text.should.be.equal(value, `Expected ${selector} text to be ${value}, but it is not`);
-  return text === value;
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let hasValue = false;
+
+  for await(const item of items) {
+    const currentValue = await getValue(item);
+    if (currentValue === value) hasValue = true;
+  }
+
+  if (assert) expect(hasValue, `Expected ${selector} to equal value ${value}, but it does not`).to.be.true;
+  return hasValue;
+}
+
+export async function hasAttribute(selector: string|Array<string>, name: string, value?: string|RegExp): Promise<boolean> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let hasAttribute = false;
+
+  await waitForDisplayed(selector);
+  for await (const item of items) {
+    const attr: string = await exec(item, 'getAttribute', name);
+    if (value) {
+      if (value instanceof RegExp) {
+        if (value.test(attr)) hasAttribute = true;
+      } else if (typeof value === 'string') {
+        if (attr === value) hasAttribute = true;
+      } else {
+        return Promise.reject('Unrecognized value format, only string & RegExp are supported');
+      }
+    }
+  }
+
+  expect(hasAttribute, `Expected attribute ${name} to exist on ${selector}, but it does not`).to.be.true;
+  return hasAttribute;
+}
+
+export async function hasChildren(selector: string|Array<string>, expected?: number): Promise<boolean> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  let hasChildren = false;
+
+  for await (const item of items) {
+    const elements = await browser.$$(item);
+    if (elements) {
+      if (expected && elements.length === expected) {
+        hasChildren = true;
+      } else if (elements.length > 0) {
+        hasChildren = true;
+      }
+    }
+  }
+
+  expect(hasChildren, expected ? `Expected ${selector} to have ${expected} children, but it does not` : `Expected ${selector} to have at least one child, but it does not`).to.be.true;
+  return hasChildren;
+}
+
+export async function getText(selector: string|Array<string>): Promise<string|Array<string>|undefined> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  const result: Array<string> = [];
+  for await (const item of items) {
+    const value = await exec(item, 'getText');
+    if (value) result.push(value);
+  }
+  return result.length > 1 ? result : result.pop();
+}
+
+export async function getValue(selector: string|Array<string>): Promise<string|Array<string>|undefined> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  const result: Array<string> = [];
+  for await (const item of items) {
+    const value = await exec(item, 'getValue');
+    if (value) result.push(value);
+  }
+  return result.length > 1 ? result : result.pop();
+}
+
+export async function setValue(selector: string|Array<string>, value: string): Promise<void> {
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  for await (const item of items) {
+    await exec(item, 'setValue', value);
+    await browser.pause(200);
+  }
 }
 
 export async function clearValue(selector: string|Array<string>): Promise<void> {
-  await exec(toSelector(selector), 'clearValue');
-  browser.execute((selector) => {
-    const input: HTMLInputElement|null = document.querySelector(selector);
-    if (input) {
-      input.value = '';
-      input.dispatchEvent(new Event('input'));
-    }
-  }, toSelector(selector));
-}
-
-export async function hasAttribute(selector: string|Array<string>, name: string, value?: string|RegExp): Promise<void> {
-  await waitForDisplayed(selector);
-  const attr: string = await exec(toSelector(selector), 'getAttribute', name);
-  expect(attr, `Expected ${attr} to exist on ${selector}, but it does not`).to.exist;
-  if (value) {
-    if (value instanceof RegExp) {
-      value.test(attr).should.be.true;
-    } else if (typeof value === 'string') {
-      attr.should.be.equal(value);
-    } else {
-      return Promise.reject('Unrecognized value format, only string & RegExp are supported');
-    }
+  const items = Array.isArray(selector) ? selector : [ selector ];
+  for await (const item of items) {
+    await exec(item, 'clearValue');
+    browser.execute((selector) => {
+      const input: HTMLInputElement|null = document.querySelector(selector);
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input'));
+      }
+    }, item);
   }
 }
 
-export async function click(selector: string|Array<string>, waitForElement?: string|Array<string>, timeout?: number): Promise<void> {
+export async function click(selector: string, waitForElement?: string|Array<string>, timeout?: number): Promise<void> {
   await waitForDisplayed(selector);
-  const elm = await browser.$(toSelector(selector));
+  const elm = await browser.$(selector);
   elm.scrollIntoView();
   elm.click();
   if (waitForElement) await waitForDisplayed(waitForElement, timeout);
-}
-
-export async function hasChildren(selector: string|Array<string>, expected?: number): Promise<void> {
-  const elements = await browser.$$(toSelector(selector));
-  expect(elements).to.exist;
-  if (expected) {
-    elements.length.should.equal(expected);
-  } else {
-    elements.length.should.be.at.least(1);
-  }
-}
-
-export function toSelector(selector: string|Array<string>): string {
-  const names = Array.isArray(selector) ? selector : [ selector ];
-  if (names.length === 1) {
-    if (names[0].startsWith('[data-wd-id')) {
-      return names[0];
-    } else if (names[0].startsWith('raw:')) {
-      return names[0].replace('raw:', '');
-    } else {
-      const selector: string = names[0];
-      const items = selector.split(' ');
-      return items.map((item) => item.startsWith('#') ? `[data-wd-id="${item.substr(1)}"]` : item).join(' ');
-    }
-  }
-  return names.map((name) => `[data-wd-id="${name}"]`).join(' ');
 }
 
 export function captureScreenshot(name: string): void {
@@ -162,7 +225,6 @@ export function captureScreenshot(name: string): void {
 }
 
 const exec = async (selector: string, method: string, ...args: Array<unknown>) => {
-  // await waitForDisplayed(`raw:${selector}`);
   const elm = await browser.$(selector);
   // eslint-disable-next-line
   return (elm as any)[method](...args);
