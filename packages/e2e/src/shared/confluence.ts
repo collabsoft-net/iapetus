@@ -22,10 +22,16 @@ export const editPage = async (): Promise<void> => {
 
 export const removeAllExistingMacros = async (): Promise<void> => {
   let pageHasMacro = await browser.exists('div[extensiontype="com.atlassian.confluence.macro.core"]', false);
+
+  let count = 0;
   while(pageHasMacro) {
     await browser.click(`div[extensiontype="com.atlassian.confluence.macro.core"]`);
     await browser.click('.ak-editor-content-area div[aria-label="Extension floating controls"] button[aria-label="Remove"]')
+    await browser.pause(200);
     pageHasMacro = await browser.exists('div[extensiontype="com.atlassian.confluence.macro.core"]', false);
+
+    if (count > 5) break;
+    count++;
   }
 }
 
@@ -71,6 +77,7 @@ export const removeMacro = async (extensionKey: string): Promise<void> => {
     const isRemoveButtonAvailable = await browser.isVisible('.ak-editor-content-area div[aria-label="Extension floating controls"] button[aria-label="Remove"]', false);
     if (isRemoveButtonAvailable) {
       await browser.click('.ak-editor-content-area div[aria-label="Extension floating controls"] button[aria-label="Remove"]')
+      await browser.pause(200);
     }
   }
 }
