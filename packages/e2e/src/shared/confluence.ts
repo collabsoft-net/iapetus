@@ -1,13 +1,15 @@
 
 
 
-export const loginToConfluence = async (): Promise<void> => {
-  const isLoggedIn = await browser.exists('raw:#com-atlassian-confluence', false);
-  if (!isLoggedIn) {
-    await browser.setValue('raw:#username', 'embedder+e2e@collabsoft.net');
-    await browser.click('raw:#login-submit', 'raw:#password');
-    await browser.setValue('raw:#password', 'tgwsb@_tBuzvD6tz4GfR');
-    await browser.click('raw:#login-submit', 'raw:#com-atlassian-confluence');
+export const loginToConfluence = async (username?: string, password?: string): Promise<void> => {
+  const isLoggedIn = await browser.exists('#com-atlassian-confluence', false);
+  if (!isLoggedIn && username && password) {
+    await browser.setValue('#username', username);
+    await browser.click('#login-submit', '#password');
+    await browser.setValue('#password', password);
+    await browser.click('#login-submit', '#com-atlassian-confluence');
+  } else {
+    return Promise.reject('Could not log in to Confluence, as the instance is not publicly avaiable and no credentials have been provided');
   }
 }
 
