@@ -1241,6 +1241,7 @@ __metadata:
     chai: 4.3.6
     chai-string: 1.5.0
     eslint: 8.17.0
+    nodemon: 2.0.16
     typescript: 4.7.3
   peerDependencies:
     "@wdio/cli": 7.20.2
