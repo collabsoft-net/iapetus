@@ -39,7 +39,7 @@ export const addMacroToPage = async (name: string, extensionKey: string): Promis
   await browser.click('//button[not(@disabled) and @aria-label="Insert"]', 'div[aria-label="Popup"] input[aria-label="search"]');
   await browser.setValue('div[aria-label="Popup"] input[aria-label="search"]', name);
   await browser.click(`span[aria-describedby="${name}"]`);
-  await browser.waitForDisplayed(`div[extensionkey="${extensionKey}"]`);
+  await browser.waitForDisplayed([`div[extensionkey="${extensionKey}"]`, 'section[role="dialog"] footer.aui-dialog2-footer']);
 }
 
 export const openMacroEditor = async (extensionKey: string): Promise<void> => {
@@ -63,10 +63,34 @@ export const waitForMacroToLoad = async (extensionKey: string): Promise<void> =>
   browser.switchToParentFrame();
 }
 
+export const saveCustomMacroEditor = async (): Promise<void> => {
+  const isMacroEditorOpen = await browser.isVisible('section[role="dialog"] footer.aui-dialog2-footer');
+  if (isMacroEditorOpen) {
+    const parent = await browser.$('section[role="dialog"] footer.aui-dialog2-footer');
+    const elm = await parent.$('button=Insert') || await parent.$('button=Save');
+    if (elm) {
+      elm.click();
+    }
+  }
+}
+
 export const closeMacroEditor = async (): Promise<void> => {
   const isMacroEditorOpen = await browser.isVisible('form[data-testid="extension-config-panel"]');
   if (isMacroEditorOpen) {
     await browser.click('form[data-testid="extension-config-panel"] span[role="img"][aria-label="Close"]');
+  }
+}
+
+export const closeCustomMacroEditor = async (): Promise<void> => {
+  const isMacroEditorOpen = await browser.isVisible('section[role="dialog"] footer.aui-dialog2-footer');
+  if (isMacroEditorOpen) {
+    const parent = browser.$('section[role="dialog"] footer.aui-dialog2-footer');
+    if (parent) {
+      const elm = parent.$('button=Cancel');
+      if (elm) {
+        elm.click();
+      }
+    }
   }
 }
 
