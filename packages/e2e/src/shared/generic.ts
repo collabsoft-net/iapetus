@@ -3,12 +3,12 @@
 import { loginToConfluence } from './confluence';
 
 // Only call this once the test has finished
-export const reportResult = async (host: 'jira'|'confluence', appKey: string, contextUrl: string, passed: boolean): Promise<void> => {
+export const reportResult = async (host: 'jira'|'confluence', username: string, password: string, appKey: string, contextUrl: string, passed: boolean): Promise<void> => {
   try {
 
     // Open the Get Started page
     if (host === 'confluence') {
-      await loginToConfluence();
+      await loginToConfluence(username, password);
     }
 
     // Navigate to the context URL to get access to AP
