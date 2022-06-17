@@ -16,7 +16,7 @@ export const loginToConfluence = async (username?: string, password?: string): P
 export const editPage = async (): Promise<void> => {
   const isEditingPage = await browser.exists('button[aria-label="Insert"]', false);
   if (!isEditingPage) {
-    await browser.click('raw:#editPageLink', 'button[aria-label="Insert"]');
+    await browser.click('#editPageLink', 'button[aria-label="Insert"]');
   }
 }
 
