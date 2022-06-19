@@ -5,7 +5,7 @@ export {};
 
 declare global {
 
-  const browser: Browser<'sync'> & ExtendedBrowser;
+  const browser: Browser<'async'> & ExtendedBrowser;
 
   interface ExtendedBrowser {
     open(url: string): Promise<void>;

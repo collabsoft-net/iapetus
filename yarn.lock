@@ -1237,7 +1237,6 @@ __metadata:
     "@types/chai": 4.3.1
     "@types/chai-string": 1.4.2
     "@wdio/cli": 7.20.2
-    "@wdio/sync": 7.20.2
     chai: 4.3.6
     chai-string: 1.5.0
     eslint: 8.17.0
@@ -1245,7 +1244,6 @@ __metadata:
     typescript: 4.7.3
   peerDependencies:
     "@wdio/cli": 7.20.2
-    "@wdio/sync": 7.20.2
     chai: 4.3.6
     chai-string: 1.5.0
   languageName: unknown
@@ -3914,13 +3912,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fibers@npm:^3.1.0":
-  version: 3.1.1
-  resolution: "@types/fibers@npm:3.1.1"
-  checksum: 3bcc53c92dcaabf77cf31274c06ba615a59d21730bdb47214f64d7bf356ab31712f1d9c79707e50d2c9d2f8cda8cca4f7e4c20ddf272b07397d20fb196dbc400
-  languageName: node
-  linkType: hard
-
 "@types/fs-extra@npm:^9.0.4":
   version: 9.0.13
   resolution: "@types/fs-extra@npm:9.0.13"
@@ -4129,15 +4120,6 @@ __metadata:
   version: 15.7.4
   resolution: "@types/prop-types@npm:15.7.4"
   checksum: ef6e1899e59b876c273811b1bd845022fc66d5a3d11cb38a25b6c566b30514ae38fe20a40f67622f362a4f4f7f9224e22d8da101cff3d6e97e11d7b4c307cfc1
-  languageName: node
-  linkType: hard
-
-"@types/puppeteer@npm:^5.4.0":
-  version: 5.4.6
-  resolution: "@types/puppeteer@npm:5.4.6"
-  dependencies:
-    "@types/node": "*"
-  checksum: b969230812e95fcc5eee83151731e51b287cc934169f552034d8eea58ce9b5beb4ba09b9ce05b75d9510241a85d244f28e8b0a0a4b9f7dffcad8c37a39288260
   languageName: node
   linkType: hard
 
@@ -4503,20 +4485,6 @@ __metadata:
   dependencies:
     "@wdio/utils": 7.20.0
   checksum: 84197c189e3efe391a10681e031f9a6a83c789ce26cb53e7c8976bc3483c602075f7f9960585751a1a5553397dec083ea417248260f01cfdf8dc146d40cd5009
-  languageName: node
-  linkType: hard
-
-"@wdio/sync@npm:7.20.2":
-  version: 7.20.2
-  resolution: "@wdio/sync@npm:7.20.2"
-  dependencies:
-    "@types/fibers": ^3.1.0
-    "@types/puppeteer": ^5.4.0
-    "@wdio/logger": 7.19.0
-    "@wdio/types": 7.20.0
-    fibers: ^5.0.0
-    webdriverio: 7.20.2
-  checksum: 9823f80f14f8d61a0f59985a97bd239636640304ae0c39df98e152ca0b473f508a29540955e5d9bfc8a37793a44a5f31266294bde4ae23183369d27f8b023a7c
   languageName: node
   linkType: hard
 
@@ -6376,15 +6344,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-libc@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "detect-libc@npm:1.0.3"
-  bin:
-    detect-libc: ./bin/detect-libc.js
-  checksum: daaaed925ffa7889bd91d56e9624e6c8033911bb60f3a50a74a87500680652969dbaab9526d1e200a4c94acf80fc862a22131841145a0a8482d60a99c24f4a3e
-  languageName: node
-  linkType: hard
-
 "devtools-protocol@npm:0.0.981744":
   version: 0.0.981744
   resolution: "devtools-protocol@npm:0.0.981744"
@@ -7201,15 +7160,6 @@ __metadata:
   dependencies:
     pend: ~1.2.0
   checksum: c8585fd5713f4476eb8261150900d2cb7f6ff2d87f8feb306ccc8a1122efd152f1783bdb2b8dc891395744583436bfd8081d8e63ece0ec8687eeefea394d4ff2
-  languageName: node
-  linkType: hard
-
-"fibers@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "fibers@npm:5.0.1"
-  dependencies:
-    detect-libc: ^1.0.3
-  checksum: 823d148cb993c5aeb7e05e7ed289b9a6073b821bc124c70ac5c6dfee850dc0df65d680a10ce3fb6c37e4705115dcb2d98dad25abde26a2437ada86c5f21be11c
   languageName: node
   linkType: hard
 

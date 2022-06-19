@@ -32,7 +32,6 @@
   },
   "peerDependencies": {
     "@wdio/cli": "7.20.2",
-    "@wdio/sync": "7.20.2",
     "chai": "4.3.6",
     "chai-string": "1.5.0"
   },
@@ -40,7 +39,6 @@
     "@types/chai": "4.3.1",
     "@types/chai-string": "1.4.2",
     "@wdio/cli": "7.20.2",
-    "@wdio/sync": "7.20.2",
     "chai": "4.3.6",
     "chai-string": "1.5.0",
     "eslint": "8.17.0",

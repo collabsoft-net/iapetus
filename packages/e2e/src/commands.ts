@@ -51,7 +51,7 @@ export async function waitUntil(condition: () => boolean|Promise<boolean>, timeo
 
 export async function waitForDisplayed(selector: string|Array<string>, timeout = 10000): Promise<boolean> {
   const items = Array.isArray(selector) ? selector : [ selector ];
-  await Promise.all(items.map(item => browser.$(item).then((elm: Element<'sync'>) => elm.waitForDisplayed({ timeout })).catch(() => {})));
+  await Promise.all(items.map(item => browser.$(item).then((elm: Element<'async'>) => elm.waitForDisplayed({ timeout })).catch(() => {})));
   return exists(selector);
 }
 
