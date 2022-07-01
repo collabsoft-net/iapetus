@@ -28,6 +28,7 @@ export interface GridProps {
   justifyContent?: string;
   alignItems?: string;
   borderRadius?: string;
+  border?: string;
 }
 
 export const Grid = styled.div<GridProps>`
@@ -47,6 +48,7 @@ export const Grid = styled.div<GridProps>`
   ${props => props.justifyContent && `justify-content: ${props.justifyContent};`}
   ${props => props.alignItems && `align-items: ${props.alignItems};`}
   ${props => props.gap && `gap: ${props.gap};`}
+  ${props => props.border && `border: ${props.border};`}
   ${props => props.borderRadius && `border-radius: ${props.borderRadius};`}
   ${props => props.boxShadow && `box-shadow: ${props.boxShadow};`}
 
