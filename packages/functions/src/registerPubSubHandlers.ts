@@ -12,7 +12,7 @@ const scheduledPubSubEmulatorJobs: Record<string, CronJob> = {};
 export const PubSubHandlers = Symbol.for('PubSubHandlers');
 export const ScheduledPubSubHandlers = Symbol.for('ScheduledPubSubHandlers');
 
-export const registerPubSubHandlers = async (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: RuntimeOptions = { memory: '4GB', timeoutSeconds: 540 }): Promise<void> => {
+export const registerPubSubHandlers = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: RuntimeOptions = { memory: '4GB', timeoutSeconds: 540 }) => {
   const appContainer = typeof container === 'function' ? container() : container;
 
   const pubSubHandlers = appContainer.isBound(PubSubHandlers) ? appContainer.getAll<PubSubHandler>(PubSubHandlers) : [];
