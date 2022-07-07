@@ -71,6 +71,9 @@ export interface ColumnProps {
   height?: string;
   width?: string;
   minWidth?: string;
+  borderRadius?: string;
+  border?: string;
+  background?: string;
 }
 
 export const Column = styled.div<ColumnProps>`
@@ -84,6 +87,9 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.height && `height: ${props.height};`}
   ${props => props.width && `width: ${props.width};`}
   ${props => props.minWidth && `width: ${props.minWidth};`}
+  ${props => props.border && `border: ${props.border};`}
+  ${props => props.borderRadius && `border-radius: ${props.borderRadius};`}
+  ${props => props.background && `background: ${props.background};`}
   box-sizing: border-box;
   --component: column;
 `;
