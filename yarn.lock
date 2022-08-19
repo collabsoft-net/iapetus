@@ -1774,7 +1774,7 @@ __metadata:
   peerDependencies:
     axios: 0.24.0
     express: 4.17.0
-    firebase-functions: "*"
+    firebase-functions: 3.22.0
   languageName: unknown
   linkType: soft
 
