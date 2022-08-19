@@ -4,7 +4,7 @@ import { Strategy as IStrategy } from '@collabsoft-net/types';
 import { captureException, Handlers as Sentry } from '@sentry/node';
 import cookies from 'cookie-parser';
 import * as express from 'express';
-import { https } from 'firebase-functions';
+import { https, Response } from 'firebase-functions';
 import { error, info } from 'firebase-functions/lib/logger';
 import { StatusCodes } from 'http-status-codes';
 import * as inversify from 'inversify';
@@ -13,7 +13,7 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: express.Application) => void): (req: https.Request, resp: express.Response) => void | Promise<void> => {
+export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: express.Application) => void): (req: https.Request, resp: Response) => void | Promise<void> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
