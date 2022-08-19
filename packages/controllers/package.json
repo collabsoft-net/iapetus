@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/controllers",
-  "version": "1.0.0-alpha.195",
+  "version": "1.0.0-alpha.196",
   "description": "Shared controllers for Firebase Cloud Functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -32,10 +32,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/dto": "^1.0.0-alpha.195",
-    "@collabsoft-net/functions": "^1.0.0-alpha.195",
-    "@collabsoft-net/services": "^1.0.0-alpha.195",
-    "@collabsoft-net/types": "^1.0.0-alpha.195",
+    "@collabsoft-net/dto": "^1.0.0-alpha.196",
+    "@collabsoft-net/functions": "^1.0.0-alpha.196",
+    "@collabsoft-net/services": "^1.0.0-alpha.196",
+    "@collabsoft-net/types": "^1.0.0-alpha.196",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "@types/passport": "1.0.7",
