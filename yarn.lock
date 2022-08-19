@@ -1095,14 +1095,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/clients@^1.0.0-alpha.176, @collabsoft-net/clients@workspace:packages/clients":
+"@collabsoft-net/clients@^1.0.0-alpha.194, @collabsoft-net/clients@workspace:packages/clients":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/clients@workspace:packages/clients"
   dependencies:
     "@collabsoft-net/connect": ^1.0.0-alpha.176
     "@collabsoft-net/entities": ^1.0.0-alpha.176
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
     "@typescript-eslint/eslint-plugin": 5.25.0
     atlassian-jwt: 2.0.2
     axios: 0.24.0
@@ -1130,8 +1130,8 @@ __metadata:
     "@atlaskit/avatar": 20.0.0
     "@atlaskit/button": 16.1.2
     "@atlaskit/theme": 12.0.0
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/node": 12.20.25
     "@types/react": 16.9.54
@@ -1186,13 +1186,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.193, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/controllers@^1.0.0-alpha.194, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
     "@collabsoft-net/dto": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1297,12 +1297,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.193, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.194, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@gdn/envify-nconf": 1.2.1
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1313,7 +1313,7 @@ __metadata:
     eslint: 8.15.0
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1330,7 +1330,7 @@ __metadata:
     cron: 1.8.2
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1353,7 +1353,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/helpers@^1.0.0-alpha.176, @collabsoft-net/helpers@workspace:packages/helpers":
+"@collabsoft-net/helpers@^1.0.0-alpha.194, @collabsoft-net/helpers@workspace:packages/helpers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/helpers@workspace:packages/helpers"
   dependencies:
@@ -1385,11 +1385,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.193
+    "@collabsoft-net/controllers": ^1.0.0-alpha.194
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/passport": 1.0.7
     "@typescript-eslint/eslint-plugin": 5.25.0
@@ -1456,13 +1456,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/services@^1.0.0-alpha.176, @collabsoft-net/services@workspace:packages/services":
+"@collabsoft-net/services@^1.0.0-alpha.194, @collabsoft-net/services@workspace:packages/services":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/services@workspace:packages/services"
   dependencies:
-    "@collabsoft-net/clients": ^1.0.0-alpha.176
+    "@collabsoft-net/clients": ^1.0.0-alpha.194
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
@@ -1485,11 +1485,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.193
+    "@collabsoft-net/controllers": ^1.0.0-alpha.194
     "@collabsoft-net/dto": ^1.0.0-alpha.176
     "@collabsoft-net/entities": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/node": 12.20.25
     "@types/passport": 1.0.0
@@ -1530,13 +1530,13 @@ __metadata:
     axios: 0.24.0
     eslint: 8.15.0
     express: 4.17.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     nodemon: 2.0.16
     typescript: 4.6.4
   peerDependencies:
     axios: 0.24.0
     express: 4.17.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
   languageName: unknown
   linkType: soft
 
@@ -3830,6 +3830,13 @@ __metadata:
   dependencies:
     "@types/express": "*"
   checksum: d5b3c0e193cc95289444306ad396b27b92c9ff1ffd0769268b374d09315c8df1ae94de5fe2a81a79c0629560646763136e15c8a4069d3dc5ba5cb6bc185eaccd
+  languageName: node
+  linkType: hard
+
+"@types/cors@npm:^2.8.5":
+  version: 2.8.12
+  resolution: "@types/cors@npm:2.8.12"
+  checksum: 8c45f112c7d1d2d831b4b266f2e6ed33a1887a35dcbfe2a18b28370751fababb7cd045e745ef84a523c33a25932678097bf79afaa367c6cb3fa0daa7a6438257
   languageName: node
   linkType: hard
 
@@ -7294,17 +7301,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-functions@npm:3.14.1":
-  version: 3.14.1
-  resolution: "firebase-functions@npm:3.14.1"
+"firebase-functions@npm:3.22.0":
+  version: 3.22.0
+  resolution: "firebase-functions@npm:3.22.0"
   dependencies:
+    "@types/cors": ^2.8.5
     "@types/express": 4.17.3
     cors: ^2.8.5
     express: ^4.17.1
     lodash: ^4.17.14
+    node-fetch: ^2.6.7
   peerDependencies:
-    firebase-admin: ^8.0.0 || ^9.0.0
-  checksum: 805abbc373c884fd901f5b7ea188b00b299c08005509750aa73df07acf423e7af5b236c8a245d3f5195f651cfc0fb242ef930dd0ce5abf14f65406992d5f1789
+    firebase-admin: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+  bin:
+    firebase-functions: lib/bin/firebase-functions.js
+  checksum: 5006209ed6cbf541c5c3cfb036b51a1566cf8c63239d74d63d01fe46a5e5604ff12d25ecfdaaef68c6084505396eba22dc7130dfaa84957a5f2722ed5fde8656
   languageName: node
   linkType: hard
 
@@ -10211,7 +10222,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:

@@ -9,6 +9,7 @@ export abstract class AbstractBackupPubSubHandler implements ScheduledPubSubHand
 
   abstract name: string;
   abstract schedule: string;
+  timeZone: string = 'utc';
 
   get options(): AppOptions|undefined {
     if (process.env.FIREBASE_CONFIG) {
