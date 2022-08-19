@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/helpers",
-  "version": "1.0.0-alpha.194",
+  "version": "1.0.0-alpha.196",
   "description": "Collection of helper functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@collabsoft-net/connect": "^1.0.0-alpha.176",
-    "@collabsoft-net/types": "^1.0.0-alpha.176",
+    "@collabsoft-net/types": "^1.0.0-alpha.196",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
     "nodemon": "2.0.16",
