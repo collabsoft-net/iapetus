@@ -24,5 +24,6 @@ export interface PubSubHandler {
 export interface ScheduledPubSubHandler {
   name: string;
   schedule: string;
+  timeZone: string;
   process: () => Promise<void>;
 }
