@@ -94,12 +94,52 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/button@npm:^16.3.0":
+  version: 16.3.1
+  resolution: "@atlaskit/button@npm:16.3.1"
+  dependencies:
+    "@atlaskit/analytics-next": ^8.2.0
+    "@atlaskit/ds-lib": ^1.4.0
+    "@atlaskit/spinner": ^15.1.0
+    "@atlaskit/theme": ^12.1.0
+    "@atlaskit/tokens": ^0.10.0
+    "@babel/runtime": ^7.0.0
+    "@emotion/core": ^10.0.9
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 7b8356ce9ca34385db9d1404955be70c94c70a3c19064b947d6a6a6a0f746721b54482a4fc4ccae442b0c8acf0ed66bddb452a0c4cb4f3c1c30c941920c3063d
+  languageName: node
+  linkType: hard
+
 "@atlaskit/codemod-utils@npm:^3.3.0, @atlaskit/codemod-utils@npm:^3.4.0":
   version: 3.4.0
   resolution: "@atlaskit/codemod-utils@npm:3.4.0"
   dependencies:
     "@babel/runtime": ^7.0.0
   checksum: cd164655cee24a70cd0ac288f0fbccc497eda85b4cb0e0cea8464ca75046782e396a2f986adcee5f583c04e6f5efc36619ca3b346ae56354b8e96179e75586df
+  languageName: node
+  linkType: hard
+
+"@atlaskit/codemod-utils@npm:^4.0.0, @atlaskit/codemod-utils@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@atlaskit/codemod-utils@npm:4.1.0"
+  dependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: f0af16f5e2aece6310905617492e8450e79a877bdb4c4b2dcdf9cc5dcb3206babafdf574801abe5f9bc5e9c11b7e7a8700351d2d4e375eb90f562dea998ae610
+  languageName: node
+  linkType: hard
+
+"@atlaskit/css-reset@npm:6.3.13":
+  version: 6.3.13
+  resolution: "@atlaskit/css-reset@npm:6.3.13"
+  dependencies:
+    "@atlaskit/theme": ^12.1.0
+    "@atlaskit/tokens": ^0.10.0
+    "@babel/runtime": ^7.0.0
+    fbjs: ^3.0.0
+  peerDependencies:
+    react: ^16.8.0
+  checksum: cb9b93ae2c9c0a89489df4d3893f5ed695055014bfdd6763eea93eb4c34462fbc87ef4c6209f490ec5db01d7608ddcd26516e25939cd342a6e4b7f54a8b97287
   languageName: node
   linkType: hard
 
@@ -111,6 +151,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: 427175d70d2b3158b9ca2a92f5cddc8dcf3f92f5bbe5c991937bf1bf2a918b73570c05d58482a27377b6a6868a3386e419502a5b0bfca2def754bdd2e1b7ae04
+  languageName: node
+  linkType: hard
+
+"@atlaskit/ds-lib@npm:^1.4.0":
+  version: 1.4.2
+  resolution: "@atlaskit/ds-lib@npm:1.4.2"
+  dependencies:
+    "@babel/runtime": ^7.0.0
+  peerDependencies:
+    react: ^16.8.0
+  checksum: ac6072d552dd3ac795e437157a12057a44f62dbb8659f9ea240dce4de4de184f44651323b5b3101b1ee02d21a882a27545927586beba6e794584282c9515a700
   languageName: node
   linkType: hard
 
@@ -139,6 +190,20 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: ddcb2494d8b45f7c20b9c124d8e4ceac567fa50a7e0eca63824d68c919e11bb56739ce794740f3cdf3b78820763d3dcfeb3849d7c76db9cdc0aeed88e8bf789d
+  languageName: node
+  linkType: hard
+
+"@atlaskit/icon@npm:^21.10.0":
+  version: 21.10.7
+  resolution: "@atlaskit/icon@npm:21.10.7"
+  dependencies:
+    "@atlaskit/theme": ^12.1.0
+    "@atlaskit/tokens": ^0.10.0
+    "@babel/runtime": ^7.0.0
+    "@emotion/core": ^10.0.9
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 3faa9baf793cb29e40800f203102a23ccb2425d7335756dc080cf3a7510b04c614af66ba0befec00bcfaebf45a700a3c80650aeee5c8862c3160513a547463c6
   languageName: node
   linkType: hard
 
@@ -205,6 +270,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/section-message@npm:6.1.13":
+  version: 6.1.13
+  resolution: "@atlaskit/section-message@npm:6.1.13"
+  dependencies:
+    "@atlaskit/button": ^16.3.0
+    "@atlaskit/codemod-utils": ^4.1.0
+    "@atlaskit/icon": ^21.10.0
+    "@atlaskit/theme": ^12.1.0
+    "@atlaskit/tokens": ^0.10.0
+    "@babel/runtime": ^7.0.0
+    "@emotion/core": ^10.0.9
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 61f3601ec6785e526e4a052fc8082a1f9a15d5fb70bbd7f1794ba12dc63dfd2afc86efb729066439db2060f4b6558f021be5cb2c8e68f8fcd0e55bb92cda7fcb
+  languageName: node
+  linkType: hard
+
 "@atlaskit/spinner@npm:^15.1.0":
   version: 15.1.2
   resolution: "@atlaskit/spinner@npm:15.1.2"
@@ -258,6 +340,34 @@ __metadata:
     react: ^16.8.0
     styled-components: ^3.2.6
   checksum: c04bc05916e39f7ab7d405c817eab2dbb5a8fd743cbfbe51a5d39b57a3a8f45eada7578adaa2758db8eee11c374c9322f64890f5ca241659f005f7352ac50965
+  languageName: node
+  linkType: hard
+
+"@atlaskit/theme@npm:^12.1.0":
+  version: 12.1.8
+  resolution: "@atlaskit/theme@npm:12.1.8"
+  dependencies:
+    "@atlaskit/codemod-utils": ^4.0.0
+    "@atlaskit/ds-lib": ^1.4.0
+    "@atlaskit/tokens": ^0.10.0
+    "@babel/runtime": ^7.0.0
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 311a9281882c280ece080f53909c24b86407d253d4e10756ee6be601d9f551af133c0c359aac9e1b56979a03539e2f7162858cf949e04c65f691af8abce71251
+  languageName: node
+  linkType: hard
+
+"@atlaskit/tokens@npm:^0.10.0":
+  version: 0.10.7
+  resolution: "@atlaskit/tokens@npm:0.10.7"
+  dependencies:
+    "@atlaskit/ds-lib": ^1.4.0
+    "@babel/runtime": ^7.0.0
+    "@babel/traverse": ^7.15.0
+    "@babel/types": ^7.15.0
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 8068062dd2b25c2dd83448ba93b028d2045831c882f7dcad9b1e52912beb8f639bbc9b3f7635539e2b973767a95cd893726dfd01425707d500cf4be33bd5b6af
   languageName: node
   linkType: hard
 
@@ -1034,6 +1144,52 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/code-frame@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/code-frame@npm:7.16.7"
+  dependencies:
+    "@babel/highlight": ^7.16.7
+  checksum: db2f7faa31bc2c9cf63197b481b30ea57147a5fc1a6fab60e5d6c02cdfbf6de8e17b5121f99917b3dabb5eeb572da078312e70697415940383efc140d4e0808b
+  languageName: node
+  linkType: hard
+
+"@babel/generator@npm:^7.18.2":
+  version: 7.18.2
+  resolution: "@babel/generator@npm:7.18.2"
+  dependencies:
+    "@babel/types": ^7.18.2
+    "@jridgewell/gen-mapping": ^0.3.0
+    jsesc: ^2.5.1
+  checksum: d0661e95532ddd97566d41fec26355a7b28d1cbc4df95fe80cc084c413342935911b48db20910708db39714844ddd614f61c2ec4cca3fb10181418bdcaa2e7a3
+  languageName: node
+  linkType: hard
+
+"@babel/helper-environment-visitor@npm:^7.18.2":
+  version: 7.18.2
+  resolution: "@babel/helper-environment-visitor@npm:7.18.2"
+  checksum: 1a9c8726fad454a082d077952a90f17188e92eabb3de236cb4782c49b39e3f69c327e272b965e9a20ff8abf37d30d03ffa6fd7974625a6c23946f70f7527f5e9
+  languageName: node
+  linkType: hard
+
+"@babel/helper-function-name@npm:^7.17.9":
+  version: 7.17.9
+  resolution: "@babel/helper-function-name@npm:7.17.9"
+  dependencies:
+    "@babel/template": ^7.16.7
+    "@babel/types": ^7.17.0
+  checksum: a59b2e5af56d8f43b9b0019939a43774754beb7cb01a211809ca8031c71890999d07739e955343135ec566c4d8ff725435f1f60fb0af3bb546837c1f9f84f496
+  languageName: node
+  linkType: hard
+
+"@babel/helper-hoist-variables@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/helper-hoist-variables@npm:7.16.7"
+  dependencies:
+    "@babel/types": ^7.16.7
+  checksum: 6ae1641f4a751cd9045346e3f61c3d9ec1312fd779ab6d6fecfe2a96e59a481ad5d7e40d2a840894c13b3fd6114345b157f9e3062fc5f1580f284636e722de60
+  languageName: node
+  linkType: hard
+
 "@babel/helper-module-imports@npm:^7.0.0":
   version: 7.15.4
   resolution: "@babel/helper-module-imports@npm:7.15.4"
@@ -1043,10 +1199,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-split-export-declaration@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/helper-split-export-declaration@npm:7.16.7"
+  dependencies:
+    "@babel/types": ^7.16.7
+  checksum: e10aaf135465c55114627951b79115f24bc7af72ecbb58d541d66daf1edaee5dde7cae3ec8c3639afaf74526c03ae3ce723444e3b5b3dc77140c456cd84bcaa1
+  languageName: node
+  linkType: hard
+
 "@babel/helper-validator-identifier@npm:^7.14.5, @babel/helper-validator-identifier@npm:^7.14.9":
   version: 7.15.7
   resolution: "@babel/helper-validator-identifier@npm:7.15.7"
   checksum: f041c28c531d1add5cc345b25d5df3c29c62bce3205b4d4a93dcd164ccf630350acba252d374fad8f5d8ea526995a215829f27183ba7ce7ce141843bf23068a6
+  languageName: node
+  linkType: hard
+
+"@babel/helper-validator-identifier@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/helper-validator-identifier@npm:7.16.7"
+  checksum: dbb3db9d184343152520a209b5684f5e0ed416109cde82b428ca9c759c29b10c7450657785a8b5c5256aa74acc6da491c1f0cf6b784939f7931ef82982051b69
   languageName: node
   linkType: hard
 
@@ -1061,12 +1233,71 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/highlight@npm:^7.16.7":
+  version: 7.17.12
+  resolution: "@babel/highlight@npm:7.17.12"
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.16.7
+    chalk: ^2.0.0
+    js-tokens: ^4.0.0
+  checksum: 841a11aa353113bcce662b47085085a379251bf8b09054e37e1e082da1bf0d59355a556192a6b5e9ee98e8ee6f1f2831ac42510633c5e7043e3744dda2d6b9d6
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.16.7, @babel/parser@npm:^7.18.5":
+  version: 7.18.5
+  resolution: "@babel/parser@npm:7.18.5"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 4976349d8681af215fd5771bd5b74568cc95a2e8bf2afcf354bf46f73f3d6f08d54705f354b1d0012f914dd02a524b7d37c5c1204ccaafccb9db3c37dba96a9b
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: c40825430400e47c19b97e4142d5315d2910305b9714d44a711472587ee2fd4521fdba5f02ddd9df3902f5e988d9854fa83f4da1e0c091f70f6983fa52480606
+  languageName: node
+  linkType: hard
+
+"@babel/template@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/template@npm:7.16.7"
+  dependencies:
+    "@babel/code-frame": ^7.16.7
+    "@babel/parser": ^7.16.7
+    "@babel/types": ^7.16.7
+  checksum: 10cd112e89276e00f8b11b55a51c8b2f1262c318283a980f4d6cdb0286dc05734b9aaeeb9f3ad3311900b09bc913e02343fcaa9d4a4f413964aaab04eb84ac4a
+  languageName: node
+  linkType: hard
+
+"@babel/traverse@npm:^7.15.0":
+  version: 7.18.5
+  resolution: "@babel/traverse@npm:7.18.5"
+  dependencies:
+    "@babel/code-frame": ^7.16.7
+    "@babel/generator": ^7.18.2
+    "@babel/helper-environment-visitor": ^7.18.2
+    "@babel/helper-function-name": ^7.17.9
+    "@babel/helper-hoist-variables": ^7.16.7
+    "@babel/helper-split-export-declaration": ^7.16.7
+    "@babel/parser": ^7.18.5
+    "@babel/types": ^7.18.4
+    debug: ^4.1.0
+    globals: ^11.1.0
+  checksum: cc0470c880e15a748ca3424665c65836dba450fd0331fb28f9d30aa42acd06387b6321996517ab1761213f781fe8d657e2c3ad67c34afcb766d50653b393810f
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.15.0, @babel/types@npm:^7.16.7, @babel/types@npm:^7.17.0, @babel/types@npm:^7.18.2, @babel/types@npm:^7.18.4, @babel/types@npm:^7.8.3":
+  version: 7.18.4
+  resolution: "@babel/types@npm:7.18.4"
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.16.7
+    to-fast-properties: ^2.0.0
+  checksum: 85df59beb99c1b95e9e41590442f2ffa1e5b1b558d025489db40c9f7c906bd03a17da26c3ec486e5800e80af27c42ca7eee9506d9212ab17766d2d68d30fbf52
   languageName: node
   linkType: hard
 
@@ -1095,14 +1326,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/clients@^1.0.0-alpha.176, @collabsoft-net/clients@workspace:packages/clients":
+"@collabsoft-net/clients@^1.0.0-alpha.194, @collabsoft-net/clients@workspace:packages/clients":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/clients@workspace:packages/clients"
   dependencies:
     "@collabsoft-net/connect": ^1.0.0-alpha.176
     "@collabsoft-net/entities": ^1.0.0-alpha.176
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
     "@typescript-eslint/eslint-plugin": 5.25.0
     atlassian-jwt: 2.0.2
     axios: 0.24.0
@@ -1129,9 +1360,11 @@ __metadata:
   dependencies:
     "@atlaskit/avatar": 20.0.0
     "@atlaskit/button": 16.1.2
+    "@atlaskit/css-reset": 6.3.13
+    "@atlaskit/section-message": 6.1.13
     "@atlaskit/theme": 12.0.0
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/node": 12.20.25
     "@types/react": 16.9.54
@@ -1146,6 +1379,8 @@ __metadata:
   peerDependencies:
     "@atlaskit/avatar": 20.0.0
     "@atlaskit/button": 16.1.2
+    "@atlaskit/css-reset": "*"
+    "@atlaskit/section-message": "*"
     "@atlaskit/theme": 12.0.0
     "@collabsoft-net/helpers": ^1.0.0-alpha.159
     "@collabsoft-net/services": ^1.0.0-alpha.159
@@ -1186,13 +1421,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.193, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/controllers@^1.0.0-alpha.194, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
     "@collabsoft-net/dto": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1297,12 +1532,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.193, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.194, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@gdn/envify-nconf": 1.2.1
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1313,7 +1548,7 @@ __metadata:
     eslint: 8.15.0
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1330,7 +1565,7 @@ __metadata:
     cron: 1.8.2
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1353,15 +1588,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/helpers@^1.0.0-alpha.176, @collabsoft-net/helpers@workspace:packages/helpers":
+"@collabsoft-net/helpers@^1.0.0-alpha.194, @collabsoft-net/helpers@workspace:packages/helpers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/helpers@workspace:packages/helpers"
   dependencies:
+    "@collabsoft-net/connect": ^1.0.0-alpha.176
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
     typescript: 4.6.4
+  peerDependencies:
+    "@collabsoft-net/connect": ^1.0.0-alpha.176
   languageName: unknown
   linkType: soft
 
@@ -1385,11 +1623,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.193
+    "@collabsoft-net/controllers": ^1.0.0-alpha.194
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/passport": 1.0.7
     "@typescript-eslint/eslint-plugin": 5.25.0
@@ -1456,13 +1694,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/services@^1.0.0-alpha.176, @collabsoft-net/services@workspace:packages/services":
+"@collabsoft-net/services@^1.0.0-alpha.194, @collabsoft-net/services@workspace:packages/services":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/services@workspace:packages/services"
   dependencies:
-    "@collabsoft-net/clients": ^1.0.0-alpha.176
+    "@collabsoft-net/clients": ^1.0.0-alpha.194
     "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.176
+    "@collabsoft-net/helpers": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
@@ -1485,11 +1723,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.193
+    "@collabsoft-net/controllers": ^1.0.0-alpha.194
     "@collabsoft-net/dto": ^1.0.0-alpha.176
     "@collabsoft-net/entities": ^1.0.0-alpha.176
-    "@collabsoft-net/functions": ^1.0.0-alpha.193
-    "@collabsoft-net/services": ^1.0.0-alpha.176
+    "@collabsoft-net/functions": ^1.0.0-alpha.194
+    "@collabsoft-net/services": ^1.0.0-alpha.194
     "@collabsoft-net/types": ^1.0.0-alpha.176
     "@types/node": 12.20.25
     "@types/passport": 1.0.0
@@ -1530,13 +1768,13 @@ __metadata:
     axios: 0.24.0
     eslint: 8.15.0
     express: 4.17.0
-    firebase-functions: 3.14.1
+    firebase-functions: 3.22.0
     nodemon: 2.0.16
     typescript: 4.6.4
   peerDependencies:
     axios: 0.24.0
     express: 4.17.0
-    firebase-functions: 3.14.1
+    firebase-functions: "*"
   languageName: unknown
   linkType: soft
 
@@ -2418,6 +2656,48 @@ __metadata:
   version: 3.0.2
   resolution: "@hutson/parse-repository-url@npm:3.0.2"
   checksum: 39992c5f183c5ca3d761d6ed9dfabcb79b5f3750bf1b7f3532e1dc439ca370138bbd426ee250fdaba460bc948e6761fbefd484b8f4f36885d71ded96138340d1
+  languageName: node
+  linkType: hard
+
+"@jridgewell/gen-mapping@npm:^0.3.0":
+  version: 0.3.1
+  resolution: "@jridgewell/gen-mapping@npm:0.3.1"
+  dependencies:
+    "@jridgewell/set-array": ^1.0.0
+    "@jridgewell/sourcemap-codec": ^1.4.10
+    "@jridgewell/trace-mapping": ^0.3.9
+  checksum: e9e7bb3335dea9e60872089761d4e8e089597360cdb1af90370e9d53b7d67232c1e0a3ab65fbfef4fc785745193fbc56bff9f3a6cab6c6ce3f15e12b4191f86b
+  languageName: node
+  linkType: hard
+
+"@jridgewell/resolve-uri@npm:^3.0.3":
+  version: 3.0.7
+  resolution: "@jridgewell/resolve-uri@npm:3.0.7"
+  checksum: 94f454f4cef8f0acaad85745fd3ca6cd0d62ef731cf9f952ecb89b8b2ce5e20998cd52be31311cedc5fa5b28b1708a15f3ad9df0fe1447ee4f42959b036c4b5b
+  languageName: node
+  linkType: hard
+
+"@jridgewell/set-array@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "@jridgewell/set-array@npm:1.1.1"
+  checksum: cc5d91e0381c347e3edee4ca90b3c292df9e6e55f29acbe0dd97de8651b4730e9ab761406fd572effa79972a0edc55647b627f8c72315e276d959508853d9bf2
+  languageName: node
+  linkType: hard
+
+"@jridgewell/sourcemap-codec@npm:^1.4.10":
+  version: 1.4.13
+  resolution: "@jridgewell/sourcemap-codec@npm:1.4.13"
+  checksum: f14449096f60a5f921262322fef65ce0bbbfb778080b3b20212080bcefdeba621c43a58c27065bd536ecb4cc767b18eb9c45f15b6b98a4970139572b60603a1c
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:^0.3.9":
+  version: 0.3.13
+  resolution: "@jridgewell/trace-mapping@npm:0.3.13"
+  dependencies:
+    "@jridgewell/resolve-uri": ^3.0.3
+    "@jridgewell/sourcemap-codec": ^1.4.10
+  checksum: e38254e830472248ca10a6ed1ae75af5e8514f0680245a5e7b53bc3c030fd8691d4d3115d80595b45d3badead68269769ed47ecbbdd67db1343a11f05700e75a
   languageName: node
   linkType: hard
 
@@ -3833,6 +4113,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cors@npm:^2.8.5":
+  version: 2.8.12
+  resolution: "@types/cors@npm:2.8.12"
+  checksum: 8c45f112c7d1d2d831b4b266f2e6ed33a1887a35dcbfe2a18b28370751fababb7cd045e745ef84a523c33a25932678097bf79afaa367c6cb3fa0daa7a6438257
+  languageName: node
+  linkType: hard
+
 "@types/cron@npm:1.7.3":
   version: 1.7.3
   resolution: "@types/cron@npm:1.7.3"
@@ -3869,7 +4156,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:*":
+  version: 4.17.30
+  resolution: "@types/express-serve-static-core@npm:4.17.30"
+  dependencies:
+    "@types/node": "*"
+    "@types/qs": "*"
+    "@types/range-parser": "*"
+  checksum: c40d9027884ab9e97fa29d9d41d1b75a5966109312e26594cf03c61b278b5bf8e095f53589e47899b34a2e224291a44043617695c3e8bd22284f988e48582ee6
+  languageName: node
+  linkType: hard
+
+"@types/express-serve-static-core@npm:^4.17.18":
   version: 4.17.24
   resolution: "@types/express-serve-static-core@npm:4.17.24"
   dependencies:
@@ -6008,7 +6306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:3.1.5":
+"cross-fetch@npm:3.1.5, cross-fetch@npm:^3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
   dependencies:
@@ -7139,6 +7437,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fbjs-css-vars@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "fbjs-css-vars@npm:1.0.2"
+  checksum: 72baf6d22c45b75109118b4daecb6c8016d4c83c8c0f23f683f22e9d7c21f32fff6201d288df46eb561e3c7d4bb4489b8ad140b7f56444c453ba407e8bd28511
+  languageName: node
+  linkType: hard
+
 "fbjs@npm:^0.8.16":
   version: 0.8.17
   resolution: "fbjs@npm:0.8.17"
@@ -7151,6 +7456,21 @@ __metadata:
     setimmediate: ^1.0.5
     ua-parser-js: ^0.7.18
   checksum: e969aeb175ccf97d8818aab9907a78f253568e0cc1b8762621c5d235bf031419d7e700f16f7711e89dfd1e0fce2b87a05f8a2800f18df0a96258f0780615fd8b
+  languageName: node
+  linkType: hard
+
+"fbjs@npm:^3.0.0":
+  version: 3.0.4
+  resolution: "fbjs@npm:3.0.4"
+  dependencies:
+    cross-fetch: ^3.1.5
+    fbjs-css-vars: ^1.0.0
+    loose-envify: ^1.0.0
+    object-assign: ^4.1.0
+    promise: ^7.1.1
+    setimmediate: ^1.0.5
+    ua-parser-js: ^0.7.30
+  checksum: 8b23a3550fcda8a9109fca9475a3416590c18bb6825ea884192864ed686f67fcd618e308a140c9e5444fbd0168732e1ff3c092ba3d0c0ae1768969f32ba280c7
   languageName: node
   linkType: hard
 
@@ -7294,17 +7614,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-functions@npm:3.14.1":
-  version: 3.14.1
-  resolution: "firebase-functions@npm:3.14.1"
+"firebase-functions@npm:3.22.0":
+  version: 3.22.0
+  resolution: "firebase-functions@npm:3.22.0"
   dependencies:
+    "@types/cors": ^2.8.5
     "@types/express": 4.17.3
     cors: ^2.8.5
     express: ^4.17.1
     lodash: ^4.17.14
+    node-fetch: ^2.6.7
   peerDependencies:
-    firebase-admin: ^8.0.0 || ^9.0.0
-  checksum: 805abbc373c884fd901f5b7ea188b00b299c08005509750aa73df07acf423e7af5b236c8a245d3f5195f651cfc0fb242ef930dd0ce5abf14f65406992d5f1789
+    firebase-admin: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+  bin:
+    firebase-functions: lib/bin/firebase-functions.js
+  checksum: 5006209ed6cbf541c5c3cfb036b51a1566cf8c63239d74d63d01fe46a5e5604ff12d25ecfdaaef68c6084505396eba22dc7130dfaa84957a5f2722ed5fde8656
   languageName: node
   linkType: hard
 
@@ -7800,6 +8124,13 @@ fsevents@~2.3.2:
   dependencies:
     ini: 2.0.0
   checksum: 953c17cf14bf6ee0e2100ae82a0d779934eed8a3ec5c94a7a4f37c5b3b592c31ea015fb9a15cf32484de13c79f4a814f3015152f3e1d65976cfbe47c1bfe4a88
+  languageName: node
+  linkType: hard
+
+"globals@npm:^11.1.0":
+  version: 11.12.0
+  resolution: "globals@npm:11.12.0"
+  checksum: 67051a45eca3db904aee189dfc7cd53c20c7d881679c93f6146ddd4c9f4ab2268e68a919df740d39c71f4445d2b38ee360fc234428baea1dbdfe68bbcb46979e
   languageName: node
   linkType: hard
 
@@ -8950,6 +9281,15 @@ fsevents@~2.3.2:
   version: 0.1.1
   resolution: "jsbn@npm:0.1.1"
   checksum: e5ff29c1b8d965017ef3f9c219dacd6e40ad355c664e277d31246c90545a02e6047018c16c60a00f36d561b3647215c41894f5d869ada6908a2e0ce4200c88f2
+  languageName: node
+  linkType: hard
+
+"jsesc@npm:^2.5.1":
+  version: 2.5.2
+  resolution: "jsesc@npm:2.5.2"
+  bin:
+    jsesc: bin/jsesc
+  checksum: 4dc190771129e12023f729ce20e1e0bfceac84d73a85bc3119f7f938843fe25a4aeccb54b6494dce26fcf263d815f5f31acdefac7cc9329efb8422a4f4d9fa9d
   languageName: node
   linkType: hard
 
@@ -10211,7 +10551,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -13413,6 +13753,13 @@ typescript@4.7.3:
   version: 0.7.28
   resolution: "ua-parser-js@npm:0.7.28"
   checksum: a7da4ad54527211e878ee016c2ef64efad5c2f5a31277d36c9da93b4c89ecaa64f391ad4cf158ada76a9ad8e53004a950705ff1c2f27a52ca8bfb3f1381c39ff
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^0.7.30":
+  version: 0.7.31
+  resolution: "ua-parser-js@npm:0.7.31"
+  checksum: e2f8324a83d1715601576af85b2b6c03890699aaa7272950fc77ea925c70c5e4f75060ae147dc92124e49f7f0e3d6dd2b0a91e7f40d267e92df8894be967ba8b
   languageName: node
   linkType: hard
 
