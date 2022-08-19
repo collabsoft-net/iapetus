@@ -6,6 +6,7 @@
   "include": [
     "./src/**/*.ts",
     "./typings/*.d.ts",
-    "./typings/**/*.d.ts"
+    "./typings/**/*.d.ts",
+    "../../node_modules/@collabsoft-net/connect/**/*.d.ts"
   ]
 }
