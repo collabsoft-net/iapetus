@@ -7,7 +7,7 @@ export abstract class AbstractScheduledPubSubHandler implements ScheduledPubSubH
 
   abstract name: string;
   abstract schedule: string;
-  timeZone: string = 'utc';
+  timeZone: string = 'Etc/UTC';
 
   async process(): Promise<void> {
     try {
