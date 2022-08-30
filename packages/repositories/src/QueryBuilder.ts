@@ -38,6 +38,7 @@ export class QueryBuilder implements IQueryBuilder {
       case '>=': return prop >= value;
       case '>': return prop > value;
       case 'array-contains': return Array.isArray(prop) && prop.includes(value);
+      case 'in': return Array.isArray(value) && value.includes(prop);
       default: return false;
     }
   }
