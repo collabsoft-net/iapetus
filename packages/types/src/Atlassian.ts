@@ -556,6 +556,9 @@ declare global {
         project: Project;
         priority: Priority;
         updated: string;
+        created: string;
+        duedate: string;
+        resolution: Resolution;
         [key: string]: unknown;
       };
       [key: string]: unknown;
@@ -748,6 +751,12 @@ declare global {
       mimeType: string;
       content: string;
       thumbnail: string;
+    }
+
+    interface Resolution {
+      id: string;
+      name: string;
+      description: string;
     }
 
     interface Transition {
