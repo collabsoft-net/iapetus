@@ -551,7 +551,8 @@ declare global {
         components: Array<Component>;
         versions: Array<Version>;
         fixVersions: Array<Version>;
-        reporter: Reporter;
+        assignee: ApplicationUser;
+        reporter: ApplicationUser;
         labels: Array<string>;
         project: Project;
         priority: Priority;
@@ -627,16 +628,6 @@ declare global {
       expand?: string;
       properties?: Array<string>;
       updateHistory?: boolean;
-    }
-
-    interface Reporter {
-      self: string;
-      accountId: string;
-      avatarUrls: { [key: string]: string };
-      displayName: string;
-      active: boolean;
-      timeZone: string;
-      accountType: string;
     }
 
     interface CreatedIssue {
@@ -798,6 +789,7 @@ declare global {
       key: string;
       accountId: string;
       accountType: string;
+      timeZone?: string;
     }
 
     interface FoundUsers {
