@@ -534,6 +534,9 @@ declare global {
         comment?: Comments;
         timetracking?: TimeTracking;
         worklog: Worklogs;
+        updated: string;
+        created: string;
+        duedate?: string;
         [key: string]: unknown | null;
       };
       names?: { [key: string]: string };
@@ -558,7 +561,7 @@ declare global {
         priority: Priority;
         updated: string;
         created: string;
-        duedate: string;
+        duedate?: string;
         resolution: Resolution;
         [key: string]: unknown;
       };
