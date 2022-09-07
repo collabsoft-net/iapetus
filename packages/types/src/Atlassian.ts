@@ -625,6 +625,17 @@ declare global {
       customId?: number;
     }
 
+    interface FieldDetails {
+      id: string;
+      name: string;
+      custom: false;
+      orderable: true;
+      navigable: true;
+      searchable: true;
+      clauseNames: [string]
+      schema: Schema;
+    }
+
     interface IssueRequestOptions {
       fields?: Array<string>;
       fieldsByKeys?: boolean;
