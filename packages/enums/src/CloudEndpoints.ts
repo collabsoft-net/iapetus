@@ -25,6 +25,8 @@ export enum JiraCloudEndpoints {
   ISSUE_DELETE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_SEARCH = '/rest/api/3/search',
 
+  ISSUE_FIELDS = '/rest/api/3/field',
+
   READ_COMMENT = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
   LIST_COMMENTS = '/rest/api/3/issue/:issueIdOrKey/comment',
   COMMENT_CREATE = '/rest/api/3/issue/:issueIdOrKey/comment',
