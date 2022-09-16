@@ -77,6 +77,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getIssueFields(): Promise<Jira.FieldDetails[]> {
+    const { data } = await this.client.get<Jira.FieldDetails[]>(this.getEndpointFor(this.endpoints.ISSUE_FIELDS));
+    return data;
+  }
+
   async getComments(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', expand: Array<string> = [], fetchAll = true): Promise<Array<Jira.Comment>> {
     const result: Array<Jira.Comment> = [];
     const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy, expand: expand.join(',') });
