@@ -8,6 +8,7 @@ export * from './isNullOrEmpty';
 export * from './isProduction';
 export * from './isValidConnectRequest';
 export * from './isValidLicense';
+export * from './removeChildren';
 export * from './reportResults';
 export * from './resizeFix';
 export * from './typeGuard';
