@@ -1391,7 +1391,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/connect@^1.0.0-alpha.197, @collabsoft-net/connect@workspace:packages/connect":
+"@collabsoft-net/connect@^1.0.0-alpha.176, @collabsoft-net/connect@^1.0.0-alpha.197, @collabsoft-net/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/connect@workspace:packages/connect"
   dependencies:
