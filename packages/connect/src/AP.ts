@@ -37,6 +37,7 @@ declare global {
       history: AP.History;
       host: AP.Host;
       navigator: AP.Navigator;
+      user: AP.User;
 
       _data: Record<string, unknown>;
       isPolyfill?: boolean;
@@ -191,6 +192,17 @@ declare global {
 
     interface Host {
       getSelectedText: (callback: (selection: string) => void) => void;
+    }
+
+    interface User {
+      getCurrentUser: (callback: (user: UserObject) => void) => void;
+      getTimeZone: (callback: (timezone?: string) => void) => void;
+      getLocale: (callback: (locale?: string) => void) => void;
+    }
+
+    interface UserObject {
+      atlassianAccountId: string;
+      accountType: 'atlassian'|'customer';
     }
 
     interface Navigator {
