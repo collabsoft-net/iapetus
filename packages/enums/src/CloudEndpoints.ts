@@ -33,6 +33,7 @@ export enum JiraCloudEndpoints {
   COMMENT_UPDATE = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
 
   READ_ATTACHMENT = '/rest/api/3/attachment/:attachmentId',
+  ADD_ATTACHMENT = '/rest/api/3/issue/:issueIdOrKey/attachments',
 
   READ_VERSION = '/rest/api/3/version/:id',
   LIST_VERSIONS = '/rest/api/3/project/:projectIdOrKey/versions',
