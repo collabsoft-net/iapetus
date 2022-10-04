@@ -24,13 +24,13 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
 
   abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient;
 
-  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, headers?: Record<string, string>): Promise<AxiosResponse<T>> {
+  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const options: AxiosRequestConfig = {
+      ...config,
       method,
       url: endpoint,
       data,
       params: params ? this.normalizeQuery(params) : undefined,
-      headers
     };
     options.headers = options.headers || {};
     options.headers['Content-Type'] = 'application/json';
