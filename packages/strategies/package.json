@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
@@ -37,7 +40,7 @@
     "@collabsoft-net/functions": "^1.0.0-alpha.206",
     "@collabsoft-net/services": "^1.0.0-alpha.206",
     "@collabsoft-net/types": "^1.0.0-alpha.204",
-    "@types/node": "12.20.25",
+    "@types/node": ">=16.0.0",
     "@types/passport": "1.0.0",
     "@types/passport-http-bearer": "1.0.34",
     "@types/passport-jwt": "3.0.3",

@@ -30,6 +30,9 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "devDependencies": {
     "@atlaskit/avatar": "20.0.0",
     "@atlaskit/button": "16.1.2",
@@ -37,7 +40,7 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.206",
     "@collabsoft-net/services": "^1.0.0-alpha.206",
     "@collabsoft-net/types": "^1.0.0-alpha.204",
-    "@types/node": "12.20.25",
+    "@types/node": ">=16.0.0",
     "@types/react": "16.9.54",
     "@types/react-dom": "16.9.9",
     "@typescript-eslint/eslint-plugin": "5.25.0",

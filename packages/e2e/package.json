@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
@@ -38,6 +41,7 @@
   "devDependencies": {
     "@types/chai": "4.3.1",
     "@types/chai-string": "1.4.2",
+    "@types/node": ">=16.0.0",
     "@wdio/cli": "7.20.2",
     "chai": "4.3.6",
     "chai-string": "1.5.0",

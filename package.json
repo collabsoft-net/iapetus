@@ -13,6 +13,7 @@
     "prerelease": "yarn run lerna publish prerelease -y"
   },
   "devDependencies": {
+    "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "4.30.0",
     "eslint": "8.15.0",

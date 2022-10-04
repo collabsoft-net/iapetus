@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
@@ -36,7 +39,7 @@
     "@collabsoft-net/types": "^1.0.0-alpha.204",
     "@firebase/app-types": "0.x",
     "@google-cloud/storage": "5.3.0",
-    "@types/node": "12.20.25",
+    "@types/node": ">=16.0.0",
     "@types/uniqid": "5.2.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
