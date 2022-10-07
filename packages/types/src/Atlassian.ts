@@ -547,6 +547,11 @@ declare global {
       versionedRepresentations?: Record<string, unknown>;
       properties?: Record<string, unknown>;
       fields?: {
+        parent?: {
+          id: string;
+          key: string,
+          fields: Record<string, unknown>;
+        };
         summary: string;
         description: string;
         status: Status;
