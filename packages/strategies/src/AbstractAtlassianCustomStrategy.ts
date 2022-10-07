@@ -20,12 +20,7 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
     if (identifier) {
       const instance = await this.service.findByProperty(this.clientIdentifierKey, identifier);
       if (instance) {
-        // Only update the lastActive if non-existant or less than 24 hours ago
-        if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
-          instance.lastActive = new Date().getTime();
-          await this.service.save(instance);
-        }
-
+        await this.updateLastActive(instance, request);
         return this.toSession(request, instance);
       } else {
         throw new Error('Customer instance not found');
@@ -44,6 +39,16 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
       clientKey && typeof clientKey === 'string' ? clientKey :
       tenantId && typeof tenantId === 'string' ? tenantId : null
     );
+  }
+
+  private async updateLastActive(instance: ACInstance, { headers }: express.Request) {
+    if (typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
+      // Only update the lastActive if non-existant or less than 24 hours ago
+      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
+        instance.lastActive = new Date().getTime();
+        await this.service.save(instance);
+      }
+    }
   }
 
 }
