@@ -8,11 +8,12 @@
   "scripts": {
     "clean": "yarn run lerna clean -y && rm -rf node_modules",
     "build": "yarn run lerna run build --concurrency 2",
-    "reinstall": "yarn clean && yarn && yarn run lerna exec yarn",
+    "reinstall": "yarn clean && yarn && yarn run lerna exec yarn --concurrency 1",
     "start": "yarn run nodemon --watch ./**/src -e '.ts' --exec 'yarn run lerna run build'",
     "prerelease": "yarn run lerna publish prerelease -y"
   },
   "devDependencies": {
+    "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "4.30.0",
     "eslint": "8.15.0",

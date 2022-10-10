@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/functions",
-  "version": "1.0.0-alpha.197",
+  "version": "1.0.0-alpha.210",
   "description": "Firebase Cloud functions application server",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -15,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -31,13 +34,14 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/helpers": "^1.0.0-alpha.197",
-    "@collabsoft-net/services": "^1.0.0-alpha.197",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.210",
+    "@collabsoft-net/services": "^1.0.0-alpha.210",
     "@gdn/envify-nconf": "1.2.1",
     "@sentry/minimal": "6.5.1",
     "@sentry/node": "6.5.1",
     "@types/cookie-parser": "1.4.2",
     "@types/cron": "1.7.3",
+    "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "cookie-parser": "1.4.4",
     "eslint": "8.15.0",

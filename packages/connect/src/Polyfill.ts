@@ -211,6 +211,12 @@ const host: AP.Host = {
   getSelectedText: (): void => { throw new Error('getSelectedText(): This AP method is not yet implemented'); },
 }
 
+const user: AP.User = {
+  getCurrentUser: (): void => { throw new Error('getCurrentUser(): This AP method is not yet implemented'); },
+  getTimeZone: (): void => { throw new Error('getTimeZone(): This AP method is not yet implemented'); },
+  getLocale: (): void => { throw new Error('getLocale(): This AP method is not yet implemented'); },
+}
+
 const navigator: AP.Navigator = {
   getLocation: (callback: (location: AP.NavigatorLocation) => void) => {
     const requestId = uniqid();
@@ -239,6 +245,7 @@ const polyfill: AP.Instance = {
   request,
   history,
   host,
+  user,
   navigator,
   _data: {},
   isPolyfill: true

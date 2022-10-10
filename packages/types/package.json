@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/types",
-  "version": "1.0.0-alpha.197",
+  "version": "1.0.0-alpha.210",
   "description": "Shared typings",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -15,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -31,7 +34,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@types/node": "12.20.25",
+    "@types/node": ">=16.0.0",
     "@types/passport": "1.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "axios": "0.24.0",

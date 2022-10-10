@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/dto",
-  "version": "1.0.0-alpha.197",
+  "version": "1.0.0-alpha.210",
   "description": "Collection of shared Data Transfer Objects",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -15,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -31,7 +34,8 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/entities": "^1.0.0-alpha.197",
+    "@collabsoft-net/entities": "^1.0.0-alpha.210",
+    "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
     "nodemon": "2.0.16",

@@ -23,9 +23,9 @@ export abstract class AbstractJWTStrategy<T, X extends Session> implements IStra
     const _name = this.name;
     return new (class JWTStrategy extends Strategy {
       name = _name;
-    })(this.strategyOptions, async (token: T, done: (err: Error|null, session?: X) => void) => {
+    })(this.strategyOptions, async (request: express.Request, token: T, done: (err: Error|null, session?: X) => void) => {
       try {
-        const session = await this.process(token);
+        const session = await this.process(token, request);
         done(null, session);
       } catch (error) {
         done(error as Error);
@@ -33,7 +33,7 @@ export abstract class AbstractJWTStrategy<T, X extends Session> implements IStra
     });
   }
 
-  protected abstract process(token: T): Promise<X>;
+  protected abstract process(token: T, request: express.Request): Promise<X>;
 
   next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
     next();

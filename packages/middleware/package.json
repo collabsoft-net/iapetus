@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/middleware",
-  "version": "1.0.0-alpha.197",
+  "version": "1.0.0-alpha.210",
   "description": "Express middleware",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -15,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -31,12 +34,13 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.197",
-    "@collabsoft-net/enums": "^1.0.0-alpha.175",
-    "@collabsoft-net/functions": "^1.0.0-alpha.197",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.197",
-    "@collabsoft-net/services": "^1.0.0-alpha.197",
-    "@collabsoft-net/types": "^1.0.0-alpha.197",
+    "@collabsoft-net/controllers": "^1.0.0-alpha.210",
+    "@collabsoft-net/enums": "^1.0.0-alpha.210",
+    "@collabsoft-net/functions": "^1.0.0-alpha.210",
+    "@collabsoft-net/helpers": "^1.0.0-alpha.210",
+    "@collabsoft-net/services": "^1.0.0-alpha.210",
+    "@collabsoft-net/types": "^1.0.0-alpha.210",
+    "@types/node": ">=16.0.0",
     "@types/passport": "1.0.7",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "atlassian-jwt": "2.0.2",

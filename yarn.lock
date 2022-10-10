@@ -1315,7 +1315,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/caching@workspace:packages/caching"
   dependencies:
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1326,14 +1327,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/clients@^1.0.0-alpha.197, @collabsoft-net/clients@workspace:packages/clients":
+"@collabsoft-net/clients@^1.0.0-alpha.209, @collabsoft-net/clients@workspace:packages/clients":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/clients@workspace:packages/clients"
   dependencies:
-    "@collabsoft-net/connect": ^1.0.0-alpha.197
-    "@collabsoft-net/entities": ^1.0.0-alpha.197
-    "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.197
+    "@collabsoft-net/connect": ^1.0.0-alpha.209
+    "@collabsoft-net/entities": ^1.0.0-alpha.209
+    "@collabsoft-net/enums": ^1.0.0-alpha.208
+    "@collabsoft-net/helpers": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     atlassian-jwt: 2.0.2
     axios: 0.24.0
@@ -1363,10 +1365,10 @@ __metadata:
     "@atlaskit/css-reset": 6.3.13
     "@atlaskit/section-message": 6.1.13
     "@atlaskit/theme": 12.0.0
-    "@collabsoft-net/helpers": ^1.0.0-alpha.197
-    "@collabsoft-net/services": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
-    "@types/node": 12.20.25
+    "@collabsoft-net/helpers": ^1.0.0-alpha.209
+    "@collabsoft-net/services": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@types/react": 16.9.54
     "@types/react-dom": 16.9.9
     "@typescript-eslint/eslint-plugin": 5.25.0
@@ -1391,14 +1393,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/connect@^1.0.0-alpha.176, @collabsoft-net/connect@^1.0.0-alpha.197, @collabsoft-net/connect@workspace:packages/connect":
+"@collabsoft-net/connect@^1.0.0-alpha.209, @collabsoft-net/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/connect@workspace:packages/connect"
   dependencies:
     "@atlaskit/modal-dialog": 12.0.1
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
     "@juggle/resize-observer": 3.3.1
-    "@types/node": 12.20.25
+    "@types/node": ">=16.0.0"
     "@types/react": 16.9.54
     "@types/react-dom": 16.9.9
     "@typescript-eslint/eslint-plugin": 5.25.0
@@ -1421,16 +1423,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.197, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/controllers@^1.0.0-alpha.209, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
-    "@collabsoft-net/dto": ^1.0.0-alpha.197
-    "@collabsoft-net/functions": ^1.0.0-alpha.197
-    "@collabsoft-net/services": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/dto": ^1.0.0-alpha.209
+    "@collabsoft-net/functions": ^1.0.0-alpha.209
+    "@collabsoft-net/services": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
+    "@types/node": ">=16.0.0"
     "@types/passport": 1.0.7
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
@@ -1451,11 +1454,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/dto@^1.0.0-alpha.197, @collabsoft-net/dto@workspace:packages/dto":
+"@collabsoft-net/dto@^1.0.0-alpha.209, @collabsoft-net/dto@workspace:packages/dto":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/dto@workspace:packages/dto"
   dependencies:
-    "@collabsoft-net/entities": ^1.0.0-alpha.197
+    "@collabsoft-net/entities": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1471,6 +1475,7 @@ __metadata:
   dependencies:
     "@types/chai": 4.3.1
     "@types/chai-string": 1.4.2
+    "@types/node": ">=16.0.0"
     "@wdio/cli": 7.20.2
     chai: 4.3.6
     chai-string: 1.5.0
@@ -1484,12 +1489,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/emitters@^1.0.0-alpha.197, @collabsoft-net/emitters@workspace:packages/emitters":
+"@collabsoft-net/emitters@^1.0.0-alpha.209, @collabsoft-net/emitters@workspace:packages/emitters":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/emitters@workspace:packages/emitters"
   dependencies:
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
     "@google-cloud/pubsub": 2.17.0
+    "@types/node": ">=16.0.0"
     "@types/uniqid": 5.3.1
     "@typescript-eslint/eslint-plugin": 5.25.0
     axios: 0.24.0
@@ -1509,11 +1515,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/entities@^1.0.0-alpha.197, @collabsoft-net/entities@workspace:packages/entities":
+"@collabsoft-net/entities@^1.0.0-alpha.209, @collabsoft-net/entities@workspace:packages/entities":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/entities@workspace:packages/entities"
   dependencies:
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1521,10 +1528,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/enums@^1.0.0-alpha.175, @collabsoft-net/enums@workspace:packages/enums":
+"@collabsoft-net/enums@^1.0.0-alpha.208, @collabsoft-net/enums@workspace:packages/enums":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/enums@workspace:packages/enums"
   dependencies:
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1532,17 +1540,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.197, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.209, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
-    "@collabsoft-net/helpers": ^1.0.0-alpha.197
-    "@collabsoft-net/services": ^1.0.0-alpha.197
+    "@collabsoft-net/helpers": ^1.0.0-alpha.209
+    "@collabsoft-net/services": ^1.0.0-alpha.209
     "@gdn/envify-nconf": 1.2.1
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
     "@types/cookie-parser": 1.4.2
     "@types/cron": 1.7.3
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     cookie-parser: 1.4.4
     eslint: 8.15.0
@@ -1578,7 +1587,7 @@ __metadata:
   resolution: "@collabsoft-net/greenlock-dns-route53@workspace:packages/greenlock-dns-route53"
   dependencies:
     "@aws-sdk/client-route-53": 3.31.0
-    "@types/node": 12.20.25
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1588,12 +1597,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/helpers@^1.0.0-alpha.197, @collabsoft-net/helpers@workspace:packages/helpers":
+"@collabsoft-net/helpers@^1.0.0-alpha.209, @collabsoft-net/helpers@workspace:packages/helpers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/helpers@workspace:packages/helpers"
   dependencies:
     "@collabsoft-net/connect": ^1.0.0-alpha.176
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1607,6 +1617,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/inversify@workspace:packages/inversify"
   dependencies:
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     inversify: 6.0.1
@@ -1623,12 +1634,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.197
-    "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/functions": ^1.0.0-alpha.197
-    "@collabsoft-net/helpers": ^1.0.0-alpha.197
-    "@collabsoft-net/services": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/controllers": ^1.0.0-alpha.209
+    "@collabsoft-net/enums": ^1.0.0-alpha.208
+    "@collabsoft-net/functions": ^1.0.0-alpha.209
+    "@collabsoft-net/helpers": ^1.0.0-alpha.209
+    "@collabsoft-net/services": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@types/passport": 1.0.7
     "@typescript-eslint/eslint-plugin": 5.25.0
     atlassian-jwt: 2.0.2
@@ -1657,12 +1669,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/repositories@workspace:packages/repositories"
   dependencies:
-    "@collabsoft-net/dto": ^1.0.0-alpha.197
-    "@collabsoft-net/emitters": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/dto": ^1.0.0-alpha.209
+    "@collabsoft-net/emitters": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
     "@firebase/app-types": 0.x
     "@google-cloud/storage": 5.3.0
-    "@types/node": 12.20.25
+    "@types/node": ">=16.0.0"
     "@types/uniqid": 5.2.0
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
@@ -1683,8 +1695,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/scheduler@workspace:packages/scheduler"
   dependencies:
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
     "@google-cloud/scheduler": 2.3.0
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -1694,16 +1707,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/services@^1.0.0-alpha.197, @collabsoft-net/services@workspace:packages/services":
+"@collabsoft-net/services@^1.0.0-alpha.209, @collabsoft-net/services@workspace:packages/services":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/services@workspace:packages/services"
   dependencies:
-    "@collabsoft-net/clients": ^1.0.0-alpha.197
-    "@collabsoft-net/enums": ^1.0.0-alpha.175
-    "@collabsoft-net/helpers": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/clients": ^1.0.0-alpha.209
+    "@collabsoft-net/enums": ^1.0.0-alpha.208
+    "@collabsoft-net/helpers": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
+    form-data: ^4.0.0
     http-status-codes: ^2.1.4
     inversify: 6.0.1
     nodemon: 2.0.16
@@ -1713,6 +1728,7 @@ __metadata:
     "@collabsoft-net/clients": 1.0.0-alpha.11
     "@collabsoft-net/enums": 1.0.0-alpha.43
     "@collabsoft-net/helpers": 1.0.0-alpha.44
+    form-data: ^4.0.0
     http-status-codes: ^2.1.4
     inversify: 6.0.1
     path-to-regexp: 6.1.0
@@ -1723,13 +1739,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.197
-    "@collabsoft-net/dto": ^1.0.0-alpha.197
-    "@collabsoft-net/entities": ^1.0.0-alpha.197
-    "@collabsoft-net/functions": ^1.0.0-alpha.197
-    "@collabsoft-net/services": ^1.0.0-alpha.197
-    "@collabsoft-net/types": ^1.0.0-alpha.197
-    "@types/node": 12.20.25
+    "@collabsoft-net/controllers": ^1.0.0-alpha.209
+    "@collabsoft-net/dto": ^1.0.0-alpha.209
+    "@collabsoft-net/entities": ^1.0.0-alpha.209
+    "@collabsoft-net/functions": ^1.0.0-alpha.209
+    "@collabsoft-net/services": ^1.0.0-alpha.209
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@types/passport": 1.0.0
     "@types/passport-http-bearer": 1.0.34
     "@types/passport-jwt": 3.0.3
@@ -1758,11 +1774,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/types@^1.0.0-alpha.197, @collabsoft-net/types@workspace:packages/types":
+"@collabsoft-net/types@^1.0.0-alpha.209, @collabsoft-net/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/types@workspace:packages/types"
   dependencies:
-    "@types/node": 12.20.25
+    "@types/node": ">=16.0.0"
     "@types/passport": 1.0.0
     "@typescript-eslint/eslint-plugin": 5.25.0
     axios: 0.24.0
@@ -1782,7 +1798,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/validators@workspace:packages/validators"
   dependencies:
-    "@collabsoft-net/types": ^1.0.0-alpha.197
+    "@collabsoft-net/types": ^1.0.0-alpha.209
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
@@ -4330,7 +4347,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:12.20.25, @types/node@npm:>=12.12.47":
+"@types/node@npm:*, @types/node@npm:>=12.12.47":
   version: 12.20.25
   resolution: "@types/node@npm:12.20.25"
   checksum: efc0db15d0a3f7c09702173436cf62b69aa1776d627c6f72ec26b4be95be7aff1746373790c1f203c15aec7a2d55aad90e4c816bc23bce4cf378f4a7144cf474
@@ -4341,6 +4358,13 @@ __metadata:
   version: 17.0.35
   resolution: "@types/node@npm:17.0.35"
   checksum: 7a24946ae7fd20267ed92466384f594e448bfb151081158d565cc635d406ecb29ea8fb85fcd2a1f71efccf26fb5bd3c6f509bde56077eb8b832b847a6664bc62
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:>=16.0.0":
+  version: 18.8.1
+  resolution: "@types/node@npm:18.8.1"
+  checksum: 6168dbdc42cbedff20fd16ed7c775038d6de52fe1458a9a3be07e39805c75d107f185908a8cdfe0b271f8f391a0c99fde27859975cf6b5a8fee385b3f5cfb42a
   languageName: node
   linkType: hard
 
@@ -5935,7 +5959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"combined-stream@npm:^1.0.6, combined-stream@npm:~1.0.6":
+"combined-stream@npm:^1.0.6, combined-stream@npm:^1.0.8, combined-stream@npm:~1.0.6":
   version: 1.0.8
   resolution: "combined-stream@npm:1.0.8"
   dependencies:
@@ -7711,6 +7735,17 @@ __metadata:
   version: 0.6.1
   resolution: "forever-agent@npm:0.6.1"
   checksum: 766ae6e220f5fe23676bb4c6a99387cec5b7b62ceb99e10923376e27bfea72f3c3aeec2ba5f45f3f7ba65d6616965aa7c20b15002b6860833bb6e394dea546a8
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
   languageName: node
   linkType: hard
 
@@ -12500,6 +12535,7 @@ fsevents@~2.3.2:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
+    "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
     "@typescript-eslint/parser": 4.30.0
     eslint: 8.15.0

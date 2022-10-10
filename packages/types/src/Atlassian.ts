@@ -534,6 +534,9 @@ declare global {
         comment?: Comments;
         timetracking?: TimeTracking;
         worklog: Worklogs;
+        updated: string;
+        created: string;
+        duedate?: string;
         [key: string]: unknown | null;
       };
       names?: { [key: string]: string };
@@ -544,6 +547,11 @@ declare global {
       versionedRepresentations?: Record<string, unknown>;
       properties?: Record<string, unknown>;
       fields?: {
+        parent?: {
+          id: string;
+          key: string,
+          fields: Record<string, unknown>;
+        };
         summary: string;
         description: string;
         status: Status;
@@ -551,11 +559,15 @@ declare global {
         components: Array<Component>;
         versions: Array<Version>;
         fixVersions: Array<Version>;
-        reporter: Reporter;
+        assignee: ApplicationUser;
+        reporter: ApplicationUser;
         labels: Array<string>;
         project: Project;
         priority: Priority;
         updated: string;
+        created: string;
+        duedate?: string;
+        resolution: Resolution;
         [key: string]: unknown;
       };
       [key: string]: unknown;
@@ -618,22 +630,23 @@ declare global {
       customId?: number;
     }
 
+    interface FieldDetails {
+      id: string;
+      name: string;
+      custom: false;
+      orderable: true;
+      navigable: true;
+      searchable: true;
+      clauseNames: [string]
+      schema: Schema;
+    }
+
     interface IssueRequestOptions {
       fields?: Array<string>;
       fieldsByKeys?: boolean;
       expand?: string;
       properties?: Array<string>;
       updateHistory?: boolean;
-    }
-
-    interface Reporter {
-      self: string;
-      accountId: string;
-      avatarUrls: { [key: string]: string };
-      displayName: string;
-      active: boolean;
-      timeZone: string;
-      accountType: string;
     }
 
     interface CreatedIssue {
@@ -750,6 +763,12 @@ declare global {
       thumbnail: string;
     }
 
+    interface Resolution {
+      id: string;
+      name: string;
+      description: string;
+    }
+
     interface Transition {
       id: string;
       name: string;
@@ -789,6 +808,7 @@ declare global {
       key: string;
       accountId: string;
       accountType: string;
+      timeZone?: string;
     }
 
     interface FoundUsers {

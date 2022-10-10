@@ -1,6 +1,7 @@
 import { JiraRestClient } from '@collabsoft-net/clients';
 import { JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { RestClient } from '@collabsoft-net/types';
+import FormData from 'form-data';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
@@ -46,8 +47,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getIssue(issueIdOrKey: string|number): Promise<Jira.Issue> {
-    const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }));
+  async getIssue(issueIdOrKey: string|number, expand?: Array<'renderedFields'|'names'|'schema'|'operations'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.Issue> {
+    const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }), { expand: expand?.join(',')});
     return data;
   }
 
@@ -74,6 +75,11 @@ export class JiraClientService extends AbstractAtlasClientService {
       properties,
       fieldsByKeys
     });
+    return data;
+  }
+
+  async getIssueFields(): Promise<Jira.FieldDetails[]> {
+    const { data } = await this.client.get<Jira.FieldDetails[]>(this.getEndpointFor(this.endpoints.ISSUE_FIELDS));
     return data;
   }
 
@@ -110,6 +116,19 @@ export class JiraClientService extends AbstractAtlasClientService {
   async getAttachment(attachmentId: string): Promise<Jira.Attachment> {
     const { data } = await this.client.get<Jira.Attachment>(this.getEndpointFor(this.endpoints.READ_ATTACHMENT, { attachmentId }));
     return data;
+  }
+
+  async addAttachment(issueIdOrKey: string|number, content: string | Buffer, fileName?: string): Promise<Jira.Attachment> {
+    const data = new FormData();
+    data.append('file', content, fileName);
+    const { data: result } = await this.client.post<Jira.Attachment>(this.getEndpointFor(this.endpoints.ADD_ATTACHMENT, { issueIdOrKey }), data, undefined, {
+      headers: {
+        'Accept': 'application/json',
+        'X-Atlassian-Token': 'no-check',
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return result;
   }
 
   async getVersion(id: string|number, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {

@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/greenlock-dns-route53",
-  "version": "1.0.0-alpha.175",
+  "version": "1.0.0-alpha.210",
   "description": "Rest clients to be used in Server, Cloud functions and client-side (with support for AP.request and Atlassian REST API, incl. impersonation)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -15,6 +15,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,7 +37,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-route-53": "3.31.0",
-    "@types/node": "12.20.25",
+    "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "eslint": "8.15.0",
     "nodemon": "2.0.16",

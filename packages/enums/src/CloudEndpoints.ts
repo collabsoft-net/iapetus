@@ -25,12 +25,15 @@ export enum JiraCloudEndpoints {
   ISSUE_DELETE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_SEARCH = '/rest/api/3/search',
 
+  ISSUE_FIELDS = '/rest/api/3/field',
+
   READ_COMMENT = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
   LIST_COMMENTS = '/rest/api/3/issue/:issueIdOrKey/comment',
   COMMENT_CREATE = '/rest/api/3/issue/:issueIdOrKey/comment',
   COMMENT_UPDATE = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
 
   READ_ATTACHMENT = '/rest/api/3/attachment/:attachmentId',
+  ADD_ATTACHMENT = '/rest/api/3/issue/:issueIdOrKey/attachments',
 
   READ_VERSION = '/rest/api/3/version/:id',
   LIST_VERSIONS = '/rest/api/3/project/:projectIdOrKey/versions',
