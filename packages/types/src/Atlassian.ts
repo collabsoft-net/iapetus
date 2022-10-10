@@ -633,10 +633,10 @@ declare global {
     interface FieldDetails {
       id: string;
       name: string;
-      custom: false;
-      orderable: true;
-      navigable: true;
-      searchable: true;
+      custom: boolean;
+      orderable: boolean;
+      navigable: boolean;
+      searchable: boolean;
       clauseNames: [string]
       schema: Schema;
     }
