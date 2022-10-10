@@ -550,7 +550,7 @@ declare global {
         parent?: {
           id: string;
           key: string,
-          fields: Record<string, unknown>;
+          fields?: Record<string, unknown>;
         };
         summary: string;
         description: string;
