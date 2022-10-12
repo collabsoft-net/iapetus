@@ -917,6 +917,12 @@ declare global {
       timeZone: string;
     }
 
+    interface CustomerRequestType {
+      _links: Record<string, string>;
+      requestType: RequestType;
+      currentStatus: CurrentStatus;
+    }
+
     interface RequestType {
       id: string;
       name: string;
@@ -927,7 +933,18 @@ declare global {
       groupIds: Array<string>;
       icon: RequestTypeIcon;
       fields: CustomerRequestCreateMeta;
+      portalId: string;
+    }
 
+    interface CurrentStatus {
+      status: string;
+      statusCategory: string;
+      statusDate: {
+          iso8601: string;
+          jira: string;
+          friendly: string;
+          epochMillis: number;
+      }
     }
 
     interface RequestTypeIcon {
