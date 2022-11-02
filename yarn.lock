@@ -1365,7 +1365,7 @@ __metadata:
     "@atlaskit/css-reset": 6.3.13
     "@atlaskit/section-message": 6.1.13
     "@atlaskit/theme": 12.0.0
-    "@collabsoft-net/connect": 1.0.0-alpha.210
+    "@collabsoft-net/connect": ^1.0.0-alpha.214
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
     "@collabsoft-net/services": ^1.0.0-alpha.214
     "@collabsoft-net/types": ^1.0.0-alpha.213
@@ -1424,21 +1424,6 @@ __metadata:
     styled-components: 3.2.6
   languageName: unknown
   linkType: soft
-
-"@collabsoft-net/connect@npm:1.0.0-alpha.210":
-  version: 1.0.0-alpha.210
-  resolution: "@collabsoft-net/connect@npm:1.0.0-alpha.210::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40collabsoft-net%2Fconnect%2F1.0.0-alpha.210%2Fee9da10c89d26ccaba3726586dfc6053b880b290"
-  peerDependencies:
-    "@atlaskit/modal-dialog": 12.0.1
-    "@juggle/resize-observer": 3.3.1
-    inversify: 6.0.1
-    query-string: 7.0.1
-    react: 16.14.0
-    react-dom: 16.14.0
-    styled-components: 3.2.6
-  checksum: df33f491bf52c29789ce6950613c224f6f7a517fb7e20e48b31558ed47e8b64cd204ce825af46f5ab4070f88af31bc7e530a58873f4413b7cd82f9a25d42a141
-  languageName: node
-  linkType: hard
 
 "@collabsoft-net/controllers@^1.0.0-alpha.214, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
