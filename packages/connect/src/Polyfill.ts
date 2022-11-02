@@ -118,14 +118,14 @@ const dialog: AP.Dialog = {
       }
     };
   },
-  close: (customData?: unknown) => {
+  close: <T> (customData?: T) => {
     const frame = window.frameElement;
     if (frame) {
       const dialogId = frame.getAttribute('data-dialogid');
       postMessage({ eventType: SupportedEvents.DIALOG_EVENT, name: 'close', dialogId, customData });
     }
   },
-  getCustomData: (callback: (data: unknown) => void) => {
+  getCustomData: <T> (callback: (data: T) => void) => {
     const requestId = uniqid();
     window.addEventListener('message', ({ data }) => {
       if (data && data.requestId === requestId) callback(data.customData);
@@ -164,7 +164,7 @@ const dialog: AP.Dialog = {
   disableCloseOnSubmit: () => postMessage({ eventType: SupportedEvents.DIALOG_EVENT, name: 'disableCloseOnSubmit' }),
   createButton: (_options: AP.DialogButtonOptions): AP.DialogButton => { throw new Error('createButton(): This AP method is not yet implemented'); },
   isCloseOnEscape: (_callback: (isEnabled: boolean) => void): void => { throw new Error('isCloseOnEscape(): This AP method is not yet implemented'); },
-  on: (_event: string, _callback: (data?: unknown) => void): void => { throw new Error('on(): This AP method is not yet implemented'); }
+  on: <T> (_event: string, _callback: (data?: T) => void): void => { throw new Error('on(): This AP method is not yet implemented'); }
 };
 
 const confluence: AP.Confluence = {

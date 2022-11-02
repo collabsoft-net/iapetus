@@ -550,7 +550,7 @@ declare global {
         parent?: {
           id: string;
           key: string,
-          fields: Record<string, unknown>;
+          fields?: Record<string, unknown>;
         };
         summary: string;
         description: string;
@@ -633,10 +633,10 @@ declare global {
     interface FieldDetails {
       id: string;
       name: string;
-      custom: false;
-      orderable: true;
-      navigable: true;
-      searchable: true;
+      custom: boolean;
+      orderable: boolean;
+      navigable: boolean;
+      searchable: boolean;
       clauseNames: [string]
       schema: Schema;
     }
@@ -917,6 +917,12 @@ declare global {
       timeZone: string;
     }
 
+    interface CustomerRequestType {
+      _links: Record<string, string>;
+      requestType: RequestType;
+      currentStatus: CurrentStatus;
+    }
+
     interface RequestType {
       id: string;
       name: string;
@@ -927,7 +933,18 @@ declare global {
       groupIds: Array<string>;
       icon: RequestTypeIcon;
       fields: CustomerRequestCreateMeta;
+      portalId: string;
+    }
 
+    interface CurrentStatus {
+      status: string;
+      statusCategory: string;
+      statusDate: {
+          iso8601: string;
+          jira: string;
+          friendly: string;
+          epochMillis: number;
+      }
     }
 
     interface RequestTypeIcon {

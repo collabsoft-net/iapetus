@@ -129,13 +129,13 @@ declare global {
     // https://developer.atlassian.com/cloud/jira/software/jsapi/dialog/
     interface Dialog {
       create: <T> (options: DialogOptions<T>) => DialogReference;
-      close: (data?: unknown) => void;
-      getCustomData: (callback: (data: unknown) => void) => void;
+      close: <T> (data?: T) => void;
+      getCustomData: <T> (callback: (data: T) => void) => void;
       getButton: (name: 'cancel'|'submit') => DialogButton;
       disableCloseOnSubmit: () => void;
       createButton: (options: DialogButtonOptions) => DialogButton;
       isCloseOnEscape: (callback: (isEnabled: boolean) => void) => void;
-      on: (event: string, callback: (data?: unknown) => void) => void;
+      on: <T> (event: string, callback: (data?: T) => void) => void;
     }
 
     interface DialogReference {
