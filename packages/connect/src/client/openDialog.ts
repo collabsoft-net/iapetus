@@ -1,7 +1,8 @@
 
-import { ServiceIdentifier } from '@collabsoft-net/connect';
 import { isOfType } from '@collabsoft-net/helpers';
 import kernel from '@collabsoft-net/inversify';
+
+import { ServiceIdentifier } from '../ServiceIdentifier';
 
 type DialogCallback<T> = (data?: T) => void;
 

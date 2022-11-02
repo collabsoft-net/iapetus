@@ -1327,11 +1327,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/clients@^1.0.0-alpha.213, @collabsoft-net/clients@workspace:packages/clients":
+"@collabsoft-net/clients@^1.0.0-alpha.214, @collabsoft-net/clients@workspace:packages/clients":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/clients@workspace:packages/clients"
   dependencies:
-    "@collabsoft-net/connect": ^1.0.0-alpha.213
+    "@collabsoft-net/connect": ^1.0.0-alpha.214
     "@collabsoft-net/entities": ^1.0.0-alpha.213
     "@collabsoft-net/enums": ^1.0.0-alpha.210
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
@@ -1365,8 +1365,9 @@ __metadata:
     "@atlaskit/css-reset": 6.3.13
     "@atlaskit/section-message": 6.1.13
     "@atlaskit/theme": 12.0.0
+    "@collabsoft-net/connect": 1.0.0-alpha.210
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
-    "@collabsoft-net/services": ^1.0.0-alpha.213
+    "@collabsoft-net/services": ^1.0.0-alpha.214
     "@collabsoft-net/types": ^1.0.0-alpha.213
     "@types/node": ">=16.0.0"
     "@types/react": 16.9.54
@@ -1394,7 +1395,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/connect@^1.0.0-alpha.213, @collabsoft-net/connect@workspace:packages/connect":
+"@collabsoft-net/connect@^1.0.0-alpha.176, @collabsoft-net/connect@^1.0.0-alpha.214, @collabsoft-net/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/connect@workspace:packages/connect"
   dependencies:
@@ -1424,13 +1425,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.213, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/connect@npm:1.0.0-alpha.210":
+  version: 1.0.0-alpha.210
+  resolution: "@collabsoft-net/connect@npm:1.0.0-alpha.210::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40collabsoft-net%2Fconnect%2F1.0.0-alpha.210%2Fee9da10c89d26ccaba3726586dfc6053b880b290"
+  peerDependencies:
+    "@atlaskit/modal-dialog": 12.0.1
+    "@juggle/resize-observer": 3.3.1
+    inversify: 6.0.1
+    query-string: 7.0.1
+    react: 16.14.0
+    react-dom: 16.14.0
+    styled-components: 3.2.6
+  checksum: df33f491bf52c29789ce6950613c224f6f7a517fb7e20e48b31558ed47e8b64cd204ce825af46f5ab4070f88af31bc7e530a58873f4413b7cd82f9a25d42a141
+  languageName: node
+  linkType: hard
+
+"@collabsoft-net/controllers@^1.0.0-alpha.214, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
     "@collabsoft-net/dto": ^1.0.0-alpha.213
-    "@collabsoft-net/functions": ^1.0.0-alpha.213
-    "@collabsoft-net/services": ^1.0.0-alpha.213
+    "@collabsoft-net/functions": ^1.0.0-alpha.214
+    "@collabsoft-net/services": ^1.0.0-alpha.214
     "@collabsoft-net/types": ^1.0.0-alpha.213
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1541,12 +1557,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.213, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.214, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
-    "@collabsoft-net/services": ^1.0.0-alpha.213
+    "@collabsoft-net/services": ^1.0.0-alpha.214
     "@gdn/envify-nconf": 1.2.1
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1602,6 +1618,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/helpers@workspace:packages/helpers"
   dependencies:
+    "@collabsoft-net/connect": ^1.0.0-alpha.176
     "@collabsoft-net/types": ^1.0.0-alpha.213
     "@types/node": ">=16.0.0"
     "@typescript-eslint/eslint-plugin": 5.25.0
@@ -1630,15 +1647,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@collabsoft-net/macro@workspace:packages/macro":
+  version: 0.0.0-use.local
+  resolution: "@collabsoft-net/macro@workspace:packages/macro"
+  dependencies:
+    "@types/node": ">=16.0.0"
+    "@typescript-eslint/eslint-plugin": 5.25.0
+    eslint: 8.15.0
+    nodemon: 2.0.16
+    typescript: 4.6.4
+  languageName: unknown
+  linkType: soft
+
 "@collabsoft-net/middleware@workspace:packages/middleware":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.213
+    "@collabsoft-net/controllers": ^1.0.0-alpha.214
     "@collabsoft-net/enums": ^1.0.0-alpha.210
-    "@collabsoft-net/functions": ^1.0.0-alpha.213
+    "@collabsoft-net/functions": ^1.0.0-alpha.214
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
-    "@collabsoft-net/services": ^1.0.0-alpha.213
+    "@collabsoft-net/services": ^1.0.0-alpha.214
     "@collabsoft-net/types": ^1.0.0-alpha.213
     "@types/node": ">=16.0.0"
     "@types/passport": 1.0.7
@@ -1707,11 +1736,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/services@^1.0.0-alpha.213, @collabsoft-net/services@workspace:packages/services":
+"@collabsoft-net/services@^1.0.0-alpha.214, @collabsoft-net/services@workspace:packages/services":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/services@workspace:packages/services"
   dependencies:
-    "@collabsoft-net/clients": ^1.0.0-alpha.213
+    "@collabsoft-net/clients": ^1.0.0-alpha.214
     "@collabsoft-net/enums": ^1.0.0-alpha.210
     "@collabsoft-net/helpers": ^1.0.0-alpha.213
     "@collabsoft-net/types": ^1.0.0-alpha.213
@@ -1739,11 +1768,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.213
+    "@collabsoft-net/controllers": ^1.0.0-alpha.214
     "@collabsoft-net/dto": ^1.0.0-alpha.213
     "@collabsoft-net/entities": ^1.0.0-alpha.213
-    "@collabsoft-net/functions": ^1.0.0-alpha.213
-    "@collabsoft-net/services": ^1.0.0-alpha.213
+    "@collabsoft-net/functions": ^1.0.0-alpha.214
+    "@collabsoft-net/services": ^1.0.0-alpha.214
     "@collabsoft-net/types": ^1.0.0-alpha.213
     "@types/node": ">=16.0.0"
     "@types/passport": 1.0.0
