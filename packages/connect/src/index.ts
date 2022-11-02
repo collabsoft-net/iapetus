@@ -1,11 +1,6 @@
 
+export * from './client/';
+export * from './host/';
 export * from './AP';
-export * from './Context';
-export * from './Dialog';
-export * from './iframe';
-export * from './Host';
-export * from './Macro';
-export * from './Navigator';
 export * from './Polyfill';
-export * from './Resize';
-export * from './SupportedEvents';
+export * from './ServiceIdentifier';

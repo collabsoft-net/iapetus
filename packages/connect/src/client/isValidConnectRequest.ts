@@ -1,4 +1,4 @@
-import { isNullOrEmpty } from './isNullOrEmpty';
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
 
 export const isValidConnectRequest = () => {
   if (window && document && document.head) {

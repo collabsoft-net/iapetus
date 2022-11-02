@@ -35,7 +35,8 @@
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./typings/*.d.ts",
-    "./typings/**/*.d.ts"
+    "./typings/**/*.d.ts",
+    "../node_modules/@collabsoft-net/**/*.d.ts"
   ],
   "compileOnSave": false
 }

@@ -1,0 +1,42 @@
+{
+  "name": "@collabsoft-net/macro",
+  "version": "1.0.0-alpha.210",
+  "description": "Collection of Confluence macro functions",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "module": "./dist/es2020/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
+    "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
+    "build:types": "yarn run tsc --emitDeclarationOnly --outDir dist/types",
+    "start": "yarn run nodemon --watch src -e '.ts' --exec 'yarn build'",
+    "prepack": "yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "devDependencies": {
+    "@types/node": ">=16.0.0",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
+    "eslint": "8.15.0",
+    "nodemon": "2.0.16",
+    "typescript": "4.6.4"
+  }
+}

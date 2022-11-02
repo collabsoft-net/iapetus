@@ -4,14 +4,14 @@
 
 import uniqid from 'uniqid';
 
-import { SupportedEvents } from './SupportedEvents';
+import { SupportedEvents } from './host/SupportedEvents';
 
 const postMessage = (data?: unknown) => {
   const payload = data ? JSON.stringify(data) : '{}';
   window.parent.postMessage(payload, '*');
 };
 
-export const waitForAP = async (callback?: (err?: Error) => void): Promise<void> => {
+export const init = async (callback?: (err?: Error) => void): Promise<void> => {
   let count = 0;
   let connected = false;
 

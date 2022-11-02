@@ -1365,6 +1365,7 @@ __metadata:
     "@atlaskit/css-reset": 6.3.13
     "@atlaskit/section-message": 6.1.13
     "@atlaskit/theme": 12.0.0
+    "@collabsoft-net/connect": ^1.0.0-alpha.210
     "@collabsoft-net/helpers": ^1.0.0-alpha.210
     "@collabsoft-net/services": ^1.0.0-alpha.210
     "@collabsoft-net/types": ^1.0.0-alpha.210
@@ -1384,6 +1385,7 @@ __metadata:
     "@atlaskit/css-reset": "*"
     "@atlaskit/section-message": "*"
     "@atlaskit/theme": 12.0.0
+    "@collabsoft-net/connect": "*"
     "@collabsoft-net/helpers": ^1.0.0-alpha.159
     "@collabsoft-net/services": ^1.0.0-alpha.159
     "@collabsoft-net/types": ^1.0.0-alpha.159
