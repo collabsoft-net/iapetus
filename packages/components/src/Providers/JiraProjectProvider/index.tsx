@@ -1,21 +1,21 @@
 import { ServiceIdentifier } from '@collabsoft-net/connect';
 import kernel from '@collabsoft-net/inversify';
 import { JiraClientService } from '@collabsoft-net/services';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number;
-  requiredPermissions?: Array<string>;
-  loadingMessage?: ReactNode;
+  requiredPermissions?: string|Array<string>;
+  loadingMessage?: JSX.Element;
   children: (args: {
     project?: Jira.Project;
     permitted?: boolean;
     errors?: Error;
     loading: boolean;
-  }) => ReactNode;
+  }) => JSX.Element;
 }
 
-export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadingMessage, children }: JiraProjectProviderProps): ReactNode => {
+export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadingMessage, children }: JiraProjectProviderProps): JSX.Element => {
   const [ AP ] = useState<AP.Instance>(kernel.get<AP.Instance>(ServiceIdentifier.AP));
   const [ service ] = useState(kernel.get<JiraClientService>(JiraClientService.getIdentifier()));
   const [ project, setProject ] = useState<Jira.Project>();
@@ -30,7 +30,7 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
           const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
           const hasRequiredPermissions = await service.hasPermissions(accountId, [ {
             projects: [ Number(project.id) ],
-            permissions: requiredPermissions
+            permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
           }]).catch(() => false)
           setPermitted(hasRequiredPermissions);
           setProject(project);
