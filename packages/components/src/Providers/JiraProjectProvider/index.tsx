@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number;
-  requiredPermissions?: Array<Jira.BulkProjectPermissions>;
+  requiredPermissions?: Array<string>;
   loadingMessage?: ReactNode;
   children: (args: {
     project?: Jira.Project;
@@ -25,22 +25,22 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
 
   useEffect(() => {
     if (AP && service) {
-      if (requiredPermissions) {
-        AP.user.getCurrentUser(({ atlassianAccountId }) => Promise.all([
-          service.hasPermissions(atlassianAccountId, requiredPermissions).catch(() => false),
-          service.getProject(projectIdOrKey).catch((err: Error) => { setErrors(err); return undefined })
-        ]).then(([ permitted, project ]) => {
+      service.getProject(projectIdOrKey).then(async (project) => {
+        if (requiredPermissions) {
+          const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
+          const hasRequiredPermissions = await service.hasPermissions(accountId, [ {
+            projects: [ Number(project.id) ],
+            permissions: requiredPermissions
+          }]).catch(() => false)
+          setPermitted(hasRequiredPermissions);
           setProject(project);
-          setPermitted(permitted);
-        }).finally(() => setLoading(false)));
-      } else {
-        service.getProject(projectIdOrKey).then(project => {
-          setProject(project);
+        } else {
           setPermitted(true);
-        }).finally(() => setLoading(false));
-      }
+          setProject(project);
+        }
+      }).catch(setErrors).finally(() => setLoading(false));
     }
   }, [ AP, service ]);
 
-    return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
+  return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
 }
