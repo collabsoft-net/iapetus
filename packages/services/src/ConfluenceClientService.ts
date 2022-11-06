@@ -1,4 +1,4 @@
-import { AbstractAtlasRestClient, ConfluenceRestClient } from '@collabsoft-net/clients';
+import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { ConfluenceCloudEndpoints, ConfluenceServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
@@ -12,6 +12,10 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   constructor(protected client: RestClient, protected mode: Modes) {
     super(client, mode);
     this.endpoints = mode === Modes.CONNECT ? ConfluenceCloudEndpoints : ConfluenceServerEndpoints;
+  }
+
+  cached(duration: number) {
+    return this.getInstance(this.client.cached(duration), this.mode);
   }
 
   async currentUser(expand?: Array<string>): Promise<Confluence.User> {
@@ -76,7 +80,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data.results.some(group => group.name === name);
   }
 
-  protected getInstance(client: ConfluenceRestClient, mode: Modes): ConfluenceClientService {
+  protected getInstance(client: RestClient, mode: Modes): ConfluenceClientService {
     return new ConfluenceClientService(client, mode);
   }
 

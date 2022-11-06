@@ -1,4 +1,3 @@
-import { JiraRestClient } from '@collabsoft-net/clients';
 import { JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { RestClient } from '@collabsoft-net/types';
 import FormData from 'form-data';
@@ -13,6 +12,10 @@ export class JiraClientService extends AbstractAtlasClientService {
   constructor(protected client: RestClient, protected mode: Modes) {
     super(client, mode);
     this.endpoints = mode === Modes.CONNECT ? JiraCloudEndpoints : JiraServerEndpoints;
+  }
+
+  cached(duration: number) {
+    return this.getInstance(this.client.cached(duration), this.mode);
   }
 
   async currentUser(): Promise<Jira.User> {
@@ -451,7 +454,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return false;
   }
 
-  protected getInstance(client: JiraRestClient, mode: Modes): JiraClientService {
+  protected getInstance(client: RestClient, mode: Modes): JiraClientService {
     return new JiraClientService(client, mode);
   }
 

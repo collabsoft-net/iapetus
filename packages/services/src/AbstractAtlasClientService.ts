@@ -14,6 +14,8 @@ export abstract class AbstractAtlasClientService {
     this.endpoints = mode === Modes.CONNECT ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
   }
 
+  abstract cached(duration: number): AbstractAtlasClientService;
+
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService {
     if (isOfType<AbstractAtlasRestClient>(this.client, 'as')) {
       const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
@@ -46,6 +48,6 @@ export abstract class AbstractAtlasClientService {
     return compiler(pathParams);
   }
 
-  protected abstract getInstance(impersonatedClient: AbstractAtlasRestClient, mode: Modes): AbstractAtlasClientService;
+  protected abstract getInstance(client: RestClient, mode: Modes): AbstractAtlasClientService;
 
 }
