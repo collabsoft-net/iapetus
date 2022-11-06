@@ -1,6 +1,6 @@
 import { ACInstance } from '@collabsoft-net/entities';
 import { RestClientMethods } from '@collabsoft-net/enums';
-import { RestClient } from '@collabsoft-net/types';
+import { CachingService, RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { stringify } from 'query-string';
@@ -14,17 +14,19 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
 
   protected _accountId?: string;
 
-  constructor(protected instance: ACInstance, protected config: AxiosRequestConfig = {}) {
-    super(instance.baseUrl, config);
+  constructor(protected instance: ACInstance, protected config: AxiosRequestConfig = {}, protected cacheService?: CachingService, cacheDuration?: number) {
+    super(instance.baseUrl, config, cacheService, cacheDuration);
   }
 
   get accountId(): string|undefined {
     return this._accountId;
   }
 
+  abstract cached(duration: number): AbstractAtlasRestClient;
+
   abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient;
 
-  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration = this.duration): Promise<AxiosResponse<T>> {
     const options: AxiosRequestConfig = {
       ...config,
       method,
@@ -39,7 +41,21 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
       ? `Bearer ${await this.getAccessToken()}`
       : `JWT ${this.getSignedJWT(options)}`;
 
-      return this.client(endpoint, options);
+    const fetchFromRemote = async () => this.client(endpoint, options);
+
+    if (this.cacheService) {
+      try {
+        const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(options));
+        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration);
+        return result || fetchFromRemote();
+      } catch (err) {
+        return fetchFromRemote();
+      }
+    } else {
+      return fetchFromRemote();
+    }
+
+
   }
 
   private getSignedJWT(options: AxiosRequestConfig) {
