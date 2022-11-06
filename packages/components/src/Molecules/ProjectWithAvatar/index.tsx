@@ -1,23 +1,11 @@
 import Avatar, { SizeType } from '@atlaskit/avatar';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
-import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
-import kernel from '@collabsoft-net/inversify';
-import { JiraClientService } from '@collabsoft-net/services';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms/';
-
-let service: JiraClientService;
-
-kernel.onReady(() => {
-  if (kernel.isBound(JiraClientService.getIdentifier())) {
-    service = kernel.get<JiraClientService>(JiraClientService.getIdentifier());
-  } else {
-    throw new Error(`Could not find instance of JiraClientService, please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()"`);
-  }
-});
+import { JiraProviders } from '../../index';
 
 const Wrapper = styled.div`
   display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};
@@ -33,6 +21,7 @@ export type ProjectWithAvatarProps = {
   size?: SizeType;
   isValidating?: boolean;
   isDisabled?: boolean;
+  project?: Jira.Project;
   projectId?: number|string;
   inline?: boolean
   href?: string;
@@ -41,81 +30,43 @@ export type ProjectWithAvatarProps = {
 };
 
 interface ProjectWithAvatarState {
-  project: Jira.Project|null;
+  project?: Jira.Project|null;
   isLoading: boolean;
   isValidating?: boolean;
-  isArchived: boolean;
+  isArchived?: boolean;
 }
 
-const memcache = new Map<number|string, Jira.Project>();
+export const ProjectWithAvatar = ({ project, projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
 
-export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
-
-  const [ project, setProject ] = useState<Jira.Project|null>(null);
-  const [ isArchived, setArchived ] = useState<boolean>(false);
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (projectId !== undefined && (
-        (typeof projectId === 'number' && projectId > 0) ||
-        (typeof projectId === 'string' && !isNullOrEmpty(projectId)))) {
-
-      if (memcache.has(projectId)) {
-        const result = memcache.get(projectId) as Jira.Project;
-        if (isOfType<Jira.Project>(result, 'id')) {
-          setProject(result);
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (service) {
-        service.getProject(projectId).then(result => {
-          if (isOfType<Jira.Project>(result, 'id')) {
-            setProject(result);
-          }
-        }).catch(() => {}).finally(() => setLoading(false));
-      }
-    }
-  }, [ projectId, service ]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (project && (projectId !== undefined && typeof projectId === 'string' && !isNullOrEmpty(projectId))) {
-        setArchived(project?.archived || false);
-        memcache.set(projectId, project);
-      } else {
-        onError && onError();
-      }
-    }
-  }, [ projectId, project ]);
-
-  return component ? component({ project, isLoading, isValidating, isArchived }) : (
+  const Content = ({ project: currentProject, loading }: {
+    project?: Jira.Project;
+    loading: boolean;
+  }) =>
     <Wrapper inline={inline}>
       <AvatarWrapper>
         {(() => {
-          if (isLoading || isValidating) {
+          if (loading || isValidating) {
             return <Spinner size='medium' />;
           } else if (!project) {
             return <WarningIcon label='Project not found' />;
           } else {
-            return <Avatar appearance='square' src={ project.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled || isArchived } />;
+            return <Avatar appearance='square' src={ project.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled || currentProject?.archived } />;
           }
         })()}
       </AvatarWrapper>
       {(() => {
-        if (!isLoading && !isValidating) {
-          if (project) {
+        if (!loading && !isValidating) {
+          if (currentProject) {
             return (
               <>
                 <Paragraph margin='0 0 0 8px' display='inline-block'>
                   { href ? (
-                    <Link href={ href }>{ project.name }</Link>
+                    <Link href={ href }>{ currentProject.name }</Link>
                   ) : (
-                    <span>{ project.name }</span>
+                    <span>{ currentProject.name }</span>
                   )}
                 </Paragraph>
-                { isArchived && <Paragraph margin='0 0 0 8px' display='inline-block'>(archived)</Paragraph>}
+                { currentProject.archived && <Paragraph margin='0 0 0 8px' display='inline-block'>(archived)</Paragraph>}
               </>
             );
           } else {
@@ -125,6 +76,24 @@ export const ProjectWithAvatar = ({ projectId, inline, isValidating, isDisabled,
           return '';
         }
       })()}
-    </Wrapper>
-  );
+    </Wrapper>;
+
+  if (project) {
+    return component
+      ? component({ project, isLoading: false, isValidating, isArchived: project.archived })
+      : Content({ project, loading: false });
+  } else if (projectId) {
+    return (
+      <JiraProviders.Project projectIdOrKey={ projectId } loadingMessage={ <Spinner size='medium' /> }>
+        { ({ project: currentProject, loading }) => {
+          return component
+            ? component({ project: currentProject, isLoading: loading, isValidating, isArchived: currentProject?.archived })
+            : Content({ project: currentProject, loading })
+        }}
+      </JiraProviders.Project>
+    );
+  } else {
+    onError && onError();
+    return <></>;
+  }
 };

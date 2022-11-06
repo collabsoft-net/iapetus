@@ -1,4 +1,4 @@
 
 export * from './Atoms';
 export * from './Molecules';
-export * from './Providers';
+export * as JiraProviders from './Providers/jira';
