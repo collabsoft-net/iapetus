@@ -1317,13 +1317,16 @@ __metadata:
   dependencies:
     "@collabsoft-net/types": ^1.0.0-alpha.215
     "@types/node": ">=16.0.0"
+    "@types/store": 2.0.2
     "@typescript-eslint/eslint-plugin": 5.25.0
     eslint: 8.15.0
     nodemon: 2.0.16
     redis: 4.1.0
+    store: 2.0.12
     typescript: 4.6.4
   peerDependencies:
     redis: 4.1.0
+    store: "*"
   languageName: unknown
   linkType: soft
 
@@ -4534,6 +4537,13 @@ __metadata:
     "@types/mime": ^1
     "@types/node": "*"
   checksum: eaca858739483e3ded254cad7d7a679dc2c8b3f52c8bb0cd845b3b7eb1984bde0371fdcb0a5c83aa12e6daf61b6beb762545021f520f08a1fe882a3fa4ea5554
+  languageName: node
+  linkType: hard
+
+"@types/store@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@types/store@npm:2.0.2"
+  checksum: aa548e117f9a1e2b1ff0263f3261ad7066b885ed32c05019832e4cbf91bf09f5f5891cccfb4e001a6cdc87d306b1d6376b20bdf8976dfced38b18db3c9c6fef3
   languageName: node
   linkType: hard
 
@@ -13087,6 +13097,13 @@ fsevents@~2.3.2:
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
+  languageName: node
+  linkType: hard
+
+"store@npm:2.0.12":
+  version: 2.0.12
+  resolution: "store@npm:2.0.12"
+  checksum: 4e0fe69f71dc3c99af1b87e87dcb0c81fc979bd38abbcdf66d5705f1c44e6fd5e043056288efd695926c75419adc356873e6792d9b024085a8db51dbdda899ea
   languageName: node
   linkType: hard
 
