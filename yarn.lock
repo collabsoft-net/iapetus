@@ -1330,7 +1330,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/clients@^1.0.0-alpha.219, @collabsoft-net/clients@workspace:packages/clients":
+"@collabsoft-net/clients@^1.0.0-alpha.221, @collabsoft-net/clients@workspace:packages/clients":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/clients@workspace:packages/clients"
   dependencies:
@@ -1370,7 +1370,7 @@ __metadata:
     "@atlaskit/theme": 12.0.0
     "@collabsoft-net/connect": ^1.0.0-alpha.219
     "@collabsoft-net/helpers": ^1.0.0-alpha.219
-    "@collabsoft-net/services": ^1.0.0-alpha.219
+    "@collabsoft-net/services": ^1.0.0-alpha.221
     "@collabsoft-net/types": ^1.0.0-alpha.219
     "@types/node": ">=16.0.0"
     "@types/react": 16.9.54
@@ -1430,13 +1430,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/controllers@^1.0.0-alpha.219, @collabsoft-net/controllers@workspace:packages/controllers":
+"@collabsoft-net/controllers@^1.0.0-alpha.221, @collabsoft-net/controllers@workspace:packages/controllers":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/controllers@workspace:packages/controllers"
   dependencies:
     "@collabsoft-net/dto": ^1.0.0-alpha.219
-    "@collabsoft-net/functions": ^1.0.0-alpha.219
-    "@collabsoft-net/services": ^1.0.0-alpha.219
+    "@collabsoft-net/functions": ^1.0.0-alpha.221
+    "@collabsoft-net/services": ^1.0.0-alpha.221
     "@collabsoft-net/types": ^1.0.0-alpha.219
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1547,12 +1547,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/functions@^1.0.0-alpha.219, @collabsoft-net/functions@workspace:packages/functions":
+"@collabsoft-net/functions@^1.0.0-alpha.221, @collabsoft-net/functions@workspace:packages/functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/functions@workspace:packages/functions"
   dependencies:
     "@collabsoft-net/helpers": ^1.0.0-alpha.219
-    "@collabsoft-net/services": ^1.0.0-alpha.219
+    "@collabsoft-net/services": ^1.0.0-alpha.221
     "@gdn/envify-nconf": 1.2.1
     "@sentry/minimal": 6.5.1
     "@sentry/node": 6.5.1
@@ -1650,11 +1650,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/middleware@workspace:packages/middleware"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.219
+    "@collabsoft-net/controllers": ^1.0.0-alpha.221
     "@collabsoft-net/enums": ^1.0.0-alpha.215
-    "@collabsoft-net/functions": ^1.0.0-alpha.219
+    "@collabsoft-net/functions": ^1.0.0-alpha.221
     "@collabsoft-net/helpers": ^1.0.0-alpha.219
-    "@collabsoft-net/services": ^1.0.0-alpha.219
+    "@collabsoft-net/services": ^1.0.0-alpha.221
     "@collabsoft-net/types": ^1.0.0-alpha.219
     "@types/node": ">=16.0.0"
     "@types/passport": 1.0.7
@@ -1723,11 +1723,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/services@^1.0.0-alpha.219, @collabsoft-net/services@workspace:packages/services":
+"@collabsoft-net/services@^1.0.0-alpha.221, @collabsoft-net/services@workspace:packages/services":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/services@workspace:packages/services"
   dependencies:
-    "@collabsoft-net/clients": ^1.0.0-alpha.219
+    "@collabsoft-net/clients": ^1.0.0-alpha.221
     "@collabsoft-net/enums": ^1.0.0-alpha.215
     "@collabsoft-net/helpers": ^1.0.0-alpha.219
     "@collabsoft-net/types": ^1.0.0-alpha.219
@@ -1755,11 +1755,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
-    "@collabsoft-net/controllers": ^1.0.0-alpha.219
+    "@collabsoft-net/controllers": ^1.0.0-alpha.221
     "@collabsoft-net/dto": ^1.0.0-alpha.219
     "@collabsoft-net/entities": ^1.0.0-alpha.219
-    "@collabsoft-net/functions": ^1.0.0-alpha.219
-    "@collabsoft-net/services": ^1.0.0-alpha.219
+    "@collabsoft-net/functions": ^1.0.0-alpha.221
+    "@collabsoft-net/services": ^1.0.0-alpha.221
     "@collabsoft-net/types": ^1.0.0-alpha.219
     "@types/node": ">=16.0.0"
     "@types/passport": 1.0.0
