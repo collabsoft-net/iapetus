@@ -13,6 +13,8 @@ interface StoreWithExpire {
 
 export class SessionStorageService implements CachingService {
 
+  constructor(private isTimeBased?: boolean) {}
+
   async has(key: string|Array<string>): Promise<boolean> {
     const keys = Array.isArray(key) ? key : [ key ];
     return keys.every(item => store.get(item) !== 'undefined');
@@ -80,7 +82,7 @@ export class SessionStorageService implements CachingService {
       const payload = JSON.stringify(data);
       if (expiresInSeconds) {
         (store as StoreWithExpire).set(key, payload, new Date().getTime() + expiresInSeconds * 1000);
-      } else {
+      } else if (!this.isTimeBased) {
         store.set(key, payload);
       }
       return null;
