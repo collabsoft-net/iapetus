@@ -26,7 +26,7 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
 
   abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient;
 
-  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration = this.duration): Promise<AxiosResponse<T>> {
+  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const options: AxiosRequestConfig = {
       ...config,
       method,
@@ -46,7 +46,7 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
     if (this.cacheService) {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(options));
-        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration);
+        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
         return result || fetchFromRemote();
       } catch (err) {
         return fetchFromRemote();

@@ -75,7 +75,7 @@ export abstract class AbstractRestClient implements RestClient {
     return query;
   }
 
-  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig, cacheDuration = this.duration): Promise<AxiosResponse<T>> {
+  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     config = config || {};
     const headers = config.headers || {};
     headers['X-ExperimentalApi'] = 'opt-in';
@@ -92,7 +92,7 @@ export abstract class AbstractRestClient implements RestClient {
     if (this.cacheService) {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
-        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration);
+        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
         return result || fetchFromRemote();
       } catch (err) {
         return fetchFromRemote();

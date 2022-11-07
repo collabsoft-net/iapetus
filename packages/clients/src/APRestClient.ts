@@ -51,7 +51,7 @@ export class APRestClient implements RestClient {
     return this.request(RestClientMethods.DELETE, endpoint, data, params, duration);
   }
 
-  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>, cacheDuration = this.#duration): Promise<AxiosResponse<T>> {
+  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const client = this.AP.request;
 
     const fetchFromRemote = async () => {
@@ -102,7 +102,7 @@ export class APRestClient implements RestClient {
 
     if (this.cacheService) {
       const cacheKey = this.cacheService.toCacheKey(type, url, JSON.stringify(data), JSON.stringify(params));
-      const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration);
+      const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.#duration);
       return result || fetchFromRemote();
     } else {
       return fetchFromRemote();

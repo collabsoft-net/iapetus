@@ -16,7 +16,7 @@ export class RestClient extends AbstractRestClient implements IRestClient {
     return new RestClient(this.AP, this.baseURL, this.config, this.cacheService, duration);
   }
 
-  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration = this.#duration): Promise<AxiosResponse<T>> {
+  protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const token = await this.AP.context.getToken();
     return super.request(method, endpoint, data, params, {
       ...config,
@@ -24,7 +24,7 @@ export class RestClient extends AbstractRestClient implements IRestClient {
         ...config?.headers,
         Authorization: `Bearer ${token}`
       }
-    }, cacheDuration);
+    }, cacheDuration || this.#duration);
   }
 
   static getIdentifier(): symbol {
