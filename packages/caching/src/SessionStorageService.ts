@@ -29,7 +29,7 @@ export class SessionStorageService implements CachingService {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
       key: typeof typeOrKey === 'string' ? typeOrKey : typeof keyOrLoader === 'string' ? keyOrLoader : null,
       loader: typeof keyOrLoader === 'function' ? keyOrLoader : typeof loaderOrDurationOrForceRefresh === 'function' ? loaderOrDurationOrForceRefresh : null,
-      expiresInSeconds: typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : undefined,
+      expiresInSeconds: typeof loaderOrDurationOrForceRefresh === 'number' ? loaderOrDurationOrForceRefresh : typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : undefined,
       forceRefresh: typeof loaderOrDurationOrForceRefresh === 'boolean' ? loaderOrDurationOrForceRefresh : typeof durationOrForceRefresh === 'boolean' ? durationOrForceRefresh : typeof forced === 'boolean' ? forced : null
     }
 
