@@ -1,3 +1,3 @@
 
-export { BrowserService } from './BrowserService';
+export { SessionStorageService } from './SessionStorageService';
 export { RedisService } from './RedisService';

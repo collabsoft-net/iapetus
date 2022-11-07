@@ -1,15 +1,17 @@
 import { CachingService, Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
-import store from 'store';
 import expirePlugin from 'store/plugins/expire';
+import engine from 'store/src/store-engine';
+import memoryStorage from 'store/storages/memoryStorage';
+import sessionStorage from 'store/storages/sessionStorage';
 
-store.addPlugin(expirePlugin);
+const store = engine.createStore([ sessionStorage, memoryStorage ], [ expirePlugin ]);
 
 interface StoreWithExpire {
   set: (key: string, value: string, expiresInSeconds: number) => void;
 }
 
-export class BrowserService implements CachingService {
+export class SessionStorageService implements CachingService {
 
   async has(key: string|Array<string>): Promise<boolean> {
     const keys = Array.isArray(key) ? key : [ key ];
