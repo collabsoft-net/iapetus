@@ -39,7 +39,7 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
       jiraClientService.getProject(projectIdOrKey).then(async (project) => {
         if (requiredPermissions) {
           const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
-          const hasRequiredPermissions = await service.hasPermissions(accountId, [ {
+          const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
             projects: [ Number(project.id) ],
             permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
           }]).catch(() => false)
