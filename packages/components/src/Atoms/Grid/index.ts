@@ -21,7 +21,7 @@ export interface GridProps {
   width?: string;
   height?: string;
   stretched?: boolean;
-  backgroundColor?: string;
+  background?: string;
   boxShadow?: string;
   wraps?: boolean; // 'wrap' upsets React.DOM
   gap?: string;
@@ -43,7 +43,7 @@ export const Grid = styled.div<GridProps>`
   ${props => props.width && `width: ${props.width};`}
   ${props => props.height && `height: ${props.height};`}
   ${props => props.stretched && `width: 100%; height: 100%;`}
-  ${props => props.backgroundColor && `background-color: ${props.backgroundColor};`}
+  ${props => props.background && `background: ${props.background};`}
   ${props => props.wraps && `flex-wrap: wrap;`}
   ${props => props.justifyContent && `justify-content: ${props.justifyContent};`}
   ${props => props.alignItems && `align-items: ${props.alignItems};`}
@@ -71,8 +71,13 @@ export interface ColumnProps {
   height?: string;
   width?: string;
   minWidth?: string;
+  maxWidth?: string;
   borderRadius?: string;
   border?: string;
+  borderTop?: string;
+  borderRight?: string;
+  borderBottom?: string;
+  borderLeft?: string;
   background?: string;
   boxShadow?: string;
 }
@@ -87,8 +92,13 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.stretched && !props.height && `height: 100%;`}
   ${props => props.height && `height: ${props.height};`}
   ${props => props.width && `width: ${props.width};`}
-  ${props => props.minWidth && `width: ${props.minWidth};`}
+  ${props => props.minWidth && `min-width: ${props.minWidth};`}
+  ${props => props.maxWidth && `max-width: ${props.maxWidth};`}
   ${props => props.border && `border: ${props.border};`}
+  ${props => props.borderTop && `border-top: ${props.borderTop};`}
+  ${props => props.borderRight && `border-right: ${props.borderRight};`}
+  ${props => props.borderBottom && `border-bottom: ${props.borderBottom};`}
+  ${props => props.borderLeft && `border-left: ${props.borderLeft};`}
   ${props => props.borderRadius && `border-radius: ${props.borderRadius};`}
   ${props => props.background && `background: ${props.background};`}
   ${props => props.boxShadow && `box-shadow: ${props.boxShadow};`}
