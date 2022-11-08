@@ -4,4 +4,5 @@ export * from './APRestClient';
 export * from './AbstractAtlasRestClient';
 export * from './JiraRestClient';
 export * from './ConfluenceRestClient';
-export * from './RestClient';
+export * from './FirebaseRestClient';
+export * from './ServerRestClient';
