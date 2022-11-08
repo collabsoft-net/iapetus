@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/components",
-  "version": "1.0.0-alpha.222",
+  "version": "1.0.0-alpha.224",
   "description": "Collection of React frontend components",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -41,7 +41,7 @@
     "@atlaskit/theme": "12.0.0",
     "@collabsoft-net/connect": "^1.0.0-alpha.219",
     "@collabsoft-net/helpers": "^1.0.0-alpha.219",
-    "@collabsoft-net/services": "^1.0.0-alpha.222",
+    "@collabsoft-net/services": "^1.0.0-alpha.224",
     "@collabsoft-net/types": "^1.0.0-alpha.219",
     "@types/node": ">=16.0.0",
     "@types/react": "16.9.54",
