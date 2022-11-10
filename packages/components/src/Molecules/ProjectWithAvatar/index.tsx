@@ -36,59 +36,56 @@ interface ProjectWithAvatarState {
   isArchived?: boolean;
 }
 
-export const ProjectWithAvatar = ({ project, projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
-
-  const Content = ({ project: currentProject, loading }: {
-    project?: Jira.Project;
-    loading: boolean;
-  }) =>
-    <Wrapper inline={inline}>
-      <AvatarWrapper>
-        {(() => {
-          if (loading || isValidating) {
-            return <Spinner size='medium' />;
-          } else if (!project) {
-            return <WarningIcon label='Project not found' />;
-          } else {
-            return <Avatar appearance='square' src={ project.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled || currentProject?.archived } />;
-          }
-        })()}
-      </AvatarWrapper>
+const Content = ({ project, size, href, inline, isValidating, isDisabled, loading }: Omit<ProjectWithAvatarProps, 'projectId'|'component'|'onError'> & { loading?: boolean }) => (
+  <Wrapper inline={inline}>
+    <AvatarWrapper>
       {(() => {
-        if (!loading && !isValidating) {
-          if (currentProject) {
-            return (
-              <>
-                <Paragraph margin='0 0 0 8px' display='inline-block'>
-                  { href ? (
-                    <Link href={ href }>{ currentProject.name }</Link>
-                  ) : (
-                    <span>{ currentProject.name }</span>
-                  )}
-                </Paragraph>
-                { currentProject.archived && <Paragraph margin='0 0 0 8px' display='inline-block'>(archived)</Paragraph>}
-              </>
-            );
-          } else {
-            return 'Project not found or access denied';
-          }
+        if (loading || isValidating) {
+          return <Spinner size='medium' />;
+        } else if (!project) {
+          return <WarningIcon label='Project not found' />;
         } else {
-          return '';
+          return <Avatar appearance='square' src={ project.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled || project?.archived } />;
         }
       })()}
-    </Wrapper>;
+    </AvatarWrapper>
+    {(() => {
+      if (!loading && !isValidating) {
+        if (project) {
+          return (
+            <>
+              <Paragraph margin='0 0 0 8px' display='inline-block'>
+                { href ? (
+                  <Link href={ href }>{ project.name }</Link>
+                ) : (
+                  <span>{ project.name }</span>
+                )}
+              </Paragraph>
+              { project.archived && <Paragraph margin='0 0 0 8px' display='inline-block'>(archived)</Paragraph>}
+            </>
+          );
+        } else {
+          return 'Project not found or access denied';
+        }
+      } else {
+        return '';
+      }
+    })()}
+  </Wrapper>
+);
 
+export const ProjectWithAvatar = ({ project, projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
   if (project) {
     return component
       ? component({ project, isLoading: false, isValidating, isArchived: project.archived })
-      : Content({ project, loading: false });
+      : Content({ project, href, size, inline, isValidating, isDisabled, loading: false });
   } else if (projectId) {
     return (
       <JiraProviders.Project projectIdOrKey={ projectId } loadingMessage={ <Spinner size='medium' /> }>
         { ({ project: currentProject, loading }) => {
           return component
             ? component({ project: currentProject, isLoading: loading, isValidating, isArchived: currentProject?.archived })
-            : Content({ project: currentProject, loading })
+            : Content({ project: currentProject, href, size, inline, isValidating, isDisabled, loading })
         }}
       </JiraProviders.Project>
     );
