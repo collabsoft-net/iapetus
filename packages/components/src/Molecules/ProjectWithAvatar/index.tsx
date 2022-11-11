@@ -4,12 +4,12 @@ import Spinner from '@atlaskit/spinner';
 import React from 'react';
 import styled from 'styled-components';
 
-import { Link, Paragraph } from '../../Atoms/';
+import { Link, Paragraph, withProps } from '../../Atoms/';
 import { JiraProviders } from '../../index';
 
-const Wrapper = styled.div`
-  display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};
-  align-items: center;
+const Wrapper = withProps<{ inline?: boolean }>()(styled.div)`
+  display: ${props => props.inline ? 'inline-flex' : 'flex'};
+  align-items: ${props => props.inline ? 'baseline' : 'center'};
 `;
 
 const AvatarWrapper = styled.div`
