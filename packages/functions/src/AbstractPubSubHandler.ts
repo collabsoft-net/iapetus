@@ -11,11 +11,13 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
 
   abstract name: string;
   abstract topic: string;
+  timeoutSeconds = 540;
   requireActiveInstance = true;
-  private _session?: X;
+  #session?: X;
+  #timer?: NodeJS.Timeout;
 
   get session(): X {
-    return this._session || {} as X;
+    return this.#session || {} as X;
   }
 
   constructor(
@@ -23,8 +25,14 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
     protected eventEmitter: EventEmitter
   ) {}
 
+  protected abstract run(event: T): Promise<void>;
+  protected abstract toSession(instance: ACInstance): Promise<X>;
+  protected abstract timeoutImminent(data: T): Promise<void>;
+
   async process(message: pubsub.Message): Promise<void> {
+    this.startTimer(message);
     log(`==> Start processing ${this.name}`);
+
     try {
       const { name, data } = message.json as CustomEvent<T>;
       if (name !== this.topic) throw new Error(`Event ${name} does not match ${this.topic}, ignoring`);
@@ -32,7 +40,7 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
       const instance = await this.instanceService.findById(data.tenantId) || await this.instanceService.findByProperty('clientId', data.tenantId);
       if (!instance) throw new Error(`Could not process event, cannot find instance for ID ${data.tenantId}`);
       if (this.requireActiveInstance && !instance.active) throw new Error(`Customer instance ${data.tenantId} not active, skipping PubSub message`);
-      this._session = await this.toSession(instance);
+      this.#session = await this.toSession(instance);
       await this.run(data);
     } catch (err) {
       error('======================== Event processing failed ========================');
@@ -40,11 +48,23 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
       error('=========================================================================');
     } finally {
       log(`==> Finished processing ${this.name}`);
+      this.stopTimer();
     }
   }
 
-  abstract run(event: T): Promise<void>;
+  private startTimer(message: pubsub.Message) {
+    const seconds = this.timeoutSeconds - 30;
+    if (seconds > 0) {
+      const { data } = message.json as CustomEvent<T>;
+      this.#timer = setTimeout(() => this.timeoutImminent(data), seconds * 1000);
+    }
+  }
 
-  protected abstract toSession(instance: ACInstance): Promise<X>;
+  private stopTimer() {
+    if (this.#timer) {
+      clearTimeout(this.#timer);
+      this.#timer = undefined;
+    }
+  }
 
 }

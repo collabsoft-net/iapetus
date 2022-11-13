@@ -20,9 +20,13 @@ export const registerPubSubHandlers = (container: inversify.interfaces.Container
 
   pubSubHandlers.forEach(handler => {
     const name = handler.name || handler.topic;
+    handler.timeoutSeconds = handler.timeoutSeconds || options.timeoutSeconds;
     !isProduction() && log(`[${name}] Registering PubSub subscription for topic ${handler.topic}`)
     module.exports[name] = functions
-      .runWith(options)
+      .runWith({
+        ...options,
+        timeoutSeconds: handler.timeoutSeconds
+      })
       .pubsub
       .topic(handler.topic)
       .onPublish((message) => handler.process(message));
@@ -39,8 +43,12 @@ export const registerPubSubHandlers = (container: inversify.interfaces.Container
       }
     } else {
       log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Google Cloud Scheduler)`);
+      handler.timeoutSeconds = handler.timeoutSeconds || options.timeoutSeconds;
       module.exports[name] = functions
-        .runWith(options)
+        .runWith({
+          ...options,
+          timeoutSeconds: handler.timeoutSeconds
+        })
         .pubsub
         .schedule(schedule)
         .timeZone(handler.timeZone)

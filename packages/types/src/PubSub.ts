@@ -18,6 +18,7 @@ export interface PubSubMessage {
 export interface PubSubHandler {
   name?: string;
   topic: string;
+  timeoutSeconds?: number;
   process: (message: pubsub.Message) => Promise<void>;
 }
 
@@ -25,5 +26,6 @@ export interface ScheduledPubSubHandler {
   name: string;
   schedule: string;
   timeZone: string;
+  timeoutSeconds?: number;
   process: () => Promise<void>;
 }
