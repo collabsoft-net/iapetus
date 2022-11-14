@@ -1,12 +1,13 @@
 import { File, QueryOptions, StorageProvider } from '@collabsoft-net/types';
 import { Bucket, File as BucketFile, GetSignedUrlConfig } from '@google-cloud/storage';
-import * as Firebase from 'firebase-admin';
+import { app } from 'firebase-admin';
+import path from 'path';
 
 export class FirebaseAdminStorageProvider implements StorageProvider {
 
   private storage: Bucket;
 
-  constructor(firebase: Firebase.app.App, bucket?: string) {
+  constructor(firebase: app.App, bucket?: string) {
     let name;
     if (bucket) {
       name = bucket.startsWith('gs://') ? bucket.substr(5) : bucket;
@@ -26,18 +27,16 @@ export class FirebaseAdminStorageProvider implements StorageProvider {
 
   async findOne(name: string, options: FirebaseAdminStorageQueryOptions): Promise<File|null> {
     await this.validateQueryOptions(options);
-    const [ files ] = await this.storage.getFiles({
-      directory: options.path,
-      prefix: name
-    });
+    const prefix = path.join(options.path, name);
+    const [ files ] = await this.storage.getFiles({ prefix });
     const file = files[0];
     return file ? this.toFile(file) : null;
   }
 
   async findAll(options: FirebaseAdminStorageQueryOptions = { path: '' }): Promise<Array<File>> {
     await this.validateQueryOptions(options);
-    const directory = this.pathToDirectory(options.path);
-    const [ files ] = await this.storage.getFiles({ directory });
+    const prefix = this.pathToDirectory(options.path);
+    const [ files ] = await this.storage.getFiles({ prefix });
     return files.map(this.toFile);
   }
 

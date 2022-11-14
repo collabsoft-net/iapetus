@@ -1,6 +1,6 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
-import * as admin from 'firebase-admin';
+import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
 import uniqid from 'uniqid';
 
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
@@ -8,13 +8,13 @@ import { QueryBuilder } from './QueryBuilder';
 
 export class FirebaseAdminRepository implements Repository {
 
-  private fb: admin.app.App;
-  private firestore: admin.firestore.Firestore;
+  private fb: app.App;
+  private firestore: firestore.Firestore;
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(protected name: string, options?: admin.AppOptions, protected readOnly?: boolean) {
-    this.fb = admin.initializeApp(options, name);
+  constructor(protected name: string, options?: AppOptions, protected readOnly?: boolean) {
+    this.fb = initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
     this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
@@ -47,7 +47,7 @@ export class FirebaseAdminRepository implements Repository {
     return Promise.reject('This feature is not supported in "admin" mode');
   }
 
-  async verifyIdToken(token: string): Promise<admin.auth.DecodedIdToken> {
+  async verifyIdToken(token: string): Promise<auth.DecodedIdToken> {
     return await this.fb.auth().verifyIdToken(token);
   }
 
@@ -94,7 +94,7 @@ export class FirebaseAdminRepository implements Repository {
       throw new Error('You can only search within collections, not individual documents');
     }
 
-    let collection: admin.firestore.Query = this.firestore.collection(options.path);
+    let collection: firestore.Query = this.firestore.collection(options.path);
     const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
