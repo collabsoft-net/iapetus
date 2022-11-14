@@ -1,5 +1,5 @@
 import { ScheduledPubSubHandler } from '@collabsoft-net/types';
-import { error, log } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -12,6 +12,8 @@ export abstract class AbstractScheduledPubSubHandler implements ScheduledPubSubH
   #timer?: NodeJS.Timeout;
 
   async process(): Promise<void> {
+    const { log, error } = logger;
+
     try {
       this.startTimer();
       log(`==> Start processing ${this.name}`);

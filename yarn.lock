@@ -1564,7 +1564,7 @@ __metadata:
     eslint: 8.15.0
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.22.0
+    firebase-functions: 4.0.2
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1581,7 +1581,7 @@ __metadata:
     cron: 1.8.2
     express: 4.17.0
     firebase-admin: 9.9.0
-    firebase-functions: 3.22.0
+    firebase-functions: 4.0.2
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1800,13 +1800,13 @@ __metadata:
     axios: 0.24.0
     eslint: 8.15.0
     express: 4.17.0
-    firebase-functions: 3.22.0
+    firebase-functions: 4.0.2
     nodemon: 2.0.16
     typescript: 4.6.4
   peerDependencies:
     axios: 0.24.0
     express: 4.17.0
-    firebase-functions: 3.22.0
+    firebase-functions: "*"
   languageName: unknown
   linkType: soft
 
@@ -4190,13 +4190,13 @@ __metadata:
   linkType: hard
 
 "@types/express-serve-static-core@npm:*":
-  version: 4.17.30
-  resolution: "@types/express-serve-static-core@npm:4.17.30"
+  version: 4.17.31
+  resolution: "@types/express-serve-static-core@npm:4.17.31"
   dependencies:
     "@types/node": "*"
     "@types/qs": "*"
     "@types/range-parser": "*"
-  checksum: c40d9027884ab9e97fa29d9d41d1b75a5966109312e26594cf03c61b278b5bf8e095f53589e47899b34a2e224291a44043617695c3e8bd22284f988e48582ee6
+  checksum: 009bfbe1070837454a1056aa710d0390ee5fb8c05dfe5a1691cc3e2ca88dc256f80e1ca27cb51a978681631d2f6431bfc9ec352ea46dd0c6eb183d0170bde5df
   languageName: node
   linkType: hard
 
@@ -7661,21 +7661,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-functions@npm:3.22.0":
-  version: 3.22.0
-  resolution: "firebase-functions@npm:3.22.0"
+"firebase-functions@npm:4.0.2":
+  version: 4.0.2
+  resolution: "firebase-functions@npm:4.0.2"
   dependencies:
     "@types/cors": ^2.8.5
     "@types/express": 4.17.3
     cors: ^2.8.5
     express: ^4.17.1
-    lodash: ^4.17.14
     node-fetch: ^2.6.7
   peerDependencies:
-    firebase-admin: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+    firebase-admin: ^10.0.0 || ^11.0.0
   bin:
     firebase-functions: lib/bin/firebase-functions.js
-  checksum: 5006209ed6cbf541c5c3cfb036b51a1566cf8c63239d74d63d01fe46a5e5604ff12d25ecfdaaef68c6084505396eba22dc7130dfaa84957a5f2722ed5fde8656
+  checksum: ccc7acb34a8a1a4917264f48711dc51f011237f37f3efc4ca2850956b67440a913d199841e867cbfd9a42ad88e34923145f54a43b9de7c1fa7ccef4939d49bb9
   languageName: node
   linkType: hard
 
@@ -9909,7 +9908,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
+"lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7

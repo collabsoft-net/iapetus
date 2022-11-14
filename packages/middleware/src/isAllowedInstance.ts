@@ -1,7 +1,7 @@
 
 import { isNullOrEmpty, isOfType, isProduction } from '@collabsoft-net/helpers';
 import * as express from 'express';
-import { warn } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 
 import { allowedInstances as defaultAllowedInstances } from './allowedInstances';
 
@@ -21,7 +21,7 @@ export const isAllowedInstance = (productionProjectId: string, allowedInstances:
       const baseUrl = getBaseURL(req);
       if (!isNullOrEmpty(baseUrl)) {
         if (!allowedInstances.some(instance => (baseUrl as string).startsWith(instance))) {
-          warn(`A non-production version is not allowed to use this endpoint (${baseUrl})`);
+          logger.warn(`A non-production version is not allowed to use this endpoint (${baseUrl})`);
           res.status(401).send('Forbidden');
         } else {
           next();

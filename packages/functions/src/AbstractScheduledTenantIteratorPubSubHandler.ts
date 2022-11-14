@@ -1,7 +1,7 @@
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { Repository } from '@collabsoft-net/types';
-import { log } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
 import { ACInstanceDTO } from '../../dto/dist/types';
@@ -20,9 +20,9 @@ export abstract class AbstractScheduledTenantIteratorPubSubHandler extends Abstr
   async run(): Promise<void> {
     const { values: instances } = await this.instanceService.findAll();
     for await (const instance of instances) {
-      log(`==> Start processing tenant ${instance.clientKey}`, instance);
+      logger.log(`==> Start processing tenant ${instance.clientKey}`, instance);
       await this.startTaskFor(instance);
-      log(`==> Finished processing tenant ${instance.clientKey}`, instance);
+      logger.log(`==> Finished processing tenant ${instance.clientKey}`, instance);
     }
   }
 

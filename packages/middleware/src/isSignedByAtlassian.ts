@@ -1,7 +1,7 @@
 import { AsymmetricAlgorithm, decodeAsymmetric, getKeyId } from 'atlassian-jwt';
 import axios from 'axios';
 import * as express from 'express';
-import { warn } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { ExtractJwt, JwtFromRequestFunction } from 'passport-jwt';
 
 export const isSignedByAtlassian = (baseUrl: string, extractor: JwtFromRequestFunction = ExtractJwt.fromAuthHeaderWithScheme('JWT')) =>
@@ -29,7 +29,7 @@ export const isSignedByAtlassian = (baseUrl: string, extractor: JwtFromRequestFu
       // If we haven't run into errors at this point, we're good
       next();
     } catch (error) {
-      warn(`Failed to verify Atlassian public key signature`, error);
+      logger.warn(`Failed to verify Atlassian public key signature`, error);
       res.status(403).send('Unauthorized!');
     }
   };

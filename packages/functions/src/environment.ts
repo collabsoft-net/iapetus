@@ -2,7 +2,7 @@ import { isProduction } from '@collabsoft-net/helpers';
 import { load } from '@gdn/envify-nconf';
 import * as firebase from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import { info } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 
 export const setEnv = (): void => {
   let cwd = process.cwd();
@@ -22,7 +22,7 @@ export const setEnv = (): void => {
 
   Object.entries(process.env).forEach(([ key, value ]) => {
     if (!isProduction()) {
-      info(`[Environment] detected variable '${key.toUpperCase()}' from config`);
+      logger.info(`[Environment] detected variable '${key.toUpperCase()}' from config`);
     }
     process.env[key.toUpperCase()] = value;
   });
@@ -34,7 +34,7 @@ export const setEnv = (): void => {
   }
 
   if (process.env.FB_ADMINKEY) {
-    info('You are running Firebase Cloud Functions using service account credentials');
+    logger.info('You are running Firebase Cloud Functions using service account credentials');
   }
 }
 

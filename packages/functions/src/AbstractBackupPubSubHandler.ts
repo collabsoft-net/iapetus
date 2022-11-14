@@ -1,7 +1,7 @@
 import { ScheduledPubSubHandler } from '@collabsoft-net/types';
 import firestore from '@google-cloud/firestore';
 import { AppOptions } from 'firebase-admin';
-import { error,info } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -32,14 +32,14 @@ export abstract class AbstractBackupPubSubHandler implements ScheduledPubSubHand
 
   async process(): Promise<void> {
     try {
-      info(`==> Start processing ${this.name}`);
+      logger.info(`==> Start processing ${this.name}`);
       await this.run();
     } catch (err) {
-      error('======================== Event processing failed ========================');
-      error(`==> Failed to process ${this.name}`, err);
-      error('=========================================================================');
+      logger.error('======================== Event processing failed ========================');
+      logger.error(`==> Failed to process ${this.name}`, err);
+      logger.error('=========================================================================');
     } finally {
-      info(`==> Finished processing ${this.name}`);
+      logger.info(`==> Finished processing ${this.name}`);
     }
   }
 
@@ -48,12 +48,12 @@ export abstract class AbstractBackupPubSubHandler implements ScheduledPubSubHand
       if (!this.projectId) throw new Error('Failed to determine the project ID. Please make sure that either FB_PROJECTID, GCP_PROJECT or GCLOUD_PROJECT environment variable is set');
       if (!this.bucketName) throw new Error('The required environment variable FB_BACKUPBUCKET is undefined');
 
-      info(`==> Scheduling export of Firestore database for project ${this.projectId}`);
+      logger.info(`==> Scheduling export of Firestore database for project ${this.projectId}`);
       const exportOperationId = await this.backup(this.projectId, `gs://${this.bucketName}`);
       if (!exportOperationId) throw new Error(`Failed to schedule export Firestore database for project ${this.projectId}`);
-      info(`==> Finished scheduling export of Firestore database for project ${this.projectId}. Export operation ID: ${exportOperationId}`);
+      logger.info(`==> Finished scheduling export of Firestore database for project ${this.projectId}. Export operation ID: ${exportOperationId}`);
     } catch (err) {
-      error(`==> An error occurred while trying to scheduling export of Firestore database`, err);
+      logger.error(`==> An error occurred while trying to scheduling export of Firestore database`, err);
     }
   }
 

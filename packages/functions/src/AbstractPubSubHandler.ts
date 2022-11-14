@@ -3,7 +3,7 @@ import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, PubSubHandler, TenantAwareEvent } from '@collabsoft-net/types';
 import { pubsub } from 'firebase-functions';
-import { error, log } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -30,6 +30,8 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
   protected abstract timeoutImminent(data: T): Promise<void>;
 
   async process(message: pubsub.Message): Promise<void> {
+    const { log, error } = logger;
+
     this.startTimer(message);
     log(`==> Start processing ${this.name}`);
 

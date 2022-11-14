@@ -5,7 +5,7 @@ import { captureException, Handlers as Sentry } from '@sentry/node';
 import cookies from 'cookie-parser';
 import * as express from 'express';
 import { https, Response } from 'firebase-functions';
-import { error, info } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 import { StatusCodes } from 'http-status-codes';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -42,7 +42,7 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
 
       strategies.forEach((instance) => {
         passport.use(instance.strategy)
-        !isProduction() && info(`Registering strategy [${instance.name}]`);
+        !isProduction() && logger.info(`Registering strategy [${instance.name}]`);
         app.get(`/api/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
           const options = instance.options;
           options.state = req.query ? Buffer.from(JSON.stringify(req.query)).toString('base64') : undefined;
@@ -59,7 +59,7 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
       }
     } catch (exp) {
       captureException(exp);
-      error('Server error', { error: JSON.stringify(exp) });
+      logger.error('Server error', { error: JSON.stringify(exp) });
     }
   }).build();
 }

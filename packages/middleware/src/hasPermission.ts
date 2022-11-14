@@ -1,7 +1,7 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
-import { warn } from 'firebase-functions/lib/logger';
+import { logger } from 'firebase-functions';
 
 export const hasGlobalPermissions = (...permissions: Array<string|Confluence.ContentOperation>): express.Handler => {
   return async (req: Express.Request, res: express.Response, next: express.NextFunction) => {
@@ -30,7 +30,7 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
         res.status(403).send('Unauthorized!');
       }
     } catch (error) {
-      warn(`Failed to authenticate user for global permissions '${permissions.join(', ')}'`, error);
+      logger.warn(`Failed to authenticate user for global permissions '${permissions.join(', ')}'`, error);
       res.status(403).send('Unauthorized!');
     }
   }
@@ -74,7 +74,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
         res.status(403).send('Unauthorized!');
       }
     } catch (error) {
-      warn(`Failed to authenticate user for entity '${entityType}' permissions '${Array.isArray(permission) ? permission.join(', ') : permission}'`, error);
+      logger.warn(`Failed to authenticate user for entity '${entityType}' permissions '${Array.isArray(permission) ? permission.join(', ') : permission}'`, error);
       res.status(403).send('Unauthorized!');
     }
   }
