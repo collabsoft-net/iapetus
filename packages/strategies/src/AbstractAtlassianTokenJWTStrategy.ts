@@ -1,8 +1,6 @@
 import '@collabsoft-net/functions';
 
-import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
-import { AbstractService } from '@collabsoft-net/services';
 import { decodeSymmetric, SymmetricAlgorithm } from 'atlassian-jwt';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -12,8 +10,6 @@ import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
 export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> extends AbstractJWTStrategy<Atlassian.JWT, T> {
-
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
   protected get strategyOptions(): StrategyOptions {
     return {
@@ -33,7 +29,9 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
     };
   }
 
-  protected async process(payload: Atlassian.JWT, request: express.Request): Promise<T> {
+  protected async process(request: express.Request, payload?: Atlassian.JWT,): Promise<T> {
+    if (!payload) throw new Error('Invalid Atlassian JWT token');
+
     const { iss } = payload;
 
     const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
@@ -47,14 +45,5 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
 
   protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<T>;
 
-  private async updateLastActive(instance: ACInstance, { headers }: express.Request) {
-    if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
-      // Only update the lastActive if non-existant or less than 24 hours ago
-      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
-        instance.lastActive = new Date().getTime();
-        await this.service.save(instance);
-      }
-    }
-  }
 
 }

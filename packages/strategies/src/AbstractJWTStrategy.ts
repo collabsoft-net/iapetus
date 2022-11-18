@@ -6,8 +6,10 @@ import { injectable } from 'inversify';
 import * as passport from 'passport';
 import { Strategy, StrategyOptions } from 'passport-jwt';
 
+import { AbstractStrategy } from './AbstractStrategy';
+
 @injectable()
-export abstract class AbstractJWTStrategy<T, X extends Session> implements IStrategy {
+export abstract class AbstractJWTStrategy<T, X extends Session> extends AbstractStrategy<T, X> implements IStrategy {
 
   get name(): string {
     return 'jwt';
@@ -21,22 +23,18 @@ export abstract class AbstractJWTStrategy<T, X extends Session> implements IStra
 
   get strategy(): passport.Strategy {
     const _name = this.name;
+    const _options = { ...this.strategyOptions, passReqToCallback: true };
+
     return new (class JWTStrategy extends Strategy {
       name = _name;
-    })(this.strategyOptions, async (request: express.Request, token: T, done: (err: Error|null, session?: X) => void) => {
+    })(_options, async (request: express.Request, token: T, done: (err: Error|null, session?: X) => void) => {
       try {
-        const session = await this.process(token, request);
+        const session = await this.process(request, token);
         done(null, session);
       } catch (error) {
         done(error as Error);
       }
     });
-  }
-
-  protected abstract process(token: T, request: express.Request): Promise<X>;
-
-  next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
-    next();
   }
 
 }

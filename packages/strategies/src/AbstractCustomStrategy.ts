@@ -6,8 +6,10 @@ import { injectable } from 'inversify';
 import * as passport from 'passport';
 import { Strategy } from 'passport-custom';
 
+import { AbstractStrategy } from './AbstractStrategy';
+
 @injectable()
-export abstract class AbstractCustomStrategy<T extends Session> implements IStrategy {
+export abstract class AbstractCustomStrategy<X extends Session> extends AbstractStrategy<null, X> implements IStrategy {
 
   get name(): string {
     return 'custom';
@@ -21,7 +23,7 @@ export abstract class AbstractCustomStrategy<T extends Session> implements IStra
     const _name = this.name;
     return new (class CustomStrategy extends Strategy {
       name = _name;
-    })(async (request: express.Request, done: (err: Error|null, session?: T) => void) => {
+    })(async (request: express.Request, done: (err: Error|null, session?: X) => void) => {
       try {
         const session = await this.process(request);
         done(null, session);
@@ -29,12 +31,6 @@ export abstract class AbstractCustomStrategy<T extends Session> implements IStra
         done(error as Error);
       }
     });
-  }
-
-  protected abstract process(request: express.Request): Promise<T>;
-
-  next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
-    next();
   }
 
 }
