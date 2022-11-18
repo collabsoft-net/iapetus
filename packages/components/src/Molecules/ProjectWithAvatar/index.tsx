@@ -1,6 +1,7 @@
 import Avatar, { SizeType } from '@atlaskit/avatar';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
+import { isOfType } from '@collabsoft-net/helpers';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -42,7 +43,7 @@ const Content = ({ project, size, href, inline, isValidating, isDisabled, loadin
       {(() => {
         if (loading || isValidating) {
           return <Spinner size='medium' />;
-        } else if (!project) {
+        } else if (!project || !isOfType<Jira.Project>(project, 'avatarUrls')) {
           return <WarningIcon label='Project not found' />;
         } else {
           return <Avatar appearance='square' src={ project.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled || project?.archived } />;
@@ -51,7 +52,7 @@ const Content = ({ project, size, href, inline, isValidating, isDisabled, loadin
     </AvatarWrapper>
     {(() => {
       if (!loading && !isValidating) {
-        if (project) {
+        if (project && isOfType<Jira.Project>(project, 'name')) {
           return (
             <>
               <Paragraph margin='0 0 0 8px' display='inline-block'>
