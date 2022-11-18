@@ -42,7 +42,7 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
   }
 
   private async updateLastActive(instance: ACInstance, { headers }: express.Request) {
-    if (typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
+    if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
       // Only update the lastActive if non-existant or less than 24 hours ago
       if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
         instance.lastActive = new Date().getTime();
