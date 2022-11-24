@@ -7,7 +7,7 @@ export class RedisService implements CachingService {
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
 
-  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>) {
+  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private verbose: boolean = false) {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.ready = false; });
@@ -41,7 +41,7 @@ export class RedisService implements CachingService {
     }
 
     if (!this.ready) {
-      console.log(`[REDIS] miss from cache for key ${key}, server is not ready`);
+      this.verbose && console.info(`[REDIS] miss from cache for key ${key}, server is not ready`);
       return loader ? loader() : null;
     }
 
@@ -52,11 +52,11 @@ export class RedisService implements CachingService {
     const reply = await this.client.get(key);
     if (reply) {
       try {
-        console.log(`[REDIS] hit from cache for key ${key}`);
+        this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
         const result: T = JSON.parse(reply);
         return type ? new type(result) : result;
       } catch (error) {
-        console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && console.info(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         await this.flush(key);
         const result = loader ? loader() : null;
         if (result) {
@@ -65,16 +65,16 @@ export class RedisService implements CachingService {
       }
     } else if (loader) {
       try {
-        console.log(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
+        this.verbose && console.info(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
         const result = await loader();
         if (result) {
           await this.set(key, result, expiresInSeconds);
           return type ? new type(result) : result;
         }
-        console.log(`[REDIS] miss from loader for key ${key}`);
+        this.verbose && console.info(`[REDIS] miss from loader for key ${key}`);
         return null;
       } catch (error) {
-        console.log(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && console.info(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         return null;
       }
     }
@@ -84,18 +84,19 @@ export class RedisService implements CachingService {
 
   async set<T>(key: string, data: T, expiresInSeconds: number = 30 * 60): Promise<Error|null> {
     await this.isReady();
+
     if (!this.ready) {
       console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
-    console.log(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
+    this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
     try {
       const payload = JSON.stringify(data);
       await this.client.setEx(key, expiresInSeconds, payload);
       return null;
     } catch (error) {
-      console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
+      this.verbose && console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
       return error as Error;
     }
   }
@@ -103,9 +104,9 @@ export class RedisService implements CachingService {
   async flush(key: string|Array<string>): Promise<void> {
     await this.isReady();
     if (!this.ready) {
-      console.log(`[REDIS] cannot flush key ${key}, server is not ready`);
+      this.verbose && console.info(`[REDIS] cannot flush key ${key}, server is not ready`);
     } else {
-      console.log(`[REDIS] flushing key ${key}`);
+      this.verbose && console.info(`[REDIS] flushing key ${key}`);
       await this.client.unlink(key);
     }
   }
@@ -113,7 +114,7 @@ export class RedisService implements CachingService {
   async flushAll() {
     await this.isReady();
     if (!this.ready) {
-      console.log(`[REDIS] cannot flush, server is not ready`);
+      this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
     } else {
       await this.client.flushAll();
     }
