@@ -81,8 +81,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getIssueFields(): Promise<Jira.FieldDetails[]> {
-    const { data } = await this.client.get<Jira.FieldDetails[]>(this.getEndpointFor(this.endpoints.ISSUE_FIELDS));
+  async getFields(): Promise<Array<Jira.FieldDetails>> {
+    const { data } = await this.client.get<Array<Jira.FieldDetails>>(this.getEndpointFor(this.endpoints.LIST_FIELDS));
     return data;
   }
 
