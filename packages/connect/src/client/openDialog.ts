@@ -7,7 +7,7 @@ import { ServiceIdentifier } from '../ServiceIdentifier';
 type DialogCallback<T> = (data?: T) => void;
 
 const generateDialogOptions = <T, X> (key: string, optionsOrDataOrCallback?: AP.DialogOptions<X>|X|DialogCallback<T>): AP.DialogOptions<X> => {
-  const defaultOptions = kernel.get<AP.DialogOptions<X>>(key) || {};
+  const defaultOptions = kernel.isBound(key) ? kernel.get<AP.DialogOptions<X>>(key) || {} : {};
 
   if (typeof optionsOrDataOrCallback === 'function') {
     return { ...defaultOptions, key };
