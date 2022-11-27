@@ -107,6 +107,7 @@ export interface ColumnProps extends SizeProps, BorderProps, FlexProps {
   stretched?: boolean;
   background?: Property.Background;
   cursor?: Property.Cursor;
+  truncate?: boolean;
 }
 
 export const Column = styled.div<ColumnProps>`
@@ -119,6 +120,11 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.stretched && !props.width && `width: 100%;`}
   ${props => props.stretched && !props.height && `height: 100%;`}
   ${props => props.background && `background: ${props.background};`}
+
+  ${props => props.truncate && `
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `}
 
   box-sizing: border-box;
   --component: column;
