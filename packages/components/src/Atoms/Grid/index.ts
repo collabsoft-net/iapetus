@@ -1,24 +1,32 @@
 
 import { Property } from 'csstype';
-import styled, { ThemeProps } from 'styled-components';
+import styled from 'styled-components';
 
 interface SizeProps {
   padding?: Property.Padding;
   margin?: Property.Margin;
+  marginLeft?: Property.MarginLeft;
+  marginRight?: Property.MarginRight;
+  marginBottom?: Property.MarginBottom;
+  marginTop?: Property.MarginTop;
   height?: Property.Height;
   width?: Property.Width;
   minWidth?: Property.MinWidth;
   maxWidth?: Property.MinHeight;
 }
 
-const getSizeProps = ({ theme: props }: ThemeProps<SizeProps>) => `
-  ${props.width && `width: ${props.width};`}
-  ${props.height && `height: ${props.height};`}
-  ${props.margin && `margin: ${props.margin};`}
-  ${props.padding && `padding: ${props.padding};`}
-  ${props.minWidth && `min-width: ${props.minWidth};`}
-  ${props.maxWidth && `max-width: ${props.maxWidth};`}
-`;
+const getSizeProps = (props: SizeProps) => `
+  ${props.width ? `width: ${props.width};` : ''}
+  ${props.height ? `height: ${props.height};` : ''}
+  ${props.margin ? `margin: ${props.margin};` : ''}
+  ${props.marginLeft ? `margin-left: ${props.marginLeft};` : ''}
+  ${props.marginRight ? `margin-right: ${props.marginRight};` : ''}
+  ${props.marginBottom ? `margin-bottom: ${props.marginBottom};` : ''}
+  ${props.marginTop ? `margin-top: ${props.marginTop};` : ''}
+  ${props.padding ? `padding: ${props.padding};` : ''}
+  ${props.minWidth ? `min-width: ${props.minWidth};` : ''}
+  ${props.maxWidth ? `max-width: ${props.maxWidth};` : ''}
+`.trim();
 
 interface BorderProps {
   borderRadius?: Property.BorderRadius;
@@ -30,15 +38,15 @@ interface BorderProps {
   boxShadow?: Property.BoxShadow;
 }
 
-const getBorderProps = ({ theme: props }: ThemeProps<BorderProps>) => `
-  ${props.borderRadius && `border-radius: ${props.borderRadius};`}
-  ${props.border && `border: ${props.border};`}
-  ${props.borderTop && `border-top: ${props.borderTop};`}
-  ${props.borderRight && `border-right: ${props.borderRight};`}
-  ${props.borderBottom && `border-bottom: ${props.borderBottom};`}
-  ${props.borderLeft && `border-left: ${props.borderLeft};`}
-  ${props.boxShadow && `box-shadow: ${props.boxShadow};`}
-`;
+const getBorderProps = (props: BorderProps) => `
+  ${props.borderRadius ? `border-radius: ${props.borderRadius};` : ''}
+  ${props.border ? `border: ${props.border};` : ''}
+  ${props.borderTop ? `border-top: ${props.borderTop};` : ''}
+  ${props.borderRight ? `border-right: ${props.borderRight};` : ''}
+  ${props.borderBottom ? `border-bottom: ${props.borderBottom};` : ''}
+  ${props.borderLeft ? `border-left: ${props.borderLeft};` : ''}
+  ${props.boxShadow ? `box-shadow: ${props.boxShadow};` : ''}
+`.trim();
 
 interface FlexProps {
   gap?: Property.Gap;
@@ -48,13 +56,13 @@ interface FlexProps {
   wraps?: boolean; // 'wrap' upsets React.DOM
 }
 
-const getFlexProps = ({ theme: props }: ThemeProps<FlexProps>) => `
-  ${props.gap && `gap: ${props.gap};`}
-  ${props.justifyContent && `justify-content: ${props.justifyContent};`}
-  ${props.alignItems && `align-items: ${props.alignItems};`}
-  ${props.align && `align-self: ${props.align};`}
-  ${props.wraps && `flex-wrap: wrap;`}
-`;
+const getFlexProps = (props: FlexProps) => `
+  ${props.gap ? `gap: ${props.gap};` : ''}
+  ${props.justifyContent ? `justify-content: ${props.justifyContent};` : ''}
+  ${props.alignItems ? `align-items: ${props.alignItems};` : ''}
+  ${props.align ? `align-self: ${props.align};` : ''}
+  ${props.wraps ? `flex-wrap: wrap;` : ''}
+`.trim();
 
 
 interface PageProps {
