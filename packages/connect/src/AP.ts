@@ -270,12 +270,15 @@ declare global {
     interface FlagOptions {
       title: string;
       body: string;
-      type?: 'info'|'success'|'warning'|'error';
-      close: 'manual'|'auto';
+      type?: FlagTypeOptions;
+      close: FlagCloseOptions;
       actions?: {
         [actionIdentifier: string]: string;
       }
     }
+
+    type FlagTypeOptions = 'info'|'success'|'warning'|'error';
+    type FlagCloseOptions = 'manual'|'auto';
 
     type NavigatorTargetJira = 'dashboard'|'issue'|'addonModule'|'userProfile'|'projectAdminSummary'|'projectAdminTabPanel'|'site';
     type NavigatorTargetConfluence = 'contentview'|'contentedit'|'spaceview'|'spacetools'|'dashboard'|'userProfile'|'addonModule'|'contentlist'|'site';
