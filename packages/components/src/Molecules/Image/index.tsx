@@ -1,12 +1,11 @@
 import Avatar, { AvatarPropTypes,SizeType } from '@atlaskit/avatar';
-import type { GlyphProps } from '@atlaskit/icon/types';
-import React, { PropsWithChildren, PureComponent } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Column, Grid } from '../../Atoms/Grid'
 
 interface ImageProps extends Omit<AvatarPropTypes, 'src'|'size'|'children'> {
-  src: string|PureComponent<GlyphProps>;
+  src: string|ReactNode|JSX.Element;
   size: SizeType|number;
   margin?: string;
   align?: string;
