@@ -1,13 +1,16 @@
 import Avatar, { AvatarPropTypes,SizeType } from '@atlaskit/avatar';
-import React, { PropsWithChildren } from 'react';
+import type { GlyphProps } from '@atlaskit/icon/types';
+import React, { PropsWithChildren, PureComponent } from 'react';
 import styled from 'styled-components';
 
 import { Column, Grid } from '../../Atoms/Grid'
 
-interface ImageProps extends Omit<AvatarPropTypes, 'size'|'children'> {
+interface ImageProps extends Omit<AvatarPropTypes, 'src'|'size'|'children'> {
+  src: string|PureComponent<GlyphProps>;
   size: SizeType|number;
   margin?: string;
   align?: string;
+  position?: 'left'|'right'
 }
 
 const ImageWrapper = styled(Column)`font-size: 0;`;
@@ -19,19 +22,30 @@ const CustomImage = styled.div<{ src: string; size: number }>`
   height: ${props => props.size}px;
 `;
 
-export const Image = ({ children, align, src, size, margin, ...rest }: PropsWithChildren<ImageProps>): JSX.Element => {
+export const Image = ({ children, align, src, size, margin, position, ...rest }: PropsWithChildren<ImageProps>): JSX.Element => {
   return (
     <Grid vertical fluid>
+      { children && (position === 'right') && (
+        <Column stretched align={ align }>
+          { children }
+        </Column>
+      )}
+
       <ImageWrapper margin={ children && margin ? margin : '0' }>
-        { typeof size === 'number' ? (
-          <CustomImage src={ src || '' } size={ size } />
-        ) : (
-          <Avatar size={ size } src={ src } {...rest} />
+        { typeof src !== 'string' ? src : (
+          typeof size === 'number' ? (
+            <CustomImage src={ src || '' } size={ size } />
+          ) : (
+            <Avatar size={ size } src={ src } {...rest} />
+          )
         )}
       </ImageWrapper>
-      <Column stretched align={ align }>
-        { children }
-      </Column>
+
+      { children && (!position || position === 'left') && (
+        <Column stretched align={ align }>
+          { children }
+        </Column>
+      )}
     </Grid>
   )
 
