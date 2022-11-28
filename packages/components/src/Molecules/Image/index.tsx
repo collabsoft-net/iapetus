@@ -6,7 +6,7 @@ import { Column, Grid } from '../../Atoms/Grid'
 
 interface ImageProps extends Omit<AvatarPropTypes, 'src'|'size'|'children'> {
   src: string|ReactNode|JSX.Element;
-  size: SizeType|number;
+  size?: SizeType|number;
   margin?: string;
   align?: string;
   position?: 'left'|'right'
