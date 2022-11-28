@@ -1,15 +1,16 @@
 
 import { fontFamily, fontSize } from '@atlaskit/theme';
 import { h100, h200, h300, h400, h500, h600, h700, h800, h900 } from '@atlaskit/theme/typography';
+import { Property } from 'csstype';
 import styled, { css } from 'styled-components';
 
 import { withProps } from '../Styled';
 
 export interface HeadingProps {
   weight: 'h100'|'h200'|'h300'|'h400'|'h500'|'h600'|'h700'|'h800'|'h900';
-  color?: string;
-  display?: string;
-  margin?: string;
+  color?: Property.Color;
+  display?: Property.Display;
+  margin?: Property.Margin;
 }
 
 const heading = withProps<HeadingProps>()(css)`
@@ -33,11 +34,12 @@ const heading = withProps<HeadingProps>()(css)`
 export const Header = withProps<HeadingProps>()(styled.span)`${heading}`;
 
 type ParagraphProps = {
-  color?: string;
+  color?: Property.Color;
   inline?: boolean;
-  display?: string;
-  margin?: string;
-  padding?: string;
+  display?: Property.Display;
+  margin?: Property.Margin;
+  padding?: Property.Padding;
+  truncate?: boolean;
 };
 
 export const Paragraph = withProps<ParagraphProps>()(styled.p)`
@@ -51,4 +53,10 @@ export const Paragraph = withProps<ParagraphProps>()(styled.p)`
   ${props => props.display && `display: ${props.display};`}
   ${props => props.margin && `margin: ${props.margin};`}
   ${props => props.padding && `padding: ${props.padding};`}
+
+  ${props => props.truncate && `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `}
 `;

@@ -132,6 +132,7 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.truncate && `
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   `}
 
   box-sizing: border-box;
