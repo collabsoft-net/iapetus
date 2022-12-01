@@ -40,6 +40,16 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getProjectRoles(projectIdOrKey: string): Promise<Record<string, string>> {
+    const { data } = await this.client.get<Record<string, string>>(this.getEndpointFor(this.endpoints.LIST_PROJECT_ROLES, { projectIdOrKey }));
+    return data;
+  }
+
+  async getProjectRole(projectIdOrKey: string, id: string): Promise<Jira.ProjectRole> {
+    const { data } = await this.client.get<Jira.ProjectRole>(this.getEndpointFor(this.endpoints.READ_PROJECT_ROLE, { projectIdOrKey, id }));
+    return data;
+  }
+
   async getStatuses(projectIdOrKey: string): Promise<Array<Jira.IssueTypeWithStatus>> {
     const { data } = await this.client.get<Array<Jira.IssueTypeWithStatus>>(this.getEndpointFor(this.endpoints.STATUSES, { projectIdOrKey }));
     return data;

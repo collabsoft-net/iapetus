@@ -834,22 +834,71 @@ declare global {
       values: Array<Project>;
     }
 
-    interface Project {
-      self: string;
-      id: string;
-      key: string;
-      name: string;
-      avatarUrls: {
-        [key: string]: string;
-      };
+    interface Project extends ProjectDetails {
       archived: boolean;
-      simplified?: boolean;
       style?: 'classic'|'next-gen';
-      projectTypeKey?: 'software'|'service_desk'|'business';
       description: string;
       issueTypes: Array<IssueTypeDetails>;
       lead: User;
       issueTypeHierarchy: unknown;
+    }
+
+    interface ProjectDetails {
+      self: string;
+      id: string;
+      key: string;
+      name: string;
+      avatarUrls: Record<string, string>;
+      simplified?: boolean;
+      projectTypeKey: 'software'|'service_desk'|'business';
+      projectCategory: ProjectCategory;
+    }
+
+    interface ProjectCategory {
+      self: string;
+      id: string;
+      description: string;
+      name: string;
+    }
+
+    interface ProjectRole {
+      self: string;
+      name: string;
+      id: number;
+      description: string;
+      actors: Array<RoleActor>;
+      scope: Scope;
+      translatedName: string;
+      currentUserRole: boolean;
+      admin: boolean;
+      roleConfigurable: boolean;
+      default: boolean;
+    }
+
+    interface RoleActor {
+      id: number;
+      displayName: string;
+      type: string;
+      name: string;
+      avatarUr:string;
+      actorUser: ProjectRoleUser;
+      actorGroup: ProjectRoleGroup;
+    }
+
+    interface ProjectRoleUser {
+      accountId: string;
+    }
+
+    interface ProjectRoleGroup {
+      displayName: string;
+      name: string;
+      groupId: string;
+    }
+
+    interface Scope {
+      type: string;
+      project: ProjectDetails;
+      additionalProperties: unknown;
     }
 
     interface PageOfComments {
