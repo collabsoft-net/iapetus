@@ -4,23 +4,23 @@ import React from 'react';
 import { Column,ColumnProps, Grid, GridProps } from '../Grid';
 
 interface ColumnsWithProps {
-  children: JSX.Element;
+  content: JSX.Element;
   props?: ColumnProps;
 }
 
 interface ColumnsProps {
-  columns: Array<typeof Column|JSX.Element|ColumnsWithProps>
-  stretched?: number;
+  items: Array<JSX.Element|ColumnsWithProps>;
+  columnProps?: (defaultProps: ColumnProps, index: number) => ColumnProps;
 }
 
-export const Columns = ({ columns, stretched, ...props }: ColumnsProps & Omit<GridProps, 'vertical'>) => (
+export const Columns = ({ items, columnProps, ...props }: ColumnsProps & Omit<GridProps, 'vertical'>) => (
   <Grid vertical {...props}>
-    { columns.map((column, index) =>
-      isOfType<typeof Column>(column, 'displayName')
-       ? column
-       : isOfType<ColumnsWithProps>(column, 'children')
-        ? <Column stretched={ stretched && index === stretched } {...column.props}>{ column.children } </Column>
-        : <Column stretched={ stretched && index === stretched }>column</Column>
-    )}
+    { items.map((item, index) => {
+        const defaultProps = { ...isOfType<ColumnsWithProps>(item, 'content') ? item.props || {} : {} };
+        const customProps = { ...defaultProps, ...columnProps ? columnProps(defaultProps, index) : {} }
+        const children = isOfType<ColumnsWithProps>(item, 'content') ? item.content : item;
+        return <Column {...customProps}>{ children }</Column>
+      })
+    }
   </Grid>
 )
