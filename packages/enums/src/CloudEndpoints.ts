@@ -16,6 +16,9 @@ export enum JiraCloudEndpoints {
   READ_PROJECT = '/rest/api/3/project/:projectIdOrKey',
   LIST_PROJECTS = '/rest/api/3/project',
 
+  LIST_PROJECT_ROLES = '/rest/api/2/project/:projectIdOrKey/role',
+  READ_PROJECT_ROLE = '/rest/api/2/project/:projectIdOrKey/role/:id',
+
   STATUSES = '/rest/api/3/project/:projectIdOrKey/statuses',
   STATUSDETAILS = '/rest/api/3/status/:idOrName',
 
