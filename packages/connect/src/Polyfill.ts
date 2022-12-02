@@ -203,8 +203,9 @@ const history: AP.History = {
   forward: (): void => { throw new Error('forward(): This AP method is not yet implemented'); },
   go: (_delta: number): void => { throw new Error('go(): This AP method is not yet implemented'); },
   getState: (): string => { throw new Error('getState(): This AP method is not yet implemented'); },
-  pushState: (_newState: Record<string, unknown>, _title?: string, _url?: string): void => { throw new Error('pushState(): This AP method is not yet implemented'); },
+  pushState: (_newState: string, _title?: string, _url?: string): void => { throw new Error('pushState(): This AP method is not yet implemented'); },
   replaceState: (_url: string): void => { throw new Error('replaceState(): This AP method is not yet implemented'); },
+  popState: (): void => { throw new Error('popState(): This AP method is not yet implemented'); }
 };
 
 const host: AP.Host = {
