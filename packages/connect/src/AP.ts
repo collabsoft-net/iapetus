@@ -186,8 +186,20 @@ declare global {
       forward: () => void;
       go: (delta: number) => void;
       getState: () => string;
-      pushState: (newState: Record<string, unknown>, title?: string, url?: string) => void;
+      pushState: (newState: string, title?: string, url?: string) => void;
       replaceState: (url: string) => void;
+      popState: (state: HistoryPopState) => void;
+    }
+
+    interface HistoryPopState {
+      hash: string;
+      href: string;
+      key: string;
+      newURL: string;
+      oldURL?: string
+      query: string;
+      state: string;
+      title: string;
     }
 
     interface Host {
