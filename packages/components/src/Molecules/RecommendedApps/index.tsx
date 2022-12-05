@@ -4,7 +4,7 @@ import React from 'react';
 import { Grid, Row } from '../../Atoms/Grid';
 import { Link } from '../../Atoms/Link';
 import { Header, Paragraph } from '../../Atoms/Typography';
-import { Image } from '../Image';
+import { IconWithLabel } from '../IconWithLabel';
 
 interface RecommendedAppsProps {
   title: string;
@@ -25,9 +25,9 @@ export const RecommendedApps = ({ title, description, apps }: RecommendedAppsPro
       </Row>
       { apps.map(({ icon, url, name }) => (
         <Row key={name} margin='8px 0 0 0'>
-          <Image src={ icon } size='medium' margin='0 8px 0 0' appearance='square' align='center'>
+          <IconWithLabel src={ icon } size='medium' margin='0 8px 0 0' appearance='square' align='center'>
             <Link href={url}>{ name }</Link>
-          </Image>
+          </IconWithLabel>
         </Row>
       ))}
     </Grid>

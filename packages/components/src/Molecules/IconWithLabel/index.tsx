@@ -1,18 +1,24 @@
 import Avatar, { AvatarPropTypes,SizeType } from '@atlaskit/avatar';
+import { Property } from 'csstype';
 import React, { PropsWithChildren, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Column, Grid } from '../../Atoms/Grid'
 
-interface ImageProps extends Omit<AvatarPropTypes, 'src'|'size'|'children'> {
+interface IconWithLabelProps extends Omit<AvatarPropTypes, 'src'|'size'|'children'> {
   src: string|ReactNode|JSX.Element;
+  shouldFitContainer?: boolean;
+  justifyContent?: Property.JustifyContent;
   size?: SizeType|number;
   margin?: string;
   align?: string;
   position?: 'left'|'right'
 }
 
-const ImageWrapper = styled(Column)`font-size: 0;`;
+const ImageWrapper = styled(Column)`
+  font-size: 0;
+  display: flex;
+`;
 
 const CustomImage = styled.div<{ src: string; size: number }>`
   background-image: url(${props => props.src});
@@ -21,16 +27,16 @@ const CustomImage = styled.div<{ src: string; size: number }>`
   height: ${props => props.size}px;
 `;
 
-export const Image = ({ children, align, src, size, margin, position, ...rest }: PropsWithChildren<ImageProps>): JSX.Element => {
+export const IconWithLabel = ({ children, shouldFitContainer, align, src, size, margin, justifyContent, position, ...rest }: PropsWithChildren<IconWithLabelProps>): JSX.Element => {
   return (
-    <Grid vertical fluid>
+    <Grid vertical fluid justifyContent={ justifyContent }>
       { children && (position === 'right') && (
-        <Column stretched align={ align }>
+        <Column stretched={ shouldFitContainer } align={ align }>
           { children }
         </Column>
       )}
 
-      <ImageWrapper margin={ children && margin ? margin : '0' }>
+      <ImageWrapper margin={ children && margin ? margin : '0' } align={ align }>
         { typeof src !== 'string' ? src : (
           typeof size === 'number' ? (
             <CustomImage src={ src || '' } size={ size } />
@@ -41,7 +47,7 @@ export const Image = ({ children, align, src, size, margin, position, ...rest }:
       </ImageWrapper>
 
       { children && (!position || position === 'left') && (
-        <Column stretched align={ align }>
+        <Column stretched={ shouldFitContainer } align={ align }>
           { children }
         </Column>
       )}
