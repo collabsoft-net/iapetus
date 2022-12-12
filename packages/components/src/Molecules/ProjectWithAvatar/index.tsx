@@ -16,6 +16,7 @@ const Wrapper = withProps<{ inline?: boolean }>()(styled.div)`
 const AvatarWrapper = styled.div`
   display: inline-block;
   line-height: 0;
+  align-self: center;
 `;
 
 export type ProjectWithAvatarProps = {
@@ -55,7 +56,7 @@ const Content = ({ project, size, href, inline, isValidating, isDisabled, loadin
         if (project && isOfType<Jira.Project>(project, 'name')) {
           return (
             <>
-              <Paragraph margin='0 0 0 8px' display='inline-block'>
+              <Paragraph margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display='inline-block'>
                 { href ? (
                   <Link href={ href }>{ project.name }</Link>
                 ) : (
