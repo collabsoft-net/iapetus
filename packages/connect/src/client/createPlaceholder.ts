@@ -5,9 +5,9 @@ export const createPlaceholder = async (): Promise<void> => {
   const AP = await waitForAP();
 
   const connect = isValidConnectRequest();
-  if (connect) {
+  if (connect?.moduleId) {
     const placeholder = document.createElement('div');
-    placeholder.setAttribute('id', connect.moduleId);
+    placeholder.setAttribute('id', connect.moduleType !== 'legacy' ? `${connect.moduleType}-${connect.moduleId}` : connect.moduleId);
     placeholder.setAttribute('class', 'ac-content');
     placeholder.setAttribute('style', 'height: 100%');
     document.body.prepend(placeholder);
