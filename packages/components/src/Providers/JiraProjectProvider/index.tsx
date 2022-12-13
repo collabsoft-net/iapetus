@@ -4,7 +4,7 @@ import { JiraClientService } from '@collabsoft-net/services';
 import { useEffect, useState } from 'react';
 
 interface JiraProjectProviderProps {
-  projectIdOrKey: string|number;
+  projectIdOrKey: string|number|PromiseLike<string|number>;
   requiredPermissions?: string|Array<string>;
   loadingMessage?: JSX.Element;
   cacheDuration?: number;
@@ -36,20 +36,22 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
   useEffect(() => {
     if (AP && service) {
       const jiraClientService = cacheDuration ? service.cached(cacheDuration) : service;
-      jiraClientService.getProject(projectIdOrKey).then(async (project) => {
-        if (requiredPermissions) {
-          const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
-          const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
-            projects: [ Number(project.id) ],
-            permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
-          }]).catch(() => false)
-          setPermitted(hasRequiredPermissions);
-          setProject(project);
-        } else {
-          setPermitted(true);
-          setProject(project);
-        }
-      }).catch(setErrors).finally(() => setLoading(false));
+      new Promise<string|number>(resolve => resolve(projectIdOrKey)).then(idOrKey =>
+        jiraClientService.getProject(idOrKey).then(async (project) => {
+          if (requiredPermissions) {
+            const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
+            const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
+              projects: [ Number(project.id) ],
+              permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
+            }]).catch(() => false)
+            setPermitted(hasRequiredPermissions);
+            setProject(project);
+          } else {
+            setPermitted(true);
+            setProject(project);
+          }
+        })
+      ).catch(setErrors).finally(() => setLoading(false));
     }
   }, [ AP, service ]);
 
