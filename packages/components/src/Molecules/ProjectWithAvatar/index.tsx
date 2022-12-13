@@ -24,7 +24,7 @@ export type ProjectWithAvatarProps = {
   isValidating?: boolean;
   isDisabled?: boolean;
   project?: Jira.Project;
-  projectId?: number|string;
+  projectId?: number|string|PromiseLike<string|number>;
   inline?: boolean
   href?: string;
   component?: (state: ProjectWithAvatarState) => JSX.Element;
@@ -81,7 +81,7 @@ export const ProjectWithAvatar = ({ project, projectId, inline, isValidating, is
     return component
       ? component({ project, isLoading: false, isValidating, isArchived: project.archived })
       : Content({ project, href, size, inline, isValidating, isDisabled, loading: false });
-  } else if (projectId) {
+  } else if (typeof projectId !== 'undefined') {
     return (
       <JiraProviders.Project projectIdOrKey={ projectId } loadingMessage={ <Spinner size='medium' /> }>
         { ({ project: currentProject, loading }) => {
