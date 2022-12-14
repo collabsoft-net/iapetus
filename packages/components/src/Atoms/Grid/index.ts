@@ -112,7 +112,7 @@ export const Grid = styled.div<GridProps>`
 `;
 
 export interface ColumnProps extends SizeProps, BorderProps, FlexProps {
-  display: Property.Display;
+  display?: Property.Display;
   span?: string|number;
   stretched?: boolean;
   background?: Property.Background;
