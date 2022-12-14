@@ -57,6 +57,7 @@ interface FlexProps {
 }
 
 const getFlexProps = (props: FlexProps) => `
+  ${Object.keys(props).length > 0 ? `display: inline-flex` : ''}
   ${props.gap ? `gap: ${props.gap};` : ''}
   ${props.justifyContent ? `justify-content: ${props.justifyContent};` : ''}
   ${props.alignItems ? `align-items: ${props.alignItems};` : ''}
@@ -86,13 +87,13 @@ export interface GridProps extends SizeProps, BorderProps, FlexProps {
 }
 
 export const Grid = styled.div<GridProps>`
-  display: flex;
-  flex-direction: ${(props: GridProps) => !props.vertical ? 'column' : 'row' };
-  box-sizing: border-box;
-
   ${props => getSizeProps(props)}
   ${props => getBorderProps(props)}
   ${props => getFlexProps(props)}
+
+  display: flex;
+  flex-direction: ${(props: GridProps) => !props.vertical ? 'column' : 'row' };
+  box-sizing: border-box;
 
   ${props => props.vertical && !props.padding && `height: 100%;`}
   ${props => !props.vertical && !props.padding && `width: ${props.width || '100%'};`}
@@ -111,6 +112,7 @@ export const Grid = styled.div<GridProps>`
 `;
 
 export interface ColumnProps extends SizeProps, BorderProps, FlexProps {
+  display: Property.Display;
   span?: string|number;
   stretched?: boolean;
   background?: Property.Background;
@@ -123,6 +125,7 @@ export const Column = styled.div<ColumnProps>`
   ${props => getBorderProps(props)}
   ${props => getFlexProps(props)}
 
+  ${props => props.display && `display: ${props.display};`}
   ${props => !props.stretched && `flex: ${props.span ? props.span : '0 0 auto'};`}
   ${props => props.stretched && `flex: 1 1 auto; overflow: auto;`}
   ${props => props.stretched && !props.width && `width: 100%;`}
