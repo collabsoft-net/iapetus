@@ -128,6 +128,7 @@ export const Column = styled.div<ColumnProps>`
   ${props => props.stretched && !props.width && `width: 100%;`}
   ${props => props.stretched && !props.height && `height: 100%;`}
   ${props => props.background && `background: ${props.background};`}
+  ${props => props.cursor && `cursor: ${props.cursor};`}
 
   ${props => props.truncate && `
     overflow: hidden;
