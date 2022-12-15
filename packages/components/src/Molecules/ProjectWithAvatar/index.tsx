@@ -26,6 +26,7 @@ export type ProjectWithAvatarProps = {
   project?: Jira.Project;
   projectId?: number|string|PromiseLike<string|number>;
   inline?: boolean
+  truncate?: boolean;
   href?: string;
   component?: (state: ProjectWithAvatarState) => JSX.Element;
   onError?: () => void;
@@ -38,7 +39,7 @@ interface ProjectWithAvatarState {
   isArchived?: boolean;
 }
 
-const Content = ({ project, size, href, inline, isValidating, isDisabled, loading }: Omit<ProjectWithAvatarProps, 'projectId'|'component'|'onError'> & { loading?: boolean }) => (
+const Content = ({ project, size, href, inline, truncate, isValidating, isDisabled, loading }: Omit<ProjectWithAvatarProps, 'projectId'|'component'|'onError'> & { loading?: boolean }) => (
   <Wrapper inline={inline}>
     <AvatarWrapper>
       {(() => {
@@ -53,22 +54,18 @@ const Content = ({ project, size, href, inline, isValidating, isDisabled, loadin
     </AvatarWrapper>
     {(() => {
       if (!loading && !isValidating) {
-        if (project && isOfType<Jira.Project>(project, 'name')) {
-          return (
-            <>
-              <Paragraph margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display='inline-block'>
-                { href ? (
-                  <Link href={ href }>{ project.name }</Link>
-                ) : (
-                  <span>{ project.name }</span>
-                )}
-              </Paragraph>
-              { project.archived && <Paragraph margin='0 0 0 8px' display='inline-block'>(archived)</Paragraph>}
-            </>
-          );
-        } else {
-          return 'Project not found or access denied';
-        }
+        return (project && isOfType<Jira.Project>(project, 'name')) ? (
+          <Paragraph truncate={ truncate } margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display='inline-block'>
+            { href ? (
+              <Link href={ href }>{ project.name }</Link>
+            ) : (
+              <span>{ project.name }</span>
+            )}
+            { project.archived && <span style={{ margin: '0 0 0 8px', display: 'inline-block' }}>(archived)</span>}
+          </Paragraph>
+        ) : (
+          <Paragraph truncate={ truncate } inline>Project not found or access denied</Paragraph>
+        );
       } else {
         return '';
       }
