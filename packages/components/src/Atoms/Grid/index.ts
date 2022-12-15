@@ -56,8 +56,8 @@ interface FlexProps {
   wraps?: boolean; // 'wrap' upsets React.DOM
 }
 
-const getFlexProps = (props: FlexProps) => `
-  ${Object.keys(props).length > 0 ? `display: inline-flex` : ''}
+const getFlexProps = (props: FlexProps, inline?: boolean) => `
+  ${inline && Object.keys(props).length > 0 ? `display: inline-flex` : ''}
   ${props.gap ? `gap: ${props.gap};` : ''}
   ${props.justifyContent ? `justify-content: ${props.justifyContent};` : ''}
   ${props.alignItems ? `align-items: ${props.alignItems};` : ''}
@@ -112,9 +112,11 @@ export const Grid = styled.div<GridProps>`
 `;
 
 export interface ColumnProps extends SizeProps, BorderProps, FlexProps {
-  display?: Property.Display;
   span?: string|number;
   stretched?: boolean;
+  inline?: boolean;
+
+  display?: Property.Display;
   background?: Property.Background;
   cursor?: Property.Cursor;
   truncate?: boolean;
@@ -123,7 +125,7 @@ export interface ColumnProps extends SizeProps, BorderProps, FlexProps {
 export const Column = styled.div<ColumnProps>`
   ${props => getSizeProps(props)}
   ${props => getBorderProps(props)}
-  ${props => getFlexProps(props)}
+  ${props => getFlexProps(props, props.inline)}
 
   ${props => props.display && `display: ${props.display};`}
   ${props => !props.stretched && `flex: ${props.span ? props.span : '0 0 auto'};`}
