@@ -11,6 +11,7 @@ export interface HeadingProps {
   color?: Property.Color;
   display?: Property.Display;
   margin?: Property.Margin;
+  truncate?: boolean;
 }
 
 const heading = withProps<HeadingProps>()(css)`
@@ -29,6 +30,12 @@ const heading = withProps<HeadingProps>()(css)`
   ${props => props.color && `color: ${props.color};`}
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;  
+
+  ${props => props.truncate && `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `}
 `;
 
 export const Header = withProps<HeadingProps>()(styled.span)`${heading}`;
@@ -53,6 +60,8 @@ export const Paragraph = withProps<ParagraphProps>()(styled.p)`
   ${props => props.display && `display: ${props.display};`}
   ${props => props.margin && `margin: ${props.margin};`}
   ${props => props.padding && `padding: ${props.padding};`}
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;  
 
   ${props => props.truncate && `
     overflow: hidden;
