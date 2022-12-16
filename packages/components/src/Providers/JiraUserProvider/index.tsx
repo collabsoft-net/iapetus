@@ -31,7 +31,6 @@ kernel.onReady(() => {
   } else {
     throw new Error(`Could not find instance of AP, please make sure to bind it in your Inversify configuration using "ServiceIdentifier.AP"`);
   }
-
 });
 
 export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
