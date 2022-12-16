@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/scheduler",
-  "version": "1.0.0-alpha.260",
+  "version": "1.0.0-alpha.261",
   "description": "Scheduler implementation",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -33,7 +33,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.260",
+    "@collabsoft-net/types": "^1.0.0-alpha.261",
     "@google-cloud/scheduler": "2.3.0",
     "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
