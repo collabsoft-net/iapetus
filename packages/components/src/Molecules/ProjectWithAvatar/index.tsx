@@ -73,18 +73,18 @@ const Content = ({ project, size, href, inline, truncate, isValidating, isDisabl
   </Wrapper>
 );
 
-export const ProjectWithAvatar = ({ project, projectId, inline, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
+export const ProjectWithAvatar = ({ project, projectId, inline, truncate, isValidating, isDisabled, href, size, component, onError }: ProjectWithAvatarProps): JSX.Element => {
   if (project) {
     return component
       ? component({ project, isLoading: false, isValidating, isArchived: project.archived })
-      : Content({ project, href, size, inline, isValidating, isDisabled, loading: false });
+      : Content({ project, href, size, inline, truncate, isValidating, isDisabled, loading: false });
   } else if (typeof projectId !== 'undefined') {
     return (
       <JiraProviders.Project projectIdOrKey={ projectId } loadingMessage={ <Spinner size='medium' /> }>
         { ({ project: currentProject, loading }) => {
           return component
             ? component({ project: currentProject, isLoading: loading, isValidating, isArchived: currentProject?.archived })
-            : Content({ project: currentProject, href, size, inline, isValidating, isDisabled, loading })
+            : Content({ project: currentProject, href, size, inline, truncate, isValidating, isDisabled, loading })
         }}
       </JiraProviders.Project>
     );
