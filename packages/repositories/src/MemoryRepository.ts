@@ -56,6 +56,18 @@ export class MemoryRepository implements Repository {
 
   async signOut(): Promise<void> {}
 
+  async count(options: MemoryQueryOptions = { path: '/' }): Promise<number> {
+    const result = await this.findAll(options);
+    return result.values.length;
+  }
+
+  async countByQuery(qb: QueryBuilder, options: MemoryQueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions): Promise<number>;
+  async countByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: MemoryQueryOptions = { path: '/' }): Promise<number> {
+    const result = await this.findAllByQuery(qb, options);
+    return result.values.length;
+  }
+
   async findAll(options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
     const item = await this.getSeedObject(options.path);
@@ -84,9 +96,12 @@ export class MemoryRepository implements Repository {
     };
   }
 
-  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByQuery(qb: QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<Entity>>;
+  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<Entity>>;
+  async findAllByQuery<A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends MemoryQueryOptions>(a: A, b: B): Promise<Paginated<Entity>>;
+  async findAllByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
-    const queryBuilder = qb(new QueryBuilder());
+    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
 
     const { values: items } = await this.findAll(options);
     const filteredItems = items.filter(item => {

@@ -10,8 +10,14 @@ export interface Repository extends EventEmitter {
   authenticate(): Promise<boolean>;
   signOut(): Promise<void>;
 
+  count(options?: QueryOptions): Promise<number>;
+  countByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<number>;
+  countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<number>;
+  countByQuery(qb: unknown, options?: QueryOptions): Promise<number>;
+
   findAll(options?: QueryOptions): Promise<Paginated<Entity>>;
   findAllByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<Entity>>;
+  findAllByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<Paginated<Entity>>;
   findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<Paginated<Entity>>;
 
   findById(id: string, options?: QueryOptions): Promise<Entity|null>;

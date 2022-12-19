@@ -59,22 +59,71 @@ export class FirebaseAdminRepository implements Repository {
     return Promise.reject('This feature is not supported in "admin" mode');
   }
 
+  async count(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
+    await this.validateQueryOptions(options);
+
+    if (options.path.split('/').length % 2 === 1) {
+      throw new Error('You can only use count for collections, not individual documents');
+    } else {
+      const ref = await this.firestore.collection(options.path).count().get();
+      return ref.data().count;
+    }
+  }
+
+  async countByQuery(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
+  async countByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
+    await this.validateQueryOptions(options);
+
+    if (options.path.split('/').length % 2 === 1) {
+      throw new Error('You can only use count for collections, not individual documents');
+    }
+
+    let collection: firestore.Query = this.firestore.collection(options.path);
+    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
+
+    queryBuilder.conditions.forEach((condition) => {
+      if (condition.key === 'orderBy') {
+        collection = collection.orderBy(condition.value as string, condition.operator as 'asc' | 'desc' | undefined);
+      } else if (condition.key === 'limit') {
+        collection = collection.limit(condition.value as number);
+      } else if (condition.key === 'offset') {
+        collection = collection.startAfter(condition.value);
+      } else if (!condition.value) {
+        // Skip empty filter statement
+      } else {
+        collection = collection.where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
+      }
+    });
+
+    const ref = await collection.count().get();
+    return ref.data().count;
+  }
+
   async findAll(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
     await this.validateQueryOptions(options);
+
+    let total = 0;
 
     const result: Array<Entity> = [];
     if (options.path.split('/').length % 2 === 1) {
       const ref = await this.firestore.doc(options.path).get();
-      if (ref) result.push(<Entity>ref.data());
+      if (ref) {
+        result.push(<Entity>ref.data());
+        total = 1;
+      }
     } else {
-      const ref = await this.firestore.collection(options.path).get();
-      ref.forEach((document) => result.push(<Entity>document.data()));
+      const docRef = await this.firestore.collection(options.path).get();
+      docRef.forEach((document) => result.push(<Entity>document.data()));
+
+      const countRef = await this.firestore.collection(options.path).count().get();
+      total = countRef.data().count;
     }
 
     return {
       start: 0,
       size: result.length,
-      total: result.length,
+      total,
       values: result,
       last: true
     };
@@ -112,13 +161,16 @@ export class FirebaseAdminRepository implements Repository {
     });
 
     const result: Array<Entity> = [];
-    const ref = await collection.get();
-    ref.forEach((document) => result.push(<Entity>document.data()));
+    const docRef = await collection.get();
+    docRef.forEach((document) => result.push(<Entity>document.data()));
+
+    const countRef = await collection.count().get();
+    const total = countRef.data().count;
 
     return {
       start: 0,
       size: result.length,
-      total: result.length,
+      total,
       values: result,
       last: true
     };

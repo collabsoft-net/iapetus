@@ -34,27 +34,37 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
   }
 
   async findById(id: string, options: QueryOptions = {}): Promise<T|null> {
-    return this.repository.findById(id, Object.assign({}, this.options, options)) as Promise<T|null>;
+    return this.repository.findById(id, { ...this.options, ...options }) as Promise<T|null>;
   }
 
   async findByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
-    return this.repository.findByProperty(key, value, Object.assign({}, this.options, options)) as Promise<T|null>;
+    return this.repository.findByProperty(key, value, { ...this.options, ...options }) as Promise<T|null>;
   }
 
   async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions = {}): Promise<T> {
-    return this.repository.findByQuery(qb, Object.assign({}, this.options, options)) as Promise<T>;
+    return this.repository.findByQuery(qb, { ...this.options, ...options }) as Promise<T>;
+  }
+
+  async count(options: QueryOptions = { }): Promise<number> {
+    return this.repository.count({ ...this.options, ...options });
+  }
+
+  async countByQuery(qb: QueryBuilder, options: QueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions): Promise<number>;
+  async countByQuery(qb: unknown, options: QueryOptions = {}): Promise<number> {
+    return this.repository.countByQuery(qb, { ...this.options, ...options });
   }
 
   async findAll(options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAll(Object.assign({}, this.options, options)) as Promise<Paginated<T>>;
+    return this.repository.findAll({ ...this.options, ...options }) as Promise<Paginated<T>>;
   }
 
   async findAllByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAllByProperty(key, value, Object.assign({}, this.options, options)) as Promise<Paginated<T>>;
+    return this.repository.findAllByProperty(key, value, { ...this.options, ...options }) as Promise<Paginated<T>>;
   }
 
   async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAllByQuery(qb, Object.assign({}, this.options, options)) as Promise<Paginated<T>>;
+    return this.repository.findAllByQuery(qb, { ...this.options, ...options }) as Promise<Paginated<T>>;
   }
 
   async save(entity: T): Promise<T> {
