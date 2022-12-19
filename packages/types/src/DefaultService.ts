@@ -5,10 +5,20 @@ import { Paginated } from './Paginated';
 import { QueryBuilder } from './QueryBuilder';
 
 export interface DefaultService<T extends Entity, X extends DTO> extends BaseService {
-  findAll(): Promise<Paginated<T>>;
-  findAllByProperty(key: string, value: string): Promise<Paginated<T>>;
-  findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<Paginated<T>>;
+  count(): Promise<number>;
+  countByQuery(qb: QueryBuilder): Promise<number>;
+  countByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<number>;
+  countByQuery(qb: unknown): Promise<number>;
+
   findById(id: string): Promise<T|null>;
+  findByProperty(key: string, value: string|number|boolean): Promise<T|null>;
+  findByQuery(qb: QueryBuilder): Promise<T|null>;
+  findByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<T|null>;
+
+  findAll(): Promise<Paginated<T>>;
+  findAllByProperty(key: string, value: string|number|boolean): Promise<Paginated<T>>;
+  findAllByQuery(qb: QueryBuilder): Promise<Paginated<T>>;
+  findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<Paginated<T>>;
 
   toDTO(entity: T): X;
   toEntityArray<Y extends Entity>(items: Array<Y>): EntityArray<Y>;
@@ -19,9 +29,9 @@ export interface DefaultService<T extends Entity, X extends DTO> extends BaseSer
   save(entity: T|X): Promise<T>;
   saveAll(entities: Array<T|X>): Promise<Array<T>>;
 
-  deleteAll(entities?: Array<T>): Promise<Array<void>>;
   delete(entity: T): Promise<void>;
   deleteById(id: string): Promise<void>;
+  deleteAll(entities?: Array<T>): Promise<Array<void>>;
 
   validate(entity: Entity): Array<string>;
   isValidEntity(entity: Entity|DTO): boolean;

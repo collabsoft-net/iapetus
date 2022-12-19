@@ -68,10 +68,29 @@ export class MemoryRepository implements Repository {
     return result.values.length;
   }
 
-  async findAll(options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findById<T extends Entity>(id: string, options: MemoryQueryOptions = { path: '/' }): Promise<T|null> {
+    await this.validateQueryOptions(options);
+    const item = await this.getSeedObject<T>(`${options.path}/${id}`);
+    return (Object.entries(item).length > 0) ? item : null;
+  }
+
+  async findByProperty<T extends Entity>(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<T|null> {
+    await this.validateQueryOptions(options);
+    const { values: items } = await this.findAllByProperty<T>(key, value, options);
+    return items[0];
+  }
+
+  async findByQuery<T extends Entity>(qb: QueryBuilder, options?: MemoryQueryOptions): Promise<T|null>;
+  async findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options?: MemoryQueryOptions): Promise<T|null>;
+  async findByQuery<T extends Entity, A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder), B extends MemoryQueryOptions>(qb: A, options?: B): Promise<T|null> {
+    const { values } = await this.findAllByQuery<T, A, B>(qb, options);
+    return values[0];
+  }
+
+  async findAll<T extends Entity>(options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     const item = await this.getSeedObject(options.path);
-    const items = (Object.entries(item).length > 0) ? this.toArray(item as unknown as EntityArray<Entity>) : [];
+    const items = (Object.entries(item).length > 0) ? this.toArray(item as unknown as EntityArray<T>) : [];
 
     return {
       start: 0,
@@ -82,9 +101,9 @@ export class MemoryRepository implements Repository {
     };
   }
 
-  async findAllByProperty(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByProperty<T extends Entity>(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
-    const { values: items } = await this.findAll(options);
+    const { values: items } = await this.findAll<T>(options);
     const result = items.filter((item) => item[key] === value);
 
     return {
@@ -96,14 +115,14 @@ export class MemoryRepository implements Repository {
     };
   }
 
-  async findAllByQuery(qb: QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<Entity>>;
-  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<Entity>>;
-  async findAllByQuery<A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends MemoryQueryOptions>(a: A, b: B): Promise<Paginated<Entity>>;
-  async findAllByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<Entity>> {
+  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery<T extends Entity, A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends MemoryQueryOptions>(qb: A, options?: B): Promise<Paginated<T>>;
+  async findAllByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: MemoryQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
 
-    const { values: items } = await this.findAll(options);
+    const { values: items } = await this.findAll<T>(options);
     const filteredItems = items.filter(item => {
       let shouldInclude = true;
       queryBuilder.conditions.forEach(({ key, value, operator })=> {
@@ -165,29 +184,12 @@ export class MemoryRepository implements Repository {
     };
   }
 
-  async findById(id: string, options: MemoryQueryOptions = { path: '/' }): Promise<Entity|null> {
+  async saveAll<T extends Entity>(entities: Array<T>, options: MemoryQueryOptions = { path: '/' }): Promise<Array<T>> {
     await this.validateQueryOptions(options);
-    const item = await this.getSeedObject(`${options.path}/${id}`);
-    return (Object.entries(item).length > 0) ? item : null;
+    return await Promise.all(entities.map(entity => this.save(entity, options)));
   }
 
-  async findByProperty(key: keyof Entity, value: string|number|boolean, options: MemoryQueryOptions = { path: '/' }): Promise<Entity|null> {
-    await this.validateQueryOptions(options);
-    const { values: items } = await this.findAllByProperty(key, value, options);
-    return items[0];
-  }
-
-  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: MemoryQueryOptions = { path: '/' }): Promise<Entity|null> {
-    const { values } = await this.findAllByQuery(qb, options);
-    return values[0];
-  }
-
-  async saveAll(entities: Array<Entity>, options: MemoryQueryOptions = { path: '/' }): Promise<Array<Entity>> {
-    await this.validateQueryOptions(options);
-    return await Promise.all(entities.map((entity: Entity) => this.save(entity, options)));
-  }
-
-  async save(entity: Entity, options: MemoryQueryOptions = { path: '/' }): Promise<Entity> {
+  async save<T extends Entity>(entity: T, options: MemoryQueryOptions = { path: '/' }): Promise<T> {
     entity.id = entity.id || uniqid();
     await this.validateQueryOptions(options);
     await this.setSeedObject(options.path, entity);
@@ -195,13 +197,13 @@ export class MemoryRepository implements Repository {
   }
 
   async deleteAll(options: MemoryQueryOptions): Promise<void>;
-  async deleteAll(entities: Array<Entity>, options?: MemoryQueryOptions): Promise<void>;
-  async deleteAll(entities: Array<Entity>|MemoryQueryOptions, options?: MemoryQueryOptions): Promise<void> {
+  async deleteAll<T extends Entity>(entities: Array<T>, options?: MemoryQueryOptions): Promise<void>;
+  async deleteAll<T extends Entity>(entities: Array<T>|MemoryQueryOptions, options?: MemoryQueryOptions): Promise<void> {
     const _options = (!options) ? entities as MemoryQueryOptions : options;
 
     if (Array.isArray(entities)) {
       return this.validateQueryOptions(_options)
-        .then(() => Promise.all(entities.map((entity: Entity) => this.delete(entity, _options))))
+        .then(() => Promise.all(entities.map((entity: T) => this.delete(entity, _options))))
         .then(() => Promise.resolve());
     } else {
       return this.validateQueryOptions(_options)
@@ -210,11 +212,11 @@ export class MemoryRepository implements Repository {
     }
   }
 
-  delete(entity: Entity, options: MemoryQueryOptions): Promise<void> {
+  async delete<T extends Entity>(entity: T, options: MemoryQueryOptions): Promise<void> {
     return this.deleteById(entity.id, options);
   }
 
-  deleteById(id: string, options: MemoryQueryOptions): Promise<void> {
+  async deleteById(id: string, options: MemoryQueryOptions): Promise<void> {
     if (!id) {
       return Promise.reject('`id` is a required parameter');
     }
@@ -233,7 +235,7 @@ export class MemoryRepository implements Repository {
     return Promise.resolve();
   }
 
-  private async getSeedObject(path: string|Array<string>): Promise<Entity> {
+  private async getSeedObject<T extends Entity>(path: string|Array<string>): Promise<T> {
     path = (path instanceof Array) ? path : path.split('/');
     let obj: Record<string, unknown> = this.seed;
 
@@ -248,10 +250,10 @@ export class MemoryRepository implements Repository {
     }
 
     obj = obj || {};
-    return obj as unknown as Entity;
+    return obj as unknown as T;
   }
 
-  private async setSeedObject(path: string|Array<string>, entity: Entity): Promise<Entity> {
+  private async setSeedObject<T extends Entity>(path: string|Array<string>, entity: T): Promise<T> {
     const seed = {...this.seed};
     path = (path instanceof Array) ? path : path.split('/');
     let obj: Record<string, unknown> = seed;
@@ -296,7 +298,7 @@ export class MemoryRepository implements Repository {
     }
   }
 
-  private toArray(items: EntityArray<Entity>): Array<Entity> {
+  private toArray<T extends Entity>(items: EntityArray<T>): Array<T> {
     return Object.keys(items).filter((id: string) => Object.keys(items[id]).length > 0).map((id: string) => items[id]);
   }
 

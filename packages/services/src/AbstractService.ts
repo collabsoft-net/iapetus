@@ -33,44 +33,48 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return entities;
   }
 
-  async findById(id: string, options: QueryOptions = {}): Promise<T|null> {
-    return this.repository.findById(id, { ...this.options, ...options }) as Promise<T|null>;
-  }
-
-  async findByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
-    return this.repository.findByProperty(key, value, { ...this.options, ...options }) as Promise<T|null>;
-  }
-
-  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions = {}): Promise<T> {
-    return this.repository.findByQuery(qb, { ...this.options, ...options }) as Promise<T>;
-  }
-
   async count(options: QueryOptions = { }): Promise<number> {
     return this.repository.count({ ...this.options, ...options });
   }
 
-  async countByQuery(qb: QueryBuilder, options: QueryOptions): Promise<number>;
-  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions): Promise<number>;
-  async countByQuery(qb: unknown, options: QueryOptions = {}): Promise<number> {
+  async countByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<number>;
+  async countByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<number> {
     return this.repository.countByQuery(qb, { ...this.options, ...options });
   }
 
+  async findById(id: string, options: QueryOptions = {}): Promise<T|null> {
+    return this.repository.findById(id, { ...this.options, ...options });
+  }
+
+  async findByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
+    return this.repository.findByProperty(key, value, { ...this.options, ...options });
+  }
+
+  async findByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<T|null>;
+  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<T|null>;
+  async findByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<T|null> {
+    return this.repository.findByQuery(qb, { ...this.options, ...options });
+  }
+
   async findAll(options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAll({ ...this.options, ...options }) as Promise<Paginated<T>>;
+    return this.repository.findAll({ ...this.options, ...options });
   }
 
   async findAllByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAllByProperty(key, value, { ...this.options, ...options }) as Promise<Paginated<T>>;
+    return this.repository.findAllByProperty(key, value, { ...this.options, ...options });
   }
 
-  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: QueryOptions = {}): Promise<Paginated<T>> {
-    return this.repository.findAllByQuery(qb, { ...this.options, ...options }) as Promise<Paginated<T>>;
+  async findAllByQuery(qb: QueryBuilder): Promise<Paginated<T>>;
+  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<Paginated<T>>;
+  async findAllByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<Paginated<T>> {
+    return this.repository.findAllByQuery(qb, { ...this.options, ...options });
   }
 
   async save(entity: T): Promise<T> {
     const errors = this.validate(entity);
     if (errors.length > 0) return Promise.reject(new Error(errors[0]));
-    return this.repository.save(entity, {...this.options, instanceId: this.options.instanceId || entity.instanceId}) as Promise<T>;
+    return this.repository.save(entity, {...this.options, instanceId: this.options.instanceId || entity.instanceId});
   }
 
   async saveAll(entities: Array<T>): Promise<Array<T>> {
