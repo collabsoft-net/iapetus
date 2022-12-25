@@ -3,6 +3,7 @@ export enum JiraCloudEndpoints {
   APP = '/rest/atlassian-connect/1/addons/:appKey',
   USER = '/rest/api/3/user',
   CURRENTUSER = '/rest/api/3/myself',
+  USERS_FOR_PICKER = '/rest/api/3/user/picker',
 
   MYPERMISSIONS = '/rest/api/3/mypermissions',
   PERMISSIONS = '/rest/api/3/permissions',

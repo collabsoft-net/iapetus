@@ -30,6 +30,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getUsersForPicker(query?: string): Promise<Jira.FoundUsers> {
+    const { data } = await this.client.get<Jira.FoundUsers>(this.endpoints.USERS_FOR_PICKER, { query });
+    return data;
+  }
+
   async getProject(projectIdOrKey: string|number, expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>): Promise<Jira.Project> {
     const { data } = await this.client.get<Jira.Project>(this.getEndpointFor(this.endpoints.READ_PROJECT, { projectIdOrKey }), { expand: expand?.join(',')});
     return data;
