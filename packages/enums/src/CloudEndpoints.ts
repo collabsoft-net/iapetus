@@ -19,6 +19,9 @@ export enum JiraCloudEndpoints {
   LIST_PROJECT_ROLES = '/rest/api/2/project/:projectIdOrKey/role',
   READ_PROJECT_ROLE = '/rest/api/2/project/:projectIdOrKey/role/:id',
 
+  LIST_PROJECT_FEATURES = '/rest/api/3/project/:projectIdOrKey/features',
+  UPDATE_PROJECT_FEATURE = '/rest/api/3/project/:projectIdOrKey/features/:featureKey',
+
   STATUSES = '/rest/api/3/project/:projectIdOrKey/statuses',
   STATUSDETAILS = '/rest/api/3/status/:idOrName',
 
@@ -29,6 +32,8 @@ export enum JiraCloudEndpoints {
   ISSUE_SEARCH = '/rest/api/3/search',
 
   LIST_FIELDS= '/rest/api/3/field',
+  ISSUE_FIELD_OPTIONS = '/rest/api/3/field/:fieldKey/option',
+  ISSUE_FIELD_OPTION = '/rest/api/3/field/:fieldKey/option/:optionId',
 
   READ_COMMENT = '/rest/api/3/issue/:issueIdOrKey/comment/:commentId',
   LIST_COMMENTS = '/rest/api/3/issue/:issueIdOrKey/comment',

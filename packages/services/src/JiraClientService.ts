@@ -220,6 +220,31 @@ export class JiraClientService extends AbstractAtlasClientService {
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
   }
 
+  async getAllIssueFieldOptions(fieldKey: string, startAt?: number, maxResults?: number): Promise<Jira.PagedResponse2<Jira.IssueFieldOption>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.IssueFieldOption>>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTIONS, { fieldKey }), { startAt, maxResults });
+    return data;
+  }
+
+  async getIssueFieldOption(fieldKey: string, optionId: number): Promise<Jira.IssueFieldOption> {
+    const { data } = await this.client.get<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId }));
+    return data;
+  }
+
+  async createIssueFieldOption(fieldKey: string, issueFieldOption: Omit<Jira.IssueFieldOption, 'id'>): Promise<Jira.IssueFieldOption> {
+    const { data } = await this.client.post<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTIONS, { fieldKey }), issueFieldOption);
+    return data;
+  }
+
+  async updateIssueFieldOption(fieldKey: string, issueFieldOption: Jira.IssueFieldOption): Promise<Jira.IssueFieldOption> {
+    const { data } = await this.client.post<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: issueFieldOption.id }), issueFieldOption);
+    return data;
+  }
+
+  async deleteIssueFieldOption(fieldKey: string, optionId: number): Promise<boolean> {
+    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: optionId }));
+    return status === StatusCodes.NO_CONTENT;
+  }
+
   async getBoardsFor(
     startAt = 0,
     maxResults = 50,
@@ -238,6 +263,16 @@ export class JiraClientService extends AbstractAtlasClientService {
 
   async getBoardFeatures(boardId: number): Promise<Jira.Features> {
     const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES, { boardId }));
+    return data;
+  }
+
+  async getProjectFeatures(projectIdOrKey: string|number): Promise<Jira.Features> {
+    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.LIST_PROJECT_FEATURES, { projectIdOrKey }));
+    return data;
+  }
+
+  async setProjectFeatures(projectIdOrKey: string|number, featureKey: string, state: 'ENABLED'|'DISABLED'|'COMING_SOON'): Promise<Jira.Features> {
+    const { data } = await this.client.put<Jira.Features>(this.getEndpointFor(this.endpoints.LIST_PROJECT_FEATURES, { projectIdOrKey, featureKey }), state);
     return data;
   }
 

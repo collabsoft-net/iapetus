@@ -670,6 +670,32 @@ declare global {
       overrideEditableFlag?: boolean;
     }
 
+    interface IssueFieldOption {
+      id: number;
+      value: string;
+      properties?: Record<string, string>;
+      config?: IssueFieldOptionConfiguration;
+    }
+
+    interface IssueFieldOptionConfiguration {
+      scope: IssueFieldOptionScope;
+    }
+
+    interface IssueFieldOptionScope {
+      projects2?: ProjectScope;
+      global?: GlobalScope;
+    }
+
+    interface ProjectScope {
+      id: number;
+      attributes?: Array<'notSelectable'|'defaultValue'>;
+    }
+
+    interface GlobalScope {
+      id: number;
+      attributes?: Array<'notSelectable'|'defaultValue'>;
+    }
+
     interface Version {
       self: string;
       id?: string;
@@ -730,7 +756,7 @@ declare global {
       description: string;
       lead: ApplicationUser;
       leadAccountId: string;
-      assigneeType: 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
+      assigneeType: ComponentAssigneeType;
       assignee: ApplicationUser;
       realAssigneeType: string;
       realAssignee: ApplicationUser;
@@ -738,6 +764,8 @@ declare global {
       project: string;
       projectId: number;
     }
+
+    type ComponentAssigneeType = 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
 
     interface ComponentIssuesCount {
       self?: string;
