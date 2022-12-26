@@ -30,8 +30,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getUsersForPicker(query?: string): Promise<Jira.FoundUsers> {
-    const { data } = await this.client.get<Jira.FoundUsers>(this.endpoints.USERS_FOR_PICKER, { query });
+  async getUsersForPicker(query?: string, showAvatar?: boolean, avatarSize?: string, excludeAccountIds?: Array<string>, excludeConnectUsers?: boolean, maxResults?: number): Promise<Jira.FoundUsers> {
+    const { data } = await this.client.get<Jira.FoundUsers>(this.endpoints.USERS_FOR_PICKER, { query, showAvatar, avatarSize, excludeAccountIds: excludeAccountIds?.join(','), excludeConnectUsers, maxResults });
     return data;
   }
 
