@@ -767,6 +767,21 @@ declare global {
 
     type ComponentAssigneeType = 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
 
+    interface CreateComponentRequest {
+      name: string;
+      description?: string;
+      leadAccountId?: string;
+      assigneeType: ComponentAssigneeType;
+      project: string;
+    }
+
+    interface UpdateComponentRequest {
+      name?: string;
+      description?: string;
+      leadAccountId?: string;
+      assigneeType: ComponentAssigneeType;
+    }
+
     interface ComponentIssuesCount {
       self?: string;
       issueCount: number;
