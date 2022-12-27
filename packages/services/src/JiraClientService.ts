@@ -209,14 +209,14 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async createComponent(component: Jira.Component): Promise<Jira.Component> {
+  async createComponent(component: Jira.CreateComponentRequest): Promise<Jira.Component> {
     const { data, status } = await this.client.post<Jira.Component>(this.endpoints.COMPONENT_CREATE, component);
     if (status !== StatusCodes.CREATED) throw new Error();
     return data;
   }
 
-  async updateComponent(component: Jira.Component): Promise<Jira.Component> {
-    const { data } = await this.client.put<Jira.Component>(this.getEndpointFor(this.endpoints.COMPONENT_UPDATE, { id: component.id }), component);
+  async updateComponent(id: string, component: Jira.UpdateComponentRequest): Promise<Jira.Component> {
+    const { data } = await this.client.put<Jira.Component>(this.getEndpointFor(this.endpoints.COMPONENT_UPDATE, { id }), component);
     return data;
   }
 
