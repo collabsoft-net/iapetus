@@ -682,7 +682,7 @@ declare global {
     }
 
     interface IssueFieldOptionScope {
-      projects2?: ProjectScope;
+      projects2?: Array<ProjectScope>;
       global?: GlobalScope;
     }
 
