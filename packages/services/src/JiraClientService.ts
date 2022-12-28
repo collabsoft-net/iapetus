@@ -220,8 +220,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async deleteComponent(id: string): Promise<void> {
-    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.COMPONENT_DELETE, { id: id }));
+  async deleteComponent(id: string, moveIssuesTo?: string|number): Promise<void> {
+    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.COMPONENT_DELETE, { id: id }), undefined, { moveIssuesTo });
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
   }
 
