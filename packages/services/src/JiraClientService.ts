@@ -18,6 +18,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return this.getInstance(this.client.cached(duration), this.mode);
   }
 
+  async paginate<T>(nextPage: string): Promise<Jira.PagedResponse2<T>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<T>>(nextPage);
+    return data;
+  }
+
   async currentUser(): Promise<Jira.User> {
     const { data } = await this.client.get<Jira.User>(this.endpoints.CURRENTUSER);
     return data;
