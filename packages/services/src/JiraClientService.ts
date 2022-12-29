@@ -246,7 +246,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async updateIssueFieldOption(fieldKey: string, issueFieldOption: Jira.IssueFieldOption): Promise<Jira.IssueFieldOption> {
-    const { data } = await this.client.post<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: issueFieldOption.id }), issueFieldOption);
+    const { data } = await this.client.put<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: issueFieldOption.id }), issueFieldOption);
     return data;
   }
 
