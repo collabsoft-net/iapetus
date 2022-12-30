@@ -641,6 +641,21 @@ declare global {
       schema: Schema;
     }
 
+    interface Field extends Pick<FieldDetails, 'id'|'name'|'schema'> {
+      key: string;
+      description: string;
+      isLocked: boolean;
+      isUnscreenable: boolean;
+      searcherKey: string;
+      screensCount: number;
+      contextsCount: number;
+      projectsCount: number;
+      lastUsed: {
+        type: 'TRACKED'|'NOT_TRACKED'|'NO_INFORMATION'
+        value: string;
+      }
+    }
+
     interface IssueRequestOptions {
       fields?: Array<string>;
       fieldsByKeys?: boolean;

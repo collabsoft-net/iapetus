@@ -113,8 +113,9 @@ export class JiraClientService extends AbstractAtlasClientService {
     orderBy?: 'contextsCount'|'-contextsCount'|'+contextsCount'|'lastUsed'|'-lastUsed'|'+lastUsed'|'name'|'-name'|'+name'|'screensCount'|'-screensCount'|'+screensCount'|'projectsCount'|'-projectsCount'|'+projectsCount',
     expand?: Array<'key'|'lastUsed'|'screensCount'|'contextsCount'|'isLocked'|'searcherKey'>,
     startAt?: number,
-    maxResults?: number): Promise<Jira.PagedResponse2<Jira.FieldDetails>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.FieldDetails>>(this.getEndpointFor(this.endpoints.SEARCH_FIELDS), {
+    maxResults?: number
+  ): Promise<Jira.PagedResponse2<Jira.Field>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Field>>(this.getEndpointFor(this.endpoints.SEARCH_FIELDS), {
       type: type?.join(','), id: id?.join(','), query, orderBy, expand: expand?.join(','), startAt, maxResults
     });
     return data;
