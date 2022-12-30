@@ -106,6 +106,20 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getFieldsPaginated(
+    type?: Array<'custom'|'system'>,
+    id?: Array<string>,
+    query?: string,
+    orderBy?: 'contextsCount'|'-contextsCount'|'+contextsCount'|'lastUsed'|'-lastUsed'|'+lastUsed'|'name'|'-name'|'+name'|'screensCount'|'-screensCount'|'+screensCount'|'projectsCount'|'-projectsCount'|'+projectsCount',
+    expand?: Array<'key'|'lastUsed'|'screensCount'|'contextsCount'|'isLocked'|'searcherKey'>,
+    startAt?: number,
+    maxResults?: number): Promise<Jira.PagedResponse2<Jira.FieldDetails>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.FieldDetails>>(this.getEndpointFor(this.endpoints.SEARCH_FIELDS), {
+      type: type?.join(','), id: id?.join(','), query, orderBy, expand: expand?.join(','), startAt, maxResults
+    });
+    return data;
+  }
+
   async getComments(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', expand: Array<string> = [], fetchAll = true): Promise<Array<Jira.Comment>> {
     const result: Array<Jira.Comment> = [];
     const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy, expand: expand.join(',') });

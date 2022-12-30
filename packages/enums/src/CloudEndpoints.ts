@@ -33,6 +33,7 @@ export enum JiraCloudEndpoints {
   ISSUE_SEARCH = '/rest/api/3/search',
 
   LIST_FIELDS= '/rest/api/3/field',
+  SEARCH_FIELDS = '/rest/api/3/field/search',
   ISSUE_FIELD_OPTIONS = '/rest/api/3/field/:fieldKey/option',
   ISSUE_FIELD_OPTION = '/rest/api/3/field/:fieldKey/option/:optionId',
 
