@@ -1222,8 +1222,9 @@ declare global {
       to: string|null;
       fromString: string;
       from: string|null;
-      fieldType: string;
       field: string;
+      fieldType: string;
+      fieldId: string;
     }
 
   }
