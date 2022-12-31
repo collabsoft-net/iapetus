@@ -1223,7 +1223,7 @@ declare global {
       fromString: string;
       from: string|null;
       field: string;
-      fieldType: string;
+      fieldtype: string;
       fieldId: string;
     }
 
