@@ -80,6 +80,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return issue;
   }
 
+  async createIssueMetadata(projectIds?: Array<string|number>, projectKeys?: Array<string>, issuetypeIds?: Array<string|number>, issuetypeNames?: Array<string>, expand?: Array<'projects.issuetypes.fields'>) {
+    const { data } = await this.client.get<Jira.IssueCreateMetadata>(this.endpoints.ISSUE_CREATEMETA, { projectIds: projectIds?.join(','), projectKeys: projectKeys?.join(','), issuetypeIds: issuetypeIds?.join(','), issuetypeNames: issuetypeNames?.join(','), expand: expand?.join(',') });
+    return data;
+  }
+
   async updateIssue(issueIdOrKey: string|number, data: Jira.IssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
     const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey }), data, options as Record<string, string|number|boolean|undefined>);
     if (status !== StatusCodes.NO_CONTENT) {

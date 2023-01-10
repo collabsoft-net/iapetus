@@ -28,6 +28,7 @@ export enum JiraCloudEndpoints {
 
   READ_ISSUE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_CREATE = '/rest/api/3/issue',
+  ISSUE_CREATEMETA = '/rest/api/3/issue/createmeta',
   ISSUE_UPDATE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_DELETE = '/rest/api/3/issue/:issueIdOrKey',
   ISSUE_SEARCH = '/rest/api/3/search',

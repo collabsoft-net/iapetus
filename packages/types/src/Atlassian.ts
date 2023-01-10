@@ -592,6 +592,29 @@ declare global {
       hierarchyLevel: number;
     }
 
+    interface IssueTypeField {
+      autoCompleteUrl: string;
+      hasDefaultValue: boolean;
+      key: string;
+      name: string;
+      operations: Array<'add'|'set'|'remove'>;
+      required: boolean;
+      schema: {
+        type: string;
+        system: string;
+        custom: string;
+        customId: string;
+        items: string;
+      };
+      allowedValues: Array<IssueTypeFieldAllowedValues>
+    }
+
+    interface IssueTypeFieldAllowedValues {
+      id: string;
+      self: string;
+      value: string;
+    }
+
     interface TimeTracking {
       originalEstimate?: string;
       remainingEstimate?: string;
@@ -662,6 +685,27 @@ declare global {
       expand?: string;
       properties?: Array<string>;
       updateHistory?: boolean;
+    }
+
+    interface IssueCreateMetadata {
+      expand: string;
+      projects: Array<ProjectIssueCreateMetadata>;
+    }
+
+    interface ProjectIssueCreateMetadata {
+      self: string;
+      expand: string;
+      id: string;
+      key: string;
+      name: string;
+      avatarUrls: Record<'16x16'|'24x24'|'32x32'|'48x48', string>;
+      issuetypes: Array<IssueTypeIssueCreateMetadata>;
+    }
+
+    interface IssueTypeIssueCreateMetadata extends IssueTypeDetails {
+      scope: Scope;
+      expand: string;
+      fields: Record<string, IssueTypeField>;
     }
 
     interface CreatedIssue {
@@ -956,7 +1000,6 @@ declare global {
     interface Scope {
       type: string;
       project: ProjectDetails;
-      additionalProperties: unknown;
     }
 
     interface PageOfComments {
