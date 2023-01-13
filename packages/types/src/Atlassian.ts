@@ -1270,6 +1270,146 @@ declare global {
       fieldId: string;
     }
 
+    type DynamicModules = 'jiraEntityProperties'|'jiraIssueFields'|'webhooks'|'webPanels'|'webItems'|'webSections';
+
+    interface DynamicModulesRequest extends Partial<Record<DynamicModules, Array<JiraEntityPropertyModule|JiraIssueFieldModule|WebhookModule|WebPanelModule|WebItemModule|WebSectionModule>>> {
+      jiraEntityProperties?: Array<JiraEntityPropertyModule>;
+      jiraIssueFields?: Array<JiraIssueFieldModule>;
+      webhooks?: Array<WebhookModule>;
+      webPanels?: Array<WebPanelModule>;
+      webItems?: Array<WebItemModule>;
+      webSections?: Array<WebSectionModule>;
+    }
+
+    interface JiraEntityPropertyModule {
+      key: string;
+      name: { value: string; i18n?: string; };
+      entityType?: 'issue'|'user'|'project';
+      keyConfigurations?: Array<IndexKeyConfiguration>;
+    }
+
+    interface IndexKeyConfiguration {
+      propertyKey: string;
+      extractions: Array<PropertyIndex>;
+    }
+
+    interface PropertyIndex {
+      objectName: string;
+      type: 'number'|'text'|'string'|'user'|'date';
+      alias?: string;
+    }
+
+    interface JiraIssueFieldModule {
+      key: string;
+      description: { value: string; i18n?: string; };
+      name: { value: string; i18n?: string; }
+      type: 'string'|'text'|'rich_text'|'single_select'|'multi_select'|'number'|'read_only';
+      extractions?: Array<IssueFieldOptionPropertyIndex>;
+      property?: Array<IssueFieldProperty>;
+      template?: IssueFieldTemplate;
+    }
+
+    interface IssueFieldOptionPropertyIndex {
+      path: string;
+      type: 'number'|'text'|'string'|'user'|'date';
+      name?: string;
+    }
+
+    interface IssueFieldProperty {
+      key: string;
+      path: string;
+      type: 'number'|'string'|'date';
+    }
+
+    interface IssueFieldTemplate {
+      type: string;
+      url: string;
+    }
+
+    interface WebhookModule {
+      key: string;
+      event: Webhooks,
+      url: string;
+      excludeBody?: boolean;
+      filter?: string;
+      propertyKeys?: Array<string>;
+    }
+
+    interface WebPanelModule {
+      key: string;
+      location: string;
+      name: { value: string; i18n?: string; };
+      url: string;
+      cacheable?: boolean;
+      conditions?: Array<SingleCondition|CompositeCondition>;
+      layout?: { height: string; width: string; };
+      params?: Record<string, string>;
+      supportsNative?: boolean;
+      tooltip?: { value: string; i18n?: string };
+      weight?: number;
+    }
+
+    interface WebItemModule {
+      key: string;
+      url?: string;
+      location: string;
+      name: { value: string; i18n?: string; };
+      cacheable?: boolean;
+      conditions?: Array<SingleCondition|CompositeCondition>;
+      context?: 'page'|'addon'|'product';
+      icon?: { url: string; height: number; width: number; }
+      params?: Record<string, string>;
+      styleClasses?: Array<string>;
+      target?: {
+        type?: 'page'|'dialog'|'inlinedialog'|'dialogmodule';
+        options?: InlineDialogOptions|DialogOptions|DialogModuleOptions;
+      }
+      tooltip?: { value: string; i18n?: string };
+      weight?: number;
+    }
+
+    interface InlineDialogOptions {
+      closeOthers?: boolean;
+      isRelativeToMouse?: boolean;
+      offsetX?: string;
+      offsetY?: string;
+      onHover?: boolean;
+      onTop?: boolean;
+      persistent?: boolean;
+      showDelay?: number;
+      width?: string;
+    }
+
+    interface DialogOptions {
+      chrome?: boolean;
+      header?: { value: string; i18n?: string };
+      size?: 'small'|'medium'|'large'|'x-large'|'fullscreen'|'maximum';
+      height?: string;
+      width?: string;
+    }
+
+    interface DialogModuleOptions {
+      key: string;
+    }
+
+    interface WebSectionModule {
+      key: string;
+      location: string;
+      name: { value: string; i18n?: string; };
+      conditions?: Array<SingleCondition|CompositeCondition>;
+      params: Record<string, string>;
+      tooltip?: { value: string; i18n?: string };
+      weight?: number;
+    }
+
+    interface SingleCondition {
+      condition: string;
+      invert?: boolean;
+      params?: Record<string, string>;
+    }
+
+    interface CompositeCondition extends Record<'or'|'and', Array<SingleCondition|CompositeCondition>> {}
+
   }
 
   namespace Bitbucket {

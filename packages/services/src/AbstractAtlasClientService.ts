@@ -30,14 +30,8 @@ export abstract class AbstractAtlasClientService {
     return data;
   }
 
-  async listDynamicModules(): Promise<Record<string, unknown>> {
-    const { data } = await this.client.get<Record<string, unknown>>(this.endpoints.LIST_DYNAMIC_MODULES);
-    return data;
-  }
-
-  async registerDynamicModule(dynamicModules: Record<string, unknown>): Promise<void> {
-    await this.client.post(this.endpoints.REGISTER_DYNAMIC_MODULE, JSON.stringify(dynamicModules));
-  }
+  abstract listDynamicModules(): Promise<unknown>;
+  abstract registerDynamicModule(dynamicModules: unknown): Promise<void>;
 
   async unregisterDynamicModule(moduleKey: string): Promise<void> {
     await this.client.delete(this.endpoints.UNREGISTER_DYNAMIC_MODULE, undefined, { moduleKey });

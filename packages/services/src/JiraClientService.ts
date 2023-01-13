@@ -529,6 +529,15 @@ export class JiraClientService extends AbstractAtlasClientService {
     return false;
   }
 
+  async listDynamicModules(): Promise<Jira.DynamicModulesRequest> {
+    const { data } = await this.client.get<Record<string, unknown>>(this.endpoints.LIST_DYNAMIC_MODULES);
+    return data;
+  }
+
+  async registerDynamicModule(dynamicModules: Jira.DynamicModulesRequest): Promise<void> {
+    await this.client.post(this.endpoints.REGISTER_DYNAMIC_MODULE, JSON.stringify(dynamicModules));
+  }
+
   protected getInstance(client: RestClient, mode: Modes): JiraClientService {
     return new JiraClientService(client, mode);
   }

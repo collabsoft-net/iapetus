@@ -80,6 +80,15 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data.results.some(group => group.name === name);
   }
 
+  async listDynamicModules(): Promise<Record<string, unknown>> {
+    const { data } = await this.client.get<Record<string, unknown>>(this.endpoints.LIST_DYNAMIC_MODULES);
+    return data;
+  }
+
+  async registerDynamicModule(dynamicModules: Record<string, unknown>): Promise<void> {
+    await this.client.post(this.endpoints.REGISTER_DYNAMIC_MODULE, JSON.stringify(dynamicModules));
+  }
+
   protected getInstance(client: RestClient, mode: Modes): ConfluenceClientService {
     return new ConfluenceClientService(client, mode);
   }
