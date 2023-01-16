@@ -1408,7 +1408,7 @@ declare global {
       params?: Record<string, string>;
     }
 
-    interface CompositeCondition extends Record<'or'|'and', Array<SingleCondition|CompositeCondition>> {}
+    interface CompositeCondition extends Partial<Record<'or'|'and', Array<SingleCondition|CompositeCondition>>> {}
 
   }
 
