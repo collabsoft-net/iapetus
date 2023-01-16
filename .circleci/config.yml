@@ -47,7 +47,7 @@ commands:
           name: Configure Git
           command: |
             echo -e "@collabsoft-net:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            git config user.email "github@collabsoft.net"
+            git config user.email "engineering@collabsoft.net"
             git config user.name "CollabSoft Bot"
 
   build:
@@ -101,3 +101,5 @@ workflows:
           filters:
             branches:
               only: main
+
+# VS Code Extension Version: 1.5.1
