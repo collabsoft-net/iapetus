@@ -1,13 +1,17 @@
 import { isValidConnectRequest } from './isValidConnectRequest';
 import { waitForAP } from './waitForAP';
 
-export const createPlaceholder = async (): Promise<void> => {
+export const createPlaceholder = async (defaultModuleId?: string, defaultModuleType = 'page'): Promise<void> => {
   const AP = await waitForAP();
 
   const connect = isValidConnectRequest();
-  if (connect?.moduleId) {
+
+  const moduleId = connect?.moduleId || defaultModuleId;
+  const moduleType = connect?.moduleType || defaultModuleType;
+
+  if (moduleId) {
     const placeholder = document.createElement('div');
-    placeholder.setAttribute('id', connect.moduleType !== 'legacy' ? `${connect.moduleType}-${connect.moduleId}` : connect.moduleId);
+    placeholder.setAttribute('id', moduleType !== 'legacy' ? `${moduleType}-${moduleId}` : moduleId);
     placeholder.setAttribute('class', 'ac-content');
     placeholder.setAttribute('style', 'height: 100%');
     document.body.prepend(placeholder);
