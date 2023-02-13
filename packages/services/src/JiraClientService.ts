@@ -179,23 +179,42 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getVersions(projectIdOrKey: string|number): Promise<Array<Jira.Version>> {
-    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey }));
+  async getVersions(projectIdOrKey: string|number, expand?: boolean): Promise<Array<Jira.Version>> {
+    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey }), { expand: expand ? 'operations' : undefined });
     return data;
   }
 
-  async getVersionsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Version>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
+  async getVersionsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string, orderBy?: 'description'|'-description'|'+description'|'name'|'-name'|'+name'|'releaseDate'|'-releaseDate'|'+releaseDate'|'sequence'|'-sequence'|'+sequence'|'startDate'|'-startDate'|'+startDate', status?: Array<'released'|'unreleased'|'archived'>, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.PagedResponse2<Jira.Version>> {
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query, orderBy, status: status?.join(','), expand: expand?.join(',') });
     return data;
   }
 
-  async createVersion(version: Jira.Version): Promise<Jira.Version> {
-    const { data } = await this.client.post<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_CREATE), version);
+  async createVersion(version: Jira.Version, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
+    const { data } = await this.client.post<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_CREATE), {
+      archived: version.archived,
+      description: version.description,
+      name: version.name,
+      projectId: version.projectId,
+      releaseDate: version.releaseDate,
+      released: version.released,
+      startDate: version.startDate,
+      expand: expand?.join(','),
+    });
     return data;
   }
 
-  async updateVersion(version: Jira.Version): Promise<Jira.Version> {
-    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { id: version.id }), version);
+  async updateVersion(version: Jira.Version, moveUnfixedIssuesTo?: string, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
+    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { id: version.id }), {
+      archived: version.archived,
+      description: version.description,
+      name: version.name,
+      projectId: version.projectId,
+      releaseDate: version.releaseDate,
+      released: version.released,
+      startDate: version.startDate,
+      moveUnfixedIssuesTo,
+      expand: expand?.join(','),
+    });
     return data;
   }
 
