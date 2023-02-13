@@ -281,9 +281,9 @@ declare global {
 
     interface FlagOptions {
       title: string;
-      body: string;
+      body?: string;
       type?: FlagTypeOptions;
-      close: FlagCloseOptions;
+      close?: FlagCloseOptions;
       actions?: {
         [actionIdentifier: string]: string;
       }
