@@ -233,9 +233,14 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getRelease(projectKey: string, versionId: string): Promise<Jira.Release> {
-    const { data } = await this.client.get<Jira.Release>(this.getEndpointFor(this.endpoints.RELEASE_DETAILS, { projectKey, versionId }));
-    return data;
+  async getRelease(projectKey: string, versionId: string): Promise<Jira.Release|Jira.VersionWithIssueStatus> {
+    if (this.mode === Modes.CONNECT) {
+      const result = await this.getVersion(versionId, [ 'issuesstatus' ]);
+      return result as Jira.VersionWithIssueStatus
+    } else {
+      const { data } = await this.client.get<Jira.Release>(this.getEndpointFor(this.endpoints.RELEASE_DETAILS, { projectKey, versionId }));
+      return data;
+    }
   }
 
   async getComponents(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {

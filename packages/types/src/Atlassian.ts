@@ -770,6 +770,10 @@ declare global {
       issuesStatusForFixVersion?: VersionIssuesStatus;
     }
 
+    interface VersionWithIssueStatus extends Omit<Version, 'issuesStatusForFixVersion'> {
+      issuesStatusForFixVersion: VersionIssuesStatus;
+    }
+
     interface VersionIssuesStatus {
       unmapped: number;
       toDo: number;
