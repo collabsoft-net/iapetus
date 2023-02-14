@@ -40,6 +40,7 @@
     "@collabsoft-net/types": "^1.0.0-alpha.285",
     "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
+    "@typescript-eslint/parser": "5.52.0",
     "eslint": "8.15.0",
     "form-data": "^4.0.0",
     "http-status-codes": "^2.1.4",

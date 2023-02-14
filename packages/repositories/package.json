@@ -42,6 +42,7 @@
     "@types/node": ">=16.0.0",
     "@types/uniqid": "5.2.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
+    "@typescript-eslint/parser": "5.52.0",
     "eslint": "8.15.0",
     "firebase-admin": "11.2.1",
     "nodemon": "2.0.16",

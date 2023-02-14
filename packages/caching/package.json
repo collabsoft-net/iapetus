@@ -42,6 +42,7 @@
     "@types/node": ">=16.0.0",
     "@types/store": "2.0.2",
     "@typescript-eslint/eslint-plugin": "5.25.0",
+    "@typescript-eslint/parser": "5.52.0",
     "eslint": "8.15.0",
     "nodemon": "2.0.16",
     "redis": "4.1.0",

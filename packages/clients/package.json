@@ -40,6 +40,7 @@
     "@collabsoft-net/helpers": "^1.0.0-alpha.285",
     "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
+    "@typescript-eslint/parser": "5.52.0",
     "atlassian-jwt": "2.0.2",
     "axios": "0.24.0",
     "core-js": "^3.22.7",
