@@ -7,7 +7,7 @@ export abstract class AbstractScheduledPubSubHandler implements ScheduledPubSubH
 
   abstract name: string;
   abstract schedule: string;
-  timeZone: string = 'Etc/UTC';
+  timeZone = 'Etc/UTC';
   timeoutSeconds = 540;
   #timer?: NodeJS.Timeout;
 
