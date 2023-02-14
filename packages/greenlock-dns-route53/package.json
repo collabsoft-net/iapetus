@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/greenlock-dns-route53",
-  "version": "1.0.0-alpha.215",
+  "version": "1.0.0-alpha.287",
   "description": "Rest clients to be used in Server, Cloud functions and client-side (with support for AP.request and Atlassian REST API, incl. impersonation)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
