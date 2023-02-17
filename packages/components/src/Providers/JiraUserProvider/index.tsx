@@ -3,7 +3,7 @@ import kernel from '@collabsoft-net/inversify';
 import { JiraClientService } from '@collabsoft-net/services';
 import { useEffect, useState } from 'react';
 
-interface JiraProjectProviderProps {
+interface JiraUserProviderProps {
   accountId: string|PromiseLike<string>;
   requiredPermissions?: Jira.BulkProjectPermissions|Array<string>;
   loadingMessage?: JSX.Element;
@@ -33,7 +33,7 @@ kernel.onReady(() => {
   }
 });
 
-export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
+export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessage, cacheDuration, children }: JiraUserProviderProps): JSX.Element => {
   const [ user, setUser ] = useState<Jira.User>();
   const [ permitted, setPermitted ] = useState<boolean>();
   const [ loading, setLoading ] = useState<boolean>(true);

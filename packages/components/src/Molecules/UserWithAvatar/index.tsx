@@ -3,24 +3,13 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
 import kernel from '@collabsoft-net/inversify';
-import { ConfluenceClientService } from '@collabsoft-net/services';
-import { JiraClientService } from '@collabsoft-net/services';
-import React, { useEffect, useState } from 'react';
+import { ConfluenceClientService,JiraClientService } from '@collabsoft-net/services';
+import React from 'react';
 import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms';
-
-let service: JiraClientService|ConfluenceClientService;
-
-kernel.onReady(() => {
-  if (kernel.isBound(JiraClientService.getIdentifier())) {
-    service = kernel.get<JiraClientService>(JiraClientService.getIdentifier());
-  } else if (kernel.isBound(ConfluenceClientService.getIdentifier())) {
-    service = kernel.get<ConfluenceClientService>(ConfluenceClientService.getIdentifier());
-  } else {
-    throw new Error(`Could not find instance of JiraClientService or ConfluenceClientService. Please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()" or "ConfluenceClientService.getIdentifier()"`);
-  }
-});
+import * as ConfluenceProviders from '../../Providers/confluence';
+import * as JiraProviders from '../../Providers/jira';
 
 const Wrapper = styled.div`
   display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};
@@ -33,100 +22,100 @@ const AvatarWrapper = styled.div`
 `;
 
 export type UserWithAvatarProps = {
-  accountId?: string;
   size?: SizeType;
+  isValidating?: boolean;
   isDisabled?: boolean;
+  user?: Jira.User|Confluence.User
+  accountId?: string;
   inline?: boolean
+  truncate?: boolean;
   href?: string;
   component?: (state: UserWithAvatarState) => JSX.Element;
   onError?: () => void;
 };
 
 interface UserWithAvatarState {
-  user: Jira.User|Confluence.User|null;
+  user?: Jira.User|Confluence.User;
   isLoading: boolean;
+  isValidating?: boolean;
 }
 
-const memcache = new Map<number|string, Jira.User|Confluence.User>();
+let hostProduct: 'jira'|'confluence';
 
-export const UserWithAvatar = ({ inline, accountId, isDisabled, href, size, component, onError }: UserWithAvatarProps): JSX.Element => {
+kernel.onReady(() => {
+  if (kernel.isBound(JiraClientService.getIdentifier())) {
+    hostProduct = 'jira';
+  } else if (kernel.isBound(ConfluenceClientService.getIdentifier())) {
+    hostProduct = 'confluence';
+  } else {
+    throw new Error(`Could not determine the host product (Jira or Confluence), please make sure to bind a "JiraClientService" or "ConfluenceClientService" in your Inversify configuration`);
+  }
+});
 
-  const [ user, setUser ] = useState<Jira.User|Confluence.User|null>(null);
-  const [ name, setName ] = useState<string>();
-  const [ avatar, setAvatar ] = useState<string>();
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (accountId) {
-      if (memcache.has(accountId)) {
-        const result = memcache.get(accountId) as Jira.User;
-        if (isOfType<Jira.User>(result, 'name') || isOfType<Confluence.User>(result, 'displayName')) {
-          setUser(result);
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (service) {
-        service.getUser(accountId).then(result => {
-          if (isOfType<Jira.User>(result, 'name') || isOfType<Confluence.User>(result, 'displayName')) {
-            setUser(result);
-          }
-        }).catch(() => {}).finally(() => setLoading(false));
-      }
-    }
-  }, [ accountId, service ]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (accountId && user) {
-        memcache.set(accountId, user);
-        if (isOfType<Jira.User>(user, 'avatarUrls')) {
-          setName(user.name || user.displayName);
-          setAvatar(user.avatarUrls['32x32']);
-        } else {
-          setName(user.displayName || user.publicName || user.username);
-          setAvatar(user.profilePicture);
-        }
-      } else {
-        onError && onError();
-      }
-    }
-  }, [ accountId, user ]);
-
-
-  return component ? component({ user, isLoading }) : (
-    <Wrapper inline={inline}>
-      <AvatarWrapper>
-        {(() => {
-          if (isLoading) {
-            return <Spinner size='medium' />;
-          } else if (!user) {
-            return <WarningIcon label='User not found' />;
-          } else {
-            return <Avatar appearance='square' src={ avatar } size={ size || 'xsmall' } isDisabled={ isDisabled } />;
-          }
-        })()}
-      </AvatarWrapper>
+const Content = ({ user, size, href, inline, truncate, isValidating, isDisabled, loading }: Omit<UserWithAvatarProps, 'accountId'|'component'|'onError'> & { loading?: boolean }) => (
+  <Wrapper inline={inline}>
+    <AvatarWrapper>
       {(() => {
-        if (!isLoading) {
-          if (user) {
-            return (
-              <Paragraph margin='0 0 0 8px' display='inline-block'>
-                { href ? (
-                  <Link href={ href }>{ name }</Link>
-                ) : (
-                  <span>{ name }</span>
-                )}
-              </Paragraph>
-            );
-          } else {
-            return 'User not found or access denied';
-          }
+        if (loading || isValidating) {
+          return <Spinner size='medium' />;
+        } else if (!user || !isOfType<Jira.User|Confluence.User>(user, 'displayName')) {
+          return <WarningIcon label='User not found' />;
+        } else if (isOfType<Jira.User>(user, 'avatarUrls')) {
+          return <Avatar src={ user.avatarUrls['32x32'] } size={ size || 'xsmall' } isDisabled={ isDisabled } />;
+        } else if (isOfType<Confluence.User>(user, 'profilePicture')) {
+          return <Avatar src={ user.profilePicture } size={ size || 'xsmall' } isDisabled={ isDisabled } />;
         } else {
-          return '';
+          return <Avatar size={ size || 'xsmall' } isDisabled={ isDisabled } />;
         }
       })()}
-    </Wrapper>
-  );
+    </AvatarWrapper>
+    {(() => {
+      if (!loading && !isValidating) {
+        return (user && isOfType<Jira.User|Confluence.User>(user, 'displayName')) ? (
+          <Paragraph truncate={ truncate } margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display='inline-block'>
+            { href ? (
+              <Link href={ href }>{ user.displayName }</Link>
+            ) : (
+              <span>{ user.displayName }</span>
+            )}
+          </Paragraph>
+        ) : (
+          <Paragraph truncate={ truncate } inline>User not found or access denied</Paragraph>
+        );
+      } else {
+        return '';
+      }
+    })()}
+  </Wrapper>
+);
+
+export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating, isDisabled, href, size, component, onError }: UserWithAvatarProps): JSX.Element => {
+  if (user) {
+    return component
+      ? component({ user, isLoading: false, isValidating })
+      : Content({ user, href, size, inline, truncate, isValidating, isDisabled, loading: false });
+  } else if (typeof accountId !== 'undefined') {
+    return hostProduct === 'jira' ? (
+      <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+        { ({ user: currentUser, loading }) => {
+          return component
+            ? component({ user: currentUser, isLoading: loading, isValidating })
+            : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+        }}
+      </JiraProviders.User>
+    ) : hostProduct === 'confluence' ? (
+      <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+        { ({ user: currentUser, loading }) => {
+          return component
+            ? component({ user: currentUser, isLoading: loading, isValidating })
+            : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+        }}
+      </ConfluenceProviders.User>
+    ) : (
+      <WarningIcon label='Something is terribly wrong' />
+    )
+  } else {
+    onError && onError();
+    return <></>;
+  }
 };
