@@ -189,31 +189,29 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async createVersion(version: Jira.Version, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
+  async createVersion(createVersionRequest: Jira.CreateVersionRequest): Promise<Jira.Version> {
     const { data } = await this.client.post<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_CREATE), {
-      archived: version.archived,
-      description: version.description,
-      name: version.name,
-      projectId: version.projectId,
-      releaseDate: version.releaseDate,
-      released: version.released,
-      startDate: version.startDate,
-      expand: expand?.join(','),
+      archived: createVersionRequest.archived,
+      description: createVersionRequest.description,
+      name: createVersionRequest.name,
+      projectId: createVersionRequest.projectId,
+      releaseDate: createVersionRequest.releaseDate,
+      startDate: createVersionRequest.startDate,
+      expand: createVersionRequest.expand?.join(','),
     });
     return data;
   }
 
-  async updateVersion(version: Jira.Version, moveUnfixedIssuesTo?: string, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
-    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { id: version.id }), {
-      archived: version.archived,
-      description: version.description,
-      name: version.name,
-      projectId: version.projectId,
-      releaseDate: version.releaseDate,
-      released: version.released,
-      startDate: version.startDate,
-      moveUnfixedIssuesTo,
-      expand: expand?.join(','),
+  async updateVersion(id: string, updateVersionRequest: Jira.UpdateVersionRequest): Promise<Jira.Version> {
+    const { data } = await this.client.put<Jira.Version>(this.getEndpointFor(this.endpoints.VERSION_UPDATE, { id }), {
+      archived: updateVersionRequest.archived,
+      description: updateVersionRequest.description,
+      name: updateVersionRequest.name,
+      releaseDate: updateVersionRequest.releaseDate,
+      released: updateVersionRequest.released,
+      startDate: updateVersionRequest.startDate,
+      moveUnfixedIssuesTo: updateVersionRequest.moveUnfixedIssuesTo,
+      expand: updateVersionRequest.expand?.join(','),
     });
     return data;
   }

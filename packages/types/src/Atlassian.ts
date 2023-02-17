@@ -770,6 +770,22 @@ declare global {
       issuesStatusForFixVersion?: VersionIssuesStatus;
     }
 
+    interface CreateVersionRequest {
+      archived?: boolean;
+      description?: string;
+      name: string;
+      projectId: number;
+      releaseDate?: string;
+      startDate?: string;
+      expand?: Array<['operations', 'issuesstatus']>;
+    }
+
+    interface UpdateVersionRequest extends Pick<CreateVersionRequest, 'archived'|'description'|'releaseDate'|'startDate'|'expand'> {
+      name?: string;
+      released?: boolean;
+      moveUnfixedIssuesTo?: string;
+    }
+
     interface VersionWithIssueStatus extends Omit<Version, 'issuesStatusForFixVersion'> {
       issuesStatusForFixVersion: VersionIssuesStatus;
     }
