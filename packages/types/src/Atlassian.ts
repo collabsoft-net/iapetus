@@ -777,7 +777,7 @@ declare global {
       projectId: number;
       releaseDate?: string;
       startDate?: string;
-      expand?: Array<['operations', 'issuesstatus']>;
+      expand?: Array<'operations'|'issuesstatus'>;
     }
 
     interface UpdateVersionRequest extends Pick<CreateVersionRequest, 'archived'|'description'|'releaseDate'|'startDate'|'expand'> {
