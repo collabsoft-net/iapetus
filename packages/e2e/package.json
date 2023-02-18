@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/e2e",
-  "version": "1.0.0-alpha.292",
+  "version": "1.0.0-alpha.293",
   "description": "Collection of shared WebDriver.io testing functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
