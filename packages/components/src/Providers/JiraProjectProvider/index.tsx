@@ -1,7 +1,7 @@
-import { ServiceIdentifier } from '@collabsoft-net/connect';
-import kernel from '@collabsoft-net/inversify';
-import { JiraClientService } from '@collabsoft-net/services';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
+
+import { APProvider } from '../../Contexts/APProvider';
+import { JiraClientServiceProvider } from '../../Contexts/JiraClientServiceProvider';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number|PromiseLike<string|number>;
@@ -16,50 +16,33 @@ interface JiraProjectProviderProps {
   }) => JSX.Element;
 }
 
-let service: JiraClientService;
-let AP: AP.Instance;
-
-kernel.onReady(() => {
-  if (kernel.isBound(JiraClientService.getIdentifier())) {
-    service = kernel.get<JiraClientService>(JiraClientService.getIdentifier());
-  } else {
-    throw new Error(`Could not find instance of JiraClientService, please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()"`);
-  }
-
-  if (kernel.isBound(ServiceIdentifier.AP)) {
-    AP = kernel.get<AP.Instance>(ServiceIdentifier.AP);
-  } else {
-    throw new Error(`Could not find instance of AP, please make sure to bind it in your Inversify configuration using "ServiceIdentifier.AP"`);
-  }
-});
-
 export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
+
+  const AP = useContext(APProvider);
+  const jiraClientService = useContext(JiraClientServiceProvider);
+
   const [ project, setProject ] = useState<Jira.Project>();
   const [ permitted, setPermitted ] = useState<boolean>();
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
-  useEffect(() => {
-    if (AP && service) {
-      const jiraClientService = cacheDuration ? service.cached(cacheDuration) : service;
-      new Promise<string|number>(resolve => resolve(projectIdOrKey)).then(idOrKey =>
-        jiraClientService.getProject(idOrKey).then(async (project) => {
-          if (requiredPermissions) {
-            const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
-            const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
-              projects: [ Number(project.id) ],
-              permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
-            }]).catch(() => false)
-            setPermitted(hasRequiredPermissions);
-            setProject(project);
-          } else {
-            setPermitted(true);
-            setProject(project);
-          }
-        })
-      ).catch(setErrors).finally(() => setLoading(false));
+  Promise.all([ AP, jiraClientService ]).then(async ([ AP, service ]) => {
+    const jiraClientService = cacheDuration ? service.cached(cacheDuration) : service;
+    const idOrKey = await new Promise<string|number>(resolve => resolve(projectIdOrKey));
+    const project = await jiraClientService.getProject(idOrKey);
+    if (requiredPermissions) {
+      const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
+      const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
+        projects: [ Number(project.id) ],
+        permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
+      }]).catch(() => false)
+      setPermitted(hasRequiredPermissions);
+      setProject(project);
+    } else {
+      setPermitted(true);
+      setProject(project);
     }
-  }, [ AP, service ]);
+  }).catch(setErrors).finally(() => setLoading(false));
 
   return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
 }

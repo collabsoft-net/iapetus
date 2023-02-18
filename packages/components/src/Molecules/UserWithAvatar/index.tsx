@@ -2,9 +2,8 @@ import Avatar, { SizeType } from '@atlaskit/avatar';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
-import kernel from '@collabsoft-net/inversify';
-import { ConfluenceClientService,JiraClientService } from '@collabsoft-net/services';
 import React from 'react';
+import { APContextProvider } from 'src/Providers/APContextProvider';
 import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms';
@@ -39,18 +38,6 @@ interface UserWithAvatarState {
   isLoading: boolean;
   isValidating?: boolean;
 }
-
-let hostProduct: 'jira'|'confluence';
-
-kernel.onReady(() => {
-  if (kernel.isBound(JiraClientService.getIdentifier())) {
-    hostProduct = 'jira';
-  } else if (kernel.isBound(ConfluenceClientService.getIdentifier())) {
-    hostProduct = 'confluence';
-  } else {
-    throw new Error(`Could not determine the host product (Jira or Confluence), please make sure to bind a "JiraClientService" or "ConfluenceClientService" in your Inversify configuration`);
-  }
-});
 
 const Content = ({ user, size, href, inline, truncate, isValidating, isDisabled, loading }: Omit<UserWithAvatarProps, 'accountId'|'component'|'onError'> & { loading?: boolean }) => (
   <Wrapper inline={inline}>
@@ -95,25 +82,29 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
       ? component({ user, isLoading: false, isValidating })
       : Content({ user, href, size, inline, truncate, isValidating, isDisabled, loading: false });
   } else if (typeof accountId !== 'undefined') {
-    return hostProduct === 'jira' ? (
-      <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
-        { ({ user: currentUser, loading }) => {
-          return component
-            ? component({ user: currentUser, isLoading: loading, isValidating })
-            : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+    return (
+      <APContextProvider>
+        { ({ context }) => {
+          return isOfType<AP.JiraContext>(context, 'jira') ? (
+            <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+              { ({ user: currentUser, loading }) => {
+                return component
+                  ? component({ user: currentUser, isLoading: loading, isValidating })
+                  : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+              }}
+            </JiraProviders.User>
+          ) : (
+            <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+              { ({ user: currentUser, loading }) => {
+                return component
+                  ? component({ user: currentUser, isLoading: loading, isValidating })
+                  : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+              }}
+            </ConfluenceProviders.User>
+          )
         }}
-      </JiraProviders.User>
-    ) : hostProduct === 'confluence' ? (
-      <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
-        { ({ user: currentUser, loading }) => {
-          return component
-            ? component({ user: currentUser, isLoading: loading, isValidating })
-            : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
-        }}
-      </ConfluenceProviders.User>
-    ) : (
-      <WarningIcon label='Something is terribly wrong' />
-    )
+      </APContextProvider>
+    );
   } else {
     onError && onError();
     return <></>;
