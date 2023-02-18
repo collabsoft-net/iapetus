@@ -3,10 +3,10 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
 import React from 'react';
-import { APContextProvider } from 'src/Providers/APContextProvider';
 import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms';
+import * as APProviders from '../../Providers/ap';
 import * as ConfluenceProviders from '../../Providers/confluence';
 import * as JiraProviders from '../../Providers/jira';
 
@@ -83,9 +83,13 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
       : Content({ user, href, size, inline, truncate, isValidating, isDisabled, loading: false });
   } else if (typeof accountId !== 'undefined') {
     return (
-      <APContextProvider>
-        { ({ context }) => {
-          return isOfType<AP.JiraContext>(context, 'jira') ? (
+      <APProviders.Context>
+        { ({ context, loading }) => {
+          return loading ? (
+            <>
+              { component ? component({ isLoading: loading }) : Content({ loading }) }
+            </>
+          ) : isOfType<AP.JiraContext>(context, 'jira') ? (
             <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
               { ({ user: currentUser, loading }) => {
                 return component
@@ -103,7 +107,7 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
             </ConfluenceProviders.User>
           )
         }}
-      </APContextProvider>
+      </APProviders.Context>
     );
   } else {
     onError && onError();
