@@ -775,8 +775,8 @@ declare global {
       description?: string;
       name: string;
       projectId: number;
-      releaseDate?: string;
-      startDate?: string;
+      releaseDate?: string|null;
+      startDate?: string|null;
       expand?: Array<'operations'|'issuesstatus'>;
     }
 
