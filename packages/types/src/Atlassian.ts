@@ -786,6 +786,17 @@ declare global {
       moveUnfixedIssuesTo?: string;
     }
 
+    interface DeleteVersionRequest {
+      customFieldReplacementList?: Array<CustomFieldReplacement>;
+      moveAffectedIssuesTo?: number;
+      moveFixIssuesTo?: number;
+    }
+
+    interface CustomFieldReplacement {
+      customFieldId: number;
+      moveTo: number;
+    }
+
     interface VersionWithIssueStatus extends Omit<Version, 'issuesStatusForFixVersion'> {
       issuesStatusForFixVersion: VersionIssuesStatus;
     }

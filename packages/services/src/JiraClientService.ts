@@ -216,8 +216,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async deleteVersion(id: string): Promise<void> {
-    const { status } = await this.client.post(this.getEndpointFor(this.endpoints.VERSION_DELETE, { id: id }), {});
+  async deleteVersion(id: string, options?: Jira.DeleteVersionRequest): Promise<void> {
+    const { status } = await this.client.post(this.getEndpointFor(this.endpoints.VERSION_DELETE, { id: id }), options);
     if (status !== StatusCodes.NO_CONTENT) throw new Error();
   }
 
