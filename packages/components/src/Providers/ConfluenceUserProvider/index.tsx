@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { ConfluenceClientServiceProvider } from '../../Contexts/ConfluenceClientServiceProvider';
 
@@ -21,10 +21,13 @@ export const ConfluenceUserProvider = ({ accountId, loadingMessage, cacheDuratio
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
-  service.then(service => {
-    const ConfluenceClientService = cacheDuration ? service.cached(cacheDuration) : service;
-    return new Promise<string>(resolve => resolve(accountId)).then(id => ConfluenceClientService.getUser(id).then(setUser))
-  }).catch(setErrors).finally(() => setLoading(false));
+  useEffect(() => {
+    service.then(async service => {
+      const ConfluenceClientService = cacheDuration ? service.cached(cacheDuration) : service;
+      const id = await new Promise<string>(resolve => resolve(accountId));
+      return await ConfluenceClientService.getUser(id).then(setUser);
+    }).catch(setErrors).finally(() => setLoading(false));
+  }, [ service ]);
 
   return loading && loadingMessage ? loadingMessage : children({ user, loading, errors });
 }

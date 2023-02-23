@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { APProvider } from '../../Contexts/APProvider';
 
@@ -18,9 +18,11 @@ export const APContextProvider = ({ children }: APContextProviderProps): JSX.Ele
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
-  AP.then(async AP => {
-    AP.context.getContext(setContext);
-  }).catch(setErrors).finally(() => setLoading(false));
+  useEffect(() => {
+    AP.then(async AP => {
+      AP.context.getContext(setContext);
+    }).catch(setErrors).finally(() => setLoading(false));
+  }, [ AP ]);
 
   return children({ context, loading, errors });
 }

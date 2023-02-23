@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect,useState } from 'react';
 
 import { APProvider } from '../../Contexts/APProvider';
 import { JiraClientServiceProvider } from '../../Contexts/JiraClientServiceProvider';
@@ -26,23 +26,25 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
-  Promise.all([ AP, jiraClientService ]).then(async ([ AP, service ]) => {
-    const jiraClientService = cacheDuration ? service.cached(cacheDuration) : service;
-    const idOrKey = await new Promise<string|number>(resolve => resolve(projectIdOrKey));
-    const project = await jiraClientService.getProject(idOrKey);
-    if (requiredPermissions) {
-      const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
-      const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
-        projects: [ Number(project.id) ],
-        permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
-      }]).catch(() => false)
-      setPermitted(hasRequiredPermissions);
-      setProject(project);
-    } else {
-      setPermitted(true);
-      setProject(project);
-    }
-  }).catch(setErrors).finally(() => setLoading(false));
+  useEffect(() => {
+    Promise.all([ AP, jiraClientService ]).then(async ([ AP, service ]) => {
+      const jiraClientService = cacheDuration ? service.cached(cacheDuration) : service;
+      const idOrKey = await new Promise<string|number>(resolve => resolve(projectIdOrKey));
+      const project = await jiraClientService.getProject(idOrKey);
+      if (requiredPermissions) {
+        const accountId = await new Promise<string>(resolve => AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)));
+        const hasRequiredPermissions = await jiraClientService.hasPermissions(accountId, [ {
+          projects: [ Number(project.id) ],
+          permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
+        }]).catch(() => false)
+        setPermitted(hasRequiredPermissions);
+        setProject(project);
+      } else {
+        setPermitted(true);
+        setProject(project);
+      }
+    }).catch(setErrors).finally(() => setLoading(false));
+  }, [ AP, jiraClientService ])
 
   return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
 }
