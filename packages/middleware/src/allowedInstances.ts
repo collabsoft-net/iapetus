@@ -7,5 +7,5 @@ export const allowedInstances = [
   'https://remie-figma.atlassian.net',
   'https://juliet-collabsoft.atlassian.net',
   'https://ffc-migration.atlassian.net',
-  'https://collabhard.atlassian.net',
+  'https://jari-acc.atlassian.net'
 ];
