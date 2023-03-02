@@ -323,8 +323,13 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async setProjectFeatures(projectIdOrKey: string|number, featureKey: string, state: 'ENABLED'|'DISABLED'|'COMING_SOON'): Promise<Jira.Features> {
-    const { data } = await this.client.put<Jira.Features>(this.getEndpointFor(this.endpoints.LIST_PROJECT_FEATURES, { projectIdOrKey, featureKey }), state);
+  async getProjectFeature(projectIdOrKey: string|number, featureKey: string): Promise<Jira.Feature|undefined> {
+    const { features } = await this.getProjectFeatures(projectIdOrKey);
+    return features.find(item => item.feature === featureKey);
+  }
+
+  async setProjectFeature(projectIdOrKey: string|number, featureKey: string, state: 'ENABLED'|'DISABLED'|'COMING_SOON'): Promise<Jira.Features> {
+    const { data } = await this.client.put<Jira.Features>(this.getEndpointFor(this.endpoints.UPDATE_PROJECT_FEATURE, { projectIdOrKey, featureKey }), { state });
     return data;
   }
 
