@@ -1,6 +1,5 @@
 
 export enum JiraCloudEndpoints {
-  APP = '/rest/atlassian-connect/1/addons/:appKey',
   USER = '/rest/api/3/user',
   CURRENTUSER = '/rest/api/3/myself',
   USERS_FOR_PICKER = '/rest/api/3/user/picker',
@@ -8,6 +7,9 @@ export enum JiraCloudEndpoints {
   MYPERMISSIONS = '/rest/api/3/mypermissions',
   PERMISSIONS = '/rest/api/3/permissions',
   PERMISSIONS_CHECK = '/rest/api/3/permissions/check',
+
+  APP = '/rest/atlassian-connect/1/addons/:appKey',
+  APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
 
   USER_PROPERTY_BY_KEY = '/rest/api/3/user/properties/:propertyKey',
   PROJECT_PROPERTY_BY_KEY = '/rest/api/3/project/:projectIdOrKey/properties/:propertyKey',

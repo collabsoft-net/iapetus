@@ -333,12 +333,22 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getEntityProperty<T>(entityType: 'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
     switch (entityType) {
+      case 'app': return this.getAppProperty(entityId, propertyKey);
       case 'user': return this.getUserProperty(entityId, propertyKey);
       case 'project': return this.getProjectProperty(entityId, propertyKey);
       case 'issue': return this.getIssueProperty(entityId, propertyKey);
       case 'comment': return this.getCommentProperty(entityId, propertyKey);
+    }
+  }
+
+  async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
     }
   }
 
@@ -381,12 +391,20 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async setEntityProperty<T>(entityType: 'user'|'project'|'issue'|'comment', entityId: string, property: Jira.EntityProperty<T>): Promise<void> {
+  async setEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, property: Jira.EntityProperty<T>): Promise<void> {
     switch (entityType) {
+      case 'app': return this.setAppProperty(entityId, property);
       case 'user': return this.setUserProperty(entityId, property);
       case 'project': return this.setProjectProperty(entityId, property);
       case 'issue': return this.setIssueProperty(entityId, property);
       case 'comment': return this.setCommentProperty(entityId, property);
+    }
+  }
+
+  async setAppProperty<T>(addonKey: string, property: Jira.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
     }
   }
 
