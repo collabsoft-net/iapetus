@@ -479,71 +479,140 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async hasPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
+  async hasAllPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
+    return this.hasPermissions(accountId, projectPermissions, globalPermissions, 'ALL');
+  }
+
+  async hasAnyPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
+    return this.hasPermissions(accountId, projectPermissions, globalPermissions, 'ANY');
+  }
+
+  //
+  // WARNING: here by dragons 🐲
+  // This method checks for Jira permissions
+  // If this is not properly implemented, the user might incorrectly end up with elevated priviledges
+  // This poses a security issue and might result in data integrity / security incidents and/or bugcrowd vulnerability reports
+  //
+  async hasPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>, mode: 'ALL'|'ANY' = 'ALL'): Promise<boolean> {
+    const evaluator = mode === 'ALL' ? 'every' : 'some';
     if (!accountId || (!projectPermissions && !globalPermissions)) return false;
 
     if (this.mode === Modes.CONNECT) {
+
+      // Retrieve the permissions from the JIRA API.
+      // This will return an array of permissions per project/issue. If the user has the requested permission, it will be listed in the array.
+      // For global permissions, the response will be an array of each of the permissions that match the request
       const { data } = await this.client.post<Jira.BulkPermissionGrants>(this.endpoints.PERMISSIONS_CHECK, {
         accountId,
         projectPermissions,
         globalPermissions
       });
 
+      // Are we requesting any global permissions?
       if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
+
+        // Did we get any global permissions returned, and if so, is this in the form of an Array?
         if (data.globalPermissions && Array.isArray(data.globalPermissions)) {
-          const hasAllGlobalPermissions = globalPermissions.every(item => data.globalPermissions.includes(item));
-          if (!hasAllGlobalPermissions) {
+
+          // Check if we have ALL or ANY of the global permissions by matching the response array with the request array
+          // If we need ALL global permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
+          const hasRequiredGlobalPermissions = globalPermissions[evaluator](item => data.globalPermissions.includes(item));
+
+          // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
+          if (!hasRequiredGlobalPermissions) {
             return false;
           }
+
+        // If we did not get any global permissions back in the response, it definitely does not match our request
+        // given that we requested at least one global permission (globalPermissions.length > 0)
+        // In this case we will return false and abort further processing
         } else {
           return false;
         }
       }
 
+      // Are we requesting any project/issue permisions
       if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
+
+        // Did we get any project/issue permissions returned, and if so, is this in the form of an Array?
         if (data.projectPermissions && Array.isArray(data.projectPermissions)) {
-          const hasAllProjectPermissions = projectPermissions.every(projectPermission =>
-            projectPermission.permissions.every(permission => {
+
+          // The requested permissions is actually an array, which includes further arrays of permisions, projects and issues
+          // We need to loop over every requested project permissions to check if the listed permissions match the listed project / issue
+          // In addition, we need to check if we have ALL or ANY of the project/issue permissions
+          // If we need ALL project/issue permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
+          const hasRequiredProjectPermissions = projectPermissions[evaluator](projectPermission =>
+
+            // Each iteration of requested project permissions need to be evaluated independenly
+            // It consists of an array of permissions and to which projects/issues the permission applies
+            // We evaluate based on the permissions, which is why we loop over each of the permissions in this iteration
+            projectPermission.permissions[evaluator](permission => {
+
+              // Let's start by checking if there is an entry in the response that applies to the permission in this iteration
               const hasPermission = data.projectPermissions.find(item => item.permission === permission);
+
+              // If there is no permission, this iteration does not apply and we should return false for this iteration
+              // This is because the iteration only evaluates true if it also includes the permission in the response
               if (!hasPermission) {
                 return false;
               }
 
-              if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
-                if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
-                  const hasProjectPermission = projectPermission.projects.every(item => hasPermission.projects.includes(item));
+              // Check if we are looking for project permissions
+              if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
+                // Check if the matched permission in the response applies to projects
+                if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
+                  // Check if ALL or ANY of the projects in our request are also listed in the response
+                  const hasProjectPermission = projectPermission.projects[evaluator](item => hasPermission.projects.includes(item));
+
+                  // If the response does not include ANY or ALL of the requested projects, we return false for this iteration
                   if (!hasProjectPermission) {
                     return false;
                   }
                 }
               }
 
-              if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
-                if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
-                  const hasIssuePermission = projectPermission.issues.every(item => hasPermission.issues.includes(item));
+              // Check if we are looking for issue permissions
+              if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
+                // Check if the matched permission in the response applies to issues
+                if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
+                  // Check if ALL or ANY of the issues in our request are also listed in the response
+                  const hasIssuePermission = projectPermission.issues[evaluator](item => hasPermission.issues.includes(item));
+
+                  // If the response does not include ANY or ALL of the requested issues, we return false for this iteration
                   if (!hasIssuePermission) {
                     return false;
                   }
                 }
               }
 
+              // If we reached this part, neither project nor issue permisions returned false
+              // That means this iteration matches the requested permissions and we return true
               return true;
             })
           );
 
-          if (!hasAllProjectPermissions) {
+          // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
+          if (!hasRequiredProjectPermissions) {
             return false;
           }
+
+        // If we did not get any project/issue permissions back in the response, it definitely does not match our request
+        // given that we requested at least one project/issue permission (projectPermissions.length > 0)
+        // In this case we will return false and abort further processing
         } else {
           return false;
         }
       }
 
-      // If we reached this part, nether global or project specific permissions returned false
+      // If we reached this part, neither global or project specific permissions returned false
       // So you probably have access?!
       return true;
 
     } else if (this.mode === Modes.P2) {
+
+      // TODO: we need to support `ANY` mode for Server
+      if (mode === 'ANY') throw new Error('This method does not support `ANY` mode in Server/DC environments');
+
       let hasAllPermissions = true;
 
       for await (const bulkPermission of projectPermissions || []) {
@@ -552,13 +621,13 @@ export class JiraClientService extends AbstractAtlasClientService {
         for await (const projectId of projects || []) {
           if (!hasAllPermissions) break;
           const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { projectId });
-          hasAllPermissions = permissions.every(permission => data.permissions[permission] && data.permissions[permission].havePermission);
+          hasAllPermissions = permissions[evaluator](permission => data.permissions[permission] && data.permissions[permission].havePermission);
         }
 
         for await (const issueId of issues || []) {
           if (!hasAllPermissions) break;
           const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { issueId });
-          hasAllPermissions = permissions.every(permission => data.permissions[permission] && data.permissions[permission].havePermission);
+          hasAllPermissions = permissions[evaluator](permission => data.permissions[permission] && data.permissions[permission].havePermission);
         }
       }
 
