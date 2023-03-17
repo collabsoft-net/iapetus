@@ -67,6 +67,7 @@ export enum JiraCloudEndpoints {
   ALL_RELEASES = '/rest/api/3/project/:projectKey/versions',
   RELEASE_DETAILS = '/rest/api/3/version/:versionId',
 
+  BOARD = '/rest/agile/1.0/board/:boardId',
   BOARDS = '/rest/agile/1.0/board',
   BOARD_FEATURES = '/rest/agile/1.0/board/:boardId/features',
 

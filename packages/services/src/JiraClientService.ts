@@ -297,6 +297,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return status === StatusCodes.NO_CONTENT;
   }
 
+  async getBoard(boardId: string): Promise<Jira.Board> {
+    const { data } = await this.client.get<Jira.Board>(this.getEndpointFor(this.endpoints.BOARD, { boardId }));
+    return data;
+  }
+
   async getBoardsFor(
     startAt = 0,
     maxResults = 50,
