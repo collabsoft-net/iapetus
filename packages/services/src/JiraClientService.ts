@@ -297,6 +297,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return status === StatusCodes.NO_CONTENT;
   }
 
+  async getBoard(boardId: string): Promise<Jira.Board> {
+    const { data } = await this.client.get<Jira.Board>(this.getEndpointFor(this.endpoints.BOARD, { boardId }));
+    return data;
+  }
+
   async getBoardsFor(
     startAt = 0,
     maxResults = 50,
@@ -312,6 +317,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     const { data } = await this.client.get<Jira.PagedResponse2<Jira.Board>>(this.getEndpointFor(this.endpoints.BOARDS), { startAt, maxResults, type, name, projectKeyOrId, accountIdLocation, projectLocation, includePrivate, negateLocationFiltering, orderBy, filterId });
     return data;
   }
+
 
   async getBoardFeatures(boardId: number): Promise<Jira.Features> {
     const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES, { boardId }));
