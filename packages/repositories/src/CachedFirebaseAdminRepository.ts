@@ -21,7 +21,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      const cachedEntity = await this.cacheService.get<Paginated<string>>(cacheKey) || [];
+      const cachedEntityIds = cachedEntity.values;
+
       if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result: Array<T> = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
@@ -30,13 +32,13 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
             result.push(entity);
           }
         }
-        return new PageDTO<T>(result);
+        return new PageDTO<T>({ ...cachedEntity, values: result } as Paginated<T>);
       }
     }
 
     const entities = await super.findAll<T>(options);
     const entityIds = entities.values.map(entity => entity.id);
-    await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.cacheService.set(cacheKey, { ...entities, values: entityIds }, options.expiresInSeconds);
     await this.registerQueryBasedCacheKey(cacheKey, options);
     return entities;
   }
@@ -46,7 +48,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      const cachedEntity = await this.cacheService.get<Paginated<string>>(cacheKey) || [];
+      const cachedEntityIds = cachedEntity.values;
+
       if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
@@ -55,13 +59,13 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
             result.push(entity);
           }
         }
-        return new PageDTO<T>(result);
+        return new PageDTO<T>({ ...cachedEntity, values: result } as Paginated<T>);
       }
     }
 
     const entities = await super.findAllByProperty<T>(key, value, options);
     const entityIds = entities.values.map(entity => entity.id);
-    await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.cacheService.set(cacheKey, { ...entities, values: entityIds }, options.expiresInSeconds);
     await this.registerQueryBasedCacheKey(cacheKey, options);
     return entities;
   }
@@ -74,7 +78,9 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     const isCached = await this.cacheService.has(cacheKey);
 
     if (isCached) {
-      const cachedEntityIds = await this.cacheService.get<Array<string>>(cacheKey) || [];
+      const cachedEntity = await this.cacheService.get<Paginated<string>>(cacheKey) || [];
+      const cachedEntityIds = cachedEntity.values;
+
       if (cachedEntityIds && Array.isArray(cachedEntityIds) && cachedEntityIds.length > 0) {
         const result = [];
         for await (const entityId of cachedEntityIds.filter(item => !isNullOrEmpty(item))) {
@@ -83,13 +89,13 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
             result.push(entity);
           }
         }
-        return new PageDTO<T>(result);
+        return new PageDTO<T>({ ...cachedEntity, values: result } as Paginated<T>);
       }
     }
 
     const entities = await super.findAllByQuery<T>(queryBuilder, options);
     const entityIds = entities.values.map(entity => entity.id);
-    await this.cacheService.set(cacheKey, entityIds, options.expiresInSeconds);
+    await this.cacheService.set(cacheKey, { ...entities, values: entityIds }, options.expiresInSeconds);
     await this.registerQueryBasedCacheKey(cacheKey, options);
     return entities;
   }

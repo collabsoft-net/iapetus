@@ -1,10 +1,10 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
-import { Entity, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
 import uniqid from 'uniqid';
 
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
-import { QueryBuilder } from './QueryBuilder';
+import { QueryBuilder as QB } from './QueryBuilder';
 
 export class FirebaseAdminRepository implements Repository {
 
@@ -80,7 +80,7 @@ export class FirebaseAdminRepository implements Repository {
     }
 
     let collection: firestore.Query = this.firestore.collection(options.path);
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
+    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
       if (condition.key === 'orderBy') {
@@ -115,7 +115,7 @@ export class FirebaseAdminRepository implements Repository {
   async findByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
 
-    const queryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
+    const queryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
     const { values } = await this.findAllByQuery<T>(queryBuilder.limit(1), options);
     return values[0];
   }
@@ -164,7 +164,7 @@ export class FirebaseAdminRepository implements Repository {
     }
 
     let collection: firestore.Query = this.firestore.collection(options.path);
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QueryBuilder()) : qb;
+    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
       if (condition.key === 'orderBy') {
@@ -184,8 +184,7 @@ export class FirebaseAdminRepository implements Repository {
     const docRef = await collection.get();
     docRef.forEach((document) => result.push(<T>document.data()));
 
-    const countRef = await collection.count().get();
-    const total = countRef.data().count;
+    const total = await this.countByQuery({ ...queryBuilder, conditions: queryBuilder.conditions.filter(item => item.key !== 'limit' && item.key !== 'offset') }, options);
 
     return {
       start: 0,
