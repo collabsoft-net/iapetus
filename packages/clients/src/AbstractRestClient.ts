@@ -62,6 +62,14 @@ export abstract class AbstractRestClient implements RestClient {
     return this.request<T>(RestClientMethods.DELETE, endpoint, data, params, config, duration);
   }
 
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration !== 'number' ? configOrCacheDuration : undefined;
+    const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration
+    return this.request<T>(RestClientMethods.HEAD, endpoint, undefined, params, config, duration);
+  }
+
   protected normalizeQuery(params: Record<string, string|number|boolean|undefined>): Record<string, string|number|boolean|undefined> {
     const query: Record<string, string|number|boolean|undefined> = {};
     if (params) {

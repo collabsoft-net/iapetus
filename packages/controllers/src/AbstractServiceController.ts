@@ -13,6 +13,33 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
 
   protected abstract service: DefaultService<T, X>;
 
+  async headers(@requestParam('id') id?: string): Promise<StatusCodeResult> {
+    if (id) {
+      const result = await this.service.findById(id);
+      return result ? this.statusCode(StatusCodes.OK) : this.statusCode(StatusCodes.NOT_FOUND);
+    } else {
+      const { query } = this.httpContext.request;
+      if (query && Object.keys(query).length > 0) {
+        const result = await this.service.countByQuery(qb => {
+          let queryBuilder = qb;
+          Object.keys(query).forEach((key) => {
+            const value = query[key];
+            if (value && typeof value === 'string') {
+              queryBuilder = this.toQuery(key, value, queryBuilder);
+            }
+          });
+          return queryBuilder;
+        });
+        this.httpContext.response.setHeader('X-Total-Count', result);
+        return this.statusCode(StatusCodes.OK);
+      } else {
+        const result = await this.service.count();
+        this.httpContext.response.setHeader('X-Total-Count', result);
+        return this.statusCode(StatusCodes.OK);
+      }
+    }
+  }
+
   async create(@requestBody() item: X): Promise<X|StatusCodeResult> {
     try {
       if (item.id && item.id !== '-1' || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
@@ -41,9 +68,11 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
           });
           return queryBuilder;
         });
+        this.httpContext.response.setHeader('X-Total-Count', result.total);
         return new PageDTO({ ...result, values: result.values.map(item => this.service.toDTO(item)) });
       } else {
         const result = await this.service.findAll();
+        this.httpContext.response.setHeader('X-Total-Count', result.total);
         return { ...result, values: result.values.map(item => this.service.toDTO(item)) };
       }
     }
