@@ -35,6 +35,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getUserEmail(accountId:string): Promise<Jira.UnrestrictedUserEmail> {
+    const { data } = await this.client.get<Jira.UnrestrictedUserEmail>(this.endpoints.USER_EMAIL, { accountId });
+    return data;
+  }
+
   async getUsersForPicker(query?: string, showAvatar?: boolean, avatarSize?: string, excludeAccountIds?: Array<string>, excludeConnectUsers?: boolean, maxResults?: number): Promise<Jira.FoundUsers> {
     const { data } = await this.client.get<Jira.FoundUsers>(this.endpoints.USERS_FOR_PICKER, { query, showAvatar, avatarSize, excludeAccountIds: excludeAccountIds?.join(','), excludeConnectUsers, maxResults });
     return data;
