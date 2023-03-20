@@ -1212,6 +1212,15 @@ declare global {
       feature: string;
     }
 
+    interface Sprint {
+      id: number;
+      self: string;
+      state: 'future'|'closed'|string;
+      name: string;
+      startDate: string;
+      endDate: string;
+      originBoardId: number;
+    }
 
     interface EntityProperty<T> {
       key: string;
@@ -1284,6 +1293,11 @@ declare global {
       webhookEvent: 'comment_created'|'comment_updated'|'comment_deleted';
       issue: Issue;
       comment: Comment;
+    }
+
+    interface SprintWebhookEvent extends WebhookEvent {
+      webhookEvent: 'sprint_created'|'sprint_deleted'|'sprint_updated'|'sprint_started'|'sprint_closed';
+      sprint: Sprint;
     }
 
     interface Changelog {

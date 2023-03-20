@@ -13,4 +13,5 @@ export interface RestClient {
   patch<T>(endpoint: string, data?: unknown, params?: Record<string, string | number | boolean | undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   delete<T>(endpoint: string, data?: unknown, params?: Record<string, string | number | boolean | undefined>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   delete<T>(endpoint: string, data?: unknown, params?: Record<string, string | number | boolean | undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  head<T>(endpoint: string, params?: Record<string, string | number | boolean | undefined>, cacheDuration?: number): Promise<AxiosResponse<T>>;
 }
