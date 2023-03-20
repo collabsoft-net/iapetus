@@ -35,7 +35,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getUserEmail(accountId:string): Promise<Jira.UnrestrictedUserEmail> {
+  async getUserEmail(accountId: string): Promise<Jira.UnrestrictedUserEmail> {
     const { data } = await this.client.get<Jira.UnrestrictedUserEmail>(this.endpoints.USER_EMAIL, { accountId });
     return data;
   }
