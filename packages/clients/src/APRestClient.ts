@@ -51,6 +51,13 @@ export class APRestClient implements RestClient {
     return this.request(RestClientMethods.DELETE, endpoint, data, params, duration);
   }
 
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
+    return this.request(RestClientMethods.HEAD, endpoint, undefined, params, duration);
+  }
+
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const client = this.AP.request;
 

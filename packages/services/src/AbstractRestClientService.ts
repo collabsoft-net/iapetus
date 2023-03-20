@@ -9,6 +9,12 @@ export abstract class AbstractRestClientService {
 
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO>>) {}
 
+  async count<T extends DTO>(type: Type<T>, params: Record<string, string|number|boolean|undefined> = {}): Promise<number|undefined> {
+    const { headers } = await this.client.head<void>(this.getEndpointFor(RestClientEndpoints.LIST, type), params);
+    const totalCount = headers['X-Total-Count'] || headers['x-total-count'];
+    return totalCount && !isNaN(Number(totalCount)) ? Number(totalCount) : undefined;
+  }
+
   async get<T extends DTO>(type: Type<T>, id: string, params: Record<string, string|number|boolean|undefined> = {}): Promise<T> {
     const { data } = await this.client.get<T>(this.getEndpointFor(RestClientEndpoints.READ, type, { id }), params);
     return new type(data);

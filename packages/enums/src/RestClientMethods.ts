@@ -3,5 +3,6 @@ export enum RestClientMethods {
   POST = 'post',
   PUT = 'put',
   DELETE = 'delete',
-  PATCH = 'patch'
+  PATCH = 'patch',
+  HEAD = 'head'
 }
