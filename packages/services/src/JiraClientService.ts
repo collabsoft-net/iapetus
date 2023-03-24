@@ -40,6 +40,11 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async getUsersForPermissions(permissions: string, query?: string, accountId?: string, issueKey?: string, projectKey?: string, startAt?: number,  maxResults?: number): Promise<Array<Jira.User>> {
+    const { data } = await this.client.get<Array<Jira.User>>(this.endpoints.USERS_FOR_PERMISSION, { permissions, query, accountId, issueKey, projectKey, startAt, maxResults });
+    return data;
+  }
+
   async getProject(projectIdOrKey: string|number, expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>): Promise<Jira.Project> {
     const { data } = await this.client.get<Jira.Project>(this.getEndpointFor(this.endpoints.READ_PROJECT, { projectIdOrKey: `${projectIdOrKey}` }), { expand: expand?.join(',')});
     return data;
