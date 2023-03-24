@@ -10,5 +10,5 @@ export const waitForAP = async (): Promise<AP.Instance> => {
   if (!windowWithAP.AP) {
     throw new Error('Atlassian Javascript API (AP) is not available, please verify if you have added a reference to `all.js`');
   }
-  return windowWithAP.AP;
+  return { ...windowWithAP.AP };
 };
