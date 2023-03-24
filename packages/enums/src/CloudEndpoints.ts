@@ -3,6 +3,7 @@ export enum JiraCloudEndpoints {
   USER = '/rest/api/3/user',
   CURRENTUSER = '/rest/api/3/myself',
   USERS_FOR_PICKER = '/rest/api/3/user/picker',
+  USERS_FOR_PERMISSION = '/rest/api/3/user/permission/search',
   USER_EMAIL = '/rest/api/3/user/email',
 
   MYPERMISSIONS = '/rest/api/3/mypermissions',
