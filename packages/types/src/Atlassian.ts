@@ -944,6 +944,11 @@ declare global {
       timeZone?: string;
     }
 
+    interface UnrestrictedUserEmail {
+      accountId: string;
+      email: string;
+    }
+
     interface FoundUsers {
       users: Array<UserPickerUser>;
       total: number;

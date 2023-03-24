@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/validators",
-  "version": "1.0.0-alpha.306",
+  "version": "1.0.0-alpha.307",
   "description": "Common validators for entities",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -34,7 +34,7 @@
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578",
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.306",
+    "@collabsoft-net/types": "^1.0.0-alpha.307",
     "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "5.52.0",
