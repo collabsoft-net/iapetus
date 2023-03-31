@@ -45,7 +45,7 @@ interface ProjectWithAvatarState {
 }
 
 const Content = ({ project, size, href, inline, truncate, isValidating, isDisabled, loading, components, shouldFitContainer, ...rest }: Omit<ProjectWithAvatarProps, 'projectId'|'component'|'onError'> & GridProps & { loading?: boolean }) => (
-  <Wrapper inline={inline} vertical {...rest}>
+  <Wrapper stretched={ shouldFitContainer } fluid inline={inline} vertical {...rest}>
     <AvatarWrapper>
       {(() => {
         if (loading || isValidating) {
