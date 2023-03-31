@@ -31,8 +31,8 @@ export type ProjectWithAvatarProps = {
   href?: string;
   component?: (state: ProjectWithAvatarState) => JSX.Element;
   components?: {
-    Avatar: (state: ProjectWithAvatarState) => JSX.Element;
-    Name: (state: ProjectWithAvatarState) => JSX.Element;
+    Avatar?: (state: ProjectWithAvatarState) => JSX.Element;
+    Name?: (state: ProjectWithAvatarState) => JSX.Element;
   }
   onError?: () => void;
 };
