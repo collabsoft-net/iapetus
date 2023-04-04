@@ -13,6 +13,8 @@ interface SizeProps {
   width?: Property.Width;
   minWidth?: Property.MinWidth;
   maxWidth?: Property.MinHeight;
+  minHeight?: Property.MinHeight;
+  maxHeight?: Property.MaxHeight;
 }
 
 const getSizeProps = (props: SizeProps) => `
@@ -26,6 +28,8 @@ const getSizeProps = (props: SizeProps) => `
   ${props.padding ? `padding: ${props.padding};` : ''}
   ${props.minWidth ? `min-width: ${props.minWidth};` : ''}
   ${props.maxWidth ? `max-width: ${props.maxWidth};` : ''}
+  ${props.minHeight ? `min-height: ${props.minHeight};` : ''}
+  ${props.maxHeight ? `max-height: ${props.maxHeight};` : ''}
 `.trim();
 
 interface BorderProps {
