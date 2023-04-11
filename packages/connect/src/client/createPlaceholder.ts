@@ -3,7 +3,7 @@ import { Property } from 'csstype';
 import { isValidConnectRequest } from './isValidConnectRequest';
 import { waitForAP } from './waitForAP';
 
-export const createPlaceholder = async (defaultModuleId?: string, defaultModuleType = 'page', defaultHeight?: Property.Height): Promise<void> => {
+export const createPlaceholder = async (defaultModuleId?: string, defaultModuleType = 'page', defaultHeight?: Property.Height, isApplicationRoot = false): Promise<void> => {
   const AP = await waitForAP();
 
   const connect = isValidConnectRequest();
@@ -14,10 +14,15 @@ export const createPlaceholder = async (defaultModuleId?: string, defaultModuleT
   if (moduleId) {
     const placeholder = document.createElement('div');
     placeholder.setAttribute('id', moduleType !== 'legacy' ? `${moduleType}-${moduleId}` : moduleId);
-    placeholder.setAttribute('class', 'ac-content');
+
+    if (isApplicationRoot) {
+      placeholder.setAttribute('class', 'ac-content');
+    }
+
     if (defaultHeight) {
       placeholder.setAttribute('height', defaultHeight);
     }
+
     document.body.prepend(placeholder);
 
     // For some reason, Atlassian overrides the margin on the body element
