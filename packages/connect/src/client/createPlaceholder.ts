@@ -15,14 +15,17 @@ export const createPlaceholder = async (defaultModuleId?: string, defaultModuleT
     const placeholder = document.createElement('div');
     placeholder.setAttribute('id', moduleType !== 'legacy' ? `${moduleType}-${moduleId}` : moduleId);
 
+    // If this is the application root element, we should add the Atlassian Javascript API identifier (ac-content)
     if (isApplicationRoot) {
       placeholder.setAttribute('class', 'ac-content');
     }
 
-    if (defaultHeight) {
-      placeholder.setAttribute('height', defaultHeight);
-    }
+    // If default height is set, we do not change display type and set height accordingly
+    // If default height is not set but the placeholder is the application root, we do not change display type and set height to 100%
+    // If default height is not set and placeholder is not the application root, we adjust the display to match that of the direct content
+    placeholder.setAttribute('style', defaultHeight ? `height: ${defaultHeight}` : isApplicationRoot ? 'height: 100%' : 'display: contents');
 
+    // Append the placeholder to the document body
     document.body.prepend(placeholder);
 
     // For some reason, Atlassian overrides the margin on the body element
