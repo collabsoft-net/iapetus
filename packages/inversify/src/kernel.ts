@@ -4,7 +4,7 @@ import getDecorators from 'inversify-inject-decorators';
 
 import { BindingLifecyclePhases } from './BindingLifecyclePhases';
 
-export class Kernel extends Container implements Kernel {
+export class Kernel extends Container {
 
   private hooks = new Map<BindingLifecyclePhases, Array<ContainerModule>>();
   private asyncHooks = new Map<BindingLifecyclePhases, Array<AsyncContainerModule>>();
