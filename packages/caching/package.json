@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/caching",
-  "version": "1.0.0-alpha.314",
+  "version": "1.0.0-alpha.315",
   "description": "Collection of classes to implement caching on Firebase Cloud Functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -38,7 +38,7 @@
     "store": "*"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.0.0-alpha.314",
+    "@collabsoft-net/types": "^1.0.0-alpha.315",
     "@types/node": ">=16.0.0",
     "@types/store": "2.0.2",
     "@typescript-eslint/eslint-plugin": "5.25.0",
