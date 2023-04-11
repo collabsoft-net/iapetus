@@ -4600,33 +4600,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:16.9.9":
-  version: 16.9.9
-  resolution: "@types/react-dom@npm:16.9.9"
+"@types/react-dom@npm:<17.0.0":
+  version: 16.9.18
+  resolution: "@types/react-dom@npm:16.9.18"
   dependencies:
-    "@types/react": "*"
-  checksum: b42a788b6a40a79a738346044c21e6c536f136e9b919fce90847aaaba7298e0b7d4d6845a1449d92a5678c5c221f060d66207a7f4968f7f5991e2511aa8e6860
+    "@types/react": ^16
+  checksum: bd9cbc67dd06a351316e9234c0ab6aed810c25ba926201a4da5699eaaf8d7e15f4b45247a40a14d3c7b319442790b90514450579c6db7cc12f1b57deda12561e
   languageName: node
   linkType: hard
 
-"@types/react@npm:*":
-  version: 17.0.22
-  resolution: "@types/react@npm:17.0.22"
+"@types/react@npm:<17.0.0":
+  version: 16.14.39
+  resolution: "@types/react@npm:16.14.39"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 691c7abda8f5b16d26f6b9940f75e6a9831f12d5ca070e62391454c26fd1a3d0dbe64e0199655773e0389e35e7c7984fa8a06c4561d3164562cd167f60c759e6
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:16.9.54":
-  version: 16.9.54
-  resolution: "@types/react@npm:16.9.54"
-  dependencies:
-    "@types/prop-types": "*"
-    csstype: ^3.0.2
-  checksum: 87f77baf0b9ac77c7c7e012b33ea03d2589c98de67a32e0b570651b92a8e59976a768fb30757c0e501921520c1ff57bfc85d4185699cff735707a0495c4dff61
+  checksum: a1658d8a845d9fe5fd64ed86dfeee9acd4a0060c2c9bf5063f56850436f4e2e39a671a6bebef462831bdb72e0fb957ecd2f05ce4d659bbd4969505a734d1289d
   languageName: node
   linkType: hard
 
@@ -12443,7 +12433,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-dom@npm:16.14.0":
+"react-dom@npm:<17.0.0":
   version: 16.14.0
   resolution: "react-dom@npm:16.14.0"
   dependencies:
@@ -12546,7 +12536,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react@npm:16.14.0":
+"react@npm:<17.0.0":
   version: 16.14.0
   resolution: "react@npm:16.14.0"
   dependencies:
