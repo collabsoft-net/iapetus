@@ -7,4 +7,3 @@ export * as ConfluenceProvider from './Providers/confluence';
 export * as JiraProviders from './Providers/jira';
 
 export { render } from './render';
-export { ServiceIdentifier } from './ServiceIdentifier';

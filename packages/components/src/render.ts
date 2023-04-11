@@ -1,11 +1,8 @@
 import 'arrive';
 import 'reflect-metadata';
 
-import kernel from '@collabsoft-net/inversify';
 import { EntryPoint, Props } from '@collabsoft-net/types';
 import ReactDOM from 'react-dom';
-
-import { ServiceIdentifier } from './ServiceIdentifier';
 
 interface ExtendedDocument extends Document {
   arrive: (selector: string, callback: (rootElem: Element) => Promise<void>) => void;
@@ -38,10 +35,7 @@ const bind = async (entrypoint: EntryPoint<Props>, rootElem: Element, callback?:
   });
 };
 
-export const render = async (callback?: () => void): Promise<void> => {
-  // Get all modules
-  const modules: Array<EntryPoint<Props>> = kernel.getAll(ServiceIdentifier.Entrypoint);
-
+export const render = async (modules: Array<EntryPoint<Props>>, callback?: () => void): Promise<void> => {
   // Register application entrypoints for rendering
   modules.forEach((entrypoint) => {
     const selector = entrypoint.selector || `#${entrypoint.name}`;
