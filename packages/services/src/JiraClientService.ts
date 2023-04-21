@@ -333,7 +333,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getSprints (sprintId: number): Promise<Jira.Sprint> {
+  async getSprint(sprintId: number): Promise<Jira.Sprint> {
     const { data } = await this.client.get<Jira.Sprint>(this.getEndpointFor(this.endpoints.SPRINT, { sprintId }));
     return data;
   }
