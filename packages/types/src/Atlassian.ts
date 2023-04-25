@@ -1232,7 +1232,7 @@ declare global {
       startAt: number;
       maxResults: number;
       total: number;
-      issues: Array <Issue>;
+      issues: Array<Issue>;
     }
 
     interface EntityProperty<T> {
