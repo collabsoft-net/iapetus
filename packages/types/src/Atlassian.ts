@@ -1227,6 +1227,16 @@ declare global {
       originBoardId: number;
     }
 
+    interface IssuesForSprint {
+      sprintId: number;
+      startAt:number;
+      maxResults: number;
+      jql: string;
+      validateQuery: boolean;
+      fields: Record <string, unknown>;
+      expand: string;
+  }
+
     interface EntityProperty<T> {
       key: string;
       value: T;
