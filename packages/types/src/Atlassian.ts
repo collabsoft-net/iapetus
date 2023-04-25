@@ -1227,6 +1227,14 @@ declare global {
       originBoardId: number;
     }
 
+    interface IssuesForSprint {
+      expand: string;
+      startAt: number;
+      maxResults: number;
+      total: number;
+      issues: Array<Issue>;
+    }
+
     interface EntityProperty<T> {
       key: string;
       value: T;
