@@ -1228,14 +1228,12 @@ declare global {
     }
 
     interface IssuesForSprint {
-      sprintId: number;
-      startAt:number;
-      maxResults: number;
-      jql: string;
-      validateQuery: boolean;
-      fields: Record <string, unknown>;
       expand: string;
-  }
+      startAt: number;
+      maxResults: number;
+      total: number;
+      issues: Array <Issue>;
+    }
 
     interface EntityProperty<T> {
       key: string;
