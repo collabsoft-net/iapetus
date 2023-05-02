@@ -73,7 +73,7 @@ export enum JiraCloudEndpoints {
   BOARDS = '/rest/agile/1.0/board',
   BOARD_FEATURES = '/rest/agile/1.0/board/:boardId/features',
   SPRINT = '/rest/agile/1.0/sprint/:sprintId',
-  SPRINT_ISSUES = '/rest/agile/1.0/sprint/:sprintId/issues',
+  SPRINT_ISSUES = '/rest/agile/1.0/sprint/:sprintId/issue',
 
   LIST_DYNAMIC_MODULES = '/rest/atlassian-connect/1/app/module/dynamic',
   REGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
