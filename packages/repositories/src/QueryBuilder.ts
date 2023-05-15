@@ -3,26 +3,35 @@ import { Condition, QueryBuilder as IQueryBuilder, WhereFilterOp } from '@collab
 
 export class QueryBuilder implements IQueryBuilder {
 
-  private _conditions: Array<Condition> = [];
+  private _whereConditions: Array<Condition> = [];
+  private _sortingConditions: Array<Condition> = [];
+  private _limitConditions: Array<Condition> = [];
 
   get conditions(): Array<Condition> {
-    return this._conditions.slice();
-  }
-
-  orderBy(key: string, direction: 'asc'|'desc' = 'asc'): QueryBuilder {
-    this._conditions.push({ key: 'orderBy', operator: direction, value: key });
-    return this;
+    return [
+      ...this._whereConditions.slice(),
+      ...this._sortingConditions.slice(),
+      ...this._limitConditions.slice()
+    ];
   }
 
   where(key: string, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder {
-    this._conditions.push({ key, operator, value });
+    this._whereConditions.push({ key, operator, value });
+    if (operator === '!=') {
+      this._whereConditions.push({ key: 'orderBy', operator: 'asc', value: key });
+    }
+    return this;
+  }
+
+  orderBy(key: string, direction: 'asc'|'desc' = 'asc'): QueryBuilder {
+    this._sortingConditions.push({ key: 'orderBy', operator: direction, value: key });
     return this;
   }
 
   limit(value: number, offset?: number): QueryBuilder {
-    this._conditions.push({ key: 'limit', operator: '==', value });
+    this._limitConditions.push({ key: 'limit', operator: '==', value });
     if (offset) {
-      this._conditions.push({ key: 'offset', operator: '==', value: offset });
+      this._limitConditions.push({ key: 'offset', operator: '==', value: offset });
     }
     return this;
   }
