@@ -88,40 +88,40 @@ declare global {
     }
 
     interface Confluence {
-      saveMacro: (macroParameters: unknown, macroBody?: string) => void;
+      saveMacro: <T> (macroParameters: T, macroBody?: string) => void;
       closeMacroEditor: () => void;
       getMacroData: <T> (callback: (data: T) => void) => void;
       getMacroBody: (callback: (body: string) => void) => void;
       onMacroPropertyPanelEvent: (eventBindings: { [key: string]: () => void }) => void;
       closeMacroPropertyPanel: () => void;
-      getContentProperty: (key: string, callback: (property: unknown) => void) => void;
-      setContentProperty: (contentProperty: ConfluenceContentProperty, callback: (result: { propery: ConfluenceContentProperty, error: Error }) => void) => void;
-      syncPropertyFromServer: (key: string, callback: (property: ConfluenceContentProperty) => void) => void;
+      getContentProperty: <T> (key: string, callback: (property: T) => void) => void;
+      setContentProperty: <T> (contentProperty: ConfluenceContentProperty<T>, callback: (result: { propery: ConfluenceContentProperty<T>, error: Error }) => void) => void;
+      syncPropertyFromServer: <T> (key: string, callback: (property: ConfluenceContentProperty<T>) => void) => void;
     }
 
     interface Jira {
     }
 
-    type ConfluenceContentProperty = {
+    type ConfluenceContentProperty<T> = {
       key: string;
-      value: string|Record<string, unknown>;
+      value: string|T;
       version: Record<string, unknown>;
     }
 
     // https://developer.atlassian.com/cloud/jira/platform/jsapi/events/
     interface Events {
-      on: (name: string, listener: (data?: unknown) => void) => void;
-      onPublic: (name: string, listener: (data?: unknown) => void, filter: (event: unknown) => boolean) => void;
-      once: (name: string, listener: (data?: unknown) => void) => void;
-      oncePublic: (name: string, listener: (data?: unknown) => void, filter: (event: unknown) => boolean) => void;
-      onAny: (listener: (data?: unknown) => void) => void;
-      onAnyPublic: (listener: (data?: unknown) => void, filter: (event: unknown) => boolean) => void;
-      off: (name: string, listener: (data?: unknown) => void) => void;
-      offPublic: (name: string, listener: (data?: unknown) => void) => void;
+      on: <T> (name: string, listener: (data?: T) => void) => void;
+      onPublic: <T> (name: string, listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
+      once: <T> (name: string, listener: (data?: T) => void) => void;
+      oncePublic: <T> (name: string, listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
+      onAny: <T> (listener: (data?: T) => void) => void;
+      onAnyPublic: <T> (listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
+      off: <T> (name: string, listener: (data?: T) => void) => void;
+      offPublic: <T> (name: string, listener: (data?: T) => void) => void;
       offAll: (name: string) => void;
       offAllPublic: (name: string) => void;
-      offAny: (listener: (data?: unknown) => void) => void;
-      offAnyPublic: (listener: (data?: unknown) => void) => void;
+      offAny: <T> (listener: (data?: T) => void) => void;
+      offAnyPublic: <T> (listener: (data?: T) => void) => void;
       emit: (name: string, args?: Array<string>) => void;
       emitPublic: (name: string, args?: Array<string>) => void;
     }
