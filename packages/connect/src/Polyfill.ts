@@ -80,20 +80,20 @@ const cookie: AP.Cookie = {
 }
 
 const events: AP.Events = {
-  on: (_name: string, _listener: (data?: unknown) => void): void => { throw new Error('on(): This AP method is not yet implemented'); },
-  onPublic: (_name: string, _listener: (data?: unknown) => void, _filter: (event: unknown) => boolean): void => { throw new Error('onPublic(): This AP method is not yet implemented'); },
-  once: (_name: string, _listener: (data?: unknown) => void): void => { throw new Error('once(): This AP method is not yet implemented'); },
-  oncePublic: (_name: string, _listener: (data?: unknown) => void, _filter: (event: unknown) => boolean): void => { throw new Error('oncePublic(): This AP method is not yet implemented'); },
-  onAny: (_listener: (data?: unknown) => void): void => { throw new Error('onAny(): This AP method is not yet implemented'); },
-  onAnyPublic: (_listener: (data?: unknown) => void, _filter: (event: unknown) => boolean): void => { throw new Error('onAnyPublic(): This AP method is not yet implemented'); },
-  off: (_name: string, _listener: (data?: unknown) => void): void => { throw new Error('off(): This AP method is not yet implemented'); },
-  offPublic: (_name: string, _listener: (data?: unknown) => void): void => { throw new Error('offPublic(): This AP method is not yet implemented'); },
-  offAll: (_name: string): void => { throw new Error('offAll(): This AP method is not yet implemented'); },
-  offAllPublic: (_name: string): void => { throw new Error('offAllPublic(): This AP method is not yet implemented'); },
-  offAny: (_listener: (data?: unknown) => void): void => { throw new Error('offAny(): This AP method is not yet implemented'); },
-  offAnyPublic: (_listener: (data?: unknown) => void): void => { throw new Error('offAnyPublic(): This AP method is not yet implemented'); },
-  emit: (_name: string, _args?: Array<string>): void => { throw new Error('emit(): This AP method is not yet implemented'); },
-  emitPublic: (_name: string, _args?: Array<string>): void => { throw new Error('emitPublic(): This AP method is not yet implemented'); }
+  on: (): void => { throw new Error('on(): This AP method is not yet implemented'); },
+  onPublic: (): void => { throw new Error('onPublic(): This AP method is not yet implemented'); },
+  once: (): void => { throw new Error('once(): This AP method is not yet implemented'); },
+  oncePublic: (): void => { throw new Error('oncePublic(): This AP method is not yet implemented'); },
+  onAny: (): void => { throw new Error('onAny(): This AP method is not yet implemented'); },
+  onAnyPublic: (): void => { throw new Error('onAnyPublic(): This AP method is not yet implemented'); },
+  off: (): void => { throw new Error('off(): This AP method is not yet implemented'); },
+  offPublic: (): void => { throw new Error('offPublic(): This AP method is not yet implemented'); },
+  offAll: (): void => { throw new Error('offAll(): This AP method is not yet implemented'); },
+  offAllPublic: (): void => { throw new Error('offAllPublic(): This AP method is not yet implemented'); },
+  offAny: (): void => { throw new Error('offAny(): This AP method is not yet implemented'); },
+  offAnyPublic: (): void => { throw new Error('offAnyPublic(): This AP method is not yet implemented'); },
+  emit: (): void => { throw new Error('emit(): This AP method is not yet implemented'); },
+  emitPublic: (): void => { throw new Error('emitPublic(): This AP method is not yet implemented'); }
 };
 
 const dialog: AP.Dialog = {
@@ -184,9 +184,9 @@ const confluence: AP.Confluence = {
   getMacroBody: (_callback: (body: string) => void): void => { throw new Error('getMacroBody(): This AP method is not yet implemented'); },
   onMacroPropertyPanelEvent: (_eventBindings: { [ key: string ]: () => void }): void => { throw new Error('onMacroPropertyPanelEvent(): This AP method is not yet implemented'); },
   closeMacroPropertyPanel: (): void => { throw new Error('closeMacroPropertyPanel(): This AP method is not yet implemented'); },
-  getContentProperty: (_key: string, _callback: (property: unknown) => void): void => { throw new Error('getContentProperty(): This AP method is not yet implemented'); },
-  setContentProperty: (_contentProperty: AP.ConfluenceContentProperty, _callback: (result: { propery: AP.ConfluenceContentProperty, error: Error }) => void): void => { throw new Error('setContentProperty(): This AP method is not yet implemented'); },
-  syncPropertyFromServer: (_key: string, _callback: (property: AP.ConfluenceContentProperty) => void): void => { throw new Error('syncPropertyFromServer(): This AP method is not yet implemented'); },
+  getContentProperty: (): void => { throw new Error('getContentProperty(): This AP method is not yet implemented'); },
+  setContentProperty: (): void => { throw new Error('setContentProperty(): This AP method is not yet implemented'); },
+  syncPropertyFromServer: (): void => { throw new Error('syncPropertyFromServer(): This AP method is not yet implemented'); },
 };
 
 const flag: AP.Flag = {
