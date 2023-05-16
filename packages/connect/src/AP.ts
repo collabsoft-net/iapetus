@@ -188,7 +188,7 @@ declare global {
       getState: () => string;
       pushState: (newState: string, title?: string, url?: string) => void;
       replaceState: (url: string) => void;
-      popState: (state: HistoryPopState) => void;
+      popState: (handler: (state: HistoryPopState) => void) => void;
     }
 
     interface HistoryPopState {
