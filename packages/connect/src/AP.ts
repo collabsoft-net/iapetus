@@ -289,6 +289,11 @@ declare global {
       }
     }
 
+    interface FlagActionEventArgs {
+      actionIdentifier: string;
+      flagIdentifier: string;
+    }
+
     type FlagTypeOptions = 'info'|'success'|'warning'|'error';
     type FlagCloseOptions = 'manual'|'auto';
 
