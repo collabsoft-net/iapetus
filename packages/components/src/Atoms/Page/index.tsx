@@ -1,5 +1,5 @@
 import { Property } from 'csstype';
-import React, { PropsWithChildren } from 'react';
+import React, { HTMLAttributes, PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 import { getSizeProps,SizeProps } from '../Styled';
@@ -14,7 +14,7 @@ interface PageProps {
   isRootElement?: boolean;
 }
 
-export const Page = ({ isRootElement, children, ...props }: PropsWithChildren<PageProps & SizeProps>) => (
+export const Page = ({ isRootElement, children, ...props }: PropsWithChildren<PageProps & SizeProps & HTMLAttributes<HTMLDivElement>>) => (
   <Wrapper {...props} className={ isRootElement === false ? '' : 'ac-content' }>
     { children }
   </Wrapper>
