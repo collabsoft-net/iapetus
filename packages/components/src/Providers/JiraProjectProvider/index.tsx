@@ -1,7 +1,7 @@
 import { useContext, useEffect,useState } from 'react';
 
-import { APProvider } from '../../Contexts/APProvider';
-import { JiraClientServiceProvider } from '../../Contexts/JiraClientServiceProvider';
+import { APContext } from '../../Contexts/APContext';
+import { JiraClientServiceContext } from '../../Contexts/JiraClientServiceContext';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number|PromiseLike<string|number>;
@@ -18,8 +18,8 @@ interface JiraProjectProviderProps {
 
 export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
 
-  const AP = useContext(APProvider);
-  const provider = useContext(JiraClientServiceProvider);
+  const AP = useContext(APContext);
+  const provider = useContext(JiraClientServiceContext);
 
   const [ project, setProject ] = useState<Jira.Project>();
   const [ permitted, setPermitted ] = useState<boolean>();

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { ConfluenceClientServiceProvider } from '../../Contexts/ConfluenceClientServiceProvider';
+import { ConfluenceClientServiceContext } from '../../Contexts/ConfluenceClientServiceContext';
 
 interface ConfluenceUserProviderProps {
   accountId: string|PromiseLike<string>;
@@ -15,7 +15,7 @@ interface ConfluenceUserProviderProps {
 
 export const ConfluenceUserProvider = ({ accountId, loadingMessage, cacheDuration, children }: ConfluenceUserProviderProps): JSX.Element => {
 
-  const provider = useContext(ConfluenceClientServiceProvider);
+  const provider = useContext(ConfluenceClientServiceContext);
 
   const [ user, setUser ] = useState<Confluence.User>();
   const [ loading, setLoading ] = useState<boolean>(true);

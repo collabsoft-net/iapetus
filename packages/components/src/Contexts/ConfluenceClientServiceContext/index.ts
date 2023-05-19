@@ -3,7 +3,7 @@ import kernel from '@collabsoft-net/inversify';
 import { ConfluenceClientService } from '@collabsoft-net/services';
 import React from 'react';
 
-export const ConfluenceClientServiceProvider = React.createContext<Promise<ConfluenceClientService|null>>(
+export const ConfluenceClientServiceContext = React.createContext<Promise<ConfluenceClientService|null>>(
   new Promise<ConfluenceClientService|null>(resolve => {
     kernel.onReady(() => {
     if (kernel.isBound(ConfluenceClientService.getIdentifier())) {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { JiraClientServiceProvider } from '../../Contexts/JiraClientServiceProvider';
+import { JiraClientServiceContext } from '../../Contexts/JiraClientServiceContext';
 
 interface JiraUserProviderProps {
   accountId: string|PromiseLike<string>;
@@ -16,7 +16,7 @@ interface JiraUserProviderProps {
 }
 
 export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessage, cacheDuration, children }: JiraUserProviderProps): JSX.Element => {
-  const provider = useContext(JiraClientServiceProvider);
+  const provider = useContext(JiraClientServiceContext);
 
   const [ user, setUser ] = useState<Jira.User>();
   const [ permitted, setPermitted ] = useState<boolean>();

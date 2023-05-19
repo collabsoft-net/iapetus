@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { APProvider } from '../../Contexts/APProvider';
+import { APContext } from '../../Contexts/APContext';
 
 interface APContextProviderProps {
   children: (args: {
@@ -12,7 +12,7 @@ interface APContextProviderProps {
 
 export const APContextProvider = ({ children }: APContextProviderProps): JSX.Element => {
 
-  const AP = useContext(APProvider);
+  const AP = useContext(APContext);
 
   const [ context, setContext ] = useState<AP.JiraContext|AP.ConfluenceContext>();
   const [ loading, setLoading ] = useState<boolean>(true);

@@ -83,13 +83,13 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
       : Content({ user, href, size, inline, truncate, isValidating, isDisabled, loading: false });
   } else if (typeof accountId !== 'undefined') {
     return (
-      <APProviders.Context>
-        { ({ context, loading }) => {
+      <APProviders.AP>
+        { ({ instance, loading }) => {
           return loading ? (
             <>
               { component ? component({ isLoading: loading }) : Content({ loading }) }
             </>
-          ) : isOfType<AP.JiraContext>(context, 'jira') ? (
+          ) : isOfType<AP.Instance>(instance, 'jira') ? (
             <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
               { ({ user: currentUser, loading }) => {
                 return component
@@ -97,7 +97,7 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
                   : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
               }}
             </JiraProviders.User>
-          ) : (
+          ) : isOfType<AP.Instance>(instance, 'confluence') ? (
             <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
               { ({ user: currentUser, loading }) => {
                 return component
@@ -105,9 +105,11 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
                   : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
               }}
             </ConfluenceProviders.User>
+          ) : (
+            <Content />
           )
         }}
-      </APProviders.Context>
+      </APProviders.AP>
     );
   } else {
     onError && onError();

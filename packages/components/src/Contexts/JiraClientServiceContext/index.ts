@@ -3,7 +3,7 @@ import kernel from '@collabsoft-net/inversify';
 import { JiraClientService } from '@collabsoft-net/services';
 import React from 'react';
 
-export const JiraClientServiceProvider = React.createContext<Promise<JiraClientService|null>>(
+export const JiraClientServiceContext = React.createContext<Promise<JiraClientService|null>>(
   new Promise<JiraClientService|null>(resolve => {
     kernel.onReady(() => {
     if (kernel.isBound(JiraClientService.getIdentifier())) {

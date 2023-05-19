@@ -1,4 +1,4 @@
 
-export { APProvider } from './APProvider';
-export { ConfluenceClientServiceProvider } from './ConfluenceClientServiceProvider';
-export { JiraClientServiceProvider } from './JiraClientServiceProvider';
+export { APContext } from './APContext';
+export { ConfluenceClientServiceContext } from './ConfluenceClientServiceContext';
+export { JiraClientServiceContext } from './JiraClientServiceContext';
