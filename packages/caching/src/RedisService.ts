@@ -1,13 +1,15 @@
-import { CachingService, Type } from '@collabsoft-net/types';
+import { CachingExpirationPolicy, CachingService, Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
 import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
+
+const DEFAULT_TTL = 30 * 60;
 
 export class RedisService implements CachingService {
 
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
 
-  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private verbose: boolean = false) {
+  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private verbose: boolean = false, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite') {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.ready = false; });
@@ -32,7 +34,7 @@ export class RedisService implements CachingService {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
       key: typeof typeOrKey === 'string' ? typeOrKey : typeof keyOrLoader === 'string' ? keyOrLoader : null,
       loader: typeof keyOrLoader === 'function' ? keyOrLoader : typeof loaderOrDurationOrForceRefresh === 'function' ? loaderOrDurationOrForceRefresh : null,
-      expiresInSeconds: typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : undefined,
+      expiresInSeconds: typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : DEFAULT_TTL,
       forceRefresh: typeof loaderOrDurationOrForceRefresh === 'boolean' ? loaderOrDurationOrForceRefresh : typeof durationOrForceRefresh === 'boolean' ? durationOrForceRefresh : typeof forced === 'boolean' ? forced : null
     }
 
@@ -79,10 +81,14 @@ export class RedisService implements CachingService {
       }
     }
 
+    if (this.expirationPolicy === 'expireAfterAccess') {
+      await this.client.expire(key, expiresInSeconds);
+    }
+
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds: number = 30 * 60): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = DEFAULT_TTL): Promise<Error|null> {
     await this.isReady();
 
     if (!this.ready) {

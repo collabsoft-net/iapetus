@@ -15,3 +15,5 @@ export interface CachingService {
   flushAll(): Promise<void>;
   toCacheKey(...args: Array<string | number | boolean | undefined>): string;
 }
+
+export type CachingExpirationPolicy = 'expireAfterWrite'|'expireAfterAccess';
