@@ -1,11 +1,11 @@
 
 export const isNullOrEmpty = <T> (value: T | undefined | null): value is Exclude<typeof value, T> => {
   if (value === undefined || value === null) {
-    return false;
+    return true;
   } else if (typeof value === 'string' || Array.isArray(value)) {
-    return value.length > 0;
+    return value.length <= 0;
   } else if (typeof value === 'object') {
-    return Object.keys(value).length > 0;
+    return Object.keys(value).length <= 0;
   }
-  return true;
+  return false;
 }
