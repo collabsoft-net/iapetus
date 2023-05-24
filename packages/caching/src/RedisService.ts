@@ -9,7 +9,7 @@ export class RedisService implements CachingService {
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
 
-  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private verbose: boolean = false, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite') {
+  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite', private defaultExpirationInSeconds = DEFAULT_TTL, private verbose: boolean = false) {
     this.client = createClient(options);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.ready = false; });
@@ -34,7 +34,7 @@ export class RedisService implements CachingService {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
       key: typeof typeOrKey === 'string' ? typeOrKey : typeof keyOrLoader === 'string' ? keyOrLoader : null,
       loader: typeof keyOrLoader === 'function' ? keyOrLoader : typeof loaderOrDurationOrForceRefresh === 'function' ? loaderOrDurationOrForceRefresh : null,
-      expiresInSeconds: typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : DEFAULT_TTL,
+      expiresInSeconds: typeof durationOrForceRefresh === 'number' ? durationOrForceRefresh : this.defaultExpirationInSeconds,
       forceRefresh: typeof loaderOrDurationOrForceRefresh === 'boolean' ? loaderOrDurationOrForceRefresh : typeof durationOrForceRefresh === 'boolean' ? durationOrForceRefresh : typeof forced === 'boolean' ? forced : null
     }
 
@@ -88,7 +88,7 @@ export class RedisService implements CachingService {
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds: number = DEFAULT_TTL): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
     await this.isReady();
 
     if (!this.ready) {
