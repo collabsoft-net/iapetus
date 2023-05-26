@@ -1,8 +1,10 @@
 import { ConnectHelper } from '@collabsoft-net/types';
-import AJS from 'AJS';
 import qs from 'query-string';
 
 import { findSource } from './iframe';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const windowWithAJS = window as unknown as Window & { AJS: any };
 
 export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
   const frame = findSource(source as Window);
@@ -13,11 +15,11 @@ export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
           if (dialogId) {
               const location = {
                   context: {
-                      contentId: AJS.Meta.get('page-id'),
-                      contentType: AJS.Meta.get('content-type'),
-                      spaceKey: AJS.Meta.get('space-key')
+                      contentId: windowWithAJS.AJS.Meta.get('page-id'),
+                      contentType: windowWithAJS.AJS.Meta.get('content-type'),
+                      spaceKey: windowWithAJS.AJS.Meta.get('space-key')
                   },
-                  target: AJS.Meta.get('browse-page-tree-mode') === 'edit' ? 'contentedit' : 'contentview'
+                  target: windowWithAJS.AJS.Meta.get('browse-page-tree-mode') === 'edit' ? 'contentedit' : 'contentview'
               };
               frame.contentWindow.postMessage({ requestId, location }, '*');
           }

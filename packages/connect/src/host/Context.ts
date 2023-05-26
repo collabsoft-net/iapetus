@@ -1,4 +1,5 @@
-import AJS from 'AJS';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const windowWithAJS = window as unknown as Window & { AJS: any };
 
 import { findSource } from './iframe';
 
@@ -67,5 +68,5 @@ const generateContext = () => {
 }
 
 const getMetaData = (key: string) => {
-  return AJS?.Meta?.get(key) as string || null;
+  return windowWithAJS.AJS?.Meta?.get(key) as string || null;
 }
