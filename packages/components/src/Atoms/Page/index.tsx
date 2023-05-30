@@ -14,8 +14,8 @@ interface PageProps {
   isRootElement?: boolean;
 }
 
-export const Page = ({ isRootElement, children, ...props }: PropsWithChildren<PageProps & SizeProps & HTMLAttributes<HTMLDivElement>>) => (
-  <Wrapper {...props} className={ isRootElement === false ? '' : 'ac-content' }>
+export const Page = ({ isRootElement, children, className, ...props }: PropsWithChildren<PageProps & SizeProps & HTMLAttributes<HTMLDivElement>>) => (
+  <Wrapper {...props} className={ isRootElement === false ? className : `${className} ac-content` }>
     { children }
   </Wrapper>
 );
