@@ -15,9 +15,9 @@ export abstract class AbstractRestClientService {
     return totalCount && !isNaN(Number(totalCount)) ? Number(totalCount) : undefined;
   }
 
-  async get<T extends DTO>(type: Type<T>, id: string, params: Record<string, string|number|boolean|undefined> = {}): Promise<T> {
+  async get<T extends DTO>(type: Type<T>, id: string, params: Record<string, string|number|boolean|undefined> = {}): Promise<T|null> {
     const { data } = await this.client.get<T>(this.getEndpointFor(RestClientEndpoints.READ, type, { id }), params);
-    return new type(data);
+    return data ? new type(data) : null;
   }
 
   async findOne<T extends DTO>(type: Type<T>, params: Record<string, string|number|boolean|undefined> = {}): Promise<T|null> {
