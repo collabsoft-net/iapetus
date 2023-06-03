@@ -53,10 +53,22 @@ export abstract class AbstractRestClientService {
   }
 
   protected getEndpointFor(endpoint: RestClientEndpoints|string): string;
+  protected getEndpointFor(endpoint: RestClientEndpoints|string, pathParams: Record<string, string|undefined>): string;
   protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T, pathParams: Record<string, unknown>): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type?: Type<T>|T, pathParams: Record<string, unknown> = {}): string {
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T, pathParams: Record<string, string|undefined>): string;
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, typeOrpathParams?: Type<T>|T|Record<string, string|undefined>, pathParams: Record<string, string|undefined> = {}): string {
     let name: string|null = null;
+
+    let type: Type<T>|T|null;
+    let params: Record<string, string|undefined>;
+
+    if (typeOrpathParams && toString.call(typeOrpathParams) === '[object Function]') {
+      type = typeOrpathParams as Type<T>|T;
+      params = pathParams;
+    } else {
+      type = null;
+      params = typeOrpathParams as Record<string, string> || {};
+    }
 
     if (type) {
       this.typeMappings.forEach((item, key) => {
@@ -77,7 +89,7 @@ export abstract class AbstractRestClientService {
     }
 
     const compiler = compile(endpoint);
-    return compiler(Object.assign({}, { name }, pathParams));
+    return compiler({ name, ...params });
   }
 
 }
