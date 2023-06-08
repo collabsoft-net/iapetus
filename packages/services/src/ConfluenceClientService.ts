@@ -30,7 +30,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getMacroBody(contentId: string, macroId: string, version = 0): Confluence.MacroInstance {
+  async getMacroBody(contentId: string, macroId: string, version = 0): Promise<Confluence.MacroInstance> {
     const { data } = await this.client.get<Confluence.MacroInstance>(`/rest/api/content/${contentId}/history/${version}/macro/id/${macroId}`);
     return data;
   }
