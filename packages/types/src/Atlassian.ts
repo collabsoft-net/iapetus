@@ -235,6 +235,13 @@ declare global {
       userKeys: Array<string>;
     }
 
+    interface MacroInstance {
+      name: string;
+      body: string;
+      parameters: Record<string, unknown>;
+      _links: Record<string, unknown>;
+    }
+
     interface Space {
       id?: number;
       key: string;
