@@ -238,8 +238,11 @@ declare global {
     interface MacroInstance {
       name: string;
       body: string;
-      parameters: Record<string, unknown>;
-      _links: Record<string, unknown>;
+      parameters: Record<string, { value: string }>;
+      _links: {
+        base: string;
+        context: string;
+      }
     }
 
     interface Space {
