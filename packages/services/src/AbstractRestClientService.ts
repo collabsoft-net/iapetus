@@ -1,5 +1,5 @@
 import { RestClientEndpoints } from '@collabsoft-net/enums';
-import { isTypeOf } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isTypeOf } from '@collabsoft-net/helpers';
 import { DTO, Paginated, RestClient, Type } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
@@ -56,40 +56,19 @@ export abstract class AbstractRestClientService {
   protected getEndpointFor(endpoint: RestClientEndpoints|string, pathParams: Record<string, string|undefined>): string;
   protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T): string;
   protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, type: Type<T>|T, pathParams: Record<string, string|undefined>): string;
-  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, typeOrpathParams?: Type<T>|T|Record<string, string|undefined>, pathParams: Record<string, string|undefined> = {}): string {
-    let name: string|null = null;
-
-    let type: Type<T>|T|null;
-    let params: Record<string, string|undefined>;
-
-    if (typeOrpathParams && toString.call(typeOrpathParams) === '[object Function]') {
-      type = typeOrpathParams as Type<T>|T;
-      params = pathParams;
-    } else {
-      type = null;
-      params = typeOrpathParams as Record<string, string> || {};
-    }
-
-    if (type) {
-      this.typeMappings.forEach((item, key) => {
-        if (name) return;
-        const mappings = Array.isArray(item) ? item : [ item ];
-        mappings.forEach(mapping => {
-          if (name) return;
-          if (isTypeOf(type, mapping)) {
-            name = key;
-          }
-        });
-      });
-
-      if (!name) {
-        console.error(`Could not resolve type mapping`, type);
-        throw new Error('Unsupported REST call');
-      }
-    }
-
+  protected getEndpointFor<T extends DTO>(endpoint: RestClientEndpoints|string, typeOrpathParams?: Type<T>|T|Record<string, string|undefined>, pathParams?: Record<string, string|undefined>): string {
+    const name = this.findNameForType(typeOrpathParams);
+    const params = pathParams ? pathParams : isNullOrEmpty(name) ? typeOrpathParams as Record<string, string|undefined> : {};
     const compiler = compile(endpoint);
     return compiler({ name, ...params });
+  }
+
+  private findNameForType<T>(type: Type<T>|T) {
+    const mappings = this.typeMappings ? Array.from(this.typeMappings) : [];
+    return mappings.reduce((name: string|null, [ key, mapping ]) => {
+      if (name) return name;
+      return isTypeOf(type, mapping) ? key : null;
+    }, null);
   }
 
 }
