@@ -23,7 +23,7 @@ export const useConfluenceSpacePermissions = (operation?: Confluence.ContentOper
         const id = spaceId || context.confluence.space.id;
         service.hasSpacePermission(id, operation, user.accountId)
           .then(setHasPermissions)
-          .catch(() => false)
+          .catch(() => setHasPermissions(false))
           .finally(() => setLoading(false))
       }
     }

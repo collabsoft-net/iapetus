@@ -23,7 +23,7 @@ export const useConfluenceContentPermissions = (operation?: Confluence.ContentOp
         const id = contentId || context.confluence.content.id;
         service.hasContentPermission(id, { type: 'user', identifier: user.accountId }, operation)
           .then(setHasPermissions)
-          .catch(() => false)
+          .catch(() => setHasPermissions(false))
           .finally(() => setLoading(false))
       }
     }

@@ -18,7 +18,7 @@ export const useConfluenceApplicationPermissions = (operation: Confluence.Conten
     } else if (service && user) {
       service.hasApplicationPermission(user.accountId, operation)
         .then(setHasPermissions)
-        .catch(() => false)
+        .catch(() => setHasPermissions(false))
         .finally(() => setLoading(false))
     }
   }, [ service, user ]);

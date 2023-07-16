@@ -22,7 +22,7 @@ export const useJiraPermissions = (permissions?: Array<Jira.BulkProjectPermissio
       } else if (service && user) {
         service.hasPermissions(user.accountId, permissions)
           .then(setHasPermissions)
-          .catch(() => false)
+          .catch(() => setHasPermissions(false))
           .finally(() => setLoading(false))
       }
     }
