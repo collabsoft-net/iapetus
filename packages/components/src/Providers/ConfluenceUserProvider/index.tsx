@@ -30,6 +30,7 @@ export const ConfluenceUserProvider = ({ accountId, loadingMessage, cacheDuratio
         .finally(() => setLoading(false));
     } else {
       setErrors(new Error(`Failed to retrieve instance of ConfluenceClientService, please make sure the ConfluenceClientService context is inititalized`));
+      setLoading(false);
     }
   }, [ service ]);
 
