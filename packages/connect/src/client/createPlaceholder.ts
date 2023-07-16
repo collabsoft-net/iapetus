@@ -3,7 +3,15 @@ import { Property } from 'csstype';
 import { isValidConnectRequest } from './isValidConnectRequest';
 import { waitForAP } from './waitForAP';
 
-export const createPlaceholder = async (defaultModuleId?: string, defaultModuleType = 'page', defaultHeight?: Property.Height, isApplicationRoot = false): Promise<void> => {
+interface CreatePlaceholderProps {
+  defaultModuleId?: string;
+  defaultModuleType?: 'page'|'editor'|'dialog';
+  defaultHeight?: Property.Height;
+  isApplicationRoot?: boolean;
+  appendPlaceholder?: boolean;
+}
+
+export const createPlaceholder = async ({ defaultModuleId, defaultModuleType = 'page', defaultHeight, isApplicationRoot = false, appendPlaceholder = true }: CreatePlaceholderProps): Promise<HTMLDivElement|null> => {
   const AP = await waitForAP();
 
   const connect = isValidConnectRequest();
@@ -26,7 +34,9 @@ export const createPlaceholder = async (defaultModuleId?: string, defaultModuleT
     placeholder.setAttribute('style', defaultHeight ? `height: ${defaultHeight}` : isApplicationRoot ? 'height: 100%' : 'display: contents');
 
     // Append the placeholder to the document body
-    document.body.prepend(placeholder);
+    if (appendPlaceholder) {
+      document.body.prepend(placeholder);
+    }
 
     // For some reason, Atlassian overrides the margin on the body element
     // When in a dialog, it adds 10px. Let's undo this in order to keep control
@@ -41,5 +51,9 @@ export const createPlaceholder = async (defaultModuleId?: string, defaultModuleT
       }).observe(document.body, { attributes: true });
       document.body.setAttribute('style', 'margin: 0px !important');
     }
+
+    return placeholder;
   }
+
+  return null;
 };
