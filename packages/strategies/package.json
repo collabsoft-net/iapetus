@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/strategies",
-  "version": "1.0.0-alpha.347",
+  "version": "1.0.0-alpha.348",
   "description": "PassportJS authentication strategies",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -34,11 +34,11 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.0.0-alpha.347",
+    "@collabsoft-net/controllers": "^1.0.0-alpha.348",
     "@collabsoft-net/dto": "^1.0.0-alpha.343",
     "@collabsoft-net/entities": "^1.0.0-alpha.343",
-    "@collabsoft-net/functions": "^1.0.0-alpha.347",
-    "@collabsoft-net/services": "^1.0.0-alpha.347",
+    "@collabsoft-net/functions": "^1.0.0-alpha.348",
+    "@collabsoft-net/services": "^1.0.0-alpha.348",
     "@collabsoft-net/types": "^1.0.0-alpha.343",
     "@types/node": ">=16.0.0",
     "@types/passport": "1.0.0",
