@@ -11,7 +11,9 @@ interface CreatePlaceholderProps {
   appendPlaceholder?: boolean;
 }
 
-export const createPlaceholder = async ({ defaultModuleId, defaultModuleType = 'page', defaultHeight, isApplicationRoot = false, appendPlaceholder = true }: CreatePlaceholderProps): Promise<HTMLDivElement|null> => {
+export const createPlaceholder = async (props?: CreatePlaceholderProps): Promise<HTMLDivElement|null> => {
+  const { defaultModuleId, defaultModuleType = 'page', defaultHeight, isApplicationRoot = false, appendPlaceholder = true } = props || {};
+
   const AP = await waitForAP();
 
   const connect = isValidConnectRequest();
