@@ -1,8 +1,9 @@
 
 export * from './Atoms';
-export * from './Contexts';
 export * from './Molecules';
-export * as APProviders from './Providers/ap';
+export * from './Contexts';
+export * from './Hooks';
+
 export * as ConfluenceProvider from './Providers/confluence';
 export * as JiraProviders from './Providers/jira';
 

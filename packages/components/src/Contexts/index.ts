@@ -1,4 +1,5 @@
 
-export { APContext } from './APContext';
-export { ConfluenceClientServiceContext } from './ConfluenceClientServiceContext';
-export { JiraClientServiceContext } from './JiraClientServiceContext';
+export * from './AP';
+export * from './ConfluenceClientService';
+export * from './HostContext';
+export * from './JiraClientService';

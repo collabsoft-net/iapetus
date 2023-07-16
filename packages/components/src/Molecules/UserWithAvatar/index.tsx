@@ -2,11 +2,11 @@ import Avatar, { SizeType } from '@atlaskit/avatar';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { Link, Paragraph } from '../../Atoms';
-import * as APProviders from '../../Providers/ap';
+import { AP } from '../../Contexts';
 import * as ConfluenceProviders from '../../Providers/confluence';
 import * as JiraProviders from '../../Providers/jira';
 
@@ -24,17 +24,17 @@ export type UserWithAvatarProps = {
   size?: SizeType;
   isValidating?: boolean;
   isDisabled?: boolean;
-  user?: Jira.User|Confluence.User
+  user?: Jira.User|Confluence.User|null;
   accountId?: string;
   inline?: boolean
   truncate?: boolean;
   href?: string;
   component?: (state: UserWithAvatarState) => JSX.Element;
-  onError?: () => void;
+  onError?: (error?: Error) => void;
 };
 
 interface UserWithAvatarState {
-  user?: Jira.User|Confluence.User;
+  user?: Jira.User|Confluence.User|null;
   isLoading: boolean;
   isValidating?: boolean;
 }
@@ -77,42 +77,44 @@ const Content = ({ user, size, href, inline, truncate, isValidating, isDisabled,
 );
 
 export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating, isDisabled, href, size, component, onError }: UserWithAvatarProps): JSX.Element => {
+
+  const instance = useContext(AP);
+
+  if (!instance) {
+    onError && onError(new Error('Failed to retrieve instance of AP, please make sure the AP context is inititalized'));
+    return <></>;
+  }
+
   if (user) {
     return component
       ? component({ user, isLoading: false, isValidating })
       : Content({ user, href, size, inline, truncate, isValidating, isDisabled, loading: false });
   } else if (typeof accountId !== 'undefined') {
     return (
-      <APProviders.AP>
-        { ({ instance, loading }) => {
-          return loading ? (
-            <>
-              { component ? component({ isLoading: loading }) : Content({ loading }) }
-            </>
-          ) : isOfType<AP.Instance>(instance, 'jira') ? (
-            <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
-              { ({ user: currentUser, loading }) => {
-                return component
-                  ? component({ user: currentUser, isLoading: loading, isValidating })
-                  : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
-              }}
-            </JiraProviders.User>
-          ) : isOfType<AP.Instance>(instance, 'confluence') ? (
-            <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
-              { ({ user: currentUser, loading }) => {
-                return component
-                  ? component({ user: currentUser, isLoading: loading, isValidating })
-                  : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
-              }}
-            </ConfluenceProviders.User>
-          ) : (
-            <Content />
-          )
-        }}
-      </APProviders.AP>
+      <>
+        { isOfType<AP.Instance>(instance, 'jira') ? (
+          <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+            { ({ user: currentUser, loading }) => {
+              return component
+                ? component({ user: currentUser, isLoading: loading, isValidating })
+                : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+            }}
+          </JiraProviders.User>
+        ) : isOfType<AP.Instance>(instance, 'confluence') ? (
+          <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
+            { ({ user: currentUser, loading }) => {
+              return component
+                ? component({ user: currentUser, isLoading: loading, isValidating })
+                : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
+            }}
+          </ConfluenceProviders.User>
+        ) : (
+          <Content />
+        )}
+      </>
     );
   } else {
-    onError && onError();
+    onError && onError(new Error('Failed to load user: neither "user" property nor "accountId" property has been set.'));
     return <></>;
   }
 };

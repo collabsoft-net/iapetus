@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
+import { useJiraUser } from 'src/Hooks';
 
-import { JiraClientServiceContext } from '../../Contexts/JiraClientServiceContext';
+import { JiraClientService } from '../../Contexts/JiraClientService';
 
 interface JiraUserProviderProps {
   accountId: string|PromiseLike<string>;
@@ -8,7 +9,7 @@ interface JiraUserProviderProps {
   loadingMessage?: JSX.Element;
   cacheDuration?: number;
   children: (args: {
-    user?: Jira.User;
+    user?: Jira.User|null;
     permitted?: boolean;
     errors?: Error;
     loading: boolean;
@@ -16,38 +17,31 @@ interface JiraUserProviderProps {
 }
 
 export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessage, cacheDuration, children }: JiraUserProviderProps): JSX.Element => {
-  const provider = useContext(JiraClientServiceContext);
 
-  const [ user, setUser ] = useState<Jira.User>();
+  const jiraClientService = useContext(JiraClientService);
+  const [ user ] = useJiraUser(accountId);
+
   const [ permitted, setPermitted ] = useState<boolean>();
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
   useEffect(() => {
-    provider.then(async instance => {
-      if (instance) {
-        const jiraClientService = cacheDuration ? instance.cached(cacheDuration) : instance;
-        const id = await new Promise<string>(resolve => resolve(accountId));
-        const result = await jiraClientService.getUser(id);
-        if (requiredPermissions) {
-          const hasRequiredPermissions = await jiraClientService.hasPermissions(
-            id,
-            // If requiredPermissions is not an Array, we are looking for Project Permissions
-            !Array.isArray(requiredPermissions) ? [requiredPermissions] : undefined,
-            // If requiredPermissions is an Array, we are looking for Global permissions
-            Array.isArray(requiredPermissions) ? requiredPermissions : undefined
-          ).catch(() => false);
-          setPermitted(hasRequiredPermissions);
-          setUser(result);
-        } else {
-          setPermitted(true);
-          setUser(result);
-        }
-      } else {
-        setErrors(new Error(`Could not find instance of JiraClientService, please make sure to bind it in your Inversify configuration using "JiraClientService.getIdentifier()"`));
-      }
-    }).catch(setErrors).finally(() => setLoading(false));
-  }, [ provider ]);
+    if (!jiraClientService) {
+      setErrors(new Error(`Failed to retrieve instance of JiraClientService, please make sure the JiraClientService context is inititalized`));
+      setLoading(false);
+    } else if (user && requiredPermissions) {
+      const service = cacheDuration ? jiraClientService.cached(cacheDuration) : jiraClientService;
+      service.hasPermissions(
+        user.accountId,
+        // If requiredPermissions is not an Array, we are looking for Project Permissions
+        !Array.isArray(requiredPermissions) ? [requiredPermissions] : undefined,
+        // If requiredPermissions is an Array, we are looking for Global permissions
+        Array.isArray(requiredPermissions) ? requiredPermissions : undefined
+      ).then(setPermitted).catch(() => setPermitted(false)).finally(() => setLoading(false));
+    } else if (user && !requiredPermissions) {
+      setLoading(false);
+    }
+  }, [ jiraClientService, user ]);
 
   return loading && loadingMessage ? loadingMessage : children({ user, permitted, loading, errors });
 }

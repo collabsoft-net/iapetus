@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { ConfluenceClientServiceContext } from '../../Contexts/ConfluenceClientServiceContext';
+import { ConfluenceClientService } from '../../Contexts/ConfluenceClientService';
 
 interface ConfluenceUserProviderProps {
   accountId: string|PromiseLike<string>;
@@ -15,23 +15,23 @@ interface ConfluenceUserProviderProps {
 
 export const ConfluenceUserProvider = ({ accountId, loadingMessage, cacheDuration, children }: ConfluenceUserProviderProps): JSX.Element => {
 
-  const provider = useContext(ConfluenceClientServiceContext);
+  const service = useContext(ConfluenceClientService);
 
   const [ user, setUser ] = useState<Confluence.User>();
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ errors, setErrors ] = useState<Error>();
 
   useEffect(() => {
-    provider.then(async instance => {
-      if (instance) {
-        const service = cacheDuration ? instance.cached(cacheDuration) : instance;
-        const id = await new Promise<string>(resolve => resolve(accountId));
-        return await service.getUser(id).then(setUser);
-      } else {
-        setErrors(new Error(`Could not find instance of ConfluenceClientService, please make sure to bind it in your Inversify configuration using "ConfluenceClientService.getIdentifier()"`));
-      }
-    }).catch(setErrors).finally(() => setLoading(false));
-  }, [ provider ]);
+    if (service) {
+      const instance = cacheDuration ? service.cached(cacheDuration) : service;
+      new Promise<string>(resolve => resolve(accountId))
+        .then(id => instance.getUser(id).then(setUser))
+        .catch(setErrors)
+        .finally(() => setLoading(false));
+    } else {
+      setErrors(new Error(`Failed to retrieve instance of ConfluenceClientService, please make sure the ConfluenceClientService context is inititalized`));
+    }
+  }, [ service ]);
 
   return loading && loadingMessage ? loadingMessage : children({ user, loading, errors });
 }
