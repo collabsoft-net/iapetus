@@ -1,6 +1,6 @@
 
+export * from './useConfluenceApplicationPermission';
 export * from './useConfluenceContentPermission';
-export * from './useConfluencePermission';
 export * from './useConfluenceSpacePermission';
 export * from './useConfluenceUser';
 export * from './useHostContext';
