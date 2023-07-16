@@ -17,7 +17,7 @@ export const useConfluenceUser = (accountId?: string): [ Confluence.User|null, b
         : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
       ).then(id => service.getUser(id)).then(setUser).finally(() => setLoading(false));
     }
-  }, [ service ]);
+  }, [ AP, service ]);
 
   return [ user, isLoading ];
 }
