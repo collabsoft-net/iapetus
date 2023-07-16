@@ -1,8 +1,8 @@
 import { useContext, useEffect,useState } from 'react';
-import { useJiraUser } from 'src/Hooks';
 
 import { AP as APContext } from '../../Contexts/AP';
 import { JiraClientService } from '../../Contexts/JiraClientService';
+import { useJiraUser } from '../../Hooks';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number|PromiseLike<string|number>;

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { useJiraUser } from 'src/Hooks';
 
 import { JiraClientService } from '../../Contexts/JiraClientService';
+import { useJiraUser } from '../../Hooks';
 
 interface JiraUserProviderProps {
   accountId: string|PromiseLike<string>;
