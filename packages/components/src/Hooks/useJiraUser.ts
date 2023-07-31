@@ -1,3 +1,4 @@
+import { isOfType } from '@collabsoft-net/helpers';
 import { useContext, useEffect, useState } from 'react';
 
 import { AP as APContext , JiraClientService } from '../Contexts';
@@ -12,10 +13,15 @@ export const useJiraUser = (accountId?: string|PromiseLike<string>): [ Jira.User
 
   useEffect(() => {
     if (AP && service) {
-      new Promise<string>(resolve => accountId
-        ? resolve(accountId)
-        : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
-      ).then(id => service.getUser(id)).then(setUser).finally(() => setLoading(false));
+      if (isOfType(AP, 'jira')) {
+        new Promise<string>(resolve => accountId
+          ? resolve(accountId)
+          : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
+        ).then(id => service.getUser(id)).then(setUser).finally(() => setLoading(false));
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     }
   }, [ service ]);
 
