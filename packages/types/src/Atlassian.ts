@@ -560,7 +560,13 @@ declare global {
         parent?: {
           id: string;
           key: string,
-          fields?: Record<string, unknown>;
+          fields?: {
+            issuetype: IssueTypeDetails;
+            priority: Priority;
+            status: Status;
+            summary: string;
+            [key: string]: unknown;
+          }
         };
         summary: string;
         description: string;
