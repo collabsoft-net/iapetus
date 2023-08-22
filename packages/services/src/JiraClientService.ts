@@ -80,7 +80,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getIssue(issueIdOrKey: string|number, expand?: Array<'renderedFields'|'names'|'schema'|'operations'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.Issue> {
+  async getIssue(issueIdOrKey: string|number, expand?: Array<'renderedFields'|'names'|'schema'|'transitions'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.Issue> {
     const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }), { expand: expand?.join(',')});
     return data;
   }
@@ -338,8 +338,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getIssuesForSprint(sprintId: number): Promise<Jira.IssuesForSprint> {
-    const { data } = await this.client.get<Jira.IssuesForSprint>(this.getEndpointFor(this.endpoints.SPRINT_ISSUES, { sprintId }));
+  async getIssuesForSprint(sprintId: number, startAt?: number, maxResults?: number, jql?: string, validateQuery?: boolean, fields?: Array<string>, expand?: Array<'renderedFields'|'names'|'schema'|'transitions'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.IssuesForSprint> {
+    const { data } = await this.client.get<Jira.IssuesForSprint>(this.getEndpointFor(this.endpoints.SPRINT_ISSUES, { sprintId }), { startAt, maxResults, jql, validateQuery, fields: fields?.join(','), expand: expand?.join(',')});
     return data;
   }
 
