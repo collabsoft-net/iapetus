@@ -6,6 +6,7 @@ export * from './useConfluenceUser';
 export * from './useCurrentUser';
 export * from './useEntityPermission';
 export * from './useHostContext';
+export * from './useHostService';
 export * from './useJiraPermission';
 export * from './useJiraProject';
 export * from './useJiraUser';
