@@ -9,9 +9,9 @@ export const useJiraProject = (projectId: number, requiredPermissions?: Array<st
 
   const [ project, setProject ] = useState<Jira.Project>();
   const [ loading, setLoading ] = useState<boolean>(true);
-  const [ errors, setErrors ] = useState<Error>();
+  const [ error, setError ] = useState<Error>();
 
-  const [ hasRequiredPermissions ] = useJiraPermissions([
+  const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] = useJiraPermissions([
     {
       projects: [ projectId ],
       permissions: requiredPermissions || []
@@ -19,13 +19,25 @@ export const useJiraProject = (projectId: number, requiredPermissions?: Array<st
   ]);
 
   useEffect(() => {
-    if (service) {
-      service.getProject(projectId, expand)
-        .then(setProject)
-        .catch(setErrors)
-        .finally(() => setLoading(false));
+    if (!isLoadingPermissions) {
+      if (!service) {
+        setProject(undefined);
+        setError(new Error('Failed to connect to Atlassian API, JiraClientService is missing'));
+        setLoading(false);
+      } else if (jiraPermissionsError) {
+        setProject(undefined);
+        setError(jiraPermissionsError);
+        setLoading(false);
+      } else {
+        service.getProject(projectId, expand)
+          .then(setProject)
+          .catch((err) => {
+            setProject(undefined);
+            setError(err);
+          }).finally(() => setLoading(false));
+      }
     }
-  }, [ service ]);
+  }, [ isLoadingPermissions ]);
 
-  return [ project, hasRequiredPermissions, loading, errors ];
+  return [ project, hasRequiredPermissions, loading, error ];
 }

@@ -3,27 +3,44 @@ import { useContext, useEffect, useState } from 'react';
 
 import { AP as APContext , JiraClientService } from '../Contexts';
 
-export const useJiraUser = (accountId?: string|PromiseLike<string>): [ Jira.User|null, boolean ] => {
+export const useJiraUser = (accountId?: string|PromiseLike<string>): [ Jira.User|null, boolean, Error|undefined ] => {
 
   const AP = useContext(APContext);
   const service = useContext(JiraClientService);
 
   const [ isLoading, setLoading ] = useState<boolean>(true);
   const [ user, setUser ] = useState<Jira.User|null>(null);
+  const [ error, setError ] = useState<Error>();
 
   useEffect(() => {
-    if (AP && service) {
-      if (isOfType(AP, 'jira')) {
-        new Promise<string>(resolve => accountId
-          ? resolve(accountId)
-          : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
-        ).then(id => service.getUser(id)).then(setUser).finally(() => setLoading(false));
-      } else {
+    if (!AP) {
+      setUser(null);
+      setError(new Error('Cannot retrieve User, hook is executed outside of context of Atlassian host product'));
+      setLoading(false);
+    } else if (!isOfType(AP, 'jira')) {
+      setUser(null);
+      setError(new Error('Cannot retrieve User, hook is executed outside of context of Atlassian Jira'));
+      setLoading(false);
+    } else if (!service) {
+      setUser(null);
+      setError(new Error('Failed to connect to Atlassian API, JiraClientService is missing'));
+      setLoading(false);
+    } else {
+      new Promise<string>(resolve => accountId
+        ? resolve(accountId)
+        : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
+      ).then(id => {
+        if (!id) {
+          return Promise.reject(new Error('Could not retrieve Jira user, account ID was not found'));
+        } else {
+          return service.getUser(id).then(setUser)
+        }
+      }).catch((err) => {
         setUser(null);
-        setLoading(false);
-      }
+        setError(err);
+      }).finally(() => setLoading(false));
     }
-  }, [ service ]);
+  }, []);
 
-  return [ user, isLoading ];
+  return [ user, isLoading, error ];
 }

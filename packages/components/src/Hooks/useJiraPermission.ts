@@ -5,28 +5,49 @@ import { JiraClientService } from '../Contexts';
 import { useHostContext } from './useHostContext';
 import { useJiraUser } from './useJiraUser';
 
-export const useJiraPermissions = (permissions?: Array<Jira.BulkProjectPermissions>, accountId?: string) => {
+export const useJiraPermissions = (permissions: Array<Jira.BulkProjectPermissions>, accountId?: string): [ boolean|undefined, boolean, Error|undefined ] => {
 
   const service = useContext(JiraClientService);
-  const [ user ] = useJiraUser(accountId);
-  const [ context ] = useHostContext();
+  const [ context, isLoadingContext ] = useHostContext();
+  const [ user, isLoadingUser, userError ] = useJiraUser(accountId);
 
   const [ isLoading, setLoading ] = useState<boolean>(true);
   const [ hasPermissions, setHasPermissions ] = useState<boolean>();
+  const [ error, setError ] = useState<Error|undefined>();
 
   useEffect(() => {
-    if (context) {
-      if (!permissions || !isOfType<AP.JiraContext>(context, 'jira')) {
-        setHasPermissions(true);
+    if (!isLoadingContext && !isLoadingUser) {
+
+      if (!context) {
+        setHasPermissions(undefined);
+        setError(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian host product'));
         setLoading(false);
-      } else if (service && user) {
+      } else if (!isOfType<AP.JiraContext>(context, 'jira')) {
+        setHasPermissions(undefined);
+        setError(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Jira'));
+        setLoading(false);
+      } else if (!permissions || !Array.isArray(permissions)) {
+        setHasPermissions(undefined);
+        setError(new Error('Cannot check for permissions, the "permissions" parameter is invalid (Array expected)'));
+        setLoading(false);
+      } else if (!service) {
+        setHasPermissions(undefined);
+        setError(new Error('Failed to connect to Atlassian API, JiraClientService is missing'));
+        setLoading(false);
+      } else if (!user) {
+        setHasPermissions(undefined);
+        setError(userError);
+        setLoading(false);
+      } else {
         service.hasPermissions(user.accountId, permissions)
           .then(setHasPermissions)
-          .catch(() => setHasPermissions(false))
-          .finally(() => setLoading(false))
+          .catch((err) => {
+            setHasPermissions(undefined);
+            setError(err);
+          }).finally(() => setLoading(false))
       }
     }
-  }, [ service, user, context ]);
+  }, [ isLoadingContext, isLoadingUser ]);
 
-  return [ hasPermissions, isLoading ];
+  return [ hasPermissions, isLoading, error ];
 }
