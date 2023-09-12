@@ -3,6 +3,7 @@ export * from './useConfluenceApplicationPermission';
 export * from './useConfluenceContentPermission';
 export * from './useConfluenceSpacePermission';
 export * from './useConfluenceUser';
+export * from './useContext';
 export * from './useCurrentUser';
 export * from './useEntityPermission';
 export * from './useHostContext';
