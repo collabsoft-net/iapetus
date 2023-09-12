@@ -2,6 +2,7 @@ import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { ConfluenceCloudEndpoints, ConfluenceServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
+import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
@@ -62,6 +63,52 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
       }
     }
     return false;
+  }
+
+  async setEntityProperty<T>(entityType: 'app'|'user'|'space'|'content', entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
+    switch (entityType) {
+      case 'app': return this.setAppProperty(entityId, property);
+      case 'user': return this.setUserProperty(entityId, property);
+      case 'space': return this.setSpaceProperty(entityId, property);
+      case 'content': return this.setContentProperty(entityId, property);
+    }
+  }
+
+  async setSpaceProperty<T>(spaceIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async setContentProperty<T>(contentId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteEntityProperty(entityType: 'app'|'user'|'space'|'content', entityId: string, propertyKey: string): Promise<void> {
+    switch (entityType) {
+      case 'app': return this.deleteAppProperty(entityId, propertyKey);
+      case 'user': return this.deleteUserProperty(entityId, propertyKey);
+      case 'space': return this.deleteSpaceProperty(entityId, propertyKey);
+      case 'content': return this.deleteContentProperty(entityId, propertyKey);
+    }
+  }
+
+  async deleteSpaceProperty(spaceIdOrKey: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteContentProperty(contentId: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
   }
 
   async hasApplicationPermission(accountId: string, operation: Confluence.ContentOperation): Promise<boolean> {

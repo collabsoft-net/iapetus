@@ -97,6 +97,11 @@ export enum ConfluenceCloudEndpoints {
 
   SPACE = '/rest/api/space/:spaceKey',
 
+  APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
+  USER_PROPERTY_BY_KEY = '/rest/api/user/:userId/property/:propertyKey',
+  SPACE_PROPERTY_BY_KEY = '/rest/api/space/:spaceIdOrKey/property/:propertyKey',
+  CONTENT_PROPERTY_BY_KEY = '/rest/api/content/:contentId/property/:propertyKey',
+
   LIST_DYNAMIC_MODULES = '/rest/atlassian-connect/1/app/module/dynamic',
   REGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
   UNREGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',

@@ -35,6 +35,11 @@ declare global {
 
       }
 
+      interface EntityProperty<T> {
+        key: string;
+        value: T;
+      }
+
     }
 
   }
@@ -1076,7 +1081,7 @@ declare global {
       updated: string;
       visibility: Visibility;
       jsdPublic: boolean;
-      properties: Array<EntityProperty<unknown>>;
+      properties: Array<Atlassian.Connect.EntityProperty<unknown>>;
     }
 
     interface Visibility {
@@ -1249,11 +1254,6 @@ declare global {
       maxResults: number;
       total: number;
       issues: Array<Issue>;
-    }
-
-    interface EntityProperty<T> {
-      key: string;
-      value: T;
     }
 
     type Webhooks =

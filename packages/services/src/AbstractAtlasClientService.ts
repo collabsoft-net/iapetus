@@ -2,6 +2,7 @@ import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { ConfluenceCloudEndpoints, ConfluenceServerEndpoints,JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
+import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
@@ -28,6 +29,61 @@ export abstract class AbstractAtlasClientService {
   async getApp(appKey: string): Promise<UPM.App> {
     const { data } = await this.client.get<UPM.App>(this.getEndpointFor(this.endpoints.APP, { appKey }));
     return data;
+  }
+
+  async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async getUserProperty<T>(userKeyOrAccountId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
+    try {
+      const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
+      const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
+
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async setAppProperty<T>(addonKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async setUserProperty<T>(userKeyOrAccountId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
+    const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
+    const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
+
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, params);
+    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteAppProperty(addonKey: string, propertyKey: string): Promise<void> {
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
+  }
+
+  async deleteUserProperty(userKeyOrAccountId: string, propertyKey: string): Promise<void> {
+    const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
+    const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
+
+    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
+    if (status !== StatusCodes.NO_CONTENT) {
+      throw new Error(statusText);
+    }
   }
 
   abstract listDynamicModules(): Promise<unknown>;

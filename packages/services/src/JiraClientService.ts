@@ -156,7 +156,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async updateComment<T>(issueIdOrKey: string|number, commentId: string, body: string|Record<string, unknown>, properties?: Array<Jira.EntityProperty<T>>): Promise<Jira.Comment> {
+  async updateComment<T>(issueIdOrKey: string|number, commentId: string, body: string|Record<string, unknown>, properties?: Array<Atlassian.Connect.EntityProperty<T>>): Promise<Jira.Comment> {
     const { data } = await this.client.put<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_UPDATE, { issueIdOrKey, commentId }), { body, properties });
     return data;
   }
@@ -358,7 +358,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     switch (entityType) {
       case 'app': return this.getAppProperty(entityId, propertyKey);
       case 'user': return this.getUserProperty(entityId, propertyKey);
@@ -368,55 +368,55 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
-      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
     }
   }
 
-  async getUserProperty<T>(userKeyOrAccountId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getUserProperty<T>(userKeyOrAccountId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
       const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
       const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
 
-      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
     }
   }
 
-  async getProjectProperty<T>(projectIdOrKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getProjectProperty<T>(projectIdOrKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
-      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey }));
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
     }
   }
 
-  async getIssueProperty<T>(issueIdOrKey: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getIssueProperty<T>(issueIdOrKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
-      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey }));
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
     }
   }
 
-  async getCommentProperty<T>(commentId: string, propertyKey: string): Promise<Jira.EntityProperty<T>|null> {
+  async getCommentProperty<T>(commentId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
-      const { data, status } = await this.client.get<Jira.EntityProperty<T>>(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey }));
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey }));
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
     }
   }
 
-  async setEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, property: Jira.EntityProperty<T>): Promise<void> {
+  async setEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
     switch (entityType) {
       case 'app': return this.setAppProperty(entityId, property);
       case 'user': return this.setUserProperty(entityId, property);
@@ -426,38 +426,21 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
-  async setAppProperty<T>(addonKey: string, property: Jira.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value);
-    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
-      throw new Error(statusText);
-    }
-  }
-
-  async setUserProperty<T>(userKeyOrAccountId: string, property: Jira.EntityProperty<T>): Promise<void> {
-    const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
-    const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
-
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, params);
-    if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
-      throw new Error(statusText);
-    }
-  }
-
-  async setProjectProperty<T>(projectIdOrKey: string, property: Jira.EntityProperty<T>): Promise<void> {
+  async setProjectProperty<T>(projectIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
     const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey: property.key }), property.value);
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
   }
 
-  async setIssueProperty<T>(issueIdOrKey: string, property: Jira.EntityProperty<T>): Promise<void> {
+  async setIssueProperty<T>(issueIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
     const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey: property.key }), property.value);
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
   }
 
-  async setCommentProperty<T>(commentId: string, property: Jira.EntityProperty<T>): Promise<void> {
+  async setCommentProperty<T>(commentId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
     const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey: property.key }), property.value);
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
@@ -470,16 +453,6 @@ export class JiraClientService extends AbstractAtlasClientService {
       case 'project': return this.deleteProjectProperty(entityId, propertyKey);
       case 'issue': return this.deleteIssueProperty(entityId, propertyKey);
       case 'comment': return this.deleteCommentProperty(entityId, propertyKey);
-    }
-  }
-
-  async deleteUserProperty(userKeyOrAccountId: string, propertyKey: string): Promise<void> {
-    const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
-    const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
-
-    const { status, statusText } = await this.client.delete(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
-    if (status !== StatusCodes.NO_CONTENT) {
-      throw new Error(statusText);
     }
   }
 
