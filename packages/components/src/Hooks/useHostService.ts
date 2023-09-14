@@ -1,18 +1,26 @@
+import { isOfType } from '@collabsoft-net/helpers';
+import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { useContext } from 'react'
 
-import { ConfluenceClientService, JiraClientService } from '../Contexts'
+import { ConfluenceClientService as ConfluenceClientServiceCtx, JiraClientService as JiraClientServiceCtx } from '../Contexts'
 import { AP as APContext } from '../Contexts';
 
-export const useHostService = () => {
+export const useHostService = (): JiraClientService|ConfluenceClientService => {
   const AP = useContext(APContext);
-  const jiraService = useContext(JiraClientService);
-  const confluenceService = useContext(ConfluenceClientService);
+  const jiraService = useContext(JiraClientServiceCtx);
+  const confluenceService = useContext(ConfluenceClientServiceCtx);
 
-  if (AP?.jira) {
+  if (AP && isOfType(AP, 'jira')) {
+    if (!jiraService) {
+      throw new Error('Failed to retrieve host service, JiraClientService context is missing');
+    }
     return jiraService;
-  } else if (AP?.confluence) {
+  } else if (AP && isOfType(AP, 'confluence')) {
+    if (!confluenceService) {
+      throw new Error('Failed to retrieve host service, ConfluenceClientService context is missing');
+    }
     return confluenceService;
-  } else {
-    return null;
   }
+
+  throw new Error('Failed to retrieve host service, hook is executed outside of context of Atlassian host product');
 }
