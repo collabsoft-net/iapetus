@@ -11,3 +11,4 @@ export * from './useHostService';
 export * from './useJiraPermission';
 export * from './useJiraProject';
 export * from './useJiraUser';
+export * from './usePermission';

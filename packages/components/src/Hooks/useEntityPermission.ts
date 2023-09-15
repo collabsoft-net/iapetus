@@ -8,10 +8,10 @@ import { useCurrentUser } from './useCurrentUser';
 import { useHostContext } from './useHostContext';
 import { useHostService } from './useHostService';
 
-export function usePermission(permissions: Array<string>, issueId?: number, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function usePermission(permissions: Confluence.ContentOperation, type: 'content', contentId?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function usePermission(permissions: Confluence.ContentOperation, type: 'space', spaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function usePermission(permissions: Array<string>|Confluence.ContentOperation, issueIdOrType?: number|'content'|'space', accountIdOrContentIdOrSpaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ] {
+export function useEntityPermission(permissions: Array<string>, issueId?: number, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
+export function useEntityPermission(permissions: Confluence.ContentOperation, type: 'content', contentId?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
+export function useEntityPermission(permissions: Confluence.ContentOperation, type: 'space', spaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
+export function useEntityPermission(permissions: Array<string>|Confluence.ContentOperation, issueIdOrType?: number|'content'|'space', accountIdOrContentIdOrSpaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ] {
 
   const service = useHostService();
   const [ context, isLoadingContext ] = useHostContext();
