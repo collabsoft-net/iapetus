@@ -79,7 +79,7 @@ commands:
           name: Publish
           command: |
             yarn run lerna version --conventional-commits
-            yarn run lerna publish --from-git
+            yarn run lerna publish from-git -y
 
 workflows:
   version: 2
@@ -88,7 +88,7 @@ workflows:
       - build:
           filters:
             branches:
-              ignore: 
+              ignore:
                 - develop
                 - main
 
