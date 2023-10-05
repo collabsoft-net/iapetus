@@ -78,7 +78,7 @@ commands:
       - run: 
           name: Publish
           command: |
-            yarn run lerna version --conventional-commits
+            yarn run lerna version --conventional-commits -y
             yarn run lerna publish from-package -y
 
 workflows:
