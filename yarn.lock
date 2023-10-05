@@ -8893,6 +8893,22 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"iapetus@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "iapetus@workspace:."
+  dependencies:
+    "@types/node": ">=16.0.0"
+    "@typescript-eslint/eslint-plugin": 5.25.0
+    "@typescript-eslint/parser": 5.52.0
+    eslint: 8.15.0
+    eslint-plugin-simple-import-sort: 7.0.0
+    lerna: 4.0.0
+    node-gyp: ^9.0.0
+    nodemon: 2.0.16
+    typescript: 4.6.4
+  languageName: unknown
+  linkType: soft
+
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -13006,22 +13022,6 @@ fsevents@~2.3.2:
   checksum: cdc7f6eacb17927f2a075117a823e1c5951792c6498ebcce81ca8203454a811d4cf8900314154d3259bb8f0b42ab17f67396a8694a54cae3283326e57ad250cd
   languageName: node
   linkType: hard
-
-"root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root@workspace:."
-  dependencies:
-    "@types/node": ">=16.0.0"
-    "@typescript-eslint/eslint-plugin": 5.25.0
-    "@typescript-eslint/parser": 5.52.0
-    eslint: 8.15.0
-    eslint-plugin-simple-import-sort: 7.0.0
-    lerna: 4.0.0
-    node-gyp: ^9.0.0
-    nodemon: 2.0.16
-    typescript: 4.6.4
-  languageName: unknown
-  linkType: soft
 
 "run-async@npm:^2.4.0":
   version: 2.4.1
