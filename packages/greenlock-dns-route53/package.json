@@ -1,11 +1,10 @@
 {
   "name": "@collabsoft-net/greenlock-dns-route53",
   "version": "1.0.0",
-  "description": "Rest clients to be used in Server, Cloud functions and client-side (with support for AP.request and Atlassian REST API, incl. impersonation)",
+  "description": "Automatically create/update AWS Route53 DNS records for use with Greenlock (LetsEncrypt) for domain owner verification",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
-  "license": "UNLICENSED",
-  "sideEffects": false,
+  "license": "Apache-2.0",  "sideEffects": false,
   "module": "./dist/es2020/index.js",
   "main": "./dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",

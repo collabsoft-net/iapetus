@@ -1,10 +1,9 @@
 {
-  "private": true,
-  "name": "root",
+  "name": "iapetus",
   "workspaces": [
     "packages/*"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "clean": "yarn run lerna clean -y && rm -rf node_modules",
     "build": "yarn run lerna run build --concurrency 2",
