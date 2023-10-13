@@ -20,7 +20,7 @@ export const registerTaskHandlers = (container: inversify.interfaces.Container |
 
   taskHandlers.forEach(handler => {
     !isProduction() && logger.log(`[${handler.name}] Registering Task ${handler.name}`)
-    module.exports[handler.name] = onTaskDispatched<CustomEvent<TenantAwareEvent>>(options, ({ data }) => handler.process(data))
+    module.exports[handler.name] = onTaskDispatched<CustomEvent<TenantAwareEvent>>(handler.options || options, ({ data }) => handler.process(data))
   });
 
 }

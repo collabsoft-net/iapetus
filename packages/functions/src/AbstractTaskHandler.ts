@@ -3,6 +3,7 @@ import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, TaskHandler, TenantAwareEvent } from '@collabsoft-net/types';
 import { logger } from 'firebase-functions';
+import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -10,6 +11,7 @@ export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends 
 
   abstract name: string;
   requireActiveInstance = true;
+  options?: TaskQueueOptions;
   #session?: X;
 
   get session(): X {
