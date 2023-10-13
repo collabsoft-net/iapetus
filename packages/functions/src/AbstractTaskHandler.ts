@@ -23,7 +23,6 @@ export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends 
 
   protected abstract run(event: T): Promise<void>;
   protected abstract toSession(instance: ACInstance): Promise<X>;
-  protected abstract timeoutImminent(data: T): Promise<void>;
 
   async process({ name, data }: CustomEvent<T>): Promise<void> {
     const { log, error } = logger;
