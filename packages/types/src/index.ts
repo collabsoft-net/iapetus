@@ -18,5 +18,6 @@ export * from './RestClient';
 export * from './Root';
 export * from './StorageProvider';
 export * from './Strategy';
+export * from './Tasks';
 export * from './Type';
 export * from './Validator';
