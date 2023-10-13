@@ -2,6 +2,7 @@ import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, TaskHandler, TenantAwareEvent } from '@collabsoft-net/types';
+import { captureException, captureMessage } from '@sentry/minimal';
 import { logger } from 'firebase-functions';
 import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 import { injectable } from 'inversify';
@@ -43,6 +44,9 @@ export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends 
       error('======================== Event processing failed ========================');
       error(`==> Failed to process ${this.name}`, err);
       error('=========================================================================');
+      captureMessage(`Failed to process ${this.name}`);
+      captureException(err);
+      throw err;
     } finally {
       log(`==> Finished processing ${this.name}`);
     }
