@@ -1,5 +1,6 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import axios from 'axios';
 import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
 import { getFunctions,TaskOptions } from 'firebase-admin/functions';
 import uniqid from 'uniqid';
@@ -61,11 +62,22 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   async enqueue<T>(task: string, data: T, options?: TaskOptions) {
-    const queue = getFunctions(this.fb).taskQueue<T>(task);
-    if (queue) {
-      await queue.enqueue(data, options);
+    if (process.env.FUNCTIONS_EMULATOR === 'true') {
+      const projectId = process.env.GCLOUD_PROJECT;
+      const baseUrl = process.env.FUNCTIONS_EMULATOR_HOST;
+      if (projectId && baseUrl) {
+        console.log('VCSTaskService::queueu', 6);
+        await axios.post(`${baseUrl}/${projectId}/us-central1/${name}`, { data });
+      } else {
+        throw new Error('Required environment variables GCLOUD_PROJECT and/or FUNCTIONS_EMULATOR_HOST are missing or invalid');
+      }
     } else {
-      throw new Error(`Could not find task queue associated with ${task}`);
+      const queue = getFunctions(this.fb).taskQueue<T>(task);
+      if (queue) {
+        await queue.enqueue(data, options);
+      } else {
+        throw new Error(`Could not find task queue associated with ${task}`);
+      }
     }
   }
 
