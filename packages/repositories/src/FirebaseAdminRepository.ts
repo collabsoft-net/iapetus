@@ -66,7 +66,6 @@ export class FirebaseAdminRepository implements Repository {
       const projectId = process.env.GCLOUD_PROJECT;
       const baseUrl = process.env.FUNCTIONS_EMULATOR_HOST;
       if (projectId && baseUrl) {
-        console.log('VCSTaskService::queueu', 6);
         await axios.post(`${baseUrl}/${projectId}/us-central1/${name}`, { data });
       } else {
         throw new Error('Required environment variables GCLOUD_PROJECT and/or FUNCTIONS_EMULATOR_HOST are missing or invalid');
