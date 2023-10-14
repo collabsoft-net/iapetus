@@ -1,6 +1,7 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
+import { getFunctions,TaskOptions } from 'firebase-admin/functions';
 import uniqid from 'uniqid';
 
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
@@ -57,6 +58,15 @@ export class FirebaseAdminRepository implements Repository {
 
   async signOut(): Promise<void> {
     return Promise.reject('This feature is not supported in "admin" mode');
+  }
+
+  async enqueue<T>(task: string, data: T, options?: TaskOptions) {
+    const queue = getFunctions(this.fb).taskQueue<T>(task);
+    if (queue) {
+      await queue.enqueue(data, options);
+    } else {
+      throw new Error(`Could not find task queue associated with ${task}`);
+    }
   }
 
   async count(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
