@@ -1,4 +1,7 @@
-import { pubsub } from 'firebase-functions';
+import { CloudEvent } from 'firebase-functions/v2';
+import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
+
+import { CustomEvent, TenantAwareEvent } from './Events';
 
 export interface PubSubOptions {
   projectId: string;
@@ -15,11 +18,11 @@ export interface PubSubMessage {
   nack: () => void;
 }
 
-export interface PubSubHandler {
+export interface PubSubHandler<T extends TenantAwareEvent> {
   name?: string;
   topic: string;
   timeoutSeconds?: number;
-  process: (message: pubsub.Message) => Promise<void>;
+  process: (message: CloudEvent<MessagePublishedData<CustomEvent<T>>>) => Promise<void>;
 }
 
 export interface ScheduledPubSubHandler {

@@ -4,8 +4,8 @@ import { Strategy as IStrategy } from '@collabsoft-net/types';
 import { captureException, Handlers as Sentry } from '@sentry/node';
 import cookies from 'cookie-parser';
 import * as express from 'express';
-import { https, Response } from 'firebase-functions';
 import { logger } from 'firebase-functions';
+import { HttpsOptions, onRequest } from 'firebase-functions/v2/https';
 import { StatusCodes } from 'http-status-codes';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -13,11 +13,11 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), configure?: (app: express.Application) => void): (req: https.Request, resp: Response) => void | Promise<void> => {
+export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void | Promise<void> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
-  return new InversifyExpressServer(appContainer).setConfig((app) => {
+  const instance = new InversifyExpressServer(appContainer).setConfig((app) => {
     try {
       app.set('trust proxy', 1);
       app.disable('x-powered-by');
@@ -62,4 +62,6 @@ export const createAppServer = (container: inversify.interfaces.Container | (() 
       logger.error('Server error', { error: JSON.stringify(exp) });
     }
   }).build();
+
+  module.exports[name] = onRequest(options, instance);
 }

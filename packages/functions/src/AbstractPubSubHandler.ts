@@ -2,12 +2,13 @@ import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, PubSubHandler, TenantAwareEvent } from '@collabsoft-net/types';
-import { pubsub } from 'firebase-functions';
 import { logger } from 'firebase-functions';
+import { CloudEvent } from 'firebase-functions/v2';
+import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session> implements PubSubHandler {
+export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session> implements PubSubHandler<T> {
 
   abstract name: string;
   abstract topic: string;
@@ -29,14 +30,14 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
   protected abstract toSession(instance: ACInstance): Promise<X>;
   protected abstract timeoutImminent(data: T): Promise<void>;
 
-  async process(message: pubsub.Message): Promise<void> {
+  async process(event: CloudEvent<MessagePublishedData<CustomEvent<T>>>): Promise<void> {
     const { log, error } = logger;
 
-    this.startTimer(message);
+    this.startTimer(event);
     log(`==> Start processing ${this.name}`);
 
     try {
-      const { name, data } = message.json as CustomEvent<T>;
+      const { name, data } = event.data.message.json;
       if (name !== this.topic) throw new Error(`Event ${name} does not match ${this.topic}, ignoring`);
 
       const instance = await this.instanceService.findById(data.tenantId) || await this.instanceService.findByProperty('clientId', data.tenantId);
@@ -54,10 +55,10 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
     }
   }
 
-  private startTimer(message: pubsub.Message) {
+  private startTimer(event: CloudEvent<MessagePublishedData<CustomEvent<T>>>) {
     const seconds = this.timeoutSeconds - 30;
     if (seconds > 0) {
-      const { data } = message.json as CustomEvent<T>;
+      const { data } = event.data.message.json;
       this.#timer = setTimeout(() => this.timeoutImminent(data), seconds * 1000);
     }
   }

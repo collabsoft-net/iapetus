@@ -1,7 +1,6 @@
 import { isProduction } from '@collabsoft-net/helpers';
 import { load } from '@gdn/envify-nconf';
 import * as firebase from 'firebase-admin';
-import * as functions from 'firebase-functions';
 import { logger } from 'firebase-functions';
 
 export const setEnv = (): void => {
@@ -10,8 +9,6 @@ export const setEnv = (): void => {
     cwd += cwd.endsWith('/') ? '../../' : '/../../';
   }
   load(cwd);
-
-  process.env = { ...process.env, ...(functions.config().env || {}) };
 
   if (process.env.FIREBASE_CONFIG) {
     const config: Record<string, string> = JSON.parse(process.env.FIREBASE_CONFIG);
