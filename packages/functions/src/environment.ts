@@ -1,9 +1,10 @@
-import { isProduction } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isProduction } from '@collabsoft-net/helpers';
 import { load } from '@gdn/envify-nconf';
 import * as firebase from 'firebase-admin';
 import { logger } from 'firebase-functions';
+import { defineSecret, defineString } from 'firebase-functions/params';
 
-export const setEnv = (): void => {
+export const setEnv = (params: Array<string> = [], secrets: Array<string> = []): void => {
   let cwd = process.cwd();
   if (cwd.indexOf('/functions') >= 0) {
     cwd += cwd.endsWith('/') ? '../../' : '/../../';
@@ -16,6 +17,26 @@ export const setEnv = (): void => {
       process.env[`FB_${key.toUpperCase()}`] = value;
     });
   }
+
+  params.forEach(key => {
+    const param = defineString(key, { default: '' });
+    const value = param.value();
+    if (!isNullOrEmpty(value)) {
+      process.env[key] = value;
+    }
+  });
+
+  secrets.forEach(key => {
+    try {
+      const secret = defineSecret(key);
+      const value = secret.value();
+      if (!isNullOrEmpty(value)) {
+        process.env[key] = value;
+      }
+    } catch(ignored) {
+      // Ignore this error
+    }
+  });
 
   Object.entries(process.env).forEach(([ key, value ]) => {
     if (!isProduction()) {
