@@ -13,7 +13,7 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void | Promise<void> => {
+export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
