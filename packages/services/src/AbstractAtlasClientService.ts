@@ -6,8 +6,8 @@ import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
 
-import { ConfluenceClientService } from './ConfluenceClientService';
-import { JiraClientService } from './JiraClientService';
+import type { ConfluenceClientService } from './ConfluenceClientService';
+import type { JiraClientService } from './JiraClientService';
 
 @injectable()
 export abstract class AbstractAtlasClientService {
@@ -35,7 +35,7 @@ export abstract class AbstractAtlasClientService {
   }
 
   async getEntityProperty<T>(entityType: Jira.EntityType|Confluence.EntityType, entityId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
-    if (this instanceof JiraClientService) {
+    if (isOfType<JiraClientService>(this, 'getIssue')) {
       switch (entityType) {
         case 'app': return this.getAppProperty(entityId, propertyKey);
         case 'user': return this.getUserProperty(entityId, propertyKey);
@@ -43,7 +43,7 @@ export abstract class AbstractAtlasClientService {
         case 'issue': return this.getIssueProperty(entityId, propertyKey);
         case 'comment': return this.getCommentProperty(entityId, propertyKey);
       }
-    } else if (this instanceof ConfluenceClientService) {
+    } else if (isOfType<ConfluenceClientService>(this, 'getContent')) {
       switch (entityType) {
         case 'app': return this.getAppProperty(entityId, propertyKey);
         case 'user': return this.getUserProperty(entityId, propertyKey);
@@ -78,7 +78,7 @@ export abstract class AbstractAtlasClientService {
   }
 
   async setEntityProperty<T>(entityType: Jira.EntityType|Confluence.EntityType, entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    if (this instanceof JiraClientService) {
+    if (isOfType<JiraClientService>(this, 'getIssue')) {
       switch (entityType) {
         case 'app': return this.setAppProperty(entityId, property);
         case 'user': return this.setUserProperty(entityId, property);
@@ -86,7 +86,7 @@ export abstract class AbstractAtlasClientService {
         case 'issue': return this.setIssueProperty(entityId, property);
         case 'comment': return this.setCommentProperty(entityId, property);
       }
-    } else if (this instanceof ConfluenceClientService) {
+    } else if (isOfType<ConfluenceClientService>(this, 'getContent')) {
       switch (entityType) {
         case 'app': return this.setAppProperty(entityId, property);
         case 'user': return this.setUserProperty(entityId, property);
