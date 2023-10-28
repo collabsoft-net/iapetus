@@ -46,6 +46,8 @@ declare global {
 
   namespace Confluence {
 
+    type EntityType = 'app'|'user'|'space'|'content';
+
     interface User {
       type: 'known'|'unknown'|'anonymous'|'user';
       username: string;
@@ -465,6 +467,8 @@ declare global {
   }
 
   namespace Jira {
+
+    type EntityType = 'app'|'user'|'project'|'issue'|'comment';
 
     interface User extends ApplicationUser {}
 

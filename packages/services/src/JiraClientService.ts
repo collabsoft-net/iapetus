@@ -358,16 +358,6 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
-    switch (entityType) {
-      case 'app': return this.getAppProperty(entityId, propertyKey);
-      case 'user': return this.getUserProperty(entityId, propertyKey);
-      case 'project': return this.getProjectProperty(entityId, propertyKey);
-      case 'issue': return this.getIssueProperty(entityId, propertyKey);
-      case 'comment': return this.getCommentProperty(entityId, propertyKey);
-    }
-  }
-
   async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
@@ -413,16 +403,6 @@ export class JiraClientService extends AbstractAtlasClientService {
       return status === StatusCodes.OK ? data : null;
     } catch (error) {
       return null;
-    }
-  }
-
-  async setEntityProperty<T>(entityType: 'app'|'user'|'project'|'issue'|'comment', entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    switch (entityType) {
-      case 'app': return this.setAppProperty(entityId, property);
-      case 'user': return this.setUserProperty(entityId, property);
-      case 'project': return this.setProjectProperty(entityId, property);
-      case 'issue': return this.setIssueProperty(entityId, property);
-      case 'comment': return this.setCommentProperty(entityId, property);
     }
   }
 

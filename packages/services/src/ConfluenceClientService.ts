@@ -65,12 +65,21 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return false;
   }
 
-  async setEntityProperty<T>(entityType: 'app'|'user'|'space'|'content', entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    switch (entityType) {
-      case 'app': return this.setAppProperty(entityId, property);
-      case 'user': return this.setUserProperty(entityId, property);
-      case 'space': return this.setSpaceProperty(entityId, property);
-      case 'content': return this.setContentProperty(entityId, property);
+  async getSpaceProperty<T>(spaceIdOrKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async getContentProperty<T>(contentId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
+    try {
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey }));
+      return status === StatusCodes.OK ? data : null;
+    } catch (error) {
+      return null;
     }
   }
 
