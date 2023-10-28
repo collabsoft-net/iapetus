@@ -15,7 +15,6 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
   timeoutSeconds = 540;
   requireActiveInstance = true;
   #session?: X;
-  #timer?: NodeJS.Timeout;
 
   get session(): X {
     return this.#session || {} as X;
@@ -28,12 +27,10 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
 
   protected abstract run(event: T): Promise<void>;
   protected abstract toSession(instance: ACInstance): Promise<X>;
-  protected abstract timeoutImminent(data: T): Promise<void>;
 
   async process(event: CloudEvent<MessagePublishedData<CustomEvent<T>>>): Promise<void> {
     const { log, error } = logger;
 
-    this.startTimer(event);
     log(`==> Start processing ${this.name}`);
 
     try {
@@ -51,22 +48,6 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
       error('=========================================================================');
     } finally {
       log(`==> Finished processing ${this.name}`);
-      this.stopTimer();
-    }
-  }
-
-  private startTimer(event: CloudEvent<MessagePublishedData<CustomEvent<T>>>) {
-    const seconds = this.timeoutSeconds - 30;
-    if (seconds > 0) {
-      const { data } = event.data.message.json;
-      this.#timer = setTimeout(() => this.timeoutImminent(data), seconds * 1000);
-    }
-  }
-
-  private stopTimer() {
-    if (this.#timer) {
-      clearTimeout(this.#timer);
-      this.#timer = undefined;
     }
   }
 
