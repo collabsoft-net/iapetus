@@ -55,6 +55,33 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async searchProjects(
+    query?: string,
+    id?: Array<string>,
+    keys?: Array<string>,
+    typeKey?: 'business'|'service_desk'|'software',
+    category?: number,
+    action?: 'view'|'browse'|'edit'|'create',
+    expand?: Array<'description'|'projectKeys'|'lead'|'issueTypes'|'url'|'insight'>,
+    startAt = 0,
+    maxResults = 50,
+    orderBy: 'category'|'-category'|'+category'|'key'|'-key'|'+key'|'name'|'-name'|'+name'|'owner'|'-owner'|'+owner'|'issueCount'|'-issueCount'|'+issueCount'|'lastIssueUpdatedDate'|'-lastIssueUpdatedDate'|'+lastIssueUpdatedDate'|'archivedDate'|'+archivedDate'|'-archivedDate'|'deletedDate'|'+deletedDate'|'-deletedDate' = 'key'
+  ): Promise<Jira.PagedOfProjects> {
+    const { data } = await this.client.get<Jira.PagedOfProjects>(this.getEndpointFor(this.endpoints.SEARCH_PROJECTS), {
+      query,
+      id: id?.join(','),
+      keys: keys?.join(','),
+      typeKey,
+      category,
+      action,
+      expand: expand?.join(','),
+      startAt,
+      maxResults,
+      orderBy
+    });
+    return data;
+  }
+
   async getProjects(): Promise<Array<Jira.Project>> {
     const { data } = await this.client.get<Array<Jira.Project>>(this.getEndpointFor(this.endpoints.LIST_PROJECTS));
     return data;
