@@ -484,6 +484,15 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
   }
 
+  // ==================================================================================================================================
+  //
+  // WARNING: here by dragons 🐲
+  // These methods check for Jira permissions
+  // If this is not properly implemented, the user might incorrectly end up with elevated priviledges
+  // This poses a security issue and might result in data integrity / security incidents and/or bugcrowd vulnerability reports
+  //
+  // ==================================================================================================================================
+
   async hasAllPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>): Promise<boolean> {
     return this.hasPermissions(accountId, projectPermissions, globalPermissions, 'ALL');
   }
@@ -492,12 +501,57 @@ export class JiraClientService extends AbstractAtlasClientService {
     return this.hasPermissions(accountId, projectPermissions, globalPermissions, 'ANY');
   }
 
-  //
-  // WARNING: here by dragons 🐲
-  // This method checks for Jira permissions
-  // If this is not properly implemented, the user might incorrectly end up with elevated priviledges
-  // This poses a security issue and might result in data integrity / security incidents and/or bugcrowd vulnerability reports
-  //
+  async hasProjectPermission(accountId: string, projects: Array<number>, permission: string): Promise<Map<number, boolean>> {
+
+    const result = new Map<number, boolean>();
+
+    if (this.mode === Modes.CONNECT) {
+
+      // Retrieve the permissions from the JIRA API.
+      // This will return an array of permissions per project/issue. If the user has the requested permission, it will be listed in the array.
+      // For global permissions, the response will be an array of each of the permissions that match the request
+      const { data } = await this.client.post<Jira.BulkPermissionGrants>(this.endpoints.PERMISSIONS_CHECK, {
+        accountId,
+        projectPermissions: [{
+          projects,
+          permissions: [ permission ]
+        }]
+      });
+
+      // Did we get any project/issue permissions returned, and if so, is this in the form of an Array?
+      if (data.projectPermissions && Array.isArray(data.projectPermissions)) {
+
+        // The Jira API returns an array with results per permission, but in this case we are only checking a single permission
+        // We can extract that permission from the array to populate the result map
+        const projectPermission = data.projectPermissions.find(item => item.permission === permission);
+        if (projectPermission) {
+
+          // The Jira API result will only contain projects that for which the user has the requested permission
+          // This means that we need cross check the provided list of projects with the once in the response
+          // If the project ID is in the response, the user has access, if not... they don't.
+          projects.forEach(projectId => {
+            result.set(projectId, projectPermission.projects.includes(projectId));
+          });
+
+        }
+
+      }
+
+    } else if (this.mode === Modes.P2) {
+
+      // The Jira Server/DC API does not support bulk checking of permissions
+      // We will just have to go over each project and ask if the user has the requested permission
+      for await (const projectId of projects) {
+        const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { projectId });
+        const hasPermission = data.permissions[permission] && data.permissions[permission].havePermission;
+        result.set(projectId, hasPermission);
+      }
+
+    }
+
+    return result;
+  }
+
   async hasPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>, mode: 'ALL'|'ANY' = 'ALL'): Promise<boolean> {
     const evaluator = mode === 'ALL' ? 'every' : 'some';
     if (!accountId || (!projectPermissions && !globalPermissions)) return false;
