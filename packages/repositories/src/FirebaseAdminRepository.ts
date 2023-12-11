@@ -228,7 +228,7 @@ export class FirebaseAdminRepository implements Repository {
     await this.validateQueryOptions(options);
 
     // Make sure to remove undefined properties
-    const fbObject = this.objectify(Object.assign({}, entity));
+    const fbObject = this.objectify(entity);
     await this.firestore.doc(`${options.path}/${entity.id}`).set(fbObject);
     return entity;
   }
@@ -280,19 +280,20 @@ export class FirebaseAdminRepository implements Repository {
 
   // Make sure to remove undefined properties
   private objectify(entity: Record<string, unknown>) {
-    for (const key in entity) {
-      if (entity[key] === undefined) {
-        delete entity[key];
+    const {...item} = entity;
+    for (const key in item) {
+      if (item[key] === undefined) {
+        delete item[key];
         continue;
       }
-      if (entity[key] && typeof entity[key] === 'object') {
-        this.objectify(entity[key] as Record<string, unknown>);
-        if (!Object.keys(entity[key] as Record<string, unknown>).length) {
-          delete entity[key];
+      if (item[key] && typeof item[key] === 'object') {
+        item[key] = this.objectify(item[key] as Record<string, unknown>);
+        if (!Object.keys(item[key] as Record<string, unknown>).length) {
+          delete item[key];
         }
       }
     }
-    return entity;
+    return item;
   }
 
   static getIdentifier(): symbol {
