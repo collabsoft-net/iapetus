@@ -1384,15 +1384,17 @@ __metadata:
     "@collabsoft-net/services": ^1.1.1-alpha.14
     "@collabsoft-net/types": ^1.1.1-alpha.10
     "@types/node": ">=16.0.0"
-    "@types/react": 16.9.54
-    "@types/react-dom": 16.9.9
+    "@types/react": <17.0.0
+    "@types/react-dom": <17.0.0
     "@typescript-eslint/eslint-plugin": 5.25.0
     "@typescript-eslint/parser": 5.52.0
+    arrive: 2.4.1
     csstype: 3.1.1
     eslint: 8.15.0
     nodemon: 2.0.16
-    react: 16.14.0
-    react-dom: 16.14.0
+    react: <17.0.0
+    react-dom: <17.0.0
+    reflect-metadata: 0.2.1
     styled-components: 3.2.6
     typescript: 4.6.4
   peerDependencies:
@@ -1405,8 +1407,10 @@ __metadata:
     "@collabsoft-net/helpers": ^1.0.0-alpha.159
     "@collabsoft-net/services": ^1.0.0-alpha.159
     "@collabsoft-net/types": ^1.0.0-alpha.159
-    react: 16.14.0
-    react-dom: 16.14.0
+    arrive: 2.4.1
+    react: <17.0.0
+    react-dom: <17.0.0
+    reflect-metadata: 0.2.1
     styled-components: 3.2.6
   languageName: unknown
   linkType: soft
@@ -1585,7 +1589,7 @@ __metadata:
     eslint: 8.15.0
     express: 4.17.0
     firebase-admin: 11.2.1
-    firebase-functions: 4.0.2
+    firebase-functions: 4.4.1
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1602,7 +1606,7 @@ __metadata:
     cron: 1.8.2
     express: 4.17.0
     firebase-admin: 11.2.1
-    firebase-functions: 4.0.2
+    firebase-functions: 4.4.1
     http-status-codes: 2.2.0
     inversify: 6.0.1
     inversify-express-utils: 6.4.3
@@ -1831,7 +1835,7 @@ __metadata:
     axios: 0.24.0
     eslint: 8.15.0
     express: 4.17.0
-    firebase-functions: 4.0.2
+    firebase-functions: 4.4.1
     nodemon: 2.0.16
     typescript: 4.6.4
   languageName: unknown
@@ -5310,6 +5314,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"arrive@npm:2.4.1":
+  version: 2.4.1
+  resolution: "arrive@npm:2.4.1"
+  checksum: 6a1606b9b9d55b599e28ec24cf787ef784f3157d59f6118f821aec63f285f9c54bc1ff3ff332031d3593f67e4c6ca072ffc82d1fd0c1c15a13929449f467a98a
+  languageName: node
+  linkType: hard
+
 "asap@npm:^2.0.0, asap@npm:~2.0.3":
   version: 2.0.6
   resolution: "asap@npm:2.0.6"
@@ -7853,20 +7864,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-functions@npm:4.0.2":
-  version: 4.0.2
-  resolution: "firebase-functions@npm:4.0.2"
+"firebase-functions@npm:4.4.1":
+  version: 4.4.1
+  resolution: "firebase-functions@npm:4.4.1"
   dependencies:
     "@types/cors": ^2.8.5
     "@types/express": 4.17.3
     cors: ^2.8.5
     express: ^4.17.1
     node-fetch: ^2.6.7
+    protobufjs: ^7.2.2
   peerDependencies:
     firebase-admin: ^10.0.0 || ^11.0.0
   bin:
     firebase-functions: lib/bin/firebase-functions.js
-  checksum: ccc7acb34a8a1a4917264f48711dc51f011237f37f3efc4ca2850956b67440a913d199841e867cbfd9a42ad88e34923145f54a43b9de7c1fa7ccef4939d49bb9
+  checksum: 27e912228b7604de860abae071083af9531ef90ff5f14d3ff5559f1d8cc375d8ef77c85b65cb85ac2486a1f2fe61768172c8c8b21994bff3a05370646bfe46a0
   languageName: node
   linkType: hard
 
@@ -12190,6 +12202,26 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"protobufjs@npm:^7.2.2":
+  version: 7.2.5
+  resolution: "protobufjs@npm:7.2.5"
+  dependencies:
+    "@protobufjs/aspromise": ^1.1.2
+    "@protobufjs/base64": ^1.1.2
+    "@protobufjs/codegen": ^2.0.4
+    "@protobufjs/eventemitter": ^1.1.0
+    "@protobufjs/fetch": ^1.1.0
+    "@protobufjs/float": ^1.0.2
+    "@protobufjs/inquire": ^1.1.0
+    "@protobufjs/path": ^1.1.2
+    "@protobufjs/pool": ^1.1.0
+    "@protobufjs/utf8": ^1.1.0
+    "@types/node": ">=13.7.0"
+    long: ^5.0.0
+  checksum: 3770a072114061faebbb17cfd135bc4e187b66bc6f40cd8bac624368b0270871ec0cfb43a02b9fb4f029c8335808a840f1afba3c2e7ede7063b98ae6b98a703f
+  languageName: node
+  linkType: hard
+
 "protocols@npm:^1.1.0, protocols@npm:^1.4.0":
   version: 1.4.8
   resolution: "protocols@npm:1.4.8"
@@ -12787,6 +12819,13 @@ fsevents@~2.3.2:
     "@redis/search": 1.0.6
     "@redis/time-series": 1.0.3
   checksum: e3cc90a05a3ea9ada3d771145a0865cd85340a9b54cbeda768f127d86df13beb56ec505b978c464a092ad33ff39b1850101c102842d51b84a1ff6b1f9790901b
+  languageName: node
+  linkType: hard
+
+"reflect-metadata@npm:0.2.1":
+  version: 0.2.1
+  resolution: "reflect-metadata@npm:0.2.1"
+  checksum: 772f552a544e04b999c1bf2c868225fef10032274e9d9e315bc3e7a687a504b8b115fa71966665b9619acfd323123a941f892b593250140da809330d41564181
   languageName: node
   linkType: hard
 
