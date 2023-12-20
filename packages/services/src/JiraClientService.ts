@@ -50,8 +50,8 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getProject(projectIdOrKey: string|number, expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>): Promise<Jira.Project> {
-    const { data } = await this.client.get<Jira.Project>(this.getEndpointFor(this.endpoints.READ_PROJECT, { projectIdOrKey: `${projectIdOrKey}` }), { expand: expand?.join(',')});
+  async getProject(projectIdOrKey: string|number, expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>, properties?: Array<string>): Promise<Jira.Project> {
+    const { data } = await this.client.get<Jira.Project>(this.getEndpointFor(this.endpoints.READ_PROJECT, { projectIdOrKey: `${projectIdOrKey}` }), { expand: expand?.join(','), properties: properties?.join(',') });
     return data;
   }
 
@@ -63,6 +63,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     category?: number,
     action?: 'view'|'browse'|'edit'|'create',
     expand?: Array<'description'|'projectKeys'|'lead'|'issueTypes'|'url'|'insight'>,
+    properties?: Array<string>,
     startAt = 0,
     maxResults = 50,
     orderBy: 'category'|'-category'|'+category'|'key'|'-key'|'+key'|'name'|'-name'|'+name'|'owner'|'-owner'|'+owner'|'issueCount'|'-issueCount'|'+issueCount'|'lastIssueUpdatedDate'|'-lastIssueUpdatedDate'|'+lastIssueUpdatedDate'|'archivedDate'|'+archivedDate'|'-archivedDate'|'deletedDate'|'+deletedDate'|'-deletedDate' = 'key'
@@ -75,6 +76,7 @@ export class JiraClientService extends AbstractAtlasClientService {
       category,
       action,
       expand: expand?.join(','),
+      properties: properties?.join(','),
       startAt,
       maxResults,
       orderBy

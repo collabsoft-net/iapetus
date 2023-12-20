@@ -7,6 +7,8 @@ import { useJiraUser } from '../../Hooks';
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number|PromiseLike<string|number>;
   requiredPermissions?: string|Array<string>;
+  expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>;
+  properties?: Array<string>;
   loadingMessage?: JSX.Element;
   cacheDuration?: number;
   children: (args: {
@@ -17,7 +19,7 @@ interface JiraProjectProviderProps {
   }) => JSX.Element;
 }
 
-export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
+export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, expand, properties, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
 
   const AP = useContext(APContext);
   const jiraClientService = useContext(JiraClientService);
@@ -38,7 +40,7 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, loadi
     } else if (user) {
       const service = cacheDuration ? jiraClientService.cached(cacheDuration) : jiraClientService;
       new Promise<string|number>(resolve => resolve(projectIdOrKey))
-        .then(idOrKey => service.getProject(idOrKey))
+        .then(idOrKey => service.getProject(idOrKey, expand, properties))
         .then(project => {
           setProject(project);
           if (requiredPermissions) {

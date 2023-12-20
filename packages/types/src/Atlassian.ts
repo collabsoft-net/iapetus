@@ -1004,6 +1004,7 @@ declare global {
       issueTypes: Array<IssueTypeDetails>;
       lead: User;
       issueTypeHierarchy: unknown;
+      properties: Record<string, unknown>;
     }
 
     interface ProjectDetails {
