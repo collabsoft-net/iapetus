@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
+
 import { MemoryEmitter } from '@collabsoft-net/emitters';
+import { isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import axios from 'axios';
 import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
@@ -7,6 +10,10 @@ import uniqid from 'uniqid';
 
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
 import { QueryBuilder as QB } from './QueryBuilder';
+
+type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Timestamp;
+interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
+interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
 
 export class FirebaseAdminRepository implements Repository {
 
@@ -229,7 +236,9 @@ export class FirebaseAdminRepository implements Repository {
 
     // Make sure to remove undefined properties
     const fbObject = this.objectify(entity);
-    await this.firestore.doc(`${options.path}/${entity.id}`).set(fbObject);
+    if (fbObject) {
+      await this.firestore.doc(`${options.path}/${entity.id}`).set(fbObject);
+    }
     return entity;
   }
 
@@ -279,21 +288,69 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   // Make sure to remove undefined properties
-  private objectify(entity: Record<string, unknown>) {
-    const {...item} = entity;
-    for (const key in item) {
-      if (item[key] === undefined) {
-        delete item[key];
-        continue;
-      }
-      if (item[key] && typeof item[key] === 'object') {
-        item[key] = this.objectify(item[key] as Record<string, unknown>);
-        if (!Object.keys(item[key] as Record<string, unknown>).length) {
+  // Also turn objects into the right format for Firebase
+  // Firebase supports primitives (string, number, boolean, null) and structures (array, map, GeoPoint, Timestamp and Reference)
+  private objectify(entity: unknown): FirestoreObject {
+
+    // If this is an object map, we should loop over each item in the object and apply the same formatting rules for each item
+    if (entity !== null && typeof entity === 'object' && Object.keys(entity).length > 0) {
+      const {...item} = entity as FirestoreObject;
+      for (const key in item) {
+        item[key] = this.objectifyNestedObjects(item[key]);
+        if (item[key] === undefined) {
           delete item[key];
         }
       }
+      return item;
     }
-    return item;
+
+    // If the entity is not a firebase primitive or supported structure, throw an error
+    throw new Error('Unsupported format');
+  }
+
+  // Make sure to remove undefined properties
+  // Also turn objects into the right format for Firebase
+  // Firebase supports primitives (string, number, boolean, null) and structures (array, map, GeoPoint, Timestamp and Reference)
+  private objectifyNestedObjects(entity: unknown): FirestorePrimitive|FirestoreObject|FirestoreArray|undefined {
+
+    // If this is a firestore primitive (string, boolean, number) or predefined structure (GeoPoint / Timestamp) just return the object
+    // We are adding NULL here because otherwise Typescript freaks out even though the NULL is also part of the isFirestorePrimitive() check
+    if (entity === null || this.isFirestorePrimitive(entity)) {
+      return entity;
+
+    // If this is an array, we should loop over each item in the array and apply the same formatting rules for each item
+    } else if (Array.isArray(entity)) {
+      return (entity
+        // Remove entries that do not match the supported formats
+        .filter(item => item === null || this.isFirestorePrimitive(item) || Array.isArray(item) || (typeof item === 'object' && Object.keys(item).length > 0))
+        // Recursively apply the same formatting rules for each item in the array
+        .map(this.objectify.bind(this)) as FirestoreArray);
+
+    // If this is an object map, we should loop over each item in the object and apply the same formatting rules for each item
+    } else if (typeof entity === 'object' && Object.keys(entity).length > 0) {
+      const {...item} = entity as FirestoreObject;
+      for (const key in item) {
+        const value = this.objectifyNestedObjects(item[key]);
+        if (value === undefined || (value !== null && typeof value === 'object' && Object.keys(value).length <= 0)) {
+          delete item[key];
+        } else {
+          item[key] = value;
+        }
+      }
+      return item;
+    }
+
+    // If the entity is not a firebase primitive or supported structure, it should be removed
+    return undefined;
+  }
+
+  private isFirestorePrimitive(entity: unknown): entity is FirestorePrimitive {
+    return entity === null ||
+      typeof entity === 'string' ||
+      typeof entity === 'boolean' ||
+      typeof entity === 'number' ||
+      isOfType<firestore.GeoPoint>(entity, 'latitude') ||
+      isOfType<firestore.Timestamp>(entity, 'seconds')
   }
 
   static getIdentifier(): symbol {
