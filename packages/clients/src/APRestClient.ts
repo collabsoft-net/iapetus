@@ -8,7 +8,7 @@ export class APRestClient implements RestClient {
 
   #duration?: number;
 
-  constructor(protected AP: AP.Instance, private cacheService?: CachingService) {}
+  constructor(protected AP: AP.PlatformInstance, private cacheService?: CachingService) {}
 
   cached(duration: number): APRestClient {
     const instance = new APRestClient(this.AP, this.cacheService);

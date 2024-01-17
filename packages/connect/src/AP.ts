@@ -6,6 +6,10 @@
 
 export {};
 
+export type WindowWithAP<T = AP.JiraInstance|AP.ConfluenceInstance> = Window & {
+  AP: T;
+}
+
 declare global {
 
   namespace AP {
@@ -17,49 +21,82 @@ declare global {
       base?: boolean;
     }
 
-    interface Instance {
+    type JiraInstance = PlatformInstance & {
+      jira: Jira;
+      context: Context & {
+        getContext: (callback?: (context: JiraContext) => void) => Promise<JiraContext>;
+      }
+      navigator: Navigator & {
+        go: (target: NavigatorTargetJira, context: NavigatorContext) => void;
+      }
+    }
+
+    type ConfluenceInstance = PlatformInstance & {
+      confluence: Confluence;
+
+      context: Context & {
+        getContext: (callback?: (context: ConfluenceContext) => void) => Promise<ConfluenceContext>;
+      }
+
+      // This is specific to Confluence, but it's not in AP.confluence
+      customContent: CustomContent;
+
+      navigator: Navigator & {
+        getLocation: (callback: (location: NavigatorLocation) => void) => void;
+        go: (target: NavigatorTargetConfluence, context: NavigatorContext) => void;
+      }
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/about-the-connect-javascript-api/
+    // https://developer.atlassian.com/cloud/confluence/about-the-connect-javascript-api/
+    interface PlatformInstance {
+
+      context: Context;
+      cookie: Cookie;
+      dialog: Dialog;
+      events: Events;
+      flag: Flag;
+      history: History;
+
+      // This is located under iframe, but it is actually on the AP object itself
+      // https://developer.atlassian.com/cloud/jira/platform/jsapi/iframe/
+      // https://developer.atlassian.com/cloud/confluence/jsapi/iframe/
       getLocation(callback: (location: string) => void): void;
       resize(width: string, height: string): void;
       sizeToParent(hideFooter?: boolean): void;
-      hideFooter(hideFooter?: boolean): void;
 
-      context: AP.Context;
-      cookie: AP.Cookie;
-      events: AP.Events;
-      dialog: AP.Dialog;
-      confluence: AP.Confluence;
-      flag: AP.Flag;
-      jira: AP.Jira;
+      inlineDialog: InlineDialog;
+      navigator: Navigator;
+      page: Page;
 
-      require<T>(name: string, callback: (response: T) => void): void;
-      request: AP.Request;
+      // This is located under request, but it is actually on the AP object itself
+      request: Request;
 
-      history: AP.History;
-      host: AP.Host;
-      navigator: AP.Navigator;
-      user: AP.User;
+      scrollPosition: ScrollPosition;
+      theming: Theming;
+      user: User;
 
-      _data: Record<string, unknown>;
+      // This is an undocumented feature of AP
+      // Object data has been extracted from inspection, but is unreliable
+      _data?: Record<string, unknown>;
+
+      // Convenience method to know whether the implementation is a polyfill
       isPolyfill?: boolean;
     }
 
-    interface Context {
-      getToken: (callback?: () => string) => Promise<string>;
-      getContext: <T> (callback?: (context: T) => unknown) => Promise<T>;
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/context/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/context/
+    type Context = {
+      getToken: (callback?: (token: string) => string) => Promise<string>;
     }
 
-    interface Cookie {
-      saveLocalStorage: (addonKey: string, name: string, value: string, expireDays: number) => void;
-      readLocalStorage: (addonKey: string, name: string) => string|undefined;
-      save: (name: string, value: string, expires: number) => void;
-      read: (name: string, callback: (value: string|undefined) => void) => void;
-      erase: (name: string) => void;
-    }
-
-    interface JiraContext {
+    // Unfortunately, this is undocumented
+    // The typings were extracted from browser inspection, and as a result are unreliable
+    type JiraContext = {
       jira: {
         issue: {
           id: string;
+          key: string;
         },
         project: {
           id: string;
@@ -68,7 +105,9 @@ declare global {
       }
     }
 
-    interface ConfluenceContext {
+    // Unfortunately, this is undocumented
+    // The typings were extracted from browser inspection, and as a result are unreliable
+    type ConfluenceContext = {
       confluence: {
         content: {
           id: string;
@@ -87,63 +126,56 @@ declare global {
       }
     }
 
-    interface Confluence {
-      saveMacro: <T> (macroParameters: T, macroBody?: string) => void;
-      closeMacroEditor: () => void;
-      getMacroData: <T> (callback: (data: T) => void) => void;
-      getMacroBody: (callback: (body: string) => void) => void;
-      onMacroPropertyPanelEvent: (eventBindings: { [key: string]: () => void }) => void;
-      closeMacroPropertyPanel: () => void;
-      getContentProperty: <T> (key: string, callback: (property: T) => void) => void;
-      setContentProperty: <T> (contentProperty: ConfluenceContentProperty<T>, callback: (result: { propery: ConfluenceContentProperty<T>, error: Error }) => void) => void;
-      syncPropertyFromServer: <T> (key: string, callback: (property: ConfluenceContentProperty<T>) => void) => void;
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/cookie/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/cookie/
+    type Cookie = {
+      save: (name: string, value: string, expires: number) => void;
+      read: (name: string, callback: (value: string|undefined) => void) => void;
+      erase: (name: string) => void;
     }
 
-    interface Jira {
+    // This is specific to Confluence, but it's not in AP.confluence
+    // https://developer.atlassian.com/cloud/confluence/jsapi/custom-content/
+    type CustomContent = {
+      getEditComponent: () => CustomContentEditComponent;
     }
 
-    type ConfluenceContentProperty<T> = {
-      key: string;
-      value: string|T;
-      version: Record<string, unknown>;
+    type CustomContentEditComponent = {
+      intercept: (event: string) => void;
+      submitCallback: (value: CustomContentObject|string|false) => void;
+      submitSuccessCallback: (status: boolean, message?: string) => void;
+      submitErrorCallback: (status: boolean, message?: string) => void;
+      cancelCallback: (status: boolean, message?: string) => void;
     }
 
-    // https://developer.atlassian.com/cloud/jira/platform/jsapi/events/
-    interface Events {
-      on: <T> (name: string, listener: (data?: T) => void) => void;
-      onPublic: <T> (name: string, listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
-      once: <T> (name: string, listener: (data?: T) => void) => void;
-      oncePublic: <T> (name: string, listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
-      onAny: <T> (listener: (data?: T) => void) => void;
-      onAnyPublic: <T> (listener: (data?: T) => void, filter: (event: unknown) => boolean) => void;
-      off: <T> (name: string, listener: (data?: T) => void) => void;
-      offPublic: <T> (name: string, listener: (data?: T) => void) => void;
-      offAll: (name: string) => void;
-      offAllPublic: (name: string) => void;
-      offAny: <T> (listener: (data?: T) => void) => void;
-      offAnyPublic: <T> (listener: (data?: T) => void) => void;
-      emit: (name: string, args?: Array<string>) => void;
-      emitPublic: (name: string, args?: Array<string>) => void;
+    type CustomContentObject = {
+      type: string;
+      title: string;
+      space: {
+        key: string;
+      }
+      body: object;
     }
 
-    // https://developer.atlassian.com/cloud/jira/software/jsapi/dialog/
-    interface Dialog {
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/dialog/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/dialog/
+    type Dialog = {
       create: <T> (options: DialogOptions<T>) => DialogReference;
       close: <T> (data?: T) => void;
-      getCustomData: <T> (callback: (data: T) => void) => void;
+      getCustomData: <T> (callback: (data?: T) => void) => void;
       getButton: (name: 'cancel'|'submit') => DialogButton;
       disableCloseOnSubmit: () => void;
       createButton: (options: DialogButtonOptions) => DialogButton;
-      isCloseOnEscape: (callback: (isEnabled: boolean) => void) => void;
-      on: <T> (event: string, callback: (data?: T) => void) => void;
+      isCloseOnEscape: (callback: (isCloseOnEscape: boolean) => void) => void;
     }
 
-    interface DialogReference {
+    type DialogReference = {
       on: <T> (name: string, listener: (data?: T) => void) => void;
     }
 
-    // https://developer.atlassian.com/cloud/jira/software/jsapi/classes/dialogoptions/
-    interface DialogOptions<T> {
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/classes/dialogoptions/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/classes/dialogoptions/
+    type DialogOptions<T> = {
       key: string;
       size?: 'small'|'medium'|'large'|'x-large'|'fullscreen';
       width?: string;
@@ -158,8 +190,9 @@ declare global {
       hint?: string;
     }
 
-    // https://developer.atlassian.com/cloud/jira/software/jsapi/classes/dialogbutton/
-    interface DialogButton {
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/classes/dialogbutton/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/classes/dialogbutton/
+    type DialogButton = {
       enable: () => void;
       disable: () => void;
       isEnabled: (callback: (isEnabled: boolean) => void) => void;
@@ -171,27 +204,84 @@ declare global {
       bind: (callback: () => void) => void;
     }
 
-    interface DialogButtonOptions {
+    type DialogButtonOptions = {
       text: string,
       identifier: string;
     }
 
-    interface Request {
-      (url: string, options?: AP.RequestOptions): Promise<AP.RequestResponse>;
-      (options: AP.RequestOptions): Promise<AP.RequestResponse>;
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/events/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/events/
+    type Events = {
+      on: <T> (name: string, listener: (data?: Array<string>) => void) => void;
+      onPublic: <T> (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
+      once: <T> (name: string, listener: (data?: Array<string>) => void) => void;
+      oncePublic: <T> (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
+      onAny: <T> (listener: (data?: Array<string>) => void) => void;
+      onAnyPublic: <T> (listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
+      off: <T> (name: string, listener: (data?: Array<string>) => void) => void;
+      offPublic: <T> (name: string, listener: (data?: Array<string>) => void) => void;
+      offAll: (name: string) => void;
+      offAllPublic: (name: string) => void;
+      offAny: <T> (listener: (data?: Array<string>) => void) => void;
+      offAnyPublic: <T> (listener: (data?: Array<string>) => void) => void;
+      emit: (name: string, args?: Array<string>) => void;
+      emitPublic: (name: string, args?: Array<string>) => void;
     }
 
-    interface History {
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/flag/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/flag/
+    type Flag = {
+      create: (options: FlagOptions) => FlagInstance;
+    }
+
+    type FlagOptions = {
+      title: string;
+      body?: string;
+      type?: FlagTypeOptions;
+      close?: FlagCloseOptions;
+      actions?: {
+        [actionIdentifier: string]: string;
+      }
+    }
+
+    type FlagTypeOptions = 'info'|'success'|'warning'|'error';
+    type FlagCloseOptions = 'manual'|'auto';
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/classes/flag/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/classes/flag/
+    type FlagInstance = {
+      close: () => void;
+      _id: string;
+    }
+
+    // Unfortunately, this is undocumented
+    // This is the object that is passed when listening to an 'flag.action' event
+    // Object data has been extracted from inspection, but is unreliable
+    type FlagActionEventArgs = {
+      actionIdentifier: string;
+      flagIdentifier: string;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/history/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/history/
+    type History = {
       back: () => void;
       forward: () => void;
       go: (delta: number) => void;
-      getState: () => string;
+      getState: {
+        (): string;
+        (type: 'hash'|'all'|undefined, callback: (obj: unknown) => void): void;
+      };
       pushState: (newState: string, title?: string, url?: string) => void;
       replaceState: (url: string) => void;
+      // Unfortunately, this is undocumented
       popState: (handler: (state: HistoryPopState) => void) => void;
     }
 
-    interface HistoryPopState {
+    // Unfortunately, this is undocumented
+    // This is the object that is passed when listening to AP.history.popState()
+    // Object data has been extracted from inspection, but is unreliable
+    type HistoryPopState = {
       hash: string;
       href: string;
       key: string;
@@ -202,28 +292,20 @@ declare global {
       title: string;
     }
 
-    interface Host {
-      getSelectedText: (callback: (selection: string) => void) => void;
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/inline-dialog/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/inline-dialog/
+    type InlineDialog = {
+      hide: () => void;
     }
 
-    interface User {
-      getCurrentUser: (callback: (user: UserObject) => void) => void;
-      getTimeZone: (callback: (timezone?: string) => void) => void;
-      getLocale: (callback: (locale?: string) => void) => void;
-    }
-
-    interface UserObject {
-      atlassianAccountId: string;
-      accountType: 'atlassian'|'customer';
-    }
-
-    interface Navigator {
-      getLocation: (callback: (location: NavigatorLocation) => void) => void;
-      go: (target: NavigatorTargetJira|NavigatorTargetConfluence, context: NavigatorContext) => void;
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/navigator/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/navigator/
+    // Although it is also documented in Jira, AP.Navigator.getLocation() is only available in Confluence
+    type Navigator = {
       reload: () => void;
     }
 
-    interface NavigatorLocation {
+    type NavigatorLocation = {
       target: 'contentview'|'contentedit';
       context: {
         contentId: number,
@@ -232,70 +314,6 @@ declare global {
       };
       href: string;
     }
-
-    // https://developer.atlassian.com/cloud/jira/platform/jsapi/request/
-    // https://bitbucket.org/atlassian/atlassian-connect-js-extra/src/master/packages/atlassian-connect-js-request/src/plugin/index.js
-    interface RequestOptions {
-      url: string;
-      type?: string;
-      cache?: boolean;
-      data?: string;
-      contentType?: string;
-      experimental?: boolean;
-      binaryAttachment?: boolean;
-      headers?: RequestHeaders;
-      success?: (responseText: string, statusText: string, xhr: RequestResponseXHRObject) => void;
-      error?: (xhr: RequestResponseXHRObject, statusText: string, errorThrown: Error) => void;
-    }
-
-    interface RequestHeaders {
-      [key: string]: string;
-    }
-
-    interface RequestResponse {
-      body: string;
-      xhr: RequestResponseXHRObject;
-    }
-
-    interface RequestResponseError {
-      err: Error;
-      xhr: RequestResponseXHRObject
-    }
-
-    interface RequestResponseXHRObject {
-      getAllResponseHeaders: () => string;
-      getResponseHeader: (name: string) => string;
-      status: number;
-      statusText: string;
-    }
-
-    interface Flag {
-      create: (options: FlagOptions) => FlagInstance;
-    }
-
-    interface FlagInstance {
-      close: () => void;
-      _cls: string;
-      _id: string;
-    }
-
-    interface FlagOptions {
-      title: string;
-      body?: string;
-      type?: FlagTypeOptions;
-      close?: FlagCloseOptions;
-      actions?: {
-        [actionIdentifier: string]: string;
-      }
-    }
-
-    interface FlagActionEventArgs {
-      actionIdentifier: string;
-      flagIdentifier: string;
-    }
-
-    type FlagTypeOptions = 'info'|'success'|'warning'|'error';
-    type FlagCloseOptions = 'manual'|'auto';
 
     type NavigatorTargetJira = 'dashboard'|'issue'|'addonModule'|'userProfile'|'projectAdminSummary'|'projectAdminTabPanel'|'site';
     type NavigatorTargetConfluence = 'contentview'|'contentedit'|'spaceview'|'spacetools'|'dashboard'|'userProfile'|'addonModule'|'contentlist'|'site';
@@ -313,13 +331,161 @@ declare global {
       issueKey?: string;
       adminPageKey?: string;
       projectId?: string;
-      customData?: Record<string, string|number>;
+      customData?: Record<string, string>;
       versionOverride?: string;
       embeddedContentRender?: string;
       relativeUrl?: string;
       absoluteUrl?: string;
     }
 
-  }
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/page/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/page/
+    type Page = {
+      setTitle: (title: string) => void;
+    }
 
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/request/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/request/
+    type Request = {
+      (url: string, options?: RequestOptions): Promise<RequestResponse>;
+      (options: RequestOptions): Promise<RequestResponse>;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/request/
+    // https://bitbucket.org/atlassian/atlassian-connect-js-extra/src/master/packages/atlassian-connect-js-request/src/plugin/index.js
+    type RequestOptions = {
+      url: string;
+      type?: string;
+      cache?: boolean;
+      data?: string;
+      contentType?: string;
+      experimental?: boolean;
+      binaryAttachment?: boolean;
+      headers?: RequestHeaders;
+      success?: (responseText: string, statusText: string, xhr: RequestResponseXHRObject) => void;
+      error?: (xhr: RequestResponseXHRObject, statusText: string, errorThrown: Error) => void;
+    }
+
+    type RequestHeaders = {
+      [key: string]: string;
+    }
+
+    type RequestResponse = {
+      body: string;
+      xhr: RequestResponseXHRObject;
+    }
+
+    type RequestResponseError = {
+      err: Error;
+      xhr: RequestResponseXHRObject
+    }
+
+    type RequestResponseXHRObject = {
+      getAllResponseHeaders: () => string;
+      getResponseHeader: (name: string) => string;
+      status: number;
+      statusText: string;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/scroll-position/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/scroll-position/
+    type ScrollPosition = {
+      getPosition: (callback: (obj: unknown) => void) => void;
+      setVerticalPosition: (y: number, callback: (obj: unknown) => void) => void;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/connect-theming/
+    // https://developer.atlassian.com/cloud/confluence/connect-theming/
+    type Theming = {
+      initializeTheming: () => void;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/user/
+    // https://developer.atlassian.com/cloud/confluence/jsapi/user/
+    type User = {
+      getCurrentUser: (callback: (user: UserObject) => void) => void;
+      getTimeZone: (callback: (timezone: string) => void) => void;
+      getLocale: (callback: (locale?: string) => void) => void;
+    }
+
+    type UserObject = {
+      atlassianAccountId: string;
+      accountType: 'atlassian'|'customer';
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/jira/
+    type Jira = {
+      refreshIssuePage: () => void;
+      getWorkflowConfiguration: (callback: (obj: object) => void) => void;
+      isDashboardItemEditable: (callback: (isDashboardItemEditable: boolean) => void) => void;
+      openCreateIssueDialog: (callback: (issues: Array<OpenCreateIssueDialogResult>) => void, params: OpenCreateIssueDialogParams) => void;
+      openIssueDialog: (issueKey: string, callback: (issueKeyOrError: string) => void) => void;
+      setDashboardItemTitle: (title: string) => void;
+      openDatePicker: (options: DatePickerOptions) => void;
+      initJQLEditor: () => void;
+      // The documentation incorrectly states that callback is the first argument
+      showJQLEditor: (options: JQLEditorOptions, callback: (result?: JQLEditorResult) => void) => void;
+      isNativeApp: (callback: (isNativeApp: boolean) => void) => void;
+    }
+
+    type OpenCreateIssueDialogParams = {
+      pid: number;
+      issueType: number;
+      fields: Record<string, unknown>;
+    }
+
+    // This is an undocumented feature of AP
+    // Object data has been extracted from inspection, but is unreliable
+    type OpenCreateIssueDialogResult = {
+      id: string;
+      key: string;
+      self: string;
+      fields?: Record<string, unknown>;
+    }
+
+    // https://developer.atlassian.com/cloud/jira/platform/jsapi/classes/options/
+    type DatePickerOptions = {
+      element: HTMLElement;
+      position: unknown;
+      showTime: boolean;
+      date: string;
+      onSelect: (isoDate: string, date: Date) => void;
+    }
+
+    type JQLEditorOptions = {
+      jql: string;
+      header: string;
+      descriptionText: string;
+      submitText: string;
+      cancelText: string;
+    }
+
+    type JQLEditorResult = {
+      jql: string;
+    }
+
+    // https://developer.atlassian.com/cloud/confluence/jsapi/confluence/
+    type Confluence = {
+      saveMacro: <T> (macroParameters: T, macroBody?: string) => void;
+      closeMacroEditor: () => void;
+      getMacroData: <T> (callback: (data: T) => void) => void;
+      getMacroBody: (callback: (body: string) => void) => void;
+      onMacroPropertyPanelEvent: (eventBindings: { [key: string]: () => void }) => void;
+      closeMacroPropertyPanel: () => void;
+      getContentProperty: <T> (key: string, callback: (property: T) => void) => void;
+      setContentProperty: <T> (contentProperty: ConfluenceContentProperty<T>, callback: (result: { propery: ConfluenceContentProperty<T>, error: Error }) => void) => void;
+      syncPropertyFromServer: <T> (key: string, callback: (property: ConfluenceContentProperty<T>) => void) => void;
+    }
+
+    type ConfluenceContentProperty<T> = {
+      key: string;
+      value: string|T;
+      version: Record<string, unknown>;
+    }
+
+    type ConfluenceContentPropertyResult<T> = {
+      propery: AP.ConfluenceContentProperty<T>;
+      error: Error;
+    }
+  }
 }

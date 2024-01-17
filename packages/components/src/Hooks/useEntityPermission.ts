@@ -57,7 +57,8 @@ export function useEntityPermission(permissions: Array<string>|Confluence.Conten
               setError(new Error('Cannot check for permissions, failed to determine issue ID'));
               setLoading(false);
             } else {
-              jiraClientService.hasPermissions(user.accountId, [
+              const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+              jiraClientService.hasPermissions(accountId, [
                 {
                   issues: [ Number(entityId) ],
                   permissions
@@ -86,7 +87,8 @@ export function useEntityPermission(permissions: Array<string>|Confluence.Conten
                 setError(new Error('Cannot check for permissions, failed to determine content ID'));
                 setLoading(false);
               } else {
-                confluenceClientService.hasContentPermission(contentId, { type: 'user', identifier: user.accountId }, permissions)
+                const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+                confluenceClientService.hasContentPermission(contentId, { type: 'user', identifier: accountId }, permissions)
                 .then(setHasPermissions)
                 .catch((err) => {
                   setHasPermissions(false);

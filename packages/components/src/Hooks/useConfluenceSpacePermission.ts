@@ -39,7 +39,8 @@ export const useConfluenceSpacePermissions = (operation?: Confluence.ContentOper
           setError(new Error('Could not determine Confluence permissions, space ID was not found'));
           setLoading(false);
         } else {
-          service.hasSpacePermission(id, operation, user.accountId)
+          const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+          service.hasSpacePermission(id, operation, accountId)
             .then(setHasPermissions)
             .catch((err) => {
               setHasPermissions(false);

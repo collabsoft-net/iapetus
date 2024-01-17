@@ -30,10 +30,11 @@ export function openDialog<T, X>(key: string, customData: X, callback: DialogCal
 export function openDialog<T, X>(key: string, options: AP.DialogOptions<X>): Promise<T>;
 export function openDialog<T, X>(key: string, options: AP.DialogOptions<X>, callback: DialogCallback<T>): Promise<T>;
 export function openDialog<T, X>(key: string, optionsOrDataOrCallback?: AP.DialogOptions<X>|X|DialogCallback<T>, callback?: DialogCallback<T>): Promise<T|undefined> {
-  const AP = kernel.get<AP.Instance>(ServiceIdentifier.AP);
+  const AP = kernel.get<AP.PlatformInstance>(ServiceIdentifier.AP);
   if (AP) {
+    const cb = (typeof optionsOrDataOrCallback === 'function' ? optionsOrDataOrCallback : callback) as DialogCallback<T>|undefined;
     return new Promise<T|undefined>(resolve => AP.dialog.create<X>(generateDialogOptions(key, optionsOrDataOrCallback)).on<T>('close', (data?: T) => {
-      callback && callback(data);
+      cb && cb(data);
       resolve(data);
     }));
   } else {

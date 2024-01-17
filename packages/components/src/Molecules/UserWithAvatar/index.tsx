@@ -92,7 +92,7 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
   } else if (typeof accountId !== 'undefined') {
     return (
       <>
-        { isOfType<AP.Instance>(instance, 'jira') ? (
+        { isOfType<AP.JiraInstance>(instance, 'jira') ? (
           <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
             { ({ user: currentUser, loading }) => {
               return component
@@ -100,7 +100,7 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
                 : Content({ user: currentUser, href, size, inline, truncate, isValidating, isDisabled, loading })
             }}
           </JiraProviders.User>
-        ) : isOfType<AP.Instance>(instance, 'confluence') ? (
+        ) : isOfType<AP.ConfluenceInstance>(instance, 'confluence') ? (
           <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
             { ({ user: currentUser, loading }) => {
               return component

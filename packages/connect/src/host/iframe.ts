@@ -1,62 +1,37 @@
+import type { Message,ResizeRequest } from '../client/Types';
+import { Host } from '../Host';
 
-export const findSource = (source: Window): HTMLFrameElement|null => {
-  if (!source) return null;
+export const resize = (event: MessageEvent, AC: Host): void => {
+  const frame = AC.findSource(event);
+  if (frame) {
 
-  let frame: HTMLFrameElement|null = null;
-  const frames = document.querySelectorAll('IFRAME[data-ac-polyfill]');
+    const { data } = event.data as unknown as Message<ResizeRequest>;
+    const { width, height } = data || {};
+    if (width && height) {
+      frame.setAttribute('width', width);
+      frame.setAttribute('height', height);
+    }
 
-  // detect the source for IFRAMEs with same-origin URL
-  frames.forEach(element => {
-      if (frame == null) {
-          const { contentWindow } = element as HTMLFrameElement;
-          if (contentWindow === source || contentWindow === (source as Window).parent) {
-              frame = element as HTMLFrameElement;
-              return;
-          }
-      }
-  });
+    // TODO: this is a hack.
+    // Basically it should be changed to detect whether the dialog has fixed width/height
+    // or whether the dialog should resize based on content
+    // const dialogId = frame.getAttribute('data-dialogid');
 
-  return frame;
+    // if (frame.getAttribute('data-fullscreen') === 'true') {
+    //   frame.setAttribute('width', '100%');
+    //   frame.setAttribute('height', '100%');
+    // } else if (dialogId !== 'ac-polyfill-macroeditor') {
+    //   frame.setAttribute('width', width);
+    //   frame.setAttribute('height', height);
+    // }
+  }
 };
 
-export const getFrame = async (): Promise<HTMLIFrameElement|null> => {
-    let count = 0;
-    let acFrame: HTMLIFrameElement|null = null;
-    while (!acFrame && count <= 20) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        acFrame = document.querySelector('iframe[data-ac-polyfill]');
-        count++;
-    }
-    return acFrame;
-}
-
-export const getFrameOptions = async (): Promise<HTMLDivElement|null|undefined> => {
-    const frame = await getFrame();
-    if (frame) {
-        let count = 0;
-        let  acFrameOptions: HTMLDivElement|null|undefined = null;
-        while (!acFrameOptions && count <= 20) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            acFrameOptions = frame.contentDocument?.querySelector('#ac-iframe-options');
-            count++;
-        }
-        return acFrameOptions || null;
-    }
-    return null;
-}
-
-export const getOptions = async (): Promise<AP.FrameOptions|null> => {
-    const acFrameOptions = await getFrameOptions();
-    if (acFrameOptions) {
-        const acOptions = acFrameOptions.getAttribute('data-options');
-        const options: AP.FrameOptions = {};
-        acOptions?.split(';').forEach(item => {
-            const parts = item.split(':');
-            (options as Record<string, string>)[parts[0]] = parts[1];
-        });
-        return options;
-    } else {
-        console.log('[AC] There are no options defined on the iframe');
-        return null;
-    }
+export const sizeToParent = (event: MessageEvent, AC: Host): void => {
+  const frame = AC.findSource(event);
+  const parent = frame?.parentElement;
+  if (parent) {
+    frame.setAttribute('width', `${parent.scrollWidth}px`);
+    frame.setAttribute('height', `${parent.scrollHeight}px`);
+  }
 }

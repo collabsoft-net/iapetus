@@ -9,7 +9,7 @@ export function showFlag(title: string, type: AP.FlagTypeOptions): AP.FlagInstan
 export function showFlag(title: string, type: AP.FlagTypeOptions, body: string): AP.FlagInstance;
 export function showFlag(options: AP.FlagOptions): AP.FlagInstance;
 export function showFlag(titleOrOptions: string|AP.FlagOptions, type?: AP.FlagTypeOptions, body?: string): AP.FlagInstance {
-  const AP = kernel.get<AP.Instance>(ServiceIdentifier.AP);
+  const AP = kernel.get<AP.PlatformInstance>(ServiceIdentifier.AP);
   if (AP) {
     const flagOptions: AP.FlagOptions = typeof titleOrOptions !== 'string' ? titleOrOptions : {
       title: titleOrOptions,

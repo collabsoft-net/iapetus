@@ -6,7 +6,7 @@ import { AbstractRestClient } from './AbstractRestClient';
 
 export class FirebaseRestClient extends AbstractRestClient implements IRestClient {
 
-  constructor(private AP: AP.Instance, baseURL: string, config: AxiosRequestConfig = {}, cacheService?: CachingService, cacheDuration?: number) {
+  constructor(private AP: AP.PlatformInstance, baseURL: string, config: AxiosRequestConfig = {}, cacheService?: CachingService, cacheDuration?: number) {
     super(baseURL, config, cacheService, cacheDuration);
   }
 

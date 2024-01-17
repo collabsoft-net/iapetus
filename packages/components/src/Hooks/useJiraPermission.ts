@@ -39,7 +39,8 @@ export const useJiraPermissions = (permissions: Array<Jira.BulkProjectPermission
         setError(userError);
         setLoading(false);
       } else {
-        service.hasPermissions(user.accountId, permissions)
+        const accountId = user.accountId || user.key;
+        service.hasPermissions(accountId, permissions)
           .then(setHasPermissions)
           .catch((err) => {
             setHasPermissions(undefined);

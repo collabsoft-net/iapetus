@@ -39,7 +39,8 @@ export const useConfluenceContentPermissions = (operation?: Confluence.ContentOp
           setError(new Error('Could not determine Confluence permissions, content ID was not found'));
           setLoading(false);
         } else {
-          service.hasContentPermission(id, { type: 'user', identifier: user.accountId }, operation)
+          const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+          service.hasContentPermission(id, { type: 'user', identifier: accountId }, operation)
             .then(setHasPermissions)
             .catch((err) => {
               setHasPermissions(false);

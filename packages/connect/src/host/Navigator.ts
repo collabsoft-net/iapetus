@@ -1,54 +1,58 @@
-import { ConnectHelper } from '@collabsoft-net/types';
-import qs from 'query-string';
 
-import { findSource } from './iframe';
+import { isOfType } from '@collabsoft-net/helpers';
+
+import { Events } from '../client/Events';
+import { Message, NavigatorGoRequest } from '../client/Types';
+import { BadRequestError, Host, NotImplementedError } from '../Host';
+import { getUrl } from './URL';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const windowWithAJS = window as unknown as Window & { AJS: any };
 
-export const getNavigatorLocation = ({ source, data }: MessageEvent): void => {
-  const frame = findSource(source as Window);
-  if (frame && frame.contentWindow) {
-      const { requestId } = JSON.parse(data);
-      if (requestId) {
-          const dialogId = frame.getAttribute('data-macroid');
-          if (dialogId) {
-              const location = {
-                  context: {
-                      contentId: windowWithAJS.AJS.Meta.get('page-id'),
-                      contentType: windowWithAJS.AJS.Meta.get('content-type'),
-                      spaceKey: windowWithAJS.AJS.Meta.get('space-key')
-                  },
-                  target: windowWithAJS.AJS.Meta.get('browse-page-tree-mode') === 'edit' ? 'contentedit' : 'contentview'
-              };
-              frame.contentWindow.postMessage({ requestId, location }, '*');
-          }
-      }
+export const NavigatorLocationEventHandler = (event: MessageEvent, AC: Host): void => {
+  const frame = AC.findSource(event);
+  if (frame) {
+    AC.reply(event, {
+      context: {
+        contentId: windowWithAJS.AJS.Meta.get('page-id'),
+        contentType: windowWithAJS.AJS.Meta.get('content-type'),
+        spaceKey: windowWithAJS.AJS.Meta.get('space-key')
+      },
+      target: windowWithAJS.AJS.Meta.get('browse-page-tree-mode') === 'edit' ? 'contentedit' : 'contentview'
+    });
   }
 };
 
-export const go = ({ data }: MessageEvent, modules: Record<string, string>, { getUrl }: ConnectHelper): void => {
-    const { target, context } = JSON.parse(data);
+export const NavigatorGoEventHandler = (event: MessageEvent<unknown>, AC: Host): void => {
+  if (isOfType<Message<NavigatorGoRequest>>(event.data, 'originId')) {
+    const { target, context } = event.data.data || {};
+
     const ctx: AP.NavigatorContext = context as AP.NavigatorContext;
     switch (target as AP.NavigatorTargetJira|AP.NavigatorTargetConfluence) {
-        case 'addonModule':
-            window.location.href = getUrl(getLocation(modules[context.moduleKey], context.customData));
-            break;
-        case 'site':
-            if (ctx.absoluteUrl) {
-                window.location.href = ctx.absoluteUrl;
-            } else if (ctx.relativeUrl) {
-                window.location.href = getUrl(ctx.relativeUrl);
-            } else {
-                console.log('[AC] Received unsupport context for AP.navigator.go() site event', ctx);
-            }
-            break;
-        default:
-            console.log('[AC] Received unsupport target or AP.navigator.go() event', target);
+      case 'addonModule':
+        if (context?.moduleKey) {
+          window.location.href = getUrl(getLocation(`${AC.options.servletPath}/${AC.options.appKey}/${context.moduleKey}`, context.customData || {}));
+        } else {
+          throw new BadRequestError();
+        }
+        break;
+      case 'site':
+        if (ctx.absoluteUrl) {
+          window.location.href = ctx.absoluteUrl;
+        } else if (ctx.relativeUrl) {
+          window.location.href = getUrl(ctx.relativeUrl);
+        } else {
+          throw new BadRequestError();
+        }
+        break;
+      default:
+        throw new NotImplementedError(Events.AP_NAVIGATOR_GO, event);
     }
+  }
 };
 
-const getLocation = (url: string, customData: Record<string, unknown>) => {
-    const queryString = qs.stringify(customData);
-    return url + (url && url.includes('?') ? '&' : '?') + queryString;
+const getLocation = (url: string, customData: Record<string, string>) => {
+  const query = new URLSearchParams(customData);
+  const queryString = query.entries.length > 0 ? `${url.includes('?') ? '&' : '?'}${query.toString()}` : '';
+  return `${url}${queryString}`;
 }

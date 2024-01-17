@@ -1,2 +1,3 @@
 
-export * from './Host';
+export * from '../Host';
+export * from './Macro';

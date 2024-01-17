@@ -31,8 +31,9 @@ export const JiraUserProvider = ({ accountId, requiredPermissions, loadingMessag
       setLoading(false);
     } else if (user && requiredPermissions) {
       const service = cacheDuration ? jiraClientService.cached(cacheDuration) : jiraClientService;
+      const accountId = user.accountId || user.key;
       service.hasPermissions(
-        user.accountId,
+        accountId,
         // If requiredPermissions is not an Array, we are looking for Project Permissions
         !Array.isArray(requiredPermissions) ? [requiredPermissions] : undefined,
         // If requiredPermissions is an Array, we are looking for Global permissions

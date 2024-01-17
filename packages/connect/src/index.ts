@@ -1,6 +1,5 @@
 
-export * from './client/';
-export * from './host/';
+export * from './helpers';
+export * from './Host';
 export * from './AP';
-export * from './Polyfill';
 export * from './ServiceIdentifier';

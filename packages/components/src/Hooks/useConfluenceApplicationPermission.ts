@@ -1,3 +1,4 @@
+import { isOfType } from '@collabsoft-net/helpers';
 import { useContext, useEffect, useState } from 'react';
 
 import { ConfluenceClientService } from '../Contexts';
@@ -26,7 +27,8 @@ export const useConfluenceApplicationPermissions = (operation: Confluence.Conten
         setError(userError || new Error('Could not determine Confluence permissions, User was not found'));
         setLoading(false);
       } else {
-        service.hasApplicationPermission(user.accountId, operation)
+        const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+        service.hasApplicationPermission(accountId, operation)
           .then(setHasPermissions)
           .catch((err) => {
             setHasPermissions(undefined)

@@ -44,7 +44,8 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, expan
         .then(project => {
           setProject(project);
           if (requiredPermissions) {
-            return service.hasPermissions(user.accountId, [ {
+            const accountId = user.accountId || user.key;
+            return service.hasPermissions(accountId, [ {
               projects: [ Number(project.id) ],
               permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
             }]).then(setPermitted).catch(() => setPermitted(false));

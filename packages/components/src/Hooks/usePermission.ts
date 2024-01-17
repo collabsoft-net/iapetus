@@ -70,8 +70,8 @@ export function usePermission(type: 'container'|'entity', permission: 'view'|'ed
             setLoading(false);
           } else {
             const projectPermissions = getJiraPermissionFor(type, permission, context, bulkCheckIds);
-
-            jiraClientService.hasPermissions(user.accountId, projectPermissions, undefined, 'ALL').then(result => {
+            const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
+            jiraClientService.hasPermissions(accountId, projectPermissions, undefined, 'ALL').then(result => {
               setHasPermission(result);
               setError(undefined);
             }).catch((err) => {
@@ -95,10 +95,11 @@ export function usePermission(type: 'container'|'entity', permission: 'view'|'ed
           } else {
             const contentOperation = getConfluencePermissionFor(permission);
             const spaceKeyOrContentIds = bulkCheckIds || type === 'container' ? [ context.confluence.space.key ] : [ context.confluence.content.id ];
+            const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
 
             Promise.all(spaceKeyOrContentIds.map(spaceKeyOrContentId => type === 'container'
-              ? confluenceClientService.hasSpacePermission(spaceKeyOrContentId, contentOperation, user.accountId)
-              : confluenceClientService.hasContentPermission(spaceKeyOrContentId, { type: 'user', identifier: user.accountId }, contentOperation)
+              ? confluenceClientService.hasSpacePermission(spaceKeyOrContentId, contentOperation, accountId)
+              : confluenceClientService.hasContentPermission(spaceKeyOrContentId, { type: 'user', identifier: accountId }, contentOperation)
             )).then(result => {
               const hasAllPermissions = result.every(item => item === true);
               setHasPermission(hasAllPermissions);

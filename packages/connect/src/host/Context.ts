@@ -1,64 +1,46 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const windowWithAJS = window as unknown as Window & { AJS: any };
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getMetaData } from '../helpers/getMetaData';
 
-import { findSource } from './iframe';
-
-export const getContext = ({ source, data }: MessageEvent): void => {
-  const frame = findSource(source as Window);
-  if (frame && frame.contentWindow) {
-    const { requestId } = JSON.parse(data);
-    if (requestId) {
-      frame.contentWindow.postMessage({
-        requestId,
-        context: generateContext()
-      }, '*');
-    }
-  }
-};
+type WindowWithContext = Window & {
+  JIRA?: any;
+  WRM?: any;
+  Confluence?: any;
+}
 
 // This strongly depends on context managers to provide META information
 // TODO: also make the ContextManager, WebAction and ContextProviders part of either iapetus or a generic AC implementation Java package
-const generateContext = () => {
-  // eslint-disable-next-line
-  const JIRA = (window as any).JIRA || null;
-  // eslint-disable-next-line
-  const Confluence = (window as any).Confluence || null;
+export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
+  const { JIRA, Confluence, WRM } = (window as unknown as WindowWithContext);
 
   if (JIRA) {
     return {
       jira: {
         issue: {
-          id: getMetaData('issue-id'),
-          issueType: {
-            id: null
-          },
-          key: getMetaData('issue-key')
+          id: getMetaData('issue-id') || JIRA?.Issue?.getIssueId() || '',
+          key: getMetaData('issue-key') || JIRA?.Issue?.getIssueKey() || ''
         },
         project: {
-          id: getMetaData('project-id'),
-          key: getMetaData('project-key')
+          id: getMetaData('project-id') || WRM?._unparsedData?.projectId ||'',
+          key: getMetaData('project-key') || WRM?._unparsedData?.projectKey || ''
         }
-      },
-      license: {
-        active: true
       }
     }
   } else if (Confluence) {
     return {
       confluence: {
         content: {
-          id: null,
-          type: null,
-          version: null
+          id: '',
+          type: '',
+          version: ''
         },
         macro: {
-          hash: null,
-          id: null,
-          outputType: null
+          hash: '',
+          id: '',
+          outputType: ''
         },
         space: {
-          id: null,
-          key: null
+          id: '',
+          key: ''
         }
       }
     }
@@ -67,6 +49,3 @@ const generateContext = () => {
   }
 }
 
-const getMetaData = (key: string) => {
-  return windowWithAJS.AJS?.Meta?.get(key) as string || null;
-}

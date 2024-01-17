@@ -4,21 +4,28 @@ import getDecorators from 'inversify-inject-decorators';
 
 import { BindingLifecyclePhases } from './BindingLifecyclePhases';
 
-export class Kernel extends Container {
+export interface Kernel extends Container {
+  register(lifecyclePhase: BindingLifecyclePhases, registry: ContainerModule): Kernel;
+  registerAsync(lifecyclePhase: BindingLifecyclePhases, registry: AsyncContainerModule): Kernel;
+  build(): Promise<void>;
+  onReady(listener: () => void): void;
+}
+
+class KernelImpl extends Container implements Kernel {
 
   private hooks = new Map<BindingLifecyclePhases, Array<ContainerModule>>();
   private asyncHooks = new Map<BindingLifecyclePhases, Array<AsyncContainerModule>>();
   private initialized = false;
   private listeners: Array<() => void> = [];
 
-  registerHook(lifecyclePhase: BindingLifecyclePhases, registry: ContainerModule): Kernel {
+  register(lifecyclePhase: BindingLifecyclePhases, registry: ContainerModule): Kernel {
     const hooks = this.hooks.get(lifecyclePhase) || [];
     hooks.push(registry);
     this.hooks.set(lifecyclePhase, hooks);
     return this;
   }
 
-  registerAsyncHook(lifecyclePhase: BindingLifecyclePhases, registry: AsyncContainerModule): Kernel {
+  registerAsync(lifecyclePhase: BindingLifecyclePhases, registry: AsyncContainerModule): Kernel {
     const hooks = this.asyncHooks.get(lifecyclePhase) || [];
     hooks.push(registry);
     this.hooks.set(lifecyclePhase, hooks);
@@ -57,6 +64,6 @@ export class Kernel extends Container {
   }
 }
 
-const instance = new Kernel();
+const instance = new KernelImpl();
 export default instance;
 export const { lazyInject } = getDecorators(instance, false);
