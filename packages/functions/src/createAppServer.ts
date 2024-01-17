@@ -5,7 +5,7 @@ import { captureException, Handlers as Sentry } from '@sentry/node';
 import cookies from 'cookie-parser';
 import * as express from 'express';
 import { logger } from 'firebase-functions';
-import { HttpsOptions, onRequest } from 'firebase-functions/v2/https';
+import { HttpsFunction, HttpsOptions, onRequest } from 'firebase-functions/v2/https';
 import { StatusCodes } from 'http-status-codes';
 import * as inversify from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
@@ -13,7 +13,7 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void => {
+export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void|Record<string, HttpsFunction> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
@@ -63,5 +63,7 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
     }
   }).build();
 
-  module.exports[name] = onRequest(options, instance);
+  return {
+    [name]: onRequest(options, instance)
+  }
 }
