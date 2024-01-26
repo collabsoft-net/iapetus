@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/services",
-  "version": "1.1.1-alpha.15",
+  "version": "1.1.1-alpha.17",
   "description": "Abstract services to be used for app-specific implementations",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -34,10 +34,10 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/clients": "^1.1.1-alpha.13",
+    "@collabsoft-net/clients": "^1.1.1-alpha.17",
     "@collabsoft-net/enums": "^1.1.1-alpha.13",
-    "@collabsoft-net/helpers": "^1.1.1-alpha.10",
-    "@collabsoft-net/types": "^1.1.1-alpha.10",
+    "@collabsoft-net/helpers": "^1.1.1-alpha.17",
+    "@collabsoft-net/types": "^1.1.1-alpha.17",
     "@types/node": ">=16.0.0",
     "@typescript-eslint/eslint-plugin": "5.25.0",
     "@typescript-eslint/parser": "5.52.0",
