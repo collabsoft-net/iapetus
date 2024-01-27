@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@atlaskit/modal-dialog": "12.10.3",
+    "@collabsoft-net/inversify": "workspace:*",
     "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
     "@types/node": "<19.0.0",
@@ -53,6 +54,7 @@
   },
   "peerDependencies": {
     "@atlaskit/modal-dialog": "*",
+    "@collabsoft-net/inversify": "workspace:*",
     "@collabsoft-net/helpers": "*",
     "inversify": "6.0.2",
     "react": "<17.0.0",
