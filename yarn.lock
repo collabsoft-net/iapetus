@@ -1192,6 +1192,7 @@ __metadata:
   dependencies:
     "@atlaskit/modal-dialog": "npm:12.10.3"
     "@collabsoft-net/helpers": "workspace:*"
+    "@collabsoft-net/inversify": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@types/node": "npm:<19.0.0"
     "@types/react": "npm:<17.0.0"
@@ -1208,6 +1209,7 @@ __metadata:
   peerDependencies:
     "@atlaskit/modal-dialog": "*"
     "@collabsoft-net/helpers": "*"
+    "@collabsoft-net/inversify": "workspace:*"
     inversify: 6.0.2
     react: <17.0.0
     react-dom: <17.0.0
@@ -1414,7 +1416,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/inversify@workspace:packages/inversify":
+"@collabsoft-net/inversify@workspace:*, @collabsoft-net/inversify@workspace:packages/inversify":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/inversify@workspace:packages/inversify"
   dependencies:
