@@ -18,7 +18,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -35,32 +35,34 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/dto": "^1.1.1-alpha.17",
-    "@collabsoft-net/functions": "^1.1.1-alpha.17",
-    "@collabsoft-net/services": "^1.1.1-alpha.17",
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@sentry/minimal": "6.5.1",
-    "@sentry/node": "6.5.1",
-    "@types/node": ">=16.0.0",
-    "@types/passport": "1.0.7",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "eslint": "8.15.0",
-    "inversify": "6.0.1",
-    "inversify-express-utils": "6.4.3",
-    "nodemon": "2.0.16",
-    "passport": "0.4.1",
-    "typescript": "4.6.4"
+    "@collabsoft-net/dto": "workspace:*",
+    "@collabsoft-net/functions": "workspace:*",
+    "@collabsoft-net/services": "workspace:*",
+    "@collabsoft-net/types": "workspace:*",
+    "@sentry/minimal": "6.19.7",
+    "@sentry/node": "7.98.0",
+    "@types/node": "<19.0.0",
+    "@types/passport": "1.0.16",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "cron": "3.1.6",
+    "eslint": "8.56.0",
+    "inversify": "6.0.2",
+    "inversify-express-utils": "6.4.6",
+    "nodemon": "3.0.3",
+    "passport": "0.7.0",
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@collabsoft-net/dto": "1.0.0-alpha.44",
-    "@collabsoft-net/functions": "1.0.0-alpha.45",
-    "@collabsoft-net/services": "1.0.0-alpha.45",
-    "@sentry/minimal": "6.5.1",
-    "@sentry/node": "6.5.1",
-    "inversify": "6.0.1",
-    "inversify-express-utils": "6.4.3",
-    "passport": "0.4.1"
+    "@collabsoft-net/dto": "*",
+    "@collabsoft-net/functions": "*",
+    "@collabsoft-net/services": "*",
+    "@sentry/minimal": "6.19.7",
+    "@sentry/node": "7.98.0",
+    "cron": "3.1.6",
+    "inversify": "6.0.2",
+    "inversify-express-utils": "6.4.6",
+    "passport": "0.7.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,26 +34,26 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@google-cloud/pubsub": "2.17.0",
-    "@types/node": ">=16.0.0",
-    "@types/uniqid": "5.3.1",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "axios": "0.24.0",
-    "eslint": "8.15.0",
-    "firebase": "9.0.1",
-    "nodemon": "2.0.16",
-    "typescript": "4.6.4",
+    "@collabsoft-net/types": "workspace:*",
+    "@google-cloud/pubsub": "4.1.1",
+    "@types/node": "<19.0.0",
+    "@types/uniqid": "5.3.4",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "axios": "1.6.7",
+    "eslint": "8.56.0",
+    "firebase": "10.7.2",
+    "nodemon": "3.0.3",
+    "typescript": "5.3.3",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "axios": "0.24.0",
+    "axios": "1.6.7",
     "uniqid": "5.4.0"
   },
   "optionalDependencies": {
-    "@google-cloud/pubsub": "2.17.0",
-    "firebase": "9.0.1"
+    "@google-cloud/pubsub": "4.1.1",
+    "firebase": "10.7.2"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,40 +34,40 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/controllers": "^1.1.1-alpha.17",
-    "@collabsoft-net/dto": "^1.1.1-alpha.17",
-    "@collabsoft-net/entities": "^1.1.1-alpha.17",
-    "@collabsoft-net/functions": "^1.1.1-alpha.17",
-    "@collabsoft-net/services": "^1.1.1-alpha.17",
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@types/node": ">=16.0.0",
-    "@types/passport": "1.0.0",
-    "@types/passport-http-bearer": "1.0.34",
-    "@types/passport-jwt": "3.0.3",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "axios": "0.24.0",
-    "eslint": "8.15.0",
-    "express": "4.17.0",
-    "nodemon": "2.0.16",
-    "passport": "0.4.1",
+    "@collabsoft-net/controllers": "workspace:*",
+    "@collabsoft-net/dto": "workspace:*",
+    "@collabsoft-net/entities": "workspace:*",
+    "@collabsoft-net/functions": "workspace:*",
+    "@collabsoft-net/services": "workspace:*",
+    "@collabsoft-net/types": "workspace:*",
+    "@types/node": "<19.0.0",
+    "@types/passport": "1.0.16",
+    "@types/passport-http-bearer": "1.0.41",
+    "@types/passport-jwt": "4.0.1",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "axios": "1.6.7",
+    "eslint": "8.56.0",
+    "express": "4.18.2",
+    "nodemon": "3.0.3",
+    "passport": "0.7.0",
     "passport-custom": "1.1.1",
     "passport-http-bearer": "1.0.1",
-    "passport-jwt": "4.0.0",
-    "typescript": "4.6.4"
+    "passport-jwt": "4.0.1",
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@collabsoft-net/controllers": "1.0.0-alpha.45",
-    "@collabsoft-net/dto": "1.0.0-alpha.44",
-    "@collabsoft-net/entities": "1.0.0-alpha.44",
-    "@collabsoft-net/functions": "1.0.0-alpha.45",
-    "@collabsoft-net/services": "1.0.0-alpha.45",
-    "axios": "0.24.0",
-    "express": "4.17.0",
-    "passport": "0.4.1",
+    "@collabsoft-net/controllers": "*",
+    "@collabsoft-net/dto": "*",
+    "@collabsoft-net/entities": "*",
+    "@collabsoft-net/functions": "*",
+    "@collabsoft-net/services": "*",
+    "axios": "1.6.7",
+    "express": "4.18.2",
+    "passport": "0.7.0",
     "passport-custom": "1.1.1",
     "passport-http-bearer": "1.0.1",
-    "passport-jwt": "4.0.0"
+    "passport-jwt": "4.0.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -1,4 +1,3 @@
-import { ResizeObserver } from '@juggle/resize-observer';
 
 import { findSource } from './iframe';
 
@@ -18,16 +17,6 @@ export const resize = ({ source, data }: MessageEvent): void => {
       parent.setAttribute('width', width);
       parent.setAttribute('height', height);
     }
-  }
-};
-
-export const getResizeObserver = async (): Promise<typeof ResizeObserver> => {
-  if ('ResizeObserver' in window === false) {
-    // Loads polyfill asynchronously, only if required.
-    const { ResizeObserver } = await import('@juggle/resize-observer');
-    return ResizeObserver;
-  } else {
-    return window['ResizeObserver'] as typeof ResizeObserver;
   }
 };
 

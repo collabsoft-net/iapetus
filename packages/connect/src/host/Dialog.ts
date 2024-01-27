@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import Modal, { ModalBody, ModalHeader, ModalTransition } from '@atlaskit/modal-dialog';
 import { ConnectHelper } from '@collabsoft-net/types';
-import qs from 'query-string';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { injectGlobal } from 'styled-components';
@@ -63,10 +62,10 @@ export const createDialog = ({ source, data }: MessageEvent, dialogs: Record<str
         document.body.removeChild(modalContainer);
     };
 
-    const query = qs.parse(window.location.search);
-    query['s'] = dialogs[key];
-    query['baseUrl'] = getUrl('');
-    const querystring = Object.entries(query).map(([key, value]) => `${key}=${value}`).join('&');
+    const query = new URLSearchParams(window.location.search);
+    query.set('s', dialogs[key]);
+    query.set('baseUrl', getUrl(''));
+    const querystring = query.toString();
 
     const ModalComponent: React.FC = () => {
         const [ isOpen, setOpen ] = useState(true);

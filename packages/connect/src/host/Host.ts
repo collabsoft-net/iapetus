@@ -6,7 +6,7 @@ import { processDialogEvent } from './Dialog';
 import { findSource, getFrame, getOptions } from './iframe';
 import { getCloseMacroEditorEventHandler, getMacroData, getSaveMacroEventHandler } from './Macro';
 import { getNavigatorLocation, go } from './Navigator';
-import { getResizeObserver, resize, sizeToParent } from './Resize';
+import { resize, sizeToParent } from './Resize';
 import { SupportedEvents } from './SupportedEvents';
 
 export const Host = async (modules: Record<string, string>, dialogs: Record<string, string>, helper: ConnectHelper): Promise<void> => {
@@ -89,7 +89,6 @@ export const Host = async (modules: Record<string, string>, dialogs: Record<stri
                 const parent = acFrame?.parentElement;
                 if (acFrame && parent) {
                     console.log('[AC] Enabling automatic resize of iframe');
-                    const ResizeObserver = await getResizeObserver();
                     new ResizeObserver(() => {
                         console.log('[AC] Resizing iframe to parent')
 

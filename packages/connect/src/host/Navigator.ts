@@ -1,5 +1,4 @@
 import { ConnectHelper } from '@collabsoft-net/types';
-import qs from 'query-string';
 
 import { findSource } from './iframe';
 
@@ -48,7 +47,7 @@ export const go = ({ data }: MessageEvent, modules: Record<string, string>, { ge
     }
 };
 
-const getLocation = (url: string, customData: Record<string, unknown>) => {
-    const queryString = qs.stringify(customData);
-    return url + (url && url.includes('?') ? '&' : '?') + queryString;
+const getLocation = (url: string, customData: Record<string, string>) => {
+    const queryString = new URLSearchParams(customData);
+    return url + (url && url.includes('?') ? '&' : '?') + queryString.toString();
 }

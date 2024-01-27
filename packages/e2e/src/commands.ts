@@ -2,7 +2,6 @@ import { expect, should, use as chaiUse } from 'chai';
 import chaiString from 'chai-string';
 import { mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { Element } from 'webdriverio/build/types';
 chaiUse(chaiString);
 should();
 
@@ -13,9 +12,9 @@ export async function open(url: string, waitForElement?: string|Array<string>, t
 
 export async function fetch(url: string, options: RequestInit = {}): Promise<unknown> {
   browser.switchToParentFrame();
-  // eslint-disable-next-line
 
-  const result = await browser.executeAsync((...args) => {
+  // eslint-disable-next-line
+  const result = await browser.executeAsync((...args: [any, any, any]) => {
     const [ url, options, done ] = args;
     window.fetch(url, options)
       .then((response) => (response.status !== 204) ? response.json() : Promise.resolve({}))
@@ -41,7 +40,10 @@ export async function use(selector?: string|Array<string>): Promise<void> {
     browser.switchToParentFrame();
   } else {
     await waitUntil(async () => exists(selector), 60000, undefined, 200);
-    browser.switchToFrame(await findElement(selector));
+    const iframe = await findElement(selector);
+    if (iframe) {
+      browser.switchToFrame(iframe);
+    }
   }
 }
 
@@ -51,7 +53,7 @@ export async function waitUntil(condition: () => boolean|Promise<boolean>, timeo
 
 export async function waitForDisplayed(selector: string|Array<string>, timeout = 10000): Promise<boolean> {
   const items = Array.isArray(selector) ? selector : [ selector ];
-  await Promise.all(items.map(item => browser.$(item).then((elm: Element<'async'>) => elm.waitForDisplayed({ timeout })).catch(() => {})));
+  await Promise.all(items.map(item => browser.$(item).then((elm: WebdriverIO.Element) => elm.waitForDisplayed({ timeout })).catch(() => {})));
   return exists(selector);
 }
 
@@ -193,7 +195,7 @@ export async function clearValue(selector: string|Array<string>): Promise<void> 
   const items = Array.isArray(selector) ? selector : [ selector ];
   for await (const item of items) {
     await exec(item, 'clearValue');
-    browser.execute((selector) => {
+    browser.execute((selector: string) => {
       const input: HTMLInputElement|null = document.querySelector(selector);
       if (input) {
         input.value = '';

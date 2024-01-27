@@ -74,7 +74,7 @@ export abstract class AbstractRestClient implements RestClient {
     const query: Record<string, string|number|boolean|undefined> = {};
     if (params) {
       Object.entries(params).forEach(([ key, value ]) => {
-        if (typeof value === undefined || value === undefined || value === null) return;
+        if (typeof value === 'undefined' || value === undefined || value === null) return;
         if (Array.isArray(value) && value.length === 0) return;
         if (typeof value === 'string' && value === '') return;
         query[key] = value;

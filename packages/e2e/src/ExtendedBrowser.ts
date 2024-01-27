@@ -1,11 +1,11 @@
 
-import { Browser, WaitUntilOptions } from 'webdriverio';
+import { WaitUntilOptions } from 'webdriverio';
 
 export {};
 
 declare global {
 
-  const browser: Browser<'async'> & ExtendedBrowser;
+  const browser: WebdriverIO.Browser & ExtendedBrowser;
 
   interface ExtendedBrowser {
     open(url: string): Promise<void>;

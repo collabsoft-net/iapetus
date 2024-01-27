@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+
 export enum RestClientEndpoints {
   CREATE = '/:name',
   READ = '/:name/:id?',

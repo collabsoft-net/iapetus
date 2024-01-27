@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,29 +34,29 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@collabsoft-net/clients": "^1.1.1-alpha.17",
-    "@collabsoft-net/enums": "^1.1.1-alpha.13",
-    "@collabsoft-net/helpers": "^1.1.1-alpha.17",
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@types/node": ">=16.0.0",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "eslint": "8.15.0",
-    "form-data": "^4.0.0",
-    "http-status-codes": "^2.1.4",
-    "inversify": "6.0.1",
-    "nodemon": "2.0.16",
-    "path-to-regexp": "6.1.0",
-    "typescript": "4.6.4"
+    "@collabsoft-net/clients": "workspace:*",
+    "@collabsoft-net/enums": "workspace:*",
+    "@collabsoft-net/helpers": "workspace:*",
+    "@collabsoft-net/types": "workspace:*",
+    "@types/node": "<19.0.0",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "eslint": "8.56.0",
+    "form-data": "4.0.0",
+    "http-status-codes": "2.3.0",
+    "inversify": "6.0.2",
+    "nodemon": "3.0.3",
+    "path-to-regexp": "6.2.1",
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@collabsoft-net/clients": "1.0.0-alpha.11",
-    "@collabsoft-net/enums": "1.0.0-alpha.43",
-    "@collabsoft-net/helpers": "1.0.0-alpha.44",
-    "form-data": "^4.0.0",
-    "http-status-codes": "^2.1.4",
-    "inversify": "6.0.1",
-    "path-to-regexp": "6.1.0"
+    "@collabsoft-net/clients": "*",
+    "@collabsoft-net/enums": "*",
+    "@collabsoft-net/helpers": "*",
+    "form-data": "4.0.0",
+    "http-status-codes": "2.3.0",
+    "inversify": "6.0.2",
+    "path-to-regexp": "6.2.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

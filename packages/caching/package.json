@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -33,21 +33,21 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "peerDependencies": {
-    "redis": "4.1.0",
-    "store": "*"
-  },
   "devDependencies": {
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@types/node": ">=16.0.0",
-    "@types/store": "2.0.2",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "eslint": "8.15.0",
-    "nodemon": "2.0.16",
-    "redis": "4.1.0",
+    "@collabsoft-net/types": "workspace:*",
+    "@types/node": "<19.0.0",
+    "@types/store": "2.0.5",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "eslint": "8.56.0",
+    "nodemon": "3.0.3",
+    "redis": "4.6.12",
     "store": "2.0.12",
-    "typescript": "4.6.4"
+    "typescript": "5.3.3"
+  },
+  "peerDependencies": {
+    "redis": "4.6.12",
+    "store": "2.0.12"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

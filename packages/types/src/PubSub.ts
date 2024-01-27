@@ -8,16 +8,6 @@ export interface PubSubOptions {
   apiKey?: string;
 }
 
-export interface PubSubMessage {
-  id: string;
-  ackId: string;
-  data: Buffer;
-  attributes: unknown;
-  timestamp: number;
-  ack: () => void;
-  nack: () => void;
-}
-
 export interface PubSubHandler<T extends TenantAwareEvent> {
   name?: string;
   topic: string;
