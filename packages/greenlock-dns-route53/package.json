@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/greenlock-dns-route53",
-  "version": "1.1.1-alpha.18",
+  "version": "1.1.1",
   "description": "Automatically create/update AWS Route53 DNS records for use with Greenlock (LetsEncrypt) for domain owner verification",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
