@@ -3,7 +3,6 @@ import { RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { stringify } from 'query-string';
 
 import { AbstractRestClient } from './AbstractRestClient';
 
@@ -83,20 +82,22 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
     const now = Math.floor(Date.now() / 1000);
     const { oauthClientId, sharedSecret } = this.instance;
 
+    const params = new URLSearchParams({
+      grant_type: IMPERSONATION_GRANT_TYPE,
+      assertion: encodeSymmetric({
+        iss: `urn:atlassian:connect:clientid:${oauthClientId}`,
+        iat: now,
+        sub: `urn:atlassian:connect:useraccountid:${this.accountId}`,
+        exp: now + 60,
+        tnt: this.instance.baseUrl,
+        aud: AUTH_SERVER
+      }, sharedSecret, SymmetricAlgorithm.HS256)
+    });
+
     const { data: { access_token } } = await this.client({
       method: RestClientMethods.POST,
       url: `${AUTH_SERVER}/oauth2/token`,
-      data: stringify({
-        grant_type: IMPERSONATION_GRANT_TYPE,
-        assertion: encodeSymmetric({
-          iss: `urn:atlassian:connect:clientid:${oauthClientId}`,
-          iat: now,
-          sub: `urn:atlassian:connect:useraccountid:${this.accountId}`,
-          exp: now + 60,
-          tnt: this.instance.baseUrl,
-          aud: AUTH_SERVER
-        }, sharedSecret, SymmetricAlgorithm.HS256)
-      }),
+      data: params.toString(),
       headers: { 'accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' }
     });
 

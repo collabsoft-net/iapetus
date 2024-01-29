@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/types",
-  "version": "1.1.1-alpha.17",
+  "version": "1.1.1",
   "description": "Shared typings",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,16 +34,17 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@types/node": ">=16.0.0",
-    "@types/passport": "1.0.0",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "axios": "0.24.0",
-    "eslint": "8.15.0",
-    "express": "4.17.0",
-    "firebase-functions": "4.4.1",
-    "nodemon": "2.0.16",
-    "typescript": "4.6.4"
+    "@types/node": "<19.0.0",
+    "@types/passport": "1.0.16",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "axios": "1.6.7",
+    "eslint": "8.56.0",
+    "express": "4.18.2",
+    "firebase-admin": "12.0.0",
+    "firebase-functions": "4.6.0",
+    "nodemon": "3.0.3",
+    "typescript": "5.3.3"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

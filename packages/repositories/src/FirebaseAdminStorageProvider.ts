@@ -1,5 +1,5 @@
 import { File, QueryOptions, StorageProvider } from '@collabsoft-net/types';
-import { Bucket, File as BucketFile, GetSignedUrlConfig } from '@google-cloud/storage';
+import { Bucket, File as BucketFile, FileMetadata, GetSignedUrlConfig } from '@google-cloud/storage';
 import { app } from 'firebase-admin';
 import path from 'path';
 
@@ -46,7 +46,7 @@ export class FirebaseAdminStorageProvider implements StorageProvider {
     await this.storage.file(`${directory}/${file.name}`).move(`${target}/${file.name}`);
   }
 
-  async setMetadata(name: string, metadata: unknown, options: FirebaseAdminStorageQueryOptions = { path: '' }): Promise<void> {
+  async setMetadata(name: string, metadata: FileMetadata, options: FirebaseAdminStorageQueryOptions = { path: '' }): Promise<void> {
     await this.validateQueryOptions(options);
     const directory = this.pathToDirectory(options.path);
     await this.storage.file(`${directory}/${name}`).setMetadata(metadata);
@@ -88,7 +88,12 @@ export class FirebaseAdminStorageProvider implements StorageProvider {
       },
       isLocked: async () => {
         const [ metadata ] = await file.getMetadata();
-        return metadata.locked > new Date().getTime();
+        if (metadata.metadata?.locked) {
+          const lockedAt = parseInt(metadata.metadata.locked);
+          return lockedAt > new Date().getTime();
+        } else {
+          return false;
+        }
       },
     };
   }

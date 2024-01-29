@@ -23,7 +23,7 @@ executors:
 
   nodejs:
     docker:
-      - image: cimg/node:16.18
+      - image: cimg/node:18.16
     working_directory: ~/iapetus
 
 commands:
@@ -57,7 +57,7 @@ commands:
           command: |
             npx lerna clean -y && rm -rf node_modules;
             yarn;
-            yarn workspaces foreach install;
+            yarn workspaces foreach -A install;
 
       - run: 
           name: Build
@@ -78,11 +78,10 @@ commands:
       - run: 
           name: Publish
           command: |
-            yarn run lerna version --conventional-commits -y
+            yarn run lerna version --conventional-commits --conventional-graduate -y
             yarn run lerna publish from-package -y
 
 workflows:
-  version: 2
   deploy:
     jobs:
       - build:

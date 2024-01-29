@@ -4,7 +4,8 @@ import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
 import axios from 'axios';
-import { app, AppOptions, auth, firestore, initializeApp } from 'firebase-admin';
+import { app, AppOptions, auth, firestore } from 'firebase-admin';
+import firebase from 'firebase-admin';
 import { getFunctions,TaskOptions } from 'firebase-admin/functions';
 import uniqid from 'uniqid';
 
@@ -23,7 +24,7 @@ export class FirebaseAdminRepository implements Repository {
   private emitter: MemoryEmitter = new MemoryEmitter();
 
   constructor(protected name: string, options?: AppOptions, protected readOnly?: boolean) {
-    this.fb = initializeApp(options, name);
+    this.fb = firebase.initializeApp(options, name);
 
     this.firestore = this.fb.firestore();
     this.storageProvider = new FirebaseAdminStorageProvider(this.fb);

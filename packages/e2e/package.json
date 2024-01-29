@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/e2e",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Collection of shared WebDriver.io testing functions",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -33,21 +33,21 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
-  "peerDependencies": {
-    "@wdio/cli": "7.20.2",
-    "chai": "4.3.6",
-    "chai-string": "1.5.0"
-  },
   "devDependencies": {
-    "@types/chai": "4.3.1",
-    "@types/chai-string": "1.4.2",
-    "@types/node": ">=16.0.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "@wdio/cli": "7.20.2",
-    "chai": "4.3.6",
+    "@types/chai": "4.3.11",
+    "@types/chai-string": "1.4.5",
+    "@types/node": "<19.0.0",
+    "@typescript-eslint/parser": "6.19.1",
+    "@wdio/cli": "8.29.1",
+    "chai": "5.0.3",
     "chai-string": "1.5.0",
-    "eslint": "8.17.0",
-    "nodemon": "2.0.16",
-    "typescript": "4.7.3"
+    "eslint": "8.56.0",
+    "nodemon": "3.0.3",
+    "typescript": "5.3.3"
+  },
+  "peerDependencies": {
+    "@wdio/cli": "8.29.1",
+    "chai": "5.0.3",
+    "chai-string": "1.5.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/connect",
-  "version": "1.1.1-alpha.17",
+  "version": "1.1.1",
   "description": "Atlassian Connect polyfill (incl. Javascript API)",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
@@ -18,7 +18,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -36,40 +36,30 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@atlaskit/modal-dialog": "12.0.1",
-    "@collabsoft-net/helpers": "^1.1.1-alpha.17",
-    "@collabsoft-net/types": "^1.1.1-alpha.17",
-    "@juggle/resize-observer": "3.3.1",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@types/js-cookie": "^3",
-    "@types/node": ">=16.0.0",
-    "@types/react": "16.9.54",
-    "@types/react-dom": "16.9.9",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.52.0",
-    "eslint": "8.15.0",
-    "inversify": "6.0.1",
-    "js-cookie": "3.0.5",
-    "nodemon": "2.0.16",
-    "query-string": "7.0.1",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
-    "rollup": "^4.9.1",
-    "rollup-plugin-polyfill-node": "^0.13.0",
+    "@atlaskit/modal-dialog": "12.10.3",
+    "@collabsoft-net/helpers": "workspace:*",
+    "@collabsoft-net/inversify": "workspace:*",
+    "@collabsoft-net/types": "workspace:*",
+    "@types/node": "<19.0.0",
+    "@types/react": "<17.0.0",
+    "@types/react-dom": "<17.0.0",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "eslint": "8.56.0",
+    "inversify": "6.0.2",
+    "nodemon": "3.0.3",
+    "react": "<17.0.0",
+    "react-dom": "<17.0.0",
     "styled-components": "3.2.6",
-    "typescript": "4.6.4"
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@atlaskit/modal-dialog": "12.0.1",
-    "@collabsoft-net/helpers": "^1.0.0-alpha.213",
-    "@juggle/resize-observer": "3.3.1",
-    "inversify": "6.0.1",
-    "js-cookie": "*",
-    "query-string": "7.0.1",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
+    "@atlaskit/modal-dialog": "*",
+    "@collabsoft-net/helpers": "*",
+    "@collabsoft-net/inversify": "workspace:*",
+    "inversify": "6.0.2",
+    "react": "<17.0.0",
+    "react-dom": "<17.0.0",
     "styled-components": "3.2.6"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"

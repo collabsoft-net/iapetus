@@ -1,8 +1,7 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
-import { AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders } from 'axios';
-import qs from 'query-string';
+import { AxiosHeaders, AxiosRequestConfig, AxiosResponse, RawAxiosResponseHeaders } from 'axios';
 
 export class APRestClient implements RestClient {
 
@@ -16,52 +15,52 @@ export class APRestClient implements RestClient {
     return instance;
   }
 
-  async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async get<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async get<T>(endpoint: string, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async get<T>(endpoint: string, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.GET, endpoint, undefined, params, duration);
   }
 
-  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.POST, endpoint, data, params, duration);
   }
 
-  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.PUT, endpoint, data, params, duration);
   }
 
-  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.PATCH, endpoint, data, params, duration);
   }
 
-  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.DELETE, endpoint, data, params, duration);
   }
 
-  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
-  async head<T>(endpoint: string, params?: Record<string, string|number|boolean>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  async head<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
+  async head<T>(endpoint: string, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
     return this.request(RestClientMethods.HEAD, endpoint, undefined, params, duration);
   }
 
-  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const client = this.AP.request;
 
-    const fetchFromRemote = async () => {
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => {
       try {
         const { body, xhr } = await client({
           type,
@@ -82,7 +81,9 @@ export class APRestClient implements RestClient {
           status: xhr.status,
           statusText: xhr.statusText,
           headers: this.getHeaders(xhr),
-          config: {},
+          config: {
+            headers: new AxiosHeaders()
+          },
           data: result
         };
       } catch (error) {
@@ -92,16 +93,20 @@ export class APRestClient implements RestClient {
             status: xhr.status,
             statusText: xhr.statusText,
             headers: this.getHeaders(xhr),
-            config: {},
-            data: err as unknown as T
+            config: {
+              headers: new AxiosHeaders()
+            },
+              data: err as unknown as T
           };
         } else {
           return {
             status: 500,
             statusText: '',
             headers: {},
-            config: {},
-            data: error as unknown as T
+            config: {
+              headers: new AxiosHeaders()
+            },
+              data: error as unknown as T
           };
         }
       }
@@ -116,17 +121,17 @@ export class APRestClient implements RestClient {
     }
   }
 
-  protected getUrl(endpoint: string, params?: Record<string, string|number|boolean>): string {
+  protected getUrl(endpoint: string, params?: Record<string, string>): string {
     if (params) {
-      const querystring = qs.stringify(params);
-      endpoint = `${endpoint}?${querystring}`;
+      const querystring = new URLSearchParams(params);
+      endpoint = `${endpoint}?${querystring.toString()}`;
     }
 
     return endpoint;
   }
 
-  protected getHeaders(xhr: AP.RequestResponseXHRObject): AxiosResponseHeaders {
-    const result: AxiosResponseHeaders = {};
+  protected getHeaders(xhr: AP.RequestResponseXHRObject): RawAxiosResponseHeaders {
+    const result: RawAxiosResponseHeaders = {};
     if (typeof xhr.getAllResponseHeaders === 'function') {
       const headers = xhr.getAllResponseHeaders().split('\r\n');
       headers.forEach(item => {

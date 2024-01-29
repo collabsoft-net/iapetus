@@ -4,7 +4,7 @@ import { Strategy as IStrategy } from '@collabsoft-net/types';
 import * as express from 'express';
 import { injectable } from 'inversify';
 import * as passport from 'passport';
-import { Strategy, StrategyOptions } from 'passport-jwt';
+import { Strategy, StrategyOptions, StrategyOptionsWithRequest } from 'passport-jwt';
 
 import { AbstractStrategy } from './AbstractStrategy';
 
@@ -23,7 +23,7 @@ export abstract class AbstractJWTStrategy<T, X extends Session> extends Abstract
 
   get strategy(): passport.Strategy {
     const _name = this.name;
-    const _options = { ...this.strategyOptions, passReqToCallback: true };
+    const _options: StrategyOptionsWithRequest = { ...this.strategyOptions, passReqToCallback: true };
 
     return new (class JWTStrategy extends Strategy {
       name = _name;
