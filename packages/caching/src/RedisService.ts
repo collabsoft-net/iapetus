@@ -18,6 +18,7 @@ export class RedisService implements CachingService {
   async has(key: string|Array<string>): Promise<boolean> {
     await this.isReady();
     const result = await this.client.exists(key);
+    this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
     return result > 0;
   }
 
@@ -48,20 +49,28 @@ export class RedisService implements CachingService {
     }
 
     if (forceRefresh === true) {
+      this.verbose && console.info(`[REDIS] force refresh requested, flushing key ${key}`);
       await this.flush(key);
     }
 
     const reply = await this.client.get(key);
     if (reply) {
+      this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
+
+      if (this.expirationPolicy === 'expireAfterAccess') {
+        this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+        await this.client.expire(key, expiresInSeconds);
+      }
+
       try {
-        this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
         const result: T = JSON.parse(reply);
         return type ? new type(result) : result;
       } catch (error) {
-        this.verbose && console.info(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         await this.flush(key);
         const result = loader ? loader() : null;
         if (result) {
+          await this.set(key, result, expiresInSeconds);
           return type ? new type(result) : result;
         }
       }
@@ -76,15 +85,12 @@ export class RedisService implements CachingService {
         this.verbose && console.info(`[REDIS] miss from loader for key ${key}`);
         return null;
       } catch (error) {
-        this.verbose && console.info(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         return null;
       }
     }
 
-    if (this.expirationPolicy === 'expireAfterAccess') {
-      await this.client.expire(key, expiresInSeconds);
-    }
-
+    this.verbose && console.info(`[REDIS] miss from both cache and loader for key ${key}`);
     return null;
   }
 
@@ -96,9 +102,9 @@ export class RedisService implements CachingService {
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
-    this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
     try {
       const payload = JSON.stringify(data);
+      this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
       await this.client.setEx(key, expiresInSeconds, payload);
       return null;
     } catch (error) {
@@ -108,12 +114,14 @@ export class RedisService implements CachingService {
   }
 
   async flush(key: string|Array<string>): Promise<void> {
+    const keys = Array.isArray(key) ? key : [ key ];
+
     await this.isReady();
     if (!this.ready) {
-      this.verbose && console.info(`[REDIS] cannot flush key ${key}, server is not ready`);
+      this.verbose && console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
     } else {
-      this.verbose && console.info(`[REDIS] flushing key ${key}`);
-      await this.client.unlink(key);
+      this.verbose && console.info(`[REDIS] flushing key(s) '${keys.join(',')}'`);
+      await this.client.unlink(keys);
     }
   }
 
@@ -122,12 +130,16 @@ export class RedisService implements CachingService {
     if (!this.ready) {
       this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
     } else {
+      this.verbose && console.info(`[REDIS] flushing all keys`);
       await this.client.flushAll();
     }
   }
 
   toCacheKey(...args: Array<string|number|undefined>): string {
-    return createHash('md5').update(args.filter(item => item !== undefined).join('-')).digest('hex');
+    const value = args.filter(item => item !== undefined).join('-');
+    const result = createHash('md5').update(value).digest('hex');
+    this.verbose && console.info(`[REDIS] Created cache key '${result}' based on provided arguments '${value}'`);
+    return result;
   }
 
   private async isReady() {
