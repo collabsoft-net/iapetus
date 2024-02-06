@@ -4,14 +4,18 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import json from '@rollup/plugin-json';
 
 const common = {
   plugins: [
+    json(),
     commonjs({
-      requireReturnsDefault: 'auto'
+      browser: true,
+      requireReturnsDefault: 'auto',
     }),
     nodeResolve({
-      preferBuiltins: false
+      browser: true,
+      preferBuiltins: true,
     }),
     nodePolyfills(),
     terser({ keep_classnames: true, keep_fnames: true })

@@ -7,6 +7,6 @@
     "./src/**/*.ts",
     "./typings/*.d.ts",
     "./typings/**/*.d.ts",
-    "../../node_modules/@collabsoft-net/**/*.d.ts"
+    "../../node_modules/@collabsoft-net/functions/**/*.d.ts"
   ]
 }
