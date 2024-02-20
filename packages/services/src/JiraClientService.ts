@@ -200,9 +200,9 @@ export class JiraClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async addAttachment(issueIdOrKey: string|number, content: string | Buffer, fileName?: string): Promise<Jira.Attachment> {
+  async addAttachment(issueIdOrKey: string|number, content: string | Buffer, filename?: string, contentType?: string): Promise<Jira.Attachment> {
     const data = new FormData();
-    data.append('file', content, fileName);
+    data.append('file', content, { filename, contentType });
     const { data: result } = await this.client.post<Jira.Attachment>(this.getEndpointFor(this.endpoints.ADD_ATTACHMENT, { issueIdOrKey }), data, undefined, {
       headers: {
         'Accept': 'application/json',
