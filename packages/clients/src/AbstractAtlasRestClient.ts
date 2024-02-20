@@ -34,11 +34,15 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
       params: params ? this.normalizeQuery(params) : undefined,
     };
     options.headers = options.headers || {};
-    options.headers['Content-Type'] = 'application/json';
     options.headers['X-ExperimentalApi'] = 'opt-in';
     options.headers['Authorization'] = this.accountId
       ? `Bearer ${await this.getAccessToken()}`
       : `JWT ${this.getSignedJWT(options)}`;
+
+    const hasContentType = Object.keys(options.headers).some(key => key.toLowerCase() === 'content-type');
+    if (!hasContentType) {
+      options.headers['Content-Type'] = 'application/json';
+    }
 
     const fetchFromRemote = async () => this.client(endpoint, options);
 
