@@ -206,8 +206,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     const { data: result } = await this.client.post<Jira.Attachment>(this.getEndpointFor(this.endpoints.ADD_ATTACHMENT, { issueIdOrKey }), data, undefined, {
       headers: {
         'Accept': 'application/json',
-        'X-Atlassian-Token': 'no-check',
-        'Content-Type': 'multipart/form-data',
+        'X-Atlassian-Token': 'no-check'
       }
     });
     return result;
