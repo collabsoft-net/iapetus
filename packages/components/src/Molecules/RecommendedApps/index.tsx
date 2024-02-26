@@ -1,4 +1,3 @@
-import { colors } from '@atlaskit/theme';
 import React from 'react';
 
 import { Grid, Row } from '../../Atoms/Grid';
@@ -19,7 +18,7 @@ export const RecommendedApps = ({ title, description, apps }: RecommendedAppsPro
         <Header weight='h600'>{title}</Header>
       </Row>
       <Row margin='8px 0 0 0'>
-        <Paragraph color={colors.N600}>
+        <Paragraph>
           { description }
         </Paragraph>
       </Row>
