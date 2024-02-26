@@ -52,6 +52,7 @@
     "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
     "inversify": "6.0.2",
+    "js-cookie": "3.0.5",
     "nodemon": "3.0.3",
     "react": "<17.0.0",
     "react-dom": "<17.0.0",
@@ -65,12 +66,10 @@
     "@collabsoft-net/helpers": "*",
     "@collabsoft-net/inversify": "workspace:*",
     "inversify": "6.0.2",
+    "js-cookie": "3.0.5",
     "react": "<17.0.0",
     "react-dom": "<17.0.0",
     "styled-components": "3.2.6"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
-  "dependencies": {
-    "js-cookie": "3.0.5"
-  }
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
