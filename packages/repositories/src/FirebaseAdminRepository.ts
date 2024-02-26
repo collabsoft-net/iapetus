@@ -145,8 +145,14 @@ export class FirebaseAdminRepository implements Repository {
     await this.validateQueryOptions(options);
 
     const queryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
-    const { values } = await this.findAllByQuery<T>(queryBuilder.limit(1), options);
-    return values[0];
+    const result = await this.findAllByQuery<T>(queryBuilder.limit(1), options);
+
+    // Do not assume deconstruction, make sure that we actually get expected Paginated<T> returned
+    if (!isOfType<Paginated<T>>(result, 'values')) {
+      throw new Error('Unexpected argument exception: findAllByQuery did not return paginated list of results');
+    }
+
+    return result.values[0];
   }
 
   async findAll<T extends Entity>(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
