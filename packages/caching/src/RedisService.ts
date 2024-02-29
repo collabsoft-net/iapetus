@@ -7,11 +7,13 @@ const DEFAULT_TTL = 30 * 60;
 export class RedisService implements CachingService {
 
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  private timeout: number;
   private ready = false;
   private unavailable = false;
 
   constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite', private defaultExpirationInSeconds = DEFAULT_TTL, private verbose: boolean = false) {
     this.client = createClient(options);
+    this.timeout = options.socket?.connectTimeout || (30 * 1000);
     this.client.on('ready', () => { this.ready = true; });
     this.client.on('error', () => { this.ready = false; });
   }
@@ -169,9 +171,10 @@ export class RedisService implements CachingService {
           this.unavailable = true;
         });
 
+        const maxCount = this.timeout / 1000;
         const interval = setInterval(() => {
           count++;
-          if (this.unavailable || this.ready || count >= 30) {
+          if (this.unavailable || this.ready || count >= maxCount) {
             clearInterval(interval);
             resolve();
           }
