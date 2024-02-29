@@ -24,9 +24,11 @@ export class RedisService implements CachingService {
       throw new Error('[REDIS] Server is not ready for connection, cannot determine if cache key exists');
     }
 
-    const result = await this.client.exists(key);
-    this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
-    return result > 0;
+    return this.withTimeout(async () => {
+      const result = await this.client.exists(key);
+      this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
+      return result > 0;
+    });
   }
 
   async get<T>(key: string): Promise<T|null>;
@@ -60,45 +62,47 @@ export class RedisService implements CachingService {
       await this.flush(key);
     }
 
-    const reply = await this.client.get(key);
-    if (reply) {
-      this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
+    return this.withTimeout(async () => {
+      const reply = await this.client.get(key);
+      if (reply) {
+        this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
 
-      if (this.expirationPolicy === 'expireAfterAccess') {
-        this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
-        await this.client.expire(key, expiresInSeconds);
-      }
+        if (this.expirationPolicy === 'expireAfterAccess') {
+          this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+          await this.client.expire(key, expiresInSeconds);
+        }
 
-      try {
-        const result: T = JSON.parse(reply);
-        return type ? new type(result) : result;
-      } catch (error) {
-        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
-        await this.flush(key);
-        const result = loader ? loader() : null;
-        if (result) {
-          await this.set(key, result, expiresInSeconds);
+        try {
+          const result: T = JSON.parse(reply);
           return type ? new type(result) : result;
+        } catch (error) {
+          this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+          await this.flush(key);
+          const result = loader ? loader() : null;
+          if (result) {
+            await this.set(key, result, expiresInSeconds);
+            return type ? new type(result) : result;
+          }
+        }
+      } else if (loader) {
+        try {
+          this.verbose && console.info(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
+          const result = await loader();
+          if (result) {
+            await this.set(key, result, expiresInSeconds);
+            return type ? new type(result) : result;
+          }
+          this.verbose && console.info(`[REDIS] miss from loader for key ${key}`);
+          return null;
+        } catch (error) {
+          this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+          return null;
         }
       }
-    } else if (loader) {
-      try {
-        this.verbose && console.info(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
-        const result = await loader();
-        if (result) {
-          await this.set(key, result, expiresInSeconds);
-          return type ? new type(result) : result;
-        }
-        this.verbose && console.info(`[REDIS] miss from loader for key ${key}`);
-        return null;
-      } catch (error) {
-        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
-        return null;
-      }
-    }
 
-    this.verbose && console.info(`[REDIS] miss from both cache and loader for key ${key}`);
-    return null;
+      this.verbose && console.info(`[REDIS] miss from both cache and loader for key ${key}`);
+      return null;
+    });
   }
 
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
@@ -109,15 +113,17 @@ export class RedisService implements CachingService {
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
-    try {
-      const payload = JSON.stringify(data);
-      this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
-      await this.client.setEx(key, expiresInSeconds, payload);
-      return null;
-    } catch (error) {
-      this.verbose && console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
-      return error as Error;
-    }
+    return this.withTimeout(async () => {
+      try {
+        const payload = JSON.stringify(data);
+        this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
+        await this.client.setEx(key, expiresInSeconds, payload);
+        return null;
+      } catch (error) {
+        this.verbose && console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
+        return error as Error;
+      }
+    });
   }
 
   async flush(key: string|Array<string>): Promise<void> {
@@ -128,7 +134,7 @@ export class RedisService implements CachingService {
       this.verbose && console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
     } else {
       this.verbose && console.info(`[REDIS] flushing key(s) '${keys.join(',')}'`);
-      await this.client.unlink(keys);
+      await this.withTimeout(() => this.client.unlink(keys));
     }
   }
 
@@ -138,7 +144,7 @@ export class RedisService implements CachingService {
       this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
     } else {
       this.verbose && console.info(`[REDIS] flushing all keys`);
-      await this.client.flushAll();
+      await this.withTimeout(() => this.client.flushAll());
     }
   }
 
@@ -183,8 +189,21 @@ export class RedisService implements CachingService {
     }
   }
 
+  // Inspiration taken from https://advancedweb.hu/how-to-add-timeout-to-a-promise-in-javascript/
+  private async withTimeout<T>(executor: () => Promise<T>): Promise<T> {
+    let timeoutId: NodeJS.Timeout;
+    return Promise.race([
+      executor(),
+      new Promise<T>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new RedisTimeoutError()), this.timeout)
+      })
+    ]).finally(() => clearTimeout(timeoutId));
+  }
+
   static getIdentifier(): symbol {
     return Symbol.for('RedisService');
   }
 
 }
+
+export class RedisTimeoutError extends Error {}
