@@ -8,6 +8,7 @@ export class RedisService implements CachingService {
 
   private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
   private ready = false;
+  private unavailable = false;
 
   constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite', private defaultExpirationInSeconds = DEFAULT_TTL, private verbose: boolean = false) {
     this.client = createClient(options);
@@ -102,7 +103,7 @@ export class RedisService implements CachingService {
     await this.isReady();
 
     if (!this.ready) {
-      console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
+      this.verbose && console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
@@ -153,24 +154,24 @@ export class RedisService implements CachingService {
   // The CDN will return 503 if the cloud function does not respond in time
   // The 30s timeout is to allow for fetching data from source before hitting the Cloud Function timeout
   private async isReady() {
-    if (this.ready) {
+    if (this.ready || this.unavailable) {
       return;
     } else {
       return new Promise<void>(resolve => {
         let count = 0;
-        let abort = false;
 
         // Start connecting with the client
         this.client.connect().then(() => {
           this.ready = true;
+          this.unavailable = false;
         }).catch(() => {
           this.ready = false;
-          abort = true;
+          this.unavailable = true;
         });
 
         const interval = setInterval(() => {
           count++;
-          if (abort || this.ready || count >= 30) {
+          if (this.unavailable || this.ready || count >= 30) {
             clearInterval(interval);
             resolve();
           }
