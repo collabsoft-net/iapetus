@@ -17,6 +17,10 @@ export class RedisService implements CachingService {
 
   async has(key: string|Array<string>): Promise<boolean> {
     await this.isReady();
+    if (!this.ready) {
+      throw new Error('[REDIS] Server is not ready for connection, cannot determine if cache key exists');
+    }
+
     const result = await this.client.exists(key);
     this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
     return result > 0;
@@ -142,26 +146,35 @@ export class RedisService implements CachingService {
     return result;
   }
 
+  // We are building in a default timeout of 30 seconds
+  // If we cannot establish a connection within that timeframe, we're going to abort
+  // This is specifically because of use in GCP Firebase Cloud Functions
+  // Firebase uses a CDN which has a timeout of 60s, despite allowing Cloud Functions to run for 5m
+  // The CDN will return 503 if the cloud function does not respond in time
+  // The 30s timeout is to allow for fetching data from source before hitting the Cloud Function timeout
   private async isReady() {
     if (this.ready) {
       return;
     } else {
-      try {
-        await this.client.connect();
-      } catch (error) {
-        this.ready = false;
-        return;
-      }
-
       return new Promise<void>(resolve => {
         let count = 0;
+        let abort = false;
+
+        // Start connecting with the client
+        this.client.connect().then(() => {
+          this.ready = true;
+        }).catch(() => {
+          this.ready = false;
+          abort = true;
+        });
+
         const interval = setInterval(() => {
           count++;
-          if (this.ready || count >= 5) {
+          if (abort || this.ready || count >= 30) {
             clearInterval(interval);
             resolve();
           }
-        }, 100);
+        }, 1000);
       });
     }
   }
