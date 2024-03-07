@@ -1,4 +1,4 @@
-import { CloudSchedulerClient } from '@google-cloud/scheduler/build/src/v1beta1';
+import { CloudSchedulerClient } from '@google-cloud/scheduler/build/src/v1beta1/index.js';
 
 export const scheduler = new CloudSchedulerClient();
 
