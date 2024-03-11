@@ -66,7 +66,7 @@ const Content = ({ project, size, href, inline, truncate, isValidating, isDisabl
             return components.Name({ project, isLoading: false, isValidating, isArchived: project?.archived })
           } else {
             return (project && isOfType<Jira.Project>(project, 'name')) ? (
-              <Paragraph truncate={ truncate } margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display='inline-block'>
+              <Paragraph truncate={ truncate } margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display={ inline ? 'inline-block' : undefined }>
                 { href ? (
                   <Link href={ href }>{ project.name }</Link>
                 ) : (
