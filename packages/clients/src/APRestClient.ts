@@ -1,5 +1,5 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
-import { isOfType } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { AxiosHeaders, AxiosRequestConfig, AxiosResponse, RawAxiosResponseHeaders } from 'axios';
 
@@ -123,11 +123,22 @@ export class APRestClient implements RestClient {
 
   protected getUrl(endpoint: string, params?: Record<string, string>): string {
     if (params) {
-      const querystring = new URLSearchParams(params);
+      const querystring = new URLSearchParams(this.normalizeQuery(params));
       endpoint = `${endpoint}?${querystring.toString()}`;
     }
 
     return endpoint;
+  }
+
+  protected normalizeQuery(params: Record<string, string|undefined>): Record<string, string> {
+    const query: Record<string, string> = {};
+    if (params) {
+      Object.entries(params).forEach(([ key, value ]) => {
+        if (isNullOrEmpty(value)) return;
+        query[key] = value;
+      });
+    }
+    return query;
   }
 
   protected getHeaders(xhr: AP.RequestResponseXHRObject): RawAxiosResponseHeaders {
