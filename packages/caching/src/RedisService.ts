@@ -25,10 +25,11 @@ export class RedisService implements CachingService {
       this.unavailable = true;
       console.error(`[REDIS] connection error: ${err.message}`);
     });
+
+    this.connect();
   }
 
   async has(key: string|Array<string>): Promise<boolean> {
-    await this.isReady();
     if (!this.ready) {
       throw new Error('[REDIS] Server is not ready for connection, cannot determine if cache key exists');
     }
@@ -45,7 +46,6 @@ export class RedisService implements CachingService {
   async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
   async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
   async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T|null>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T|null>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
-    await this.isReady();
 
     const { type, key, loader, expiresInSeconds, forceRefresh } = {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
@@ -111,8 +111,6 @@ export class RedisService implements CachingService {
   }
 
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
-    await this.isReady();
-
     if (!this.ready) {
       this.verbose && console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
@@ -132,7 +130,6 @@ export class RedisService implements CachingService {
   async flush(key: string|Array<string>): Promise<void> {
     const keys = Array.isArray(key) ? key : [ key ];
 
-    await this.isReady();
     if (!this.ready) {
       this.verbose && console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
     } else {
@@ -142,7 +139,6 @@ export class RedisService implements CachingService {
   }
 
   async flushAll() {
-    await this.isReady();
     if (!this.ready) {
       this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
     } else {
@@ -164,7 +160,7 @@ export class RedisService implements CachingService {
   // Firebase uses a CDN which has a timeout of 60s, despite allowing Cloud Functions to run for 5m
   // The CDN will return 503 if the cloud function does not respond in time
   // The 30s timeout is to allow for fetching data from source before hitting the Cloud Function timeout
-  private async isReady() {
+  private async connect() {
     if (this.ready || this.unavailable) {
       return;
     } else {
