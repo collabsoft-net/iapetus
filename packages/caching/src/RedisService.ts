@@ -20,9 +20,10 @@ export class RedisService implements CachingService {
       this.unavailable = false;
     });
 
-    this.client.on('error', () => {
+    this.client.on('error', err => {
       this.ready = false;
       this.unavailable = true;
+      console.error(`[REDIS] connection error: ${err.message}`);
     });
   }
 
@@ -174,9 +175,10 @@ export class RedisService implements CachingService {
         this.client.connect().then(() => {
           this.ready = true;
           this.unavailable = false;
-        }).catch(() => {
+        }).catch(err => {
           this.ready = false;
           this.unavailable = true;
+          console.error(`[REDIS] connection error: ${err.message}`);
         });
 
         const maxCount = this.timeout / 1000;
