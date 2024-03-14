@@ -1098,16 +1098,19 @@ __metadata:
   resolution: "@collabsoft-net/caching@workspace:packages/caching"
   dependencies:
     "@collabsoft-net/types": "workspace:*"
+    "@types/memcached": "npm:^2"
     "@types/node": "npm:<19.0.0"
     "@types/store": "npm:2.0.5"
     "@typescript-eslint/eslint-plugin": "npm:6.19.1"
     "@typescript-eslint/parser": "npm:6.19.1"
     eslint: "npm:8.56.0"
+    memcached: "npm:2.2.2"
     nodemon: "npm:3.0.3"
     redis: "npm:4.6.12"
     store: "npm:2.0.12"
     typescript: "npm:5.3.3"
   peerDependencies:
+    memcached: "*"
     redis: 4.6.12
     store: 2.0.12
   languageName: unknown
@@ -4538,6 +4541,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/memcached@npm:^2":
+  version: 2.2.10
+  resolution: "@types/memcached@npm:2.2.10"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 2577a163052cd899f1d8355e8cc918624003db58bfba72f63af80cb5917274e46fbde67465507f6468153fc6bda5e24a262fa114fb1de4d6d6a4bc072ce945e0
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:^1":
   version: 1.3.2
   resolution: "@types/mime@npm:1.3.2"
@@ -6267,6 +6279,13 @@ __metadata:
     readable-stream: "npm:^3.0.2"
     typedarray: "npm:^0.0.6"
   checksum: 250e576d0617e7c58e1c4b2dd6fe69560f316d2c962a409f9f3aac794018499ddb31948b1e4296f217008e124cd5d526432097745157fe504b5d9f3dc469eadb
+  languageName: node
+  linkType: hard
+
+"connection-parse@npm:0.0.x":
+  version: 0.0.7
+  resolution: "connection-parse@npm:0.0.7"
+  checksum: 82c242157205babf80bd6467a65b4f05c21eed91cc46f76ca26398ef10b031a7a0bb63efbda3386e6d24dbfaf74a9d786b0e2fb6425b3a159c762b18052a5070
   languageName: node
   linkType: hard
 
@@ -8583,6 +8602,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hashring@npm:3.2.x":
+  version: 3.2.0
+  resolution: "hashring@npm:3.2.0"
+  dependencies:
+    connection-parse: "npm:0.0.x"
+    simple-lru-cache: "npm:0.0.x"
+  checksum: de768431313954f3a79a02cae5701af33029978f4f71376e97f8089d39a1d4e09396d004f42b057752e099c0e973e210e170f7f501d98c481f2ed1c5c16167d2
+  languageName: node
+  linkType: hard
+
 "hasown@npm:^2.0.0":
   version: 2.0.0
   resolution: "hasown@npm:2.0.0"
@@ -9370,6 +9399,15 @@ __metadata:
     node-fetch: "npm:^1.0.1"
     whatwg-fetch: "npm:>=0.10.0"
   checksum: bb5daa7c3785d6742f4379a81e55b549a469503f7c9bf9411b48592e86632cf5e8fe8ea878dba185c0f33eb7c510c23abdeb55aebfdf5d3c70f031ced68c5424
+  languageName: node
+  linkType: hard
+
+"jackpot@npm:>=0.0.6":
+  version: 0.0.6
+  resolution: "jackpot@npm:0.0.6"
+  dependencies:
+    retry: "npm:0.6.0"
+  checksum: 8ba38c0d48889db7dc5c589cca8919279cbd98da7f29926841d273e7e7e4b9a4445c57d27397c4a05433a0c081bf53f698540a9fc842605819391ff7f172701b
   languageName: node
   linkType: hard
 
@@ -10314,6 +10352,16 @@ __metadata:
   version: 0.3.0
   resolution: "media-typer@npm:0.3.0"
   checksum: 38e0984db39139604756903a01397e29e17dcb04207bb3e081412ce725ab17338ecc47220c1b186b6bbe79a658aad1b0d41142884f5a481f36290cdefbe6aa46
+  languageName: node
+  linkType: hard
+
+"memcached@npm:2.2.2":
+  version: 2.2.2
+  resolution: "memcached@npm:2.2.2"
+  dependencies:
+    hashring: "npm:3.2.x"
+    jackpot: "npm:>=0.0.6"
+  checksum: 1d4f1272ec4d17f7a39c50c1e09dbf9886bf64e2dca7de8309cbdb768fb1972b88c837a7571c253098817fc487a3c89c904aec4dc587594d78df11ea924b345d
   languageName: node
   linkType: hard
 
@@ -12763,6 +12811,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"retry@npm:0.6.0":
+  version: 0.6.0
+  resolution: "retry@npm:0.6.0"
+  checksum: bac9a40f6151a1859300aa9b141f983c42323a1924c0f5302bb00910b8385b8e5456c3ddfee25e64663c658158eb04d0cea6ef262a993dfee1ae7adccad5a993
+  languageName: node
+  linkType: hard
+
 "retry@npm:^0.12.0":
   version: 0.12.0
   resolution: "retry@npm:0.12.0"
@@ -13189,6 +13244,13 @@ __metadata:
     "@sigstore/tuf": "npm:^2.3.0"
     "@sigstore/verify": "npm:^0.1.0"
   checksum: d8e1fda202d2572b3bfa3eded15c9b826429187f52a287549074645670778cbdb78111cb8e3d0274f051838ee500db382be6124c45068985d095df54a3a0bd74
+  languageName: node
+  linkType: hard
+
+"simple-lru-cache@npm:0.0.x":
+  version: 0.0.2
+  resolution: "simple-lru-cache@npm:0.0.2"
+  checksum: 31ae2b3d1865cc89d6573b925d0ae12d0b0f1fa9a0a3280244a3498ec2016bc0a5980859dd31508c0dffa99cc408d2d0e578803f185d10ea577d551be66176dd
   languageName: node
   linkType: hard
 

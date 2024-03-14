@@ -10,7 +10,10 @@
   "main": "./dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist/",
+    "LICENSE",
+    "README",
+    "package.json"
   ],
   "repository": {
     "type": "git",
@@ -33,19 +36,39 @@
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
+  "exports": {
+    "./RedisService": {
+      "types": "./dist/types/RedisService.d.ts",
+      "require": "./dist/cjs/RedisService.js",
+      "import": "./dist/es2020/RedisService.js"
+    },
+    "./MemcachedService": {
+      "types": "./dist/types/MemcachedService.d.ts",
+      "require": "./dist/cjs/MemcachedService.js",
+      "import": "./dist/es2020/MemcachedService.js"
+    },
+    "./SessionStorageService": {
+      "types": "./dist/types/SessionStorageService.d.ts",
+      "require": "./dist/cjs/SessionStorageService.js",
+      "import": "./dist/es2020/SessionStorageService.js"
+    }
+  },
   "devDependencies": {
     "@collabsoft-net/types": "workspace:*",
+    "@types/memcached": "^2",
     "@types/node": "<19.0.0",
     "@types/store": "2.0.5",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
+    "memcached": "2.2.2",
     "nodemon": "3.0.3",
     "redis": "4.6.12",
     "store": "2.0.12",
     "typescript": "5.3.3"
   },
   "peerDependencies": {
+    "memcached": "*",
     "redis": "4.6.12",
     "store": "2.0.12"
   },
