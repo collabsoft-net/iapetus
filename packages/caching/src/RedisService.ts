@@ -4,37 +4,49 @@ import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, Redi
 
 const DEFAULT_TTL = 30 * 60;
 
+interface RedisServiceOptions {
+  primaryEndpoint: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>;
+  readEndpoint?: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>;
+  expirationPolicy?: CachingExpirationPolicy;
+  defaultExpirationInSeconds?: number;
+  verbose?: boolean;
+}
+
 export class RedisService implements CachingService {
 
-  private client: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
-  private timeout: number;
-  private ready = false;
-  private unavailable = false;
+  private primaryEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  private writeTimeout: number;
 
-  constructor(options: RedisClientOptions<RedisModules, RedisFunctions, RedisScripts>, private expirationPolicy: CachingExpirationPolicy = 'expireAfterWrite', private defaultExpirationInSeconds = DEFAULT_TTL, private verbose: boolean = false) {
-    this.client = createClient(options);
-    this.timeout = options.socket?.connectTimeout || (30 * 1000);
+  private readEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  private readTimeout: number;
 
-    this.client.on('ready', () => {
-      this.ready = true;
-      this.unavailable = false;
-    });
+  private expirationPolicy: CachingExpirationPolicy;
+  private defaultExpirationInSeconds: number;
+  private verbose: boolean;
 
-    this.client.on('error', err => {
-      this.ready = false;
-      this.unavailable = true;
-      console.error(`[REDIS] connection error: ${err.message}`);
-    });
+  constructor(options: RedisServiceOptions) {
+    this.primaryEndpoint = createClient(options.primaryEndpoint);
+    this.writeTimeout = options.primaryEndpoint.socket?.connectTimeout || (30 * 1000);
 
-    this.connect();
+    this.readEndpoint = options.readEndpoint ? createClient(options.readEndpoint) : this.primaryEndpoint;
+    this.readTimeout = options.readEndpoint?.socket?.connectTimeout || options.primaryEndpoint.socket?.connectTimeout || (30 * 1000);
+
+    this.expirationPolicy = options.expirationPolicy || 'expireAfterWrite';
+    this.defaultExpirationInSeconds = options.defaultExpirationInSeconds || DEFAULT_TTL;
+    this.verbose = options.verbose || false;
+
+    this.primaryEndpoint.connect();
+    if (options.readEndpoint) {
+      this.readEndpoint.connect();
+    }
   }
 
   async has(key: string|Array<string>): Promise<boolean> {
-    if (!this.ready) {
+    if (!this.readEndpoint.isReady) {
       throw new Error('[REDIS] Server is not ready for connection, cannot determine if cache key exists');
     }
 
-    const result = await this.withTimeout(async () => this.client.exists(key));
+    const result = await this.withTimeout(async () => this.readEndpoint.exists(key), this.readTimeout);
     this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
     return result > 0;
   }
@@ -59,7 +71,7 @@ export class RedisService implements CachingService {
       throw new Error('[REDIS] Invalid argument, required parameter `key` is missing');
     }
 
-    if (!this.ready) {
+    if (!this.readEndpoint.isReady) {
       this.verbose && console.info(`[REDIS] miss from cache for key ${key}, server is not ready`);
       return loader ? loader() : null;
     }
@@ -69,13 +81,17 @@ export class RedisService implements CachingService {
       await this.flush(key).catch(() => {});
     }
 
-    const reply = await this.withTimeout(async () => this.client.get(key)).catch(() => null);
+    const reply = await this.withTimeout(async () => this.readEndpoint.get(key), this.readTimeout).catch(() => null);
     if (reply) {
       this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
 
       if (this.expirationPolicy === 'expireAfterAccess') {
-        this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
-        await this.withTimeout(async () => this.client.expire(key, expiresInSeconds)).catch(() => {});
+        if (this.primaryEndpoint.isReady) {
+          this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+          await this.withTimeout(async () => this.primaryEndpoint.expire(key, expiresInSeconds), this.writeTimeout).catch(() => {});
+        } else {
+          this.verbose && console.info(`[REDIS] Unable to refresh expiration time of ${key}, primary endpoint not available`);
+        }
       }
 
       try {
@@ -111,7 +127,7 @@ export class RedisService implements CachingService {
   }
 
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
-    if (!this.ready) {
+    if (!this.primaryEndpoint.isReady) {
       this.verbose && console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
@@ -119,7 +135,7 @@ export class RedisService implements CachingService {
     try {
       const payload = JSON.stringify(data);
       this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
-      await this.withTimeout(async () => this.client.setEx(key, expiresInSeconds, payload));
+      await this.withTimeout(async () => this.primaryEndpoint.setEx(key, expiresInSeconds, payload), this.writeTimeout);
       return null;
     } catch (error) {
       this.verbose && console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
@@ -130,20 +146,20 @@ export class RedisService implements CachingService {
   async flush(key: string|Array<string>): Promise<void> {
     const keys = Array.isArray(key) ? key : [ key ];
 
-    if (!this.ready) {
+    if (!this.primaryEndpoint.isReady) {
       this.verbose && console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
     } else {
       this.verbose && console.info(`[REDIS] flushing key(s) '${keys.join(',')}'`);
-      await this.withTimeout(() => this.client.unlink(keys));
+      await this.withTimeout(() => this.primaryEndpoint.unlink(keys), this.writeTimeout);
     }
   }
 
   async flushAll() {
-    if (!this.ready) {
+    if (!this.primaryEndpoint.isReady) {
       this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
     } else {
       this.verbose && console.info(`[REDIS] flushing all keys`);
-      await this.withTimeout(() => this.client.flushAll());
+      await this.withTimeout(() => this.primaryEndpoint.flushAll(), this.writeTimeout);
     }
   }
 
@@ -154,48 +170,13 @@ export class RedisService implements CachingService {
     return result;
   }
 
-  // We are building in a default timeout of 30 seconds
-  // If we cannot establish a connection within that timeframe, we're going to abort
-  // This is specifically because of use in GCP Firebase Cloud Functions
-  // Firebase uses a CDN which has a timeout of 60s, despite allowing Cloud Functions to run for 5m
-  // The CDN will return 503 if the cloud function does not respond in time
-  // The 30s timeout is to allow for fetching data from source before hitting the Cloud Function timeout
-  private async connect() {
-    if (this.ready || this.unavailable) {
-      return;
-    } else {
-      return new Promise<void>(resolve => {
-        let count = 0;
-
-        // Start connecting with the client
-        this.client.connect().then(() => {
-          this.ready = true;
-          this.unavailable = false;
-        }).catch(err => {
-          this.ready = false;
-          this.unavailable = true;
-          console.error(`[REDIS] connection error: ${err.message}`);
-        });
-
-        const maxCount = this.timeout / 1000;
-        const interval = setInterval(() => {
-          count++;
-          if (this.unavailable || this.ready || count >= maxCount) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 1000);
-      });
-    }
-  }
-
   // Inspiration taken from https://advancedweb.hu/how-to-add-timeout-to-a-promise-in-javascript/
-  private async withTimeout<T>(executor: () => Promise<T>): Promise<T> {
+  private async withTimeout<T>(executor: () => Promise<T>, timeout: number): Promise<T> {
     let timeoutId: NodeJS.Timeout;
     return Promise.race([
       executor(),
       new Promise<T>((_, reject) => {
-        timeoutId = setTimeout(() => reject(new RedisTimeoutError()), this.timeout)
+        timeoutId = setTimeout(() => reject(new RedisTimeoutError()), timeout)
       })
     ]).finally(() => clearTimeout(timeoutId));
   }
