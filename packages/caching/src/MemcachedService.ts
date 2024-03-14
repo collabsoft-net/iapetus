@@ -10,6 +10,7 @@ interface MemcachedServiceOptions {
   memcachedOptions?: Memcached.options;
   expirationPolicy?: CachingExpirationPolicy;
   defaultExpirationInSeconds?: number;
+  logger?: Console;
   verbose?: boolean;
 }
 
@@ -19,6 +20,7 @@ export class MemcachedService implements CachingService {
   private timeout: number;
   private expirationPolicy: CachingExpirationPolicy;
   private defaultExpirationInSeconds: number;
+  private logger: Console;
   private verbose: boolean;
 
   constructor(options: MemcachedServiceOptions) {
@@ -28,6 +30,7 @@ export class MemcachedService implements CachingService {
     this.expirationPolicy = options.expirationPolicy || 'expireAfterWrite';
     this.defaultExpirationInSeconds = options.defaultExpirationInSeconds || DEFAULT_TTL;
     this.verbose = options.verbose || false;
+    this.logger = options.logger || console;
   }
 
   async has(): Promise<boolean> {
@@ -55,16 +58,16 @@ export class MemcachedService implements CachingService {
     }
 
     if (forceRefresh === true) {
-      this.verbose && console.info(`[Memcached] force refresh requested, flushing key ${key}`);
+      this.verbose && this.logger.info(`[Memcached] force refresh requested, flushing key ${key}`);
       await this.flush(key).catch(() => {});
     }
 
     const reply = await this.withTimeout(async () => promisify<string, string>(this.client.get.bind(this.client))(key), this.timeout).catch(() => null);
     if (reply) {
-      this.verbose && console.info(`[Memcached] hit from cache for key ${key}`);
+      this.verbose && this.logger.info(`[Memcached] hit from cache for key ${key}`);
 
       if (this.expirationPolicy === 'expireAfterAccess') {
-        this.verbose && console.info(`[Memcached] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+        this.verbose && this.logger.info(`[Memcached] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
         await this.withTimeout(async () => this.client.touch(key, expiresInSeconds, () => {}), this.timeout).catch(() => {});
       }
 
@@ -72,7 +75,7 @@ export class MemcachedService implements CachingService {
         const result: T = JSON.parse(reply);
         return type ? new type(result) : result;
       } catch (error) {
-        this.verbose && console.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
         await this.flush(key).catch(() => {});
         const result = loader ? loader() : null;
         if (result) {
@@ -82,32 +85,32 @@ export class MemcachedService implements CachingService {
       }
     } else if (loader) {
       try {
-        this.verbose && console.info(`[Memcached] miss from cache for key ${key}, trying to retrieve from loader`);
+        this.verbose && this.logger.info(`[Memcached] miss from cache for key ${key}, trying to retrieve from loader`);
         const result = await loader();
         if (result) {
           await this.set(key, result, expiresInSeconds).catch(() => {});
           return type ? new type(result) : result;
         }
-        this.verbose && console.info(`[Memcached] miss from loader for key ${key}`);
+        this.verbose && this.logger.info(`[Memcached] miss from loader for key ${key}`);
         return null;
       } catch (error) {
-        this.verbose && console.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
         return null;
       }
     }
 
-    this.verbose && console.info(`[Memcached] miss from both cache and loader for key ${key}`);
+    this.verbose && this.logger.info(`[Memcached] miss from both cache and loader for key ${key}`);
     return null;
   }
 
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
     try {
       const payload = JSON.stringify(data);
-      this.verbose && console.info(`[Memcached] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
+      this.verbose && this.logger.info(`[Memcached] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
       await this.withTimeout(async () => this.client.set(key, payload, expiresInSeconds, () => {}), this.timeout);
       return null;
     } catch (error) {
-      this.verbose && console.error(`[Memcached] An unexpected error occurred while storing data for key ${key}`, error, data);
+      this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while storing data for key ${key}`, error, data);
       return error as Error;
     }
   }
@@ -115,19 +118,19 @@ export class MemcachedService implements CachingService {
   async flush(key: string|Array<string>): Promise<void> {
     const keys = Array.isArray(key) ? key : [ key ];
 
-    this.verbose && console.info(`[Memcached] flushing key(s) '${keys.join(',')}'`);
+    this.verbose && this.logger.info(`[Memcached] flushing key(s) '${keys.join(',')}'`);
     await Promise.all(keys.map((key) => this.withTimeout(() => promisify(this.client.del.bind(this.client))(key), this.timeout)));
   }
 
   async flushAll() {
-    this.verbose && console.info(`[Memcached] flushing all keys`);
+    this.verbose && this.logger.info(`[Memcached] flushing all keys`);
     await this.withTimeout(() => promisify(this.client.flush.bind(this.client))(), this.timeout);
   }
 
   toCacheKey(...args: Array<string|number|undefined>): string {
     const value = args.filter(item => item !== undefined).join('-');
     const result = createHash('md5').update(value).digest('hex');
-    this.verbose && console.info(`[Memcached] Created cache key '${result}' based on provided arguments '${value}'`);
+    this.verbose && this.logger.info(`[Memcached] Created cache key '${result}' based on provided arguments '${value}'`);
     return result;
   }
 
