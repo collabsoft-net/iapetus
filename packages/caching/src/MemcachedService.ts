@@ -4,6 +4,7 @@ import Memcached from 'memcached';
 import { serializeError } from 'serialize-error';
 
 const DEFAULT_TTL = 30 * 60;
+const MAX_EXPIRATION = 30 * 24 * 60 * 60
 
 interface MemcachedServiceOptions {
   location: Memcached.Location;
@@ -18,6 +19,7 @@ export class MemcachedService implements CachingService {
 
   private client: Memcached;
   private expirationPolicy: CachingExpirationPolicy;
+  private maxExpirationInSeconds: number;
   private defaultExpirationInSeconds: number;
   private logger: Console;
   private verbose: boolean;
@@ -25,6 +27,7 @@ export class MemcachedService implements CachingService {
   constructor(options: MemcachedServiceOptions) {
     this.client = new Memcached(options.location, options.memcachedOptions)
     this.expirationPolicy = options.expirationPolicy || 'expireAfterWrite';
+    this.maxExpirationInSeconds = options.memcachedOptions?.maxExpiration || 10800;
     this.defaultExpirationInSeconds = options.defaultExpirationInSeconds || DEFAULT_TTL;
     this.verbose = options.verbose || false;
     this.logger = options.logger || console;
@@ -64,6 +67,7 @@ export class MemcachedService implements CachingService {
         this.verbose && this.logger.error(`[Memcached] failed to retrieve ${key}: ${err.message}`, serializeError(err));
         resolve(null);
       } else {
+        this.verbose && this.logger.info(`[Memcached] retrieved cached data for key ${key}`);
         resolve(data);
       }
     }));
@@ -72,10 +76,19 @@ export class MemcachedService implements CachingService {
       this.verbose && this.logger.info(`[Memcached] hit from cache for key ${key}`);
 
       if (this.expirationPolicy === 'expireAfterAccess') {
-        this.verbose && this.logger.info(`[Memcached] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
-        await new Promise<void>(resolve => this.client.touch(key, expiresInSeconds, (err) => {
+
+        if (expiresInSeconds < MAX_EXPIRATION && expiresInSeconds > this.maxExpirationInSeconds) {
+          throw new Error('`expiresInSeconds` exceeds maximum expiration time setting');
+        }
+
+        const lifetime = expiresInSeconds <= MAX_EXPIRATION ? expiresInSeconds : Math.floor(new Date().getTime() / 1000) + expiresInSeconds;
+        this.verbose && this.logger.info(`[Memcached] Refreshing expiration time of ${key}, ${expiresInSeconds <= MAX_EXPIRATION ? `adding another ${lifetime} seconds` : `expires on ${lifetime}`}`);
+
+        await new Promise<void>(resolve => this.client.touch(key, lifetime, (err) => {
           if (err) {
             this.verbose && this.logger.error(`[Memcached] failed to touch ${key}: ${err.message}`, serializeError(err));
+          } else {
+            this.verbose && this.logger.info(`[Memcached] Updated expiration time of ${key}, ${expiresInSeconds <= MAX_EXPIRATION ? `adding another ${lifetime} seconds` : `expires on ${lifetime}`}`);
           }
           resolve();
         }));
@@ -85,9 +98,9 @@ export class MemcachedService implements CachingService {
         this.verbose && this.logger.info(`[Memcached] deserialising result for key ${key}`);
         const result: T = JSON.parse(reply);
         this.verbose && this.logger.info(`[Memcached] Returning result for key ${key}`);
-        return type ? new type(result) : result;
+        return type ? new type(result) : result as T;
       } catch (error) {
-        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, serializeError(error));
         await this.flush(key).catch(() => {});
         const result = loader ? loader() : null;
         if (result) {
@@ -106,7 +119,7 @@ export class MemcachedService implements CachingService {
         this.verbose && this.logger.info(`[Memcached] miss from loader for key ${key}`);
         return null;
       } catch (error) {
-        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
+        this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, serializeError(error));
         return null;
       }
     }
@@ -118,10 +131,19 @@ export class MemcachedService implements CachingService {
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
     try {
       const payload = JSON.stringify(data);
-      this.verbose && this.logger.info(`[Memcached] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
-      await new Promise<void>(resolve => this.client.set(key, payload, expiresInSeconds, (err) => {
-        if (err) {
+
+      if (expiresInSeconds < MAX_EXPIRATION && expiresInSeconds > this.maxExpirationInSeconds) {
+        throw new Error('`expiresInSeconds` exceeds maximum expiration time setting');
+      }
+
+      const lifetime = expiresInSeconds <= MAX_EXPIRATION ? expiresInSeconds : Math.floor(new Date().getTime() / 1000) + expiresInSeconds;
+      this.verbose && this.logger.info(`[Memcached] caching data for key ${key} ${expiresInSeconds <= MAX_EXPIRATION ? `(expires in ${lifetime} seconds)` : `(expires on ${lifetime})`}`);
+
+      await new Promise<void>(resolve => this.client.set(key, payload, lifetime, (err, result) => {
+        if (err || !result) {
           this.verbose && this.logger.error(`[Memcached] failed to set ${key}: ${err.message}`, serializeError(err));
+        } else {
+          this.verbose && this.logger.info(`[Memcached] succesfully set key ${key} ${expiresInSeconds <= MAX_EXPIRATION ? `(expires in ${lifetime} seconds)` : `(expires on ${lifetime})`}`);
         }
         resolve();
       }));
@@ -136,9 +158,11 @@ export class MemcachedService implements CachingService {
     const keys = Array.isArray(key) ? key : [ key ];
 
     this.verbose && this.logger.info(`[Memcached] flushing key(s) '${keys.join(',')}'`);
-    await Promise.all(keys.map((key) => new Promise<void>(resolve => this.client.del(key, (err) => {
+    await Promise.all(keys.map((entry) => new Promise<void>(resolve => this.client.del(entry, (err) => {
       if (err) {
         this.verbose && this.logger.error(`[Memcached] failed to flush ${key}: ${err.message}`, serializeError(err));
+      } else {
+        this.verbose && this.logger.info(`[Memcached] successfully flushed ${key}`);
       }
       resolve();
     }))));
@@ -149,6 +173,8 @@ export class MemcachedService implements CachingService {
     await new Promise<void>(resolve => this.client.flush((err) => {
       if (err) {
         this.verbose && this.logger.error(`[Memcached] failed to flush server: ${err.message}`, serializeError(err));
+      } else {
+        this.verbose && this.logger.info(`[Memcached] succesfully flushed server`);
       }
       resolve();
     }));
