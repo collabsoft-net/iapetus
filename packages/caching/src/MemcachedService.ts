@@ -82,7 +82,9 @@ export class MemcachedService implements CachingService {
       }
 
       try {
+        this.verbose && this.logger.info(`[Memcached] deserialising result for key ${key}`);
         const result: T = JSON.parse(reply);
+        this.verbose && this.logger.info(`[Memcached] Returning result for key ${key}`);
         return type ? new type(result) : result;
       } catch (error) {
         this.verbose && this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, error);
