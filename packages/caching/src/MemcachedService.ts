@@ -61,7 +61,7 @@ export class MemcachedService implements CachingService {
 
     const reply = await new Promise<string|null>(resolve => this.client.get(key, (err, data) => {
       if (err) {
-        this.verbose && this.logger.error(`[Memcached] failed to retrieve ${key}, error: ${JSON.stringify(serializeError(err))}`);
+        this.verbose && this.logger.error(`[Memcached] failed to retrieve ${key}: ${err.message}`, serializeError(err));
         resolve(null);
       } else {
         resolve(data);
@@ -75,7 +75,7 @@ export class MemcachedService implements CachingService {
         this.verbose && this.logger.info(`[Memcached] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
         await new Promise<void>(resolve => this.client.touch(key, expiresInSeconds, (err) => {
           if (err) {
-            this.verbose && this.logger.error(`[Memcached] failed to touch ${key}, error: ${JSON.stringify(serializeError(err))}`);
+            this.verbose && this.logger.error(`[Memcached] failed to touch ${key}: ${err.message}`, serializeError(err));
           }
           resolve();
         }));
@@ -119,7 +119,7 @@ export class MemcachedService implements CachingService {
       this.verbose && this.logger.info(`[Memcached] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
       await new Promise<void>(resolve => this.client.set(key, payload, expiresInSeconds, (err) => {
         if (err) {
-          this.verbose && this.logger.error(`[Memcached] failed to set ${key}, error: ${JSON.stringify(serializeError(err))}`);
+          this.verbose && this.logger.error(`[Memcached] failed to set ${key}: ${err.message}`, serializeError(err));
         }
         resolve();
       }));
@@ -136,7 +136,7 @@ export class MemcachedService implements CachingService {
     this.verbose && this.logger.info(`[Memcached] flushing key(s) '${keys.join(',')}'`);
     await Promise.all(keys.map((key) => new Promise<void>(resolve => this.client.del(key, (err) => {
       if (err) {
-        this.verbose && this.logger.error(`[Memcached] failed to flush ${key}, error: ${JSON.stringify(serializeError(err))}`);
+        this.verbose && this.logger.error(`[Memcached] failed to flush ${key}: ${err.message}`, serializeError(err));
       }
       resolve();
     }))));
@@ -146,7 +146,7 @@ export class MemcachedService implements CachingService {
     this.verbose && this.logger.info(`[Memcached] flushing all keys`);
     await new Promise<void>(resolve => this.client.flush((err) => {
       if (err) {
-        this.verbose && this.logger.error(`[Memcached] failed to flush server, error: ${JSON.stringify(serializeError(err))}`);
+        this.verbose && this.logger.error(`[Memcached] failed to flush server: ${err.message}`, serializeError(err));
       }
       resolve();
     }));
