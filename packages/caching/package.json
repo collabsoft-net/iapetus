@@ -64,12 +64,14 @@
     "memcached": "2.2.2",
     "nodemon": "3.0.3",
     "redis": "4.6.12",
+    "serialize-error": "11.0.3",
     "store": "2.0.12",
     "typescript": "5.3.3"
   },
   "peerDependencies": {
     "memcached": "*",
     "redis": "4.6.12",
+    "serialize-error": "11.0.3",
     "store": "2.0.12"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
