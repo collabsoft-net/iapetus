@@ -1113,7 +1113,7 @@ __metadata:
   peerDependencies:
     memcached: "*"
     redis: 4.6.12
-    serialize-error: "*"
+    serialize-error: 11.0.3
     store: 2.0.12
   languageName: unknown
   linkType: soft
