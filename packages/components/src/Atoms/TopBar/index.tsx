@@ -1,6 +1,7 @@
 import ChevronRight from '@atlaskit/icon/glyph/chevron-right';
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
+import { isOfType } from '@collabsoft-net/helpers';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
@@ -11,7 +12,7 @@ import { Header } from '../Typography';
 interface TopBarProps {
   title: string;
   Icon: JSX.Element;
-  breadCrumbs?: Array<JSX.Element>;
+  breadCrumbs?: Array<string|JSX.Element>;
 }
 
 const FixedTopbar = styled(Grid)`
@@ -35,7 +36,7 @@ export const TopBar = ({ title, Icon, breadCrumbs }: TopBarProps) => (
           <Header weight='h400'>{ title }</Header>
         </Column>
         { breadCrumbs?.map(element => (
-          <Fragment key={ element.key }>
+          <Fragment key={ isOfType<JSX.Element>(element, 'key') ? element.key : element }>
             <Column align='center' margin='0 8px 0 0'>
               <IconWithLabel src={ <ChevronRight label='Breadcrumb' /> } />
             </Column>

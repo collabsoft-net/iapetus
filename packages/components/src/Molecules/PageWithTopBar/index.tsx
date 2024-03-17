@@ -19,7 +19,7 @@ const ScrollView = styled(Grid)`
 interface PageWithNavBarProps {
   title: string;
   Icon: JSX.Element;
-  breadCrumbs?: Array<JSX.Element>;
+  breadCrumbs?: Array<string|JSX.Element>;
 }
 
 export const PageWithTopBar = ({ title, Icon, breadCrumbs, children }: PropsWithChildren<PageWithNavBarProps>) => (
