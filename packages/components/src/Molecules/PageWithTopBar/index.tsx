@@ -1,9 +1,10 @@
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
-import { Grid, Page, Row } from '@collabsoft-net/components';
 import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
+import { Grid, Row } from '../../Atoms/Grid';
+import { Page } from '../../Atoms/Page';
 import { TopBar } from '../../Atoms/TopBar';
 
 const FullPage = styled(Page)`
