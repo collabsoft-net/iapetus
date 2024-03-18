@@ -27,7 +27,7 @@ export const PageWithTopBar = ({ title, Icon, breadCrumbs, children }: PropsWith
     <TopBar title={ title } Icon={ Icon } breadCrumbs={ breadCrumbs } />
     <ScrollView fluid height='unset' margin='60px 0 0'>
       <Row>
-        <Grid width='768px' margin='0 auto' padding='24px 0'>
+        <Grid margin='0 auto' padding='24px 0'>
           <Row>
             {children}
           </Row>
