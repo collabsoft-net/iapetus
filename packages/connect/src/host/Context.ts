@@ -10,9 +10,10 @@ type WindowWithContext = Window & {
 // This strongly depends on context managers to provide META information
 // TODO: also make the ContextManager, WebAction and ContextProviders part of either iapetus or a generic AC implementation Java package
 export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
-  const { JIRA, Confluence, WRM } = (window as unknown as WindowWithContext);
+  const productName = getMetaData('atl-product-name') || '';
 
-  if (JIRA) {
+  if (productName.toLowerCase() === 'jira') {
+    const { JIRA, WRM } = (window as unknown as WindowWithContext);
     return {
       jira: {
         issue: {
@@ -25,13 +26,13 @@ export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
         }
       }
     }
-  } else if (Confluence) {
+  } else if (productName.toLowerCase() === 'confluence') {
     return {
       confluence: {
         content: {
-          id: '',
-          type: '',
-          version: ''
+          id: getMetaData('content-id') || '',
+          type: getMetaData('content-type') || '',
+          version: getMetaData('page-version') || ''
         },
         macro: {
           hash: '',

@@ -64,8 +64,8 @@ declare global {
       operations?: Array<OperationCheckResult>|null;
     }
 
-    interface UserArray {
-      results: Array<User>;
+    interface PaginatedResponse<T> {
+      results: Array<T>;
       start?: number;
       limit?: number;
       size: number;
@@ -173,7 +173,7 @@ declare global {
     interface ContentRestriction {
       operation: ContentOperation;
       restrictions?: {
-        user: UserArray;
+        user: PaginatedResponse<User>;
         group: GroupArray;
       };
       content?: Content;
@@ -348,6 +348,14 @@ declare global {
     interface PermissionCheckResponse {
       hasPermission: boolean;
       errors?: Array<Message>;
+    }
+
+    interface RestrictionByOperationResponse {
+      operation: 'read'|'update';
+      restrictions: {
+        user: PaginatedResponse<User>;
+        group: PaginatedResponse<Group>;
+      }
     }
 
     interface Message {

@@ -1,11 +1,12 @@
-import type { Message,ResizeRequest } from '../client/Types';
+import type { ResizeRequest } from '../client/Types';
 import { Host } from '../Host';
 
 export const resize = (event: MessageEvent, AC: Host): void => {
   const frame = AC.findSource(event);
   if (frame) {
+    const message = AC.toMessage<ResizeRequest>(event);
 
-    const { data } = event.data as unknown as Message<ResizeRequest>;
+    const { data } = message;
     const { width, height } = data || {};
     if (width && height) {
       frame.setAttribute('width', width);

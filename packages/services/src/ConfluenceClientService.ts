@@ -42,12 +42,42 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   }
 
   async hasContentPermission(contentId: string, subject: Confluence.PermissionSubjectWithGroupId, operation: Confluence.ContentOperation): Promise<boolean> {
-    const { data: permission } = await this.client.post<Confluence.PermissionCheckResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId }), {
-      subject,
-      operation
-    });
+    if (this.mode === Modes.CONNECT) {
+      const { data: permission } = await this.client.post<Confluence.PermissionCheckResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId }), {
+        subject,
+        operation
+      });
 
-    return permission.hasPermission;
+      return permission.hasPermission;
+    } else if (this.mode === Modes.P2) {
+      if (operation !== 'read' && operation !== 'update') {
+        return false;
+      }
+
+      const restrictedSubjects: Array<Confluence.User|Confluence.Group> = [];
+      let hasRetrievedAllSubjects = false;
+
+      while (!hasRetrievedAllSubjects) {
+        const { data } = await this.client.get<Confluence.RestrictionByOperationResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId, operationKey: operation }), {
+          start: restrictedSubjects.length,
+          limit: 100
+        });
+
+        const result = subject.type === 'user' ? data.restrictions.user : data.restrictions.group;
+        restrictedSubjects.push(...result.results);
+        if (result.size < 100) {
+          hasRetrievedAllSubjects = true;
+        }
+      }
+
+      const isRestricted = restrictedSubjects.find(item => {
+        const identifier = isOfType<Confluence.User>(item, 'userKey') ? item.userKey : item.id;
+        return identifier === subject.identifier;
+      });
+
+      return !isRestricted;
+    }
+    return false;
   }
 
   async hasSpacePermission(spaceKey: string, operation: Confluence.ContentOperation, accountId?: string): Promise<boolean> {

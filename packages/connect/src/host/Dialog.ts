@@ -8,7 +8,6 @@ import { isOfType } from '@collabsoft-net/helpers';
 import type { Message } from '../client/Types';
 import { DialogButtonRequest, DialogCloseRequest } from '../client/Types';
 import { BadRequestError, Host } from '../Host';
-import { getUrl } from './URL';
 
 const windowWithAJS = window as unknown as Window & { AJS: any };
 const eventHandlers = new Map<string, () => void>();
@@ -34,24 +33,34 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     if (!instance) throw new BadRequestError();
 
     const options = { ...instance.options, ...instanceOptions };
-    const url = instance.url.startsWith('/') ? getUrl(`${servletPath}/embed/${appKey}/${options.key}${instance.url}`) : instance.url;
+    let url = instance.url.startsWith('/') ? `${servletPath}/embed/${appKey}/${options.key}${instance.url}` : instance.url;
+
+    const defaultQueryString = `xdm_e=${AC.options.baseUrl}&cp=${AC.options.contextPath}&lic=${AC.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
+    url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
     const size = getSize(options);
     const sizeClass = typeof size !== 'boolean' ? size : '';
-    const style = typeof size === 'boolean'
-      ? size ? 'width:100%;height:100%' : `width:${options.width};height:${options.height}`
+    let dialogStyle = typeof size === 'boolean'
+      ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
       : '';
+    let contentStyle = '';
+
+    // Override `top` position and `max-height` of modal in case of full screen
+    if (options.height && (options.height === '100%' || options.height === '100vh')) {
+      dialogStyle += 'top:0px;'
+      contentStyle += 'max-height:unset;';
+    }
 
     const template = `
-<section id="ap-dialog-${originId}" role="dialog" ${options.closeOnEscape === false ? 'data-aui-modal="true"' : ''} class="aui-layer aui-dialog2 ap-aui-dialog2 ${sizeClass}" aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style=${style}>
+<section id="ap-dialog-${originId}" role="dialog" ${options.closeOnEscape === false ? 'data-aui-modal="true"' : ''} class="aui-layer aui-dialog2 ap-aui-dialog2 ${sizeClass}" aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style=${dialogStyle}>
     ${options.chrome ? `
       <header class="aui-dialog2-header">
           <h1 class="aui-dialog2-header-main" id="static-dialog--heading">${options.header}</h1>
           <button class="aui-close-button" type="button" aria-label="close"></button>
       </header>
     ` : ''}
-    <div class="aui-dialog2-content">
-      <iframe id="ap-dialog-${originId}-frame" data-ap-origin=${originId} data-ap-appkey="${AC.options.appKey}" src="${url}" style="border:none;" name="${encodeURIComponent(JSON.stringify(options))}"></iframe>
+    <div class="aui-dialog2-content" style="${contentStyle}">
+      <iframe id="ap-dialog-${originId}-frame" data-ap-origin=${originId} data-ap-appkey="${AC.options.appKey}" src="${url}" style="height:100%;width:100%;border:none;" name="${encodeURIComponent(JSON.stringify(options))}"></iframe>
     </div>
     ${options.chrome ? `
       <footer class="aui-dialog2-footer">
@@ -109,8 +118,7 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
 */
 export const DialogCloseEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
 
-  const { data } = event;
-  const message = data as unknown as Message<DialogCloseRequest<never>>;
+  const message = AC.toMessage<Message<DialogCloseRequest<never>>>(event);
 
   const frame = AC.findSource(event);
   if (!frame) throw new BadRequestError();
@@ -175,8 +183,8 @@ export const DialogCustomDataEventHandler = (event: MessageEvent<unknown>, AC: H
   }
 }
 
-export const DialogButtonEventHandler = (event: MessageEvent<Message<DialogButtonRequest>>, AC: Host): void => {
-  const { data: message } = event;
+export const DialogButtonEventHandler = (event: MessageEvent<unknown>, AC: Host): void => {
+  const message = AC.toMessage<DialogButtonRequest>(event);
   const { originId, data } = message;
   if (!data) throw new BadRequestError();
 

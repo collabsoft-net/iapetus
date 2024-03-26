@@ -36,7 +36,7 @@ export enum JiraServerEndpoints {
   BOARDS = 'rest/agile/1.0/board',
   BOARD_FEATURES = 'rest/agile/1.0/board/:boardId/features',
 
-  CONTENT_PERMISSIONS = '/rest/api/content',
+  CONTENT_PERMISSIONS = '/rest/api/content/:id/restriction/byOperation/:operationKey',
   SPACE = '/rest/api/space',
   MEMBEROF = '/rest/api/user/memberof',
   APP = '/rest/plugins/1.0/:appKey-key'
@@ -47,7 +47,7 @@ export enum ConfluenceServerEndpoints {
   CURRENTUSER = '/rest/api/user/current',
   USER_PROPERTY_BY_KEY = '/rest/api/user/properties/:propertyKey',
 
-  CONTENT_PERMISSIONS = '/rest/api/content',
+  CONTENT_PERMISSIONS = '/rest/api/content/:id/restriction/byOperation/:operationKey',
   SPACE = '/rest/api/space',
   MEMBEROF = '/rest/api/user/memberof',
   APP = '/rest/plugins/1.0/:appKey-key'

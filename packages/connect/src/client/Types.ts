@@ -1,5 +1,12 @@
 import { Events } from './Events';
 
+export interface WindowWithMacroEditor extends Window {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tinymce?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  AJS?: any;
+}
+
 export type CallbackHandler<X> = (data?: X) => void;
 
 export type Message<T> = {
@@ -50,4 +57,17 @@ export type NavigatorGoRequest = {
 export type ResizeRequest = {
   width: string;
   height: string;
+}
+
+export type SaveMacroRequest<T> = {
+  macroParameters: T;
+  macroBody?: string | undefined;
+}
+
+export interface MacroEditorOptions {
+  url: string;
+  editTitle?: string;
+  insertTitle?: string;
+  height?: string;
+  width?: string;
 }

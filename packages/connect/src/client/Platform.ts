@@ -141,12 +141,7 @@ export const PlatformInstance: AP.PlatformInstance = {
 
   dialog: {
     create: function <T>(options: AP.DialogOptions<T>): AP.DialogReference {
-      postMessage(Events.AP_DIALOG_CREATE, {
-        chrome: false,
-        size: 'medium',
-        closeOnEscape: true,
-        ...options
-      });
+      postMessage(Events.AP_DIALOG_CREATE, options);
 
       return {
         on: <T> (name: string, listener: (data?: T) => void) => {

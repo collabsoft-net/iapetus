@@ -3,29 +3,37 @@
 import { isOfType } from '@collabsoft-net/helpers';
 
 import { Events } from './client/Events';
-import type { Message } from './client/Types';
-import { CookieEraseRequest, CookieReadRequest, CookieSaveRequest, DialogButtonRequest, EventsEmitRequest } from './client/Types';
+import type { MacroEditorOptions, Message } from './client/Types';
+import { CookieEraseRequest, CookieReadRequest, CookieSaveRequest, EventsEmitRequest } from './client/Types';
 import { getContext } from './host/Context';
 import { CookieEraseEventHandler, CookieReadEventHandler, CookieSaveEventHandler } from './host/Cookie';
 import { DialogButtonEventHandler, DialogCloseEventHandler, DialogCreateEventHandler, DialogCustomDataEventHandler } from './host/Dialog';
 import { resize, sizeToParent } from './host/iframe';
+import { closeMacroEditorEventHandler, getMacroBodyEventHandler, getMacroDataEventHandler, MacroEditorButtonEventHandler, saveMacroEventHandler } from './host/Macro';
+import { MacroEditor } from './host/MacroEditor';
 import { NavigatorGoEventHandler, NavigatorLocationEventHandler } from './host/Navigator';
 import { UserCurrentUserEventHandler } from './host/User';
 
 export interface HostOptions {
-    verbose?: boolean;
-    servletPath: string;
     appKey: string;
+    baseUrl: string;
+    contextPath: string;
+    servletPath: string;
+    license: 'active'|'none';
+    verbose?: boolean;
 
     navigator?: {
         go?: {
             addonModule?: Record<string, string>
         }
-    },
+    };
+
     dialogs?: Record<string, {
       url: string;
       options: AP.DialogOptions<never>;
-    }>
+    }>;
+
+    editors?: Record<string, MacroEditorOptions>;
 }
 
 export class InvalidMessageError extends Error {}
@@ -38,17 +46,19 @@ export class NotImplementedError extends Error {
 
 export class Host {
 
+  public editor: MacroEditor;
+
   // -------------------------------------------------------------------------- Constructor
 
   constructor(public options: HostOptions) {
     this.info('[AC] Initializing Atlassian Connect polyfill');
+    this.editor = new MacroEditor(this);
   }
 
   // -------------------------------------------------------------------------- Public methods
 
   public async init() {
     window.addEventListener('message', (event: MessageEvent<unknown>) => {
-
       try {
         const message = this.toMessage(event);
         const name = message.name as Events;
@@ -198,6 +208,8 @@ export class Host {
         }
       }
     });
+
+    await this.editor.init();
   }
 
   public emit(originId: string, name: string): void;
@@ -288,6 +300,14 @@ export class Host {
     });
   }
 
+  public toMessage<T>(event: MessageEvent<unknown>) {
+    const { data } = event;
+    if (!isOfType<Message<T>>(data, 'originId')) {
+      throw new InvalidMessageError('Event data is not an Atlassian Connect polyfill message');
+    }
+    return data;
+  }
+
   // -------------------------------------------------------------------------- Private methods
 
   private handshakeEventHandler(event: MessageEvent<unknown>) {
@@ -373,22 +393,36 @@ export class Host {
   }
 
   private dialogEventHandler(name: Events, event: MessageEvent<unknown>) {
+    const source = this.findSource(event);
+    const isMacroEditorEvent = source?.id.startsWith('ap-macroeditor') && this.editor.isOpen;
+
     switch (name) {
       case Events.AP_DIALOG_CREATE:
         DialogCreateEventHandler(this.toMessage<AP.DialogOptions<never>>(event), this);
         break;
       case Events.AP_DIALOG_CLOSE:
-        DialogCloseEventHandler(event, this);
+        if (isMacroEditorEvent) {
+          closeMacroEditorEventHandler(event, this);
+        } else {
+          DialogCloseEventHandler(event, this);
+        }
         break;
       case Events.AP_DIALOG_GETCUSTOMDATA:
         DialogCustomDataEventHandler(event, this);
         break;
 
       case Events.AP_DIALOG_GETBUTTON:
-        DialogButtonEventHandler(event as MessageEvent<Message<DialogButtonRequest>>, this);
+        if (isMacroEditorEvent) {
+          MacroEditorButtonEventHandler(event, this);
+        } else {
+          DialogButtonEventHandler(event, this);
+        }
         break;
 
       case Events.AP_DIALOG_DISABLECLOSEONSUBMIT:
+        this.editor.disableCloseOnSubmit();
+        break;
+
       case Events.AP_DIALOG_CREATEBUTTON:
       case Events.AP_DIALOG_ISCLOSEONESCAPE:
       case Events.AP_DIALOG_ON:
@@ -483,7 +517,27 @@ export class Host {
   }
 
   private confluenceEventHandler(name: Events, event: MessageEvent<unknown>) {
-    throw new NotImplementedError(name, event);
+    switch (name) {
+      case Events.AP_CONFLUENCE_SAVEMACRO:
+        saveMacroEventHandler(event, this);
+        break;
+      case Events.AP_CONFLUENCE_CLOSEMACROEDITOR:
+        closeMacroEditorEventHandler(event, this);
+        break;
+      case Events.AP_CONFLUENCE_GETMACRODATA:
+        getMacroDataEventHandler(event, this);
+        break;
+      case Events.AP_CONFLUENCE_GETMACROBODY:
+        getMacroBodyEventHandler(event, this);
+        break;
+      case Events.AP_CONFLUENCE_ONMACROPROPERTYPANELEVENT:
+      case Events.AP_CONFLUENCE_CLOSEMACROPROPERTYPANEL:
+      case Events.AP_CONFLUENCE_GETCONTENTPROPERTY:
+      case Events.AP_CONFLUENCE_SETCONTENTPROPERTY:
+      case Events.AP_CONFLUENCE_SYNCPROPERTYFROMSERVER:
+        this.unsupportedEvent(name);
+        break;
+    }
   }
 
   private unsupportedEvent(name: Events) {
@@ -508,14 +562,6 @@ export class Host {
     if (this.options.verbose) {
       console.log(message, ...args);
     }
-  }
-
-  private toMessage<T>(event: MessageEvent<unknown>) {
-    const { data } = event;
-    if (!isOfType<Message<T>>(data, 'originId')) {
-      throw new InvalidMessageError('Event data is not an Atlassian Connect polyfill message');
-    }
-    return data;
   }
 
   private getFrames(appKey?: string): Array<HTMLIFrameElement> {
