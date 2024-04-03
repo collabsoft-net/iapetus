@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/middleware",
-  "version": "1.1.2-alpha.32",
+  "version": "1.1.2-alpha.33",
   "description": "Express middleware",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
