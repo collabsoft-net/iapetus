@@ -30,7 +30,7 @@ export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
     return {
       confluence: {
         content: {
-          id: getMetaData('content-id') || '',
+          id: getMetaData('content-id') || getMetaData('page-id') || '',
           type: getMetaData('content-type') || '',
           version: getMetaData('page-version') || ''
         },
@@ -41,7 +41,7 @@ export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
         },
         space: {
           id: '',
-          key: ''
+          key: getMetaData('space-key') || getMetaData('confluence-space-key') || ''
         }
       }
     }
