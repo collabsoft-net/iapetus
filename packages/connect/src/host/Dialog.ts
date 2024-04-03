@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import 'wr-dependency!com.atlassian.auiplugin:dialog2';
-
 import { isOfType } from '@collabsoft-net/helpers';
 
 import type { Message } from '../client/Types';
