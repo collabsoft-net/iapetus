@@ -3,8 +3,7 @@
     "target": "es2019",
     "lib": [
       "dom",
-      "es2015",
-      "es2017"
+      "es2021",
     ],
     "module": "es2020",
     "moduleResolution": "node",
