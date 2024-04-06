@@ -37,7 +37,8 @@ export class MacroEditor {
               // This is a hack. Sometimes the TinyMCE editor does not provide the params
               // If this is the case, we can retrieve them from the 'data-macro-parameters' attribute directly
               if (Object.keys(params).length <= 0) {
-                const macroPreviewNode = document.querySelector(`#tinymce *[data-macro-name="${key}"]`);
+                const editorFrame = document.querySelector<HTMLIFrameElement>('#wysiwyg iframe');
+                const macroPreviewNode = editorFrame?.contentDocument?.querySelector(`#tinymce *[data-macro-name="${key}"]`);
                 const macroParameters = macroPreviewNode?.getAttribute('data-macro-parameters') || '';
                 const parameters = new URLSearchParams(macroParameters.replaceAll('|', '&'));
                 parameters.forEach((value, key) => params[key] = value);
