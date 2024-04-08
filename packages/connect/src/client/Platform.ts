@@ -280,7 +280,7 @@ export const PlatformInstance: AP.PlatformInstance = {
 
   flag: {
     create: function (options: AP.FlagOptions): AP.FlagInstance {
-      const flagId = postMessage(Events.AP_FLAG_CREATE, { options });
+      const flagId = postMessage(Events.AP_FLAG_CREATE, options);
       return {
         close: () => postMessage(Events.AP_FLAG_CLOSE, { flagId }),
         _id: flagId
