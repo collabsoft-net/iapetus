@@ -8,6 +8,7 @@ import { CookieEraseRequest, CookieReadRequest, CookieSaveRequest, EventsEmitReq
 import { getContext } from './host/Context';
 import { CookieEraseEventHandler, CookieReadEventHandler, CookieSaveEventHandler } from './host/Cookie';
 import { DialogButtonEventHandler, DialogCloseEventHandler, DialogCreateEventHandler, DialogCustomDataEventHandler } from './host/Dialog';
+import { FlagCloseEventHandler, FlagCreateEventHandler } from './host/Flag';
 import { resize, sizeToParent } from './host/iframe';
 import { closeMacroEditorEventHandler, getMacroBodyEventHandler, getMacroDataEventHandler, MacroEditorButtonEventHandler, saveMacroEventHandler } from './host/Macro';
 import { MacroEditor } from './host/MacroEditor';
@@ -118,7 +119,7 @@ export class Host {
 
           case Events.AP_FLAG_CREATE:
           case Events.AP_FLAG_CLOSE:
-            this.dialogEventHandler(name, event);
+            this.flagEventHandler(name, event);
             break;
 
           case Events.AP_HISTORY_BACK:
@@ -444,6 +445,17 @@ export class Host {
         break;
       default:
         throw new NotImplementedError(name, event);
+    }
+  }
+
+  private flagEventHandler(name: Events, event: MessageEvent<unknown>) {
+    switch (name) {
+      case Events.AP_FLAG_CREATE:
+        FlagCreateEventHandler(event, this);
+        break;
+      case Events.AP_FLAG_CLOSE:
+        FlagCloseEventHandler(event, this);
+        break;
     }
   }
 
