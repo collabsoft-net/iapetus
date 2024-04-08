@@ -1,14 +1,15 @@
 import { DialogButtonRequest, SaveMacroRequest, WindowWithMacroEditor } from '../client/Types';
 import { BadRequestError, Host } from '../Host';
 
-const tinymce = (window as WindowWithMacroEditor).tinymce || {};
-
 export const getMacroKeyFromFrame = (event: MessageEvent<unknown>, AC: Host) => {
   const frame = AC.findSource(event);
   return frame?.getAttribute('name') || null;
 }
 
 export const saveMacroEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
+  const tinymce = (window as WindowWithMacroEditor).tinymce || {};
+  if (!tinymce) throw new Error('Required global variable tinymce is not available');
+
   const key = getMacroKeyFromFrame(event, AC);
   if (!key) throw new BadRequestError();
 

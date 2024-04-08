@@ -3,8 +3,7 @@
 import { MacroEditorOptions, WindowWithMacroEditor } from '../client/Types';
 import { Host, HostOptions } from '../Host';
 
-const tinymce = (window as WindowWithMacroEditor).tinymce || {};
-const AJS = (window as WindowWithMacroEditor).AJS || {};
+const windowWithMacroEditor = window as WindowWithMacroEditor;
 
 export class MacroEditor {
 
@@ -29,7 +28,7 @@ export class MacroEditor {
       const macroBrowserAvailable = await this.waitForMacroBrowser();
       if (macroBrowserAvailable) {
         Object.entries(this.options.editors).forEach(([ key, options ]) => {
-          AJS.MacroBrowser.setMacroJsOverride(key, {
+          windowWithMacroEditor.AJS.MacroBrowser.setMacroJsOverride(key, {
             opener: (macroData: { name: string, schemaVersion: number, body: string, params: Record<string, string> }) => {
               const body = macroData.body || '';
               const params = macroData.params || {};
@@ -65,10 +64,10 @@ export class MacroEditor {
   }
 
   public close(key: string, isCancelled?: boolean) {
-    const dialog = AJS.dialog2(`#ap-macroeditor-${key}`);
+    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${key}`);
     if (dialog) {
       if (isCancelled) {
-        tinymce.confluence.macrobrowser.macroBrowserCancel();
+        windowWithMacroEditor.tinymce.confluence.macrobrowser.macroBrowserCancel();
       }
       dialog.remove();
       this.active = false;
@@ -105,7 +104,7 @@ export class MacroEditor {
     document.body.appendChild(html);
 
     // Emit 'dialog.close' event when the dialog is hidden
-    const dialog = AJS.dialog2(`#ap-macroeditor-${key}`);
+    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${key}`);
     dialog.show();
     this.active = true;
 
@@ -131,7 +130,7 @@ export class MacroEditor {
     return new Promise<boolean>(resolve => {
       let count = 0;
       const interval = setInterval(() => {
-        if (AJS.MacroBrowser && AJS.MacroBrowser.setMacroJsOverride) {
+        if (windowWithMacroEditor.AJS.MacroBrowser && windowWithMacroEditor.AJS.MacroBrowser.setMacroJsOverride) {
           clearInterval(interval);
           resolve(true);
         } else if (count > 120) {
