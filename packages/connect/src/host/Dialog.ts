@@ -43,7 +43,7 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     let dialogStyle = typeof size === 'boolean'
       ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
       : '';
-    let contentStyle = '';
+    let contentStyle = 'padding: 0;';
 
     // Override `top` position and `max-height` of modal in case of full screen
     if (options.height && (options.height === '100%' || options.height === '100vh')) {
