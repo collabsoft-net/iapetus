@@ -99,7 +99,11 @@ export abstract class AbstractAtlasClientService {
   }
 
   async setAppProperty<T>(addonKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
@@ -109,7 +113,11 @@ export abstract class AbstractAtlasClientService {
     const userKeyOrAccountIdParam = this.mode === Modes.P2 ? 'userKey' : 'accountId';
     const params = { [userKeyOrAccountIdParam]: userKeyOrAccountId };
 
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, params);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, params, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }

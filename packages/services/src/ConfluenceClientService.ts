@@ -114,14 +114,22 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
   }
 
   async setSpaceProperty<T>(spaceIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
   }
 
   async setContentProperty<T>(contentId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }

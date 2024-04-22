@@ -436,21 +436,33 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async setProjectProperty<T>(projectIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
   }
 
   async setIssueProperty<T>(issueIdOrKey: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
   }
 
   async setCommentProperty<T>(commentId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey: property.key }), property.value);
+    const { status, statusText } = await this.client.put(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey: property.key }), property.value, undefined, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
       throw new Error(statusText);
     }
