@@ -5,7 +5,7 @@ import { isOfType } from '@collabsoft-net/helpers';
 import { Events } from './client/Events';
 import type { MacroEditorOptions, Message } from './client/Types';
 import { CookieEraseRequest, CookieReadRequest, CookieSaveRequest, EventsEmitRequest } from './client/Types';
-import { getContext } from './host/Context';
+import { getContextFor } from './host/Context';
 import { CookieEraseEventHandler, CookieReadEventHandler, CookieSaveEventHandler } from './host/Cookie';
 import { DialogButtonEventHandler, DialogCloseEventHandler, DialogCreateEventHandler, DialogCustomDataEventHandler } from './host/Dialog';
 import { FlagCloseEventHandler, FlagCreateEventHandler } from './host/Flag';
@@ -21,6 +21,7 @@ export interface HostOptions {
     contextPath: string;
     servletPath: string;
     license: 'active'|'none';
+    product: 'jira'|'confluence'|'bamboo'|'bitbucket';
     verbose?: boolean;
 
     navigator?: {
@@ -366,7 +367,7 @@ export class Host {
   private contextEventHandler(name: Events, event: MessageEvent<unknown>) {
     switch (name) {
       case Events.AP_CONTEXT_GETCONTEXT:
-        const context = getContext();
+        const context = getContextFor(this.options.product);
         this.reply(event, context);
         break;
       case Events.AP_CONTEXT_GETTOKEN:

@@ -9,10 +9,8 @@ type WindowWithContext = Window & {
 
 // This strongly depends on context managers to provide META information
 // TODO: also make the ContextManager, WebAction and ContextProviders part of either iapetus or a generic AC implementation Java package
-export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
-  const productName = getMetaData('atl-product-name') || '';
-
-  if (productName.toLowerCase() === 'jira') {
+export const getContextFor = (host: 'jira'|'confluence'|'bamboo'|'bitbucket'): AP.JiraContext|AP.ConfluenceContext => {
+  if (host === 'jira') {
     const { JIRA, WRM } = (window as unknown as WindowWithContext);
     return {
       jira: {
@@ -26,7 +24,7 @@ export const getContext = (): AP.JiraContext|AP.ConfluenceContext => {
         }
       }
     }
-  } else if (productName.toLowerCase() === 'confluence') {
+  } else if (host === 'confluence') {
     return {
       confluence: {
         content: {
