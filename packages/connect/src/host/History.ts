@@ -36,11 +36,11 @@ export const HistoryPushStateEventHandler = (event: MessageEvent<unknown>) => {
   const { data } = event as MessageEvent<HistoryPushStateRequest>;
 
   const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
-  window.history.pushState(undefined, "", `#!${newState}`);
+  window.history.pushState(undefined, '', `#!${newState}`);
 };
 
 export const HistoryReplaceStateEventHandler = (event: MessageEvent<unknown>) => {
   const { data } = event as MessageEvent<HistoryReplaceStateRequest>;
   const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
-  window.history.replaceState(undefined, "", `#!${newState}`);
+  window.history.replaceState(undefined, '', `#!${newState}`);
 };
