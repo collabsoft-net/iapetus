@@ -8,12 +8,24 @@ import { postMessage } from './PostMessage';
 import { CookieEraseRequest, CookieReadRequest, CookieReadResponse, CookieSaveRequest, DialogButtonRequest, ResizeRequest } from './Types';
 
 // We are defining AP.history.getState() here because it has a weird overload
-// It can both be synchronous and asynchronous at the same time
 // Unfortunately, typescript does not support overload declaration within an object
-function getState(): string;
-function getState(type: 'hash'|'all'|undefined, callback: (state: string) => void): void;
-function getState(type?: 'hash'|'all', callback?: (state: string) => void): string|void {
-  postMessage(Events.AP_HISTORY_GETSTATE, { type }, (data?: string) => callback && callback(data || ''));
+// We are also diverting from the original API, because we cannot support synchronous access
+// This is because Atlassian uses the iframe `name` attribute to pass data and allows synchronous access
+// Our implementation relies solely on postMessage, which is async by nature
+function getState(): string|AP.HistoryState;
+function getState(type: 'hash'|'all'|undefined): string|AP.HistoryState;
+function getState(type: 'hash'|'all'|undefined, callback: (state?: string|AP.HistoryState) => void): string|AP.HistoryState;
+function getState(type?: 'hash'|'all', callback?: (state?: string|AP.HistoryState) => void): string|AP.HistoryState {
+  if (!callback) {
+    throw new Error('[AP] the synchronous variant of AP.history.getState() has not been implemented in the polyfill');
+  }
+
+  postMessage(Events.AP_HISTORY_GETSTATE, { type }, (data?: string|AP.HistoryState) => {
+    callback && callback(data);
+  });
+
+  // We should not reach this, but if we do, we need to return something to match the AP typings
+  return '';
 }
 
 // We are defining AP.request here because it has a constructor

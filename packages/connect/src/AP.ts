@@ -269,13 +269,21 @@ declare global {
       forward: () => void;
       go: (delta: number) => void;
       getState: {
-        (): string;
-        (type: 'hash'|'all'|undefined, callback: (obj: unknown) => void): void;
+        (): string|HistoryState;
+        (type: 'hash'|'all'|undefined): string|HistoryState;
+        (type: 'hash'|'all'|undefined, callback: (data: string|HistoryState) => void): string|HistoryState;
       };
       pushState: (newState: string, title?: string, url?: string) => void;
       replaceState: (url: string) => void;
       // Unfortunately, this is undocumented
       popState: (handler: (state: HistoryPopState) => void) => void;
+    }
+
+    type HistoryState = {
+      hash: string;
+      href: string;
+      key: string;
+      title: string;
     }
 
     // Unfortunately, this is undocumented
