@@ -9,6 +9,7 @@ import { getContextFor } from './host/Context';
 import { CookieEraseEventHandler, CookieReadEventHandler, CookieSaveEventHandler } from './host/Cookie';
 import { DialogButtonEventHandler, DialogCloseEventHandler, DialogCreateEventHandler, DialogCustomDataEventHandler } from './host/Dialog';
 import { FlagCloseEventHandler, FlagCreateEventHandler } from './host/Flag';
+import { HistoryBackEventHandler, HistoryForwardEventHandler, HistoryGetStateEventHandler, HistoryGoEventHandler, HistoryPushStateEventHandler, HistoryReplaceStateEventHandler } from './host/History';
 import { resize, sizeToParent } from './host/iframe';
 import { closeMacroEditorEventHandler, getMacroBodyEventHandler, getMacroDataEventHandler, MacroEditorButtonEventHandler, saveMacroEventHandler } from './host/Macro';
 import { MacroEditor } from './host/MacroEditor';
@@ -461,7 +462,28 @@ export class Host {
   }
 
   private historyEventHandler(name: Events, event: MessageEvent<unknown>) {
-    throw new NotImplementedError(name, event);
+    switch (name) {
+      case Events.AP_HISTORY_BACK:
+        HistoryBackEventHandler();
+        break;
+      case Events.AP_HISTORY_FORWARD:
+        HistoryForwardEventHandler();
+        break;
+      case Events.AP_HISTORY_GETSTATE:
+        HistoryGetStateEventHandler(event, this);
+        break;
+      case Events.AP_HISTORY_GO:
+        HistoryGoEventHandler(event);
+        break;
+      case Events.AP_HISTORY_POPSTATE:
+        throw new NotImplementedError(name, event);
+      case Events.AP_HISTORY_PUSHSTATE:
+        HistoryPushStateEventHandler(event);
+        break;
+      case Events.AP_HISTORY_REPLACESTATE:
+        HistoryReplaceStateEventHandler(event);
+        break;
+    }
   }
 
   private iframeEventHandler(name: Events, event: MessageEvent<unknown>) {

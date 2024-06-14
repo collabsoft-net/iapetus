@@ -44,6 +44,24 @@ export type DialogButtonRequest = {
   action: 'enable'|'disable'|'isEnabled'|'toggle'|'trigger'|'isHidden'|'hide'|'show'|'bind';
 }
 
+export type HistoryGetStateRequest = {
+  type?: 'hash'|'all';
+}
+
+export type HistoryGoRequest = {
+  delta: number;
+}
+
+export type HistoryPushStateRequest = {
+  newState: string;
+  title?: string;
+  url?: string;
+}
+
+export type HistoryReplaceStateRequest = {
+  newState: string|Record<string, unknown>;
+}
+
 export type EventsEmitRequest = {
   name: string;
   args: Array<string> | undefined;
