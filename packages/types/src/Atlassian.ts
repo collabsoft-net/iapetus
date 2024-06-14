@@ -997,7 +997,7 @@ declare global {
     }
 
     interface PagedOfProjects {
-      nextPage: string;
+      nextPage?: string;
       maxResults: number;
       startAt: number;
       total: number;
