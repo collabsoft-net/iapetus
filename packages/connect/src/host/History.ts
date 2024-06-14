@@ -34,13 +34,13 @@ export const HistoryGoEventHandler = (event: MessageEvent<unknown>) => {
 
 export const HistoryPushStateEventHandler = (event: MessageEvent<unknown>) => {
   const { data } = event as MessageEvent<HistoryPushStateRequest>;
-  window.history.pushState(data.newState, '', data.url);
-  if (data.title) {
-    document.title = data.title
-  }
+
+  const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
+  window.history.pushState(undefined, "", `#!${newState}`);
 };
 
 export const HistoryReplaceStateEventHandler = (event: MessageEvent<unknown>) => {
   const { data } = event as MessageEvent<HistoryReplaceStateRequest>;
-  window.history.replaceState(data.newState, '');
+  const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
+  window.history.replaceState(undefined, "", `#!${newState}`);
 };

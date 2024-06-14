@@ -306,10 +306,10 @@ export const PlatformInstance: AP.PlatformInstance = {
       postMessage(Events.AP_HISTORY_GO, { delta });
     },
     getState,
-    pushState: function (newState: string, title?: string | undefined, url?: string | undefined): void {
-      postMessage(Events.AP_HISTORY_PUSHSTATE, { newState, title, url });
+    pushState: function (newState: string): void {
+      postMessage(Events.AP_HISTORY_PUSHSTATE, { newState });
     },
-    replaceState: function (newState: string|Record<string, unknown>): void {
+    replaceState: function (newState: string|Record<string, string>): void {
       postMessage(Events.AP_HISTORY_REPLACESTATE, { newState });
     },
     popState: function (handler: (state: AP.HistoryPopState) => void): void {

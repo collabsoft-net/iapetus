@@ -53,13 +53,11 @@ export type HistoryGoRequest = {
 }
 
 export type HistoryPushStateRequest = {
-  newState: string;
-  title?: string;
-  url?: string;
+  newState: string|Record<string, string>;
 }
 
 export type HistoryReplaceStateRequest = {
-  newState: string|Record<string, unknown>;
+  newState: string|Record<string, string>;
 }
 
 export type EventsEmitRequest = {
