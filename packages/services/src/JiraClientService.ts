@@ -68,20 +68,57 @@ export class JiraClientService extends AbstractAtlasClientService {
     maxResults = 50,
     orderBy: 'category'|'-category'|'+category'|'key'|'-key'|'+key'|'name'|'-name'|'+name'|'owner'|'-owner'|'+owner'|'issueCount'|'-issueCount'|'+issueCount'|'lastIssueUpdatedDate'|'-lastIssueUpdatedDate'|'+lastIssueUpdatedDate'|'archivedDate'|'+archivedDate'|'-archivedDate'|'deletedDate'|'+deletedDate'|'-deletedDate' = 'key'
   ): Promise<Jira.PagedOfProjects> {
-    const { data } = await this.client.get<Jira.PagedOfProjects>(this.getEndpointFor(this.endpoints.SEARCH_PROJECTS), {
-      query,
-      id: id?.join(','),
-      keys: keys?.join(','),
-      typeKey,
-      category,
-      action,
-      expand: expand?.join(','),
-      properties: properties?.join(','),
-      startAt,
-      maxResults,
-      orderBy
-    });
-    return data;
+
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.get<Jira.PagedOfProjects>(this.getEndpointFor(this.endpoints.SEARCH_PROJECTS), {
+        query,
+        id: id?.join(','),
+        keys: keys?.join(','),
+        typeKey,
+        category,
+        action,
+        expand: expand?.join(','),
+        properties: properties?.join(','),
+        startAt,
+        maxResults,
+        orderBy
+      });
+      return data;
+    } else {
+      const { data } = await this.client.get<Array<Jira.Project>>(this.getEndpointFor(this.endpoints.LIST_PROJECTS), { expand: expand?.join(',') });
+      let result = data.slice();
+
+      if (id) {
+        result = result.filter(item => id.includes(item.id));
+      }
+
+      if (keys) {
+        result = result.filter(item => keys.includes(item.key));
+      }
+
+      if (query) {
+        result = result.filter(item => item.name.toLowerCase().includes(query) || item.key.toLowerCase().includes(query));
+      }
+
+      if (typeKey) {
+        result = result.filter(item => item.projectTypeKey === typeKey);
+      }
+
+      if (category) {
+        result = result.filter(item => +item.projectCategory.id === category);
+      }
+
+      // TODO: implement orderBy and action
+
+      return {
+        nextPage: undefined,
+        maxResults: result.length,
+        startAt: 0,
+        total: result.length,
+        isLast: true,
+        values: result
+      }
+    }
   }
 
   async getProjects(): Promise<Array<Jira.Project>> {
@@ -286,8 +323,13 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getComponentsPaginated(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
-    return data;
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
+      return data;
+    } else {
+      const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED), { startAt, maxResults, projectIds: projectIdOrKey, query });
+      return data;
+    }
   }
 
   async getComponent(id: string|number): Promise<Jira.Component> {

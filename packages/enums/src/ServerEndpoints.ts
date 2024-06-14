@@ -24,7 +24,7 @@ export enum JiraServerEndpoints {
 
   READ_COMPONENT = '/rest/api/2/component/:id',
   LIST_COMPONENTS = '/rest/api/2/project/:projectIdOrKey/components',
-  LIST_COMPONENTS_PAGINATED = '/rest/api/2/project/:projectIdOrKey/component',
+  LIST_COMPONENTS_PAGINATED = '/rest/api/2/component/page',
   COMPONENT_CREATE = '/rest/api/2/component',
   COMPONENT_UPDATE = '/rest/api/2/component/:id',
   COMPONENT_DELETE = '/rest/api/2/component/:id',
