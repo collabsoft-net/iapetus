@@ -27,20 +27,25 @@ export const HistoryGetStateEventHandler = (event: MessageEvent<unknown>, AC: Ho
   }
 };
 
-export const HistoryGoEventHandler = (event: MessageEvent<unknown>) => {
-  const { data } = event as MessageEvent<HistoryGoRequest>;
-  window.history.go(data.delta);
+export const HistoryGoEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
+  const { data } = AC.toMessage<HistoryGoRequest>(event);
+  if (data) {
+    window.history.go(data.delta);
+  }
 };
 
-export const HistoryPushStateEventHandler = (event: MessageEvent<unknown>) => {
-  const { data } = event as MessageEvent<HistoryPushStateRequest>;
-
-  const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
-  window.history.pushState(undefined, '', `#!${newState}`);
+export const HistoryPushStateEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
+  const { data } = AC.toMessage<HistoryPushStateRequest>(event);
+  if (data) {
+    const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
+    window.history.pushState(undefined, '', `#!${newState}`);
+  }
 };
 
-export const HistoryReplaceStateEventHandler = (event: MessageEvent<unknown>) => {
-  const { data } = event as MessageEvent<HistoryReplaceStateRequest>;
-  const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
-  window.history.replaceState(undefined, '', `#!${newState}`);
+export const HistoryReplaceStateEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
+  const { data } = AC.toMessage<HistoryReplaceStateRequest>(event);
+  if (data) {
+    const newState = typeof data.newState === 'string' ? data.newState : new URLSearchParams(data.newState).toString();
+    window.history.replaceState(undefined, '', `#!${newState}`);
+  }
 };

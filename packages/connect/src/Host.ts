@@ -473,15 +473,15 @@ export class Host {
         HistoryGetStateEventHandler(event, this);
         break;
       case Events.AP_HISTORY_GO:
-        HistoryGoEventHandler(event);
+        HistoryGoEventHandler(event, this);
         break;
       case Events.AP_HISTORY_POPSTATE:
         throw new NotImplementedError(name, event);
       case Events.AP_HISTORY_PUSHSTATE:
-        HistoryPushStateEventHandler(event);
+        HistoryPushStateEventHandler(event, this);
         break;
       case Events.AP_HISTORY_REPLACESTATE:
-        HistoryReplaceStateEventHandler(event);
+        HistoryReplaceStateEventHandler(event, this);
         break;
     }
   }
