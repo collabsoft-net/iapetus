@@ -7,21 +7,13 @@ import { eventListeners } from './Listeners';
 import { postMessage } from './PostMessage';
 import { CookieEraseRequest, CookieReadRequest, CookieReadResponse, CookieSaveRequest, DialogButtonRequest, ResizeRequest } from './Types';
 
-// AP.history.getState() allows you to get the state set by pushState synchronously
-// In order to be able to do that, we need to store it here
-let currentState: string;
-
 // We are defining AP.history.getState() here because it has a weird overload
 // It can both be synchronous and asynchronous at the same time
 // Unfortunately, typescript does not support overload declaration within an object
 function getState(): string;
 function getState(type: 'hash'|'all'|undefined, callback: (state: string) => void): void;
 function getState(type?: 'hash'|'all', callback?: (state: string) => void): string|void {
-  if (type && callback) {
-    postMessage(Events.AP_HISTORY_GETSTATE, { type }, (data?: string) => callback(data || ''));
-  } else {
-    return currentState;
-  }
+  postMessage(Events.AP_HISTORY_GETSTATE, { type }, (data?: string) => callback && callback(data || ''));
 }
 
 // We are defining AP.request here because it has a constructor
