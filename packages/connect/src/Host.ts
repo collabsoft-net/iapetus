@@ -20,7 +20,7 @@ export interface HostOptions {
     appKey: string;
     baseUrl: string;
     contextPath: string;
-    servletPath: string;
+    xdm_e: string;
     license: 'active'|'none';
     product: 'jira'|'confluence'|'bamboo'|'bitbucket';
     verbose?: boolean;

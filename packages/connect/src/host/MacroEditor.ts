@@ -78,7 +78,9 @@ export class MacroEditor {
 
     const isEditing = Object.keys(params).length > 0;
     const style = `width:${options.width || '50%'};height:${options.height || '50%'};z-index: 3000`;
-    let url = options.url.startsWith('/') ? `${this.options.servletPath}/embed/${this.options.appKey}/${key}${options.url}` : options.url;
+
+    const urlPrefix = this.options.baseUrl.endsWith('/') ? this.options.baseUrl.slice(0, -1) : this.options.baseUrl;
+    let url = options.url.startsWith('/') ? `${urlPrefix}${options.url}` : options.url;
 
     const defaultQueryString = `xdm_e=${this.options.baseUrl}&cp=${this.options.contextPath}&lic=${this.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
     url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;

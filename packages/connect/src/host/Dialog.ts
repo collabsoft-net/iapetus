@@ -25,7 +25,7 @@ const getSize = (options: AP.DialogOptions<never>) => {
 
 export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never>>, AC: Host) => {
     const { originId, data: instanceOptions } = message;
-    const { servletPath, appKey } = AC.options;
+    const { baseUrl } = AC.options;
     if (!instanceOptions) throw new BadRequestError();
 
     // Check if the instance has been defined on the host options
@@ -33,9 +33,11 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     if (!instance) throw new BadRequestError();
 
     const options = { ...instance.options, ...instanceOptions };
-    let url = instance.url.startsWith('/') ? `${servletPath}/embed/${appKey}/${options.key}${instance.url}` : instance.url;
 
-    const defaultQueryString = `xdm_e=${AC.options.baseUrl}&cp=${AC.options.contextPath}&lic=${AC.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
+    const urlPrefix = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    let url = instance.url.startsWith('/') ? `${urlPrefix}${instance.url}` : instance.url;
+
+    const defaultQueryString = `xdm_e=${AC.options.xdm_e}&cp=${AC.options.contextPath}&lic=${AC.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
     url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
     const size = getSize(options);
