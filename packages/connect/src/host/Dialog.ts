@@ -46,9 +46,6 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
       ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
       : '';
 
-    // Override `max-height` of modal to ensure that it scales properly
-    let contentStyle = 'padding:0;font-size:0;max-height:unset;';
-
     // Override `top` position of modal in case of full screen
     if (options.height && (options.height === '100%' || options.height === '100vh')) {
       dialogStyle += 'top:0px;'
@@ -62,7 +59,7 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
           <button class="aui-close-button" type="button" aria-label="close"></button>
       </header>
     ` : ''}
-    <div class="aui-dialog2-content" style="${contentStyle}">
+    <div class="aui-dialog2-content" style="padding:0;font-size:0;max-height:unset;">
       <iframe id="ap-dialog-${originId}-frame" data-ap-origin=${originId} data-ap-appkey="${AC.options.appKey}" src="${url}" style="height:100%;width:100%;border:none;" name="${encodeURIComponent(JSON.stringify(options))}"></iframe>
     </div>
     ${options.chrome ? `
