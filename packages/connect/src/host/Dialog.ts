@@ -45,12 +45,13 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     let dialogStyle = typeof size === 'boolean'
       ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
       : '';
-    let contentStyle = 'padding:0;font-size:0;';
 
-    // Override `top` position and `max-height` of modal in case of full screen
+    // Override `max-height` of modal to ensure that it scales properly
+    let contentStyle = 'padding:0;font-size:0;max-height:unset;';
+
+    // Override `top` position of modal in case of full screen
     if (options.height && (options.height === '100%' || options.height === '100vh')) {
       dialogStyle += 'top:0px;'
-      contentStyle += 'max-height:unset;';
     }
 
     const template = `
