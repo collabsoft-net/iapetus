@@ -64,8 +64,7 @@ export class MacroEditor {
   }
 
   public close(key: string, isCancelled?: boolean) {
-    const identifier = key.toLowerCase().replaceAll(' ', '-');
-    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${identifier}`);
+    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${key}`);
     if (dialog) {
       if (isCancelled) {
         windowWithMacroEditor.tinymce.confluence.macrobrowser.macroBrowserCancel();
@@ -86,20 +85,18 @@ export class MacroEditor {
     const defaultQueryString = `xdm_e=${this.options.baseUrl}&cp=${this.options.contextPath}&lic=${this.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
     url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
-    const identifier = key.toLowerCase().replaceAll(' ', '-');
-
     const template = `
-      <section id="ap-macroeditor-${identifier}" role="dialog" class="aui-layer aui-dialog2 ap-aui-dialog2 " aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style="${style}">
+      <section id="ap-macroeditor-${key}" role="dialog" class="aui-layer aui-dialog2 ap-aui-dialog2 " aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style="${style}">
         <header class="aui-dialog2-header">
           <h2 class="aui-dialog2-header-main" id="static-dialog--heading">${name}</h2>
         </header>
         <div class="aui-dialog2-content">
-          <iframe id="ap-macroeditor-${identifier}-frame" data-ap-appkey="${this.options.appKey}" src="${url}" style="width:100%;height:100%;border:none;" name="${key}"></iframe>
+          <iframe id="ap-macroeditor-${key}-frame" data-ap-appkey="${this.options.appKey}" src="${url}" style="width:100%;height:100%;border:none;" name="${key}"></iframe>
         </div>
         <footer class="aui-dialog2-footer">
           <div class="aui-dialog2-footer-actions">
-            <button id="ap-macroeditor-${identifier}-submit-button" class="aui-button aui-button-primary">${ isEditing ? 'Submit' : 'Insert' }</button>
-            <button id="ap-macroeditor-${identifier}-cancel-button" class="aui-button aui-button-link">Cancel</button>
+            <button id="ap-macroeditor-${key}-submit-button" class="aui-button aui-button-primary">${ isEditing ? 'Submit' : 'Insert' }</button>
+            <button id="ap-macroeditor-${key}-cancel-button" class="aui-button aui-button-link">Cancel</button>
           </div>
         </footer>
       </section>    
@@ -109,21 +106,21 @@ export class MacroEditor {
     document.body.appendChild(html);
 
     // Emit 'dialog.close' event when the dialog is hidden
-    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${identifier}`);
+    const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${key}`);
     dialog.show();
     this.active = true;
 
     // Register event handlers for all buttons & trigger them when clicked
-    [ 'submit', 'cancel' ].forEach(buttonId => {
-      const button = document.getElementById(`ap-macroeditor-${identifier}-${buttonId}-button`) as HTMLButtonElement|null;
+    [ 'submit', 'cancel' ].forEach(identifier => {
+      const button = document.getElementById(`ap-macroeditor-${key}-${identifier}-button`) as HTMLButtonElement|null;
       if (button) {
         button.onclick = () => {
           // Fire generic dialog.button.click event
-          this.AC.emit(key, 'dialog.button.click', { button: { name: buttonId } });
+          this.AC.emit(key, 'dialog.button.click', { button: { name: identifier } });
           // Fire event for each of the button `bind` event handlers
           this.eventHandlers.forEach(value => value());
           // Close the dialog if applicable
-          if (buttonId !== 'submit' || !this.closeOnSubmitDisabled) {
+          if (identifier !== 'submit' || !this.closeOnSubmitDisabled) {
             this.close(key);
           }
         };
