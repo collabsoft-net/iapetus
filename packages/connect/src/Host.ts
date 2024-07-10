@@ -163,10 +163,6 @@ export class Host {
             this.scrollPositionEventHandler(name, event);
             break;
 
-          case Events.AP_THEMING_INITIALIZETHEMING:
-            this.themingEventHandler(name, event);
-            break;
-
           case Events.AP_USER_GETCURRENTUSER:
           case Events.AP_USER_GETTIMEZONE:
           case Events.AP_USER_GETLOCALE:
@@ -531,10 +527,6 @@ export class Host {
   }
 
   private scrollPositionEventHandler(name: Events, event: MessageEvent<unknown>) {
-    throw new NotImplementedError(name, event);
-  }
-
-  private themingEventHandler(name: Events, event: MessageEvent<unknown>) {
     throw new NotImplementedError(name, event);
   }
 

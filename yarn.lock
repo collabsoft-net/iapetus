@@ -1202,6 +1202,7 @@ __metadata:
     "@rollup/plugin-commonjs": "npm:25.0.7"
     "@rollup/plugin-json": "npm:6.1.0"
     "@rollup/plugin-node-resolve": "npm:15.2.3"
+    "@rollup/plugin-replace": "npm:5.0.7"
     "@rollup/plugin-terser": "npm:0.4.4"
     "@types/js-cookie": "npm:^3"
     "@types/node": "npm:<19.0.0"
@@ -1209,6 +1210,7 @@ __metadata:
     "@types/react-dom": "npm:<17.0.0"
     "@typescript-eslint/eslint-plugin": "npm:6.19.1"
     "@typescript-eslint/parser": "npm:6.19.1"
+    axios: "npm:1.7.2"
     eslint: "npm:8.56.0"
     inversify: "npm:6.0.2"
     js-cookie: "npm:3.0.5"
@@ -3735,6 +3737,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/plugin-replace@npm:5.0.7":
+  version: 5.0.7
+  resolution: "@rollup/plugin-replace@npm:5.0.7"
+  dependencies:
+    "@rollup/pluginutils": "npm:^5.0.1"
+    magic-string: "npm:^0.30.3"
+  peerDependencies:
+    rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  checksum: 1f0a26fe132c75ded66305ae845cb53c5ed0abd054f22b55a15e98b2955d52e677f8f96a1d0a3926020c2b457d41825e743850f44b67ed1bfbd3cb4089057335
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-terser@npm:0.4.4":
   version: 0.4.4
   resolution: "@rollup/plugin-terser@npm:0.4.4"
@@ -6029,6 +6046,17 @@ __metadata:
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
   checksum: a1932b089ece759cd261f175d9ebf4d41c8994cf0c0767cda86055c7a19bcfdade8ae3464bf4cec4c8b142f4a657dc664fb77a41855e8376cf38b86d7a86518f
+  languageName: node
+  linkType: hard
+
+"axios@npm:1.7.2":
+  version: 1.7.2
+  resolution: "axios@npm:1.7.2"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 6ae80dda9736bb4762ce717f1a26ff997d94672d3a5799ad9941c24d4fb019c1dff45be8272f08d1975d7950bac281f3ba24aff5ecd49ef5a04d872ec428782f
   languageName: node
   linkType: hard
 
@@ -8383,6 +8411,16 @@ __metadata:
     debug:
       optional: true
   checksum: d467f13c1c6aa734599b8b369cd7a625b20081af358f6204ff515f6f4116eb440de9c4e0c49f10798eeb0df26c95dd05d5e0d9ddc5786ab1a8a8abefe92929b4
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
   languageName: node
   linkType: hard
 

@@ -5,6 +5,7 @@ import axios, { AxiosError,Method } from 'axios';
 import { Events } from './Events';
 import { eventListeners } from './Listeners';
 import { postMessage } from './PostMessage';
+import { InitializeThemingEventHandler } from './Theming';
 import { CookieEraseRequest, CookieReadRequest, CookieReadResponse, CookieSaveRequest, DialogButtonRequest, ResizeRequest } from './Types';
 
 // We are defining AP.history.getState() here because it has a weird overload
@@ -404,7 +405,7 @@ export const PlatformInstance: AP.PlatformInstance = {
 
   theming: {
     initializeTheming: function (): void {
-      postMessage(Events.AP_THEMING_INITIALIZETHEMING);
+      InitializeThemingEventHandler();
     }
   },
 
