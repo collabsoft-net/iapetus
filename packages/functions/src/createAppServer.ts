@@ -1,7 +1,7 @@
 
 import { isProduction } from '@collabsoft-net/helpers';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
-import { captureException, Handlers as Sentry } from '@sentry/node';
+import { captureException, setupExpressErrorHandler } from '@sentry/node';
 import cookies from 'cookie-parser';
 import * as express from 'express';
 import { logger } from 'firebase-functions';
@@ -22,9 +22,6 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
       app.set('trust proxy', 1);
       app.disable('x-powered-by');
       app.use(cookies());
-
-      app.use(Sentry.requestHandler());
-      app.use(Sentry.errorHandler());
 
       // Disable caching for the API as all these endpoints are about authentication
       app.use((_req, res, next) => {
@@ -57,6 +54,8 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
       if (configure) {
         configure(app);
       }
+
+      setupExpressErrorHandler(app);
     } catch (exp) {
       captureException(exp);
       logger.error('Server error', { error: JSON.stringify(exp) });
