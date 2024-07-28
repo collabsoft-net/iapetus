@@ -18,7 +18,7 @@ const ScrollView = styled(Grid)`
 `;
 
 interface PageWithNavBarProps {
-  title: string;
+  title?: string;
   Icon: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
   inline?: boolean;

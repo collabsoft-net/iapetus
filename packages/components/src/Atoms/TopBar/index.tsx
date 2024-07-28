@@ -11,7 +11,7 @@ import { withProps } from '../Styled';
 import { Header } from '../Typography';
 
 interface TopBarProps {
-  title: string;
+  title?: string;
   Icon: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
   fixedOnTop?: boolean;
@@ -36,9 +36,11 @@ export const TopBar = ({ title, Icon, breadCrumbs, fixedOnTop }: TopBarProps) =>
             <IconWithLabel src={ Icon } />
           </Column>
         )}
-        <Column align='center' margin='0 8px 0 0'>
-          <Header weight='h400'>{ title }</Header>
-        </Column>
+        { title && (
+          <Column align='center' margin='0 8px 0 0'>
+            <Header weight='h400'>{ title }</Header>
+          </Column>
+        )}
         { breadCrumbs?.map(element => (
           <Fragment key={ isOfType<JSX.Element>(element, 'key') ? element.key : element }>
             <Column align='center' margin='0 8px 0 0'>
