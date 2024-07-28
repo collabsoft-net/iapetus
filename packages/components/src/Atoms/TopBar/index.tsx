@@ -40,9 +40,7 @@ export const TopBar = ({ title, Icon, breadCrumbs, fixedOnTop }: TopBarProps) =>
           <Column align='center' margin='0 8px 0 0'>
             { typeof title === 'string' ? (
               <Header weight='h400'>{ title }</Header>
-            ) : (
-              { title }
-            )}
+            ) : title }
           </Column>
         )}
         { breadCrumbs?.map(element => (
