@@ -1,4 +1,5 @@
 import { JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
 import FormData from 'form-data';
 import { StatusCodes } from 'http-status-codes';
@@ -558,6 +559,10 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async hasProjectPermission(accountId: string, projects: Array<number>, permission: string): Promise<Map<number, boolean>> {
+    // All properties are required and need to be checked for validity
+    if (!accountId || !projects || projects.length <= 0 || isNullOrEmpty(permission)) {
+      return new Map();
+    }
 
     const result = new Map<number, boolean>();
 
