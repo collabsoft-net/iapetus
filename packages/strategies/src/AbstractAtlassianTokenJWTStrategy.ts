@@ -1,6 +1,7 @@
 import '@collabsoft-net/functions';
 
 import { ACInstance } from '@collabsoft-net/entities';
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { decodeSymmetric, SymmetricAlgorithm } from 'atlassian-jwt';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -29,10 +30,17 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
     };
   }
 
+  constructor(private allowAnonymousAccess = false) {
+    super();
+  }
+
   protected async process(request: express.Request, payload?: Atlassian.JWT,): Promise<T> {
     if (!payload) throw new Error('Invalid Atlassian JWT token');
+    const { iss, sub } = payload;
 
-    const { iss } = payload;
+    if (!this.allowAnonymousAccess && isNullOrEmpty(sub)) {
+      throw new Error('Anonymous access is not allowed');
+    }
 
     const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
     if (instance) {

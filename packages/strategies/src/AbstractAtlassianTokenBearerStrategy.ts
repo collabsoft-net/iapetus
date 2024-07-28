@@ -2,6 +2,7 @@ import '@collabsoft-net/functions';
 
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { AbstractService } from '@collabsoft-net/services';
 import { decodeSymmetric, SymmetricAlgorithm } from 'atlassian-jwt';
 import * as express from 'express';
@@ -14,6 +15,10 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> ex
 
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
+  constructor(private allowAnonymousAccess = false) {
+    super();
+  }
+
   protected async process(request: express.Request, token?: string): Promise<T> {
     if (!token) throw new Error('Invalid Bearer token');
 
@@ -24,7 +29,12 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> ex
     const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
     if (instance) {
       await this.updateLastActive(instance, request);
-      const payload = decodeSymmetric(token, instance.sharedSecret, SymmetricAlgorithm.HS256);
+      const payload = decodeSymmetric(token, instance.sharedSecret, SymmetricAlgorithm.HS256) as Atlassian.JWT;
+
+      if (!this.allowAnonymousAccess && isNullOrEmpty(payload.sub)) {
+        throw new Error('Anonymous access is not allowed');
+      }
+
       return this.toSession(payload, instance);
     } else {
       throw new Error('Customer instance not found');

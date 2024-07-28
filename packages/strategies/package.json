@@ -61,6 +61,7 @@
     "@collabsoft-net/dto": "*",
     "@collabsoft-net/entities": "*",
     "@collabsoft-net/functions": "*",
+    "@collabsoft-net/helpers": "*",
     "@collabsoft-net/services": "*",
     "axios": "1.6.7",
     "express": "4.18.2",
