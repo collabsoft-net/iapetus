@@ -13,6 +13,7 @@ import { Header } from '../Typography';
 interface TopBarProps {
   title?: string|JSX.Element;
   Icon: JSX.Element;
+  Banner?: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
   fixedOnTop?: boolean;
 }
@@ -27,8 +28,13 @@ const Topbar = withProps<{ fixedOnTop?: boolean }>()(styled(Grid))`
   `}
 `;
 
-export const TopBar = ({ title, Icon, breadCrumbs, fixedOnTop }: TopBarProps) => (
+export const TopBar = ({ title, Icon, Banner, breadCrumbs, fixedOnTop }: TopBarProps) => (
   <Topbar fixedOnTop={ fixedOnTop } borderBottom={ fixedOnTop ? `1px solid ${token('color.border', colors.N20)}` : undefined } background={ token('elevation.surface', colors.N0) } fluid={ fixedOnTop }>
+    { Banner && (
+      <Row>
+        { Banner }
+      </Row>
+    )}
     <Row padding='16px'>
       <Grid fluid vertical alignItems='center'>
         { Icon && (
