@@ -35,7 +35,7 @@ export const TopBar = ({ title, Icon, Banner, breadCrumbs, fixedOnTop }: TopBarP
         { Banner }
       </Row>
     )}
-    <Row padding='16px'>
+    <Row padding='20px'>
       <Grid fluid vertical alignItems='center'>
         { Icon && (
           <Column margin="0 8px 0 0">

@@ -25,17 +25,26 @@ interface PageWithNavBarProps {
   inline?: boolean;
 }
 
-export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, children }: PropsWithChildren<PageWithNavBarProps>) => (
-  <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken', inline ? colors.N0 : colors.N400A) }>
-    <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } fixedOnTop={ !inline } />
-    <ScrollView fluid height='unset' margin={ !inline ? '60px 0 0' : undefined }>
-      <Row>
-        <Grid margin='0 auto' padding={ inline ? '16px 0' : '24px 0' }>
-          <Row>
-            {children}
-          </Row>
-        </Grid>
-      </Row>
-    </ScrollView>
-  </FullPage>
-)
+export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, children }: PropsWithChildren<PageWithNavBarProps>) => {
+
+  const margin = inline
+    ? undefined
+    : typeof Banner === 'undefined'
+      ? '64px 0 0'
+      : '112px 0 0';
+
+  return (
+    <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken', inline ? colors.N0 : colors.N400A) }>
+      <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } fixedOnTop={ !inline } />
+      <ScrollView fluid height='unset' margin={ margin }>
+        <Row>
+          <Grid margin='0 auto' padding={ inline ? '16px 0' : '24px 0' }>
+            <Row>
+              {children}
+            </Row>
+          </Grid>
+        </Row>
+      </ScrollView>
+    </FullPage>
+  );
+}
