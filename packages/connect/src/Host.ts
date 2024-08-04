@@ -50,12 +50,16 @@ export class NotImplementedError extends Error {
 export class Host {
 
   public editor: MacroEditor;
+  public currentUrl: string;
 
   // -------------------------------------------------------------------------- Constructor
 
   constructor(public options: HostOptions) {
     this.info('[AC] Initializing Atlassian Connect polyfill');
     this.editor = new MacroEditor(this);
+
+    // Store the current hash (for use in popstate)
+    this.currentUrl = window.location.hash.replace('#!', '');
   }
 
   // -------------------------------------------------------------------------- Public methods
@@ -209,6 +213,43 @@ export class Host {
     });
 
     await this.editor.init();
+
+    // Add an event listener for History PopState
+    // This is sent to all frames to accomodate the undocumented AP.history.popState()
+    addEventListener('popstate', (event: PopStateEvent) => {
+      // Get the old & the new URL and update the placeholder property
+      const newURL = (event.target as Window).location.hash.replace('#!', '');
+      const oldURL = `${this.currentUrl}`;
+      this.currentUrl = newURL;
+
+      // Construct the history popstate data object
+      const data: AP.HistoryPopState = {
+        hash: window.location.hash,
+        href: window.location.href,
+        key: this.options.appKey,
+        newURL,
+        oldURL,
+        query: window.location.search,
+        state: event.state,
+        title: document.title
+      }
+
+      // Emit the popstate event to all frames
+      const frames = this.getFrames(this.options.appKey);
+      frames.forEach(frame => {
+        const addonKey = frame.getAttribute('data-ap-appkey');
+        const key = frame.getAttribute('data-ap-key');
+        const originId = frame.getAttribute('data-ap-origin');
+
+        frame.contentWindow?.postMessage({
+          name: Events.AP_HISTORY_POPSTATE,
+          addonKey,
+          originId,
+          key,
+          data
+        }, '*')
+      });
+    });
   }
 
   public emit(originId: string, name: string): void;

@@ -6,7 +6,7 @@ import { Events } from './Events';
 import { eventListeners } from './Listeners';
 import { postMessage } from './PostMessage';
 import { InitializeThemingEventHandler } from './Theming';
-import { CookieEraseRequest, CookieReadRequest, CookieReadResponse, CookieSaveRequest, DialogButtonRequest, ResizeRequest } from './Types';
+import { CallbackHandler, CookieEraseRequest, CookieReadRequest, CookieReadResponse, CookieSaveRequest, DialogButtonRequest, Message, ResizeRequest } from './Types';
 
 // We are defining AP.history.getState() here because it has a weird overload
 // Unfortunately, typescript does not support overload declaration within an object
@@ -318,7 +318,17 @@ export const PlatformInstance: AP.PlatformInstance = {
       postMessage(Events.AP_HISTORY_REPLACESTATE, { newState });
     },
     popState: function (handler: (state: AP.HistoryPopState) => void): void {
-      postMessage(Events.AP_HISTORY_POPSTATE, (data?: AP.HistoryPopState) => data && handler(data));
+      const listener: CallbackHandler<Message<AP.HistoryPopState>> = (event) => {
+        if (event && event.name === Events.AP_HISTORY_POPSTATE && event.data) {
+          handler(event.data);
+        }
+      }
+
+      eventListeners.set(listener, {
+        name: Events.AP_HISTORY_POPSTATE,
+        once: false,
+        listener
+      });
     },
   },
 
