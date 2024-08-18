@@ -82,7 +82,7 @@ export class MacroEditor {
     const urlPrefix = this.options.baseUrl.endsWith('/') ? this.options.baseUrl.slice(0, -1) : this.options.baseUrl;
     let url = options.url.startsWith('/') ? `${urlPrefix}${options.url}` : options.url;
 
-    const defaultQueryString = `xdm_e=${this.options.baseUrl}&cp=${this.options.contextPath}&lic=${this.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
+    const defaultQueryString = `xdm_e=${this.options.xdm_e}&cp=${this.options.contextPath}&lic=${this.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
     url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
     const template = `
