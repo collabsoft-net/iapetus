@@ -211,21 +211,48 @@ declare global {
 
     // https://developer.atlassian.com/cloud/jira/platform/jsapi/events/
     // https://developer.atlassian.com/cloud/confluence/jsapi/events/
+    // Unfortunately, there are also custom events with custom payloads (like 'flag.action')
+    // We will be adding these custom events on a case by case basis
+    // These events are usually not documented so the event payload is determined by inspection
     type Events = {
-      on: <T> (name: string, listener: (data?: Array<string>) => void) => void;
-      onPublic: <T> (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
-      once: <T> (name: string, listener: (data?: Array<string>) => void) => void;
-      oncePublic: <T> (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
-      onAny: <T> (listener: (data?: Array<string>) => void) => void;
-      onAnyPublic: <T> (listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
-      off: <T> (name: string, listener: (data?: Array<string>) => void) => void;
-      offPublic: <T> (name: string, listener: (data?: Array<string>) => void) => void;
+      on: {
+        (name: string, listener: (data?: Array<string>) => void): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void): void;
+      }
+      onPublic: {
+        (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void, filter: (addonKey: string, key: string) => boolean): void;
+      }
+      once: {
+        (name: string, listener: (data?: Array<string>) => void): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void): void;
+      }
+      oncePublic: {
+        (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void, filter: (addonKey: string, key: string) => boolean): void;
+      }
+      onAny: (listener: (data?: Array<string>) => void) => void;
+      onAnyPublic: (listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean) => void;
+      off: {
+        (name: string, listener: (data?: Array<string>) => void): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void): void;
+      }
+      offPublic: {
+        (name: string, listener: (data?: Array<string>) => void): void;
+        (name: 'flag.action', listener: (data?: FlagActionEventArgs) => void): void;
+      }
       offAll: (name: string) => void;
       offAllPublic: (name: string) => void;
-      offAny: <T> (listener: (data?: Array<string>) => void) => void;
-      offAnyPublic: <T> (listener: (data?: Array<string>) => void) => void;
-      emit: (name: string, args?: Array<string>) => void;
-      emitPublic: (name: string, args?: Array<string>) => void;
+      offAny: (listener: (data?: Array<string>) => void) => void;
+      offAnyPublic: (listener: (data?: Array<string>) => void) => void;
+      emit: {
+        (name: string, args?: Array<string>): void;
+        (name: 'flag.action', args?: FlagActionEventArgs): void;
+      }
+      emitPublic: {
+        (name: string, args?: Array<string>): void;
+        (name: 'flag.action', args?: FlagActionEventArgs): void;
+      }
     }
 
     // https://developer.atlassian.com/cloud/jira/platform/jsapi/flag/
