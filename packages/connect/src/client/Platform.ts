@@ -29,6 +29,82 @@ function getState(type?: 'hash'|'all', callback?: (state?: string|AP.HistoryStat
   return '';
 }
 
+// We are defining AP.events.on() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function on(name: string, listener: (data?: Array<string>) => void): void;
+function on(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void): void;
+function on(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void)): void {
+  eventListeners.set(listener, { name, listener });
+}
+
+// We are defining AP.events.onPublic() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function onPublic(name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void;
+function onPublic(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void, filter: (addonKey: string, key: string) => boolean): void;
+function onPublic(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void), filter: (addonKey: string, key: string) => boolean): void {
+  eventListeners.set(listener, { name, listener, filter });
+}
+
+// We are defining AP.events.once() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function once(name: string, listener: (data?: Array<string>) => void): void;
+function once(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void): void;
+function once(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void)): void {
+  eventListeners.set(listener, { name, once: true, listener });
+}
+
+// We are defining AP.events.oncePublic() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function oncePublic(name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void;
+function oncePublic(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void, filter: (addonKey: string, key: string) => boolean): void;
+function oncePublic(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void), filter: (addonKey: string, key: string) => boolean): void {
+  eventListeners.set(listener, { name, once: true, listener, filter });
+}
+
+// We are defining AP.events.off() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function off(name: string, listener: (data?: Array<string>) => void): void;
+function off(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void): void;
+function off(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void)): void {
+  eventListeners.forEach((handler, key ) => {
+    if (handler && handler.name === name) {
+      if (key === listener) {
+        eventListeners.delete(key);
+      }
+    }
+  });
+}
+
+// We are defining AP.events.offPublic() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function offPublic(name: string, listener: (data?: Array<string>) => void): void;
+function offPublic(name: 'flag.action', listener: (data?: AP.FlagActionEventArgs) => void): void;
+function offPublic(name: string|'flag.action', listener: ((data?: Array<string>) => void)|((data?: AP.FlagActionEventArgs) => void)): void {
+  eventListeners.forEach((handler, key ) => {
+    if (handler && handler.name === name && handler.filter) {
+      if (key === listener) {
+        eventListeners.delete(key);
+      }
+    }
+  });
+}
+
+// We are defining AP.events.emit() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function emit(name: string, args?: Array<string>): void;
+function emit(name: 'flag.action', args?: AP.FlagActionEventArgs): void;
+function emit(name: string|'flag.action', args?: Array<string>|AP.FlagActionEventArgs): void {
+  postMessage(Events.AP_EVENTS_EMIT, { name, args });
+}
+
+// We are defining AP.events.emitPublic() here because it has a weird overload
+// Unfortunately, typescript does not support overload declaration within an object
+function emitPublic(name: string, args?: Array<string>): void;
+function emitPublic(name: 'flag.action', args?: AP.FlagActionEventArgs): void;
+function emitPublic(name: string|'flag.action', args?: Array<string>|AP.FlagActionEventArgs): void {
+  postMessage(Events.AP_EVENTS_EMIT, { name, args, public: true });
+}
+
 // We are defining AP.request here because it has a constructor
 // Unfortunately, Typescript does not support object method constructors
 async function request(url: string, options?: AP.RequestOptions): Promise<AP.RequestResponse>;
@@ -207,42 +283,18 @@ export const PlatformInstance: AP.PlatformInstance = {
    *********************************************************************** */
 
   events: {
-    on: function (name: string, listener: (data?: Array<string>) => void): void {
-      eventListeners.set(listener, { name, listener });
-    },
-    onPublic: function (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void {
-      eventListeners.set(listener, { name, listener, filter });
-    },
-    once: function (name: string, listener: (data?: Array<string>) => void): void {
-      eventListeners.set(listener, { name, once: true, listener });
-    },
-    oncePublic: function (name: string, listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void {
-      eventListeners.set(listener, { name, once: true, listener, filter });
-    },
+    on,
+    onPublic,
+    once,
+    oncePublic,
     onAny: function (listener: (data?: Array<string>) => void): void {
       eventListeners.set(listener, undefined);
     },
     onAnyPublic: function (listener: (data?: Array<string>) => void, filter: (addonKey: string, key: string) => boolean): void {
       eventListeners.set(listener, { name: '*', listener, filter });
     },
-    off: function (name: string, listener: (data?: Array<string>) => void): void {
-      eventListeners.forEach((handler, key ) => {
-        if (handler && handler.name === name) {
-          if (key === listener) {
-            eventListeners.delete(key);
-          }
-        }
-      });
-    },
-    offPublic: function (name: string, listener: (data?: Array<string>) => void): void {
-      eventListeners.forEach((handler, key ) => {
-        if (handler && handler.name === name && handler.filter) {
-          if (key === listener) {
-            eventListeners.delete(key);
-          }
-        }
-      });
-    },
+    off,
+    offPublic,
     offAll: function (name: string): void {
       eventListeners.forEach((handler, key ) => {
         if (handler && handler.name === name) {
@@ -269,12 +321,8 @@ export const PlatformInstance: AP.PlatformInstance = {
         }
       });
     },
-    emit: function (name: string, args?: string[] | undefined): void {
-      postMessage(Events.AP_EVENTS_EMIT, { name, args });
-    },
-    emitPublic: function (name: string, args?: string[] | undefined): void {
-      postMessage(Events.AP_EVENTS_EMIT, { name, args, public: true });
-    }
+    emit,
+    emitPublic
   },
 
   /***********************************************************************
