@@ -331,7 +331,7 @@ export class FirebaseAdminRepository implements Repository {
         // Remove entries that do not match the supported formats
         .filter(item => item === null || this.isFirestorePrimitive(item) || Array.isArray(item) || (typeof item === 'object' && Object.keys(item).length > 0))
         // Recursively apply the same formatting rules for each item in the array
-        .map(this.objectify.bind(this)) as FirestoreArray);
+        .map(this.objectifyNestedObjects.bind(this)) as FirestoreArray);
 
     // If this is an object map, we should loop over each item in the object and apply the same formatting rules for each item
     } else if (typeof entity === 'object' && Object.keys(entity).length > 0) {
