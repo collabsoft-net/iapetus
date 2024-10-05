@@ -7,7 +7,7 @@ import { StorageProvider } from './StorageProvider';
 export interface Repository extends EventEmitter {
   close(): Promise<void>;
   isAuthenticated(): Promise<boolean>;
-  authenticate(): Promise<boolean>;
+  authenticate(token: string): Promise<boolean>;
   signOut(): Promise<void>;
 
   count(options?: QueryOptions): Promise<number>;

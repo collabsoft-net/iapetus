@@ -2,32 +2,31 @@
 
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { isOfType } from '@collabsoft-net/helpers';
-import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
-import axios from 'axios';
-import { app, AppOptions, auth, firestore } from 'firebase-admin';
-import firebase from 'firebase-admin';
-import { getFunctions,TaskOptions } from 'firebase-admin/functions';
+import { Entity, Event, EventListener, Paginated, QueryBuilder, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
+import { Auth, getAuth, signInWithCustomToken, signOut } from 'firebase/auth';
+import { collection, deleteDoc, doc, Firestore, GeoPoint, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, Primitive, query, QueryConstraint, startAfter, Timestamp, updateDoc, where } from 'firebase/firestore';
 import uniqid from 'uniqid';
 
-import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
-import { QueryBuilder as QB } from './QueryBuilder';
+import { QueryBuilder as QB } from '../QueryBuilder';
 
-type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Timestamp;
-interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
+type FirestorePrimitive = Primitive|GeoPoint|Timestamp;
 interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
+interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
 
-export class FirebaseAdminRepository implements Repository {
+export class FirebaseRepository implements Repository {
 
-  private fb: app.App;
-  private firestore: firestore.Firestore;
-  private storageProvider: StorageProvider;
+  private fb: FirebaseApp;
+  private auth: Auth;
+  private firestore: Firestore;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(protected name: string, options?: AppOptions, protected readOnly?: boolean) {
-    this.fb = firebase.initializeApp(options, name);
+  constructor(protected name: string, options: FirebaseOptions, protected readOnly?: boolean) {
+    this.fb = initializeApp(options, name);
+    this.fb.automaticDataCollectionEnabled = false;
 
-    this.firestore = this.fb.firestore();
-    this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
+    this.firestore = getFirestore(this.fb);
+    this.auth = getAuth(this.fb);
     this.readOnly = readOnly;
   }
 
@@ -40,108 +39,83 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   async close(): Promise<void> {
-    await this.fb.delete();
+    throw new Error('This feature is not supported in "client" mode');
   }
 
   get storage(): StorageProvider {
-    return this.storageProvider;
+    throw new Error('This feature is not supported in "client" mode');
   }
 
   // ==========================================================================
 
   async isAuthenticated(): Promise<boolean> {
-    throw new Error('This feature is not supported in "admin" mode');
+    return this.auth.currentUser !== null;
   }
 
-  async authenticate(): Promise<boolean> {
-    return Promise.reject('This feature is not supported in "admin" mode');
+  async authenticate(token: string): Promise<boolean> {
+    await signInWithCustomToken(this.auth, token);
+    return true;
   }
 
-  async verifyIdToken(token: string): Promise<auth.DecodedIdToken> {
-    return await this.fb.auth().verifyIdToken(token);
+  async verifyIdToken(): Promise<never> {
+    throw new Error('This feature is not supported in "client" mode');
   }
 
-  async createCustomToken(uid: string): Promise<string> {
-    return this.fb.auth().createCustomToken(uid);
+  async createCustomToken(): Promise<string> {
+    throw new Error('This feature is not supported in "client" mode');
   }
 
   async signOut(): Promise<void> {
-    return Promise.reject('This feature is not supported in "admin" mode');
+    return signOut(this.auth);
   }
 
-  async enqueue<T>(task: string, data: T, options?: TaskOptions) {
-    if (process.env.FUNCTIONS_EMULATOR === 'true') {
-      const projectId = process.env.GCLOUD_PROJECT;
-      const baseUrl = process.env.FUNCTIONS_EMULATOR_HOST;
-      if (projectId && baseUrl) {
-        await axios.post(`${baseUrl}/${projectId}/us-central1/${task}`, { data });
-      } else {
-        throw new Error('Required environment variables GCLOUD_PROJECT and/or FUNCTIONS_EMULATOR_HOST are missing or invalid');
-      }
-    } else {
-      const queue = getFunctions(this.fb).taskQueue<T>(task);
-      if (queue) {
-        await queue.enqueue(data, options);
-      } else {
-        throw new Error(`Could not find task queue associated with ${task}`);
-      }
-    }
+  async enqueue() {
+    throw new Error('This feature is not supported in "client" mode');
   }
 
-  async count(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
+  async count(options: FirebaseQueryOptions = { path: '/' }): Promise<number> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
       throw new Error('You can only use count for collections, not individual documents');
     } else {
-      const ref = await this.firestore.collection(options.path).count().get();
-      return ref.data().count;
+      const ref = collection(this.firestore, options.path);
+      const snapshot = await getCountFromServer(ref);
+      return snapshot.data().count;
     }
   }
 
-  async countByQuery(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
-  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
-  async countByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
+  async countByQuery(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<number>;
+  async countByQuery(qb: unknown, options: FirebaseQueryOptions = { path: '/' }): Promise<number> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
       throw new Error('You can only use count for collections, not individual documents');
     }
 
-    let collection: firestore.Query = this.firestore.collection(options.path);
     const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const constraints = this.toConstraints(queryBuilder);
 
-    queryBuilder.conditions.forEach((condition) => {
-      if (condition.key === 'orderBy') {
-        collection = collection.orderBy(condition.value as string, condition.operator as 'asc' | 'desc' | undefined);
-      } else if (condition.key === 'limit') {
-        collection = collection.limit(condition.value as number);
-      } else if (condition.key === 'offset') {
-        collection = collection.startAfter(condition.value);
-      } else if (!condition.value) {
-        // Skip empty filter statement
-      } else {
-        collection = collection.where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
-      }
-    });
-
-    const ref = await collection.count().get();
-    return ref.data().count;
+    const ref = collection(this.firestore, options.path);
+    const snapshot = await getCountFromServer(query(ref, ...constraints));
+    return snapshot.data().count;
   }
 
-  async findById<T extends Entity>(id: string, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
-    const ref = await this.firestore.doc(`${options.path}/${id}`).get();
-    return ref ? <T>ref.data() : null;
+  async findById<T extends Entity>(id: string, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
+    const ref = doc(this.firestore, `${options.path}/${id}`);
+    const snapshot = await getDoc(ref);
+    return snapshot.exists() ? <T>snapshot.data() : null;
   }
 
-  async findByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
     return this.findByQuery(qb => qb.where(key, '==', value), options);
   }
 
-  async findByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<T|null>;
+  async findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<T|null>;
+  async findByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
 
     const queryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
@@ -155,23 +129,25 @@ export class FirebaseAdminRepository implements Repository {
     return result.values[0];
   }
 
-  async findAll<T extends Entity>(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAll<T extends Entity>(options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     let total = 0;
 
     const result: Array<T> = [];
     if (options.path.split('/').length % 2 === 1) {
-      const ref = await this.firestore.doc(options.path).get();
-      if (ref) {
-        result.push(<T>ref.data());
+      const ref = doc(this.firestore, options.path);
+      const snapshot = await getDoc(ref);
+      if (snapshot.exists()) {
+        result.push(<T>snapshot.data());
         total = 1;
       }
     } else {
-      const docRef = await this.firestore.collection(options.path).get();
-      docRef.forEach((document) => result.push(<T>document.data()));
+      const ref = collection(this.firestore, options.path);
+      const snapshots = await getDocs(ref);
+      snapshots.forEach((document) => result.push(<T>document.data()));
 
-      const countRef = await this.firestore.collection(options.path).count().get();
+      const countRef = await getCountFromServer(ref);
       total = countRef.data().count;
     }
 
@@ -184,40 +160,28 @@ export class FirebaseAdminRepository implements Repository {
     };
   }
 
-  async findAllByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }
 
-  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery<T extends Entity>(qb: unknown, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
       throw new Error('You can only search within collections, not individual documents');
     }
 
-    let collection: firestore.Query = this.firestore.collection(options.path);
     const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const constraints = this.toConstraints(queryBuilder);
 
-    queryBuilder.conditions.forEach((condition) => {
-      if (condition.key === 'orderBy') {
-        collection = collection.orderBy(condition.value as string, condition.operator as 'asc' | 'desc' | undefined);
-      } else if (condition.key === 'limit') {
-        collection = collection.limit(condition.value as number);
-      } else if (condition.key === 'offset') {
-        collection = collection.startAfter(condition.value);
-      } else if (!condition.value) {
-        // Skip empty filter statement
-      } else {
-        collection = collection.where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
-      }
-    });
+    const ref = collection(this.firestore, options.path);
+    const snapshots = await getDocs(query(ref, ...constraints));
 
     const result: Array<T> = [];
-    const docRef = await collection.get();
-    docRef.forEach((document) => result.push(<T>document.data()));
+    snapshots.forEach((document) => result.push(<T>document.data()));
 
     const total = await this.countByQuery({ ...queryBuilder, conditions: queryBuilder.conditions.filter(item => item.key !== 'limit' && item.key !== 'offset') }, options);
 
@@ -230,13 +194,13 @@ export class FirebaseAdminRepository implements Repository {
     };
   }
 
-  async saveAll<T extends Entity>(entities: Array<T>, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Array<T>> {
+  async saveAll<T extends Entity>(entities: Array<T>, options: FirebaseQueryOptions = { path: '/' }): Promise<Array<T>> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     await this.validateQueryOptions(options);
     return Promise.all(entities.map(entity => this.save(entity, options)));
   }
 
-  async save<T extends Entity>(entity: T, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T> {
+  async save<T extends Entity>(entity: T, options: FirebaseQueryOptions = { path: '/' }): Promise<T> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     entity.id = entity.id || uniqid();
     await this.validateQueryOptions(options);
@@ -244,54 +208,82 @@ export class FirebaseAdminRepository implements Repository {
     // Make sure to remove undefined properties
     const fbObject = this.objectify(entity);
     if (fbObject) {
-      await this.firestore.doc(`${options.path}/${entity.id}`).set(fbObject);
+      const ref = doc(this.firestore, `${options.path}/${entity.id}`);
+      await updateDoc(ref, fbObject);
     }
     return entity;
   }
 
-  async deleteAll(options: FirebaseAdminQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>, options?: FirebaseAdminQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>|FirebaseAdminQueryOptions, options?: FirebaseAdminQueryOptions): Promise<void> {
+  async deleteAll(options: FirebaseQueryOptions): Promise<void>;
+  async deleteAll<T extends Entity>(entities: Array<T>, options?: FirebaseQueryOptions): Promise<void>;
+  async deleteAll<T extends Entity>(entities: Array<T>|FirebaseQueryOptions, options?: FirebaseQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
-    const _options = (!options) ? entities as FirebaseAdminQueryOptions : options;
+    const _options = (!options) ? entities as FirebaseQueryOptions : options;
 
+    // Remove entities
     if (Array.isArray(entities)) {
       return this.validateQueryOptions(_options)
         .then(() => Promise.all(entities.map((entity: Entity) => this.delete(entity, _options))))
         .then(() => Promise.resolve());
+
+    // Remove single document
+    } else if (_options.path.split('/').length % 2 === 1) {
+      await this.validateQueryOptions(_options);
+      const ref = doc(this.firestore, _options.path);
+      await deleteDoc(ref);
+
+    // We are not going to support removing collections client-side, as this is resource intensive
     } else {
-      return this.validateQueryOptions(_options)
-        .then(() => this.firestore.doc(_options.path).delete())
-        .then(() => Promise.resolve());
+      throw new Error('You can delete individual documents, not collections');
     }
   }
 
-  async delete<T extends Entity>(entity: T, options: FirebaseAdminQueryOptions): Promise<void> {
+  async delete<T extends Entity>(entity: T, options: FirebaseQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     return this.deleteById(entity.id, options);
   }
 
-  async deleteById(id: string, options: FirebaseAdminQueryOptions): Promise<void> {
+  async deleteById(id: string, options: FirebaseQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
 
     if (!id) {
       return Promise.reject('`id` is a required parameter');
     }
 
-    return this.validateQueryOptions(options)
-      .then(() => this.firestore.doc(`${options.path}/${id}`).delete())
-      .then(() => Promise.resolve());
+    await this.validateQueryOptions(options);
+    const ref = doc(this.firestore, `${options.path}/${id}`);
+    await deleteDoc(ref);
   }
 
   async deleteFromStorage(): Promise<void> {
     return Promise.reject('This feature is not supported in "admin" mode');
   }
 
-  private validateQueryOptions(options: FirebaseAdminQueryOptions): Promise<void> {
+  private validateQueryOptions(options: FirebaseQueryOptions): Promise<void> {
     if (!options.path) {
       return Promise.reject(new Error('`path` is a required option for firebase repositories'));
     }
     return Promise.resolve();
+  }
+
+  private toConstraints(queryBuilder: QueryBuilder): Array<QueryConstraint> {
+    const constraints: Array<QueryConstraint> = [];
+
+    queryBuilder.conditions.forEach((condition) => {
+      if (condition.key === 'orderBy') {
+        constraints.push(orderBy(condition.value as string, condition.operator as 'asc' | 'desc' | undefined));
+      } else if (condition.key === 'limit') {
+        constraints.push(limit(condition.value as number));
+      } else if (condition.key === 'offset') {
+        constraints.push(startAfter(condition.value));
+      } else if (!condition.value) {
+        // Skip empty filter statement
+      } else {
+        constraints.push(where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value));
+      }
+    });
+
+    return constraints;
   }
 
   // Make sure to remove undefined properties
@@ -356,8 +348,8 @@ export class FirebaseAdminRepository implements Repository {
       typeof entity === 'string' ||
       typeof entity === 'boolean' ||
       typeof entity === 'number' ||
-      isOfType<firestore.GeoPoint>(entity, 'latitude') ||
-      isOfType<firestore.Timestamp>(entity, 'seconds')
+      isOfType<GeoPoint>(entity, 'latitude') ||
+      isOfType<Timestamp>(entity, 'seconds')
   }
 
   static getIdentifier(): symbol {
@@ -366,6 +358,6 @@ export class FirebaseAdminRepository implements Repository {
 
 }
 
-export interface FirebaseAdminQueryOptions extends QueryOptions {
+export interface FirebaseQueryOptions extends QueryOptions {
   path: string;
 }

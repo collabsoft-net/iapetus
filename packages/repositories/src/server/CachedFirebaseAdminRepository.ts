@@ -2,8 +2,8 @@ import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { CachingService, Entity, Paginated, QueryOptions } from '@collabsoft-net/types';
 import { AppOptions } from 'firebase-admin';
 
+import { QueryBuilder } from '../QueryBuilder';
 import { FirebaseAdminRepository } from './FirebaseAdminRepository';
-import { QueryBuilder } from './QueryBuilder';
 
 const DEFAULT_CACHE_TIMEOUT_IN_SECONDS = 300;
 

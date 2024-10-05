@@ -6,9 +6,9 @@
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "module": "./dist/es2020/index.js",
-  "main": "./dist/cjs/index.js",
-  "types": "./dist/types/index.d.ts",
+  "module": "./dist/es2020/server/index.js",
+  "main": "./dist/cjs/server/index.js",
+  "types": "./dist/types/server/index.d.ts",
   "files": [
     "dist"
   ],
@@ -18,6 +18,18 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "exports": {
+    "./client": {
+      "types": "./dist/types/client/index.d.ts",
+      "require": "./dist/cjs/client/index.js",
+      "import": "./dist/es2020/client/index.js"
+    },
+    "./server": {
+      "types": "./dist/types/server/index.d.ts",
+      "require": "./dist/cjs/server/index.js",
+      "import": "./dist/es2020/server/index.js"
+    }
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -56,5 +68,8 @@
     "firebase-admin": "11.2.1",
     "uniqid": "5.4.0"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
+  "dependencies": {
+    "firebase": "10.14.0"
+  }
 }
