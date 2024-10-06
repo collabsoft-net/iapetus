@@ -65,11 +65,9 @@
     "@collabsoft-net/dto": "^1.0.0-alpha.165",
     "@collabsoft-net/emitters": "1.0.0-alpha.44",
     "@google-cloud/storage": "6.7.0",
+    "firebase": "10.14.0",
     "firebase-admin": "11.2.1",
     "uniqid": "5.4.0"
   },
-  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
-  "dependencies": {
-    "firebase": "10.14.0"
-  }
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
