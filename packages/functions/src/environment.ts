@@ -4,12 +4,8 @@ import * as firebase from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { defineSecret, defineString } from 'firebase-functions/params';
 
-export const setEnv = (params: Array<string> = [], secrets: Array<string> = []): void => {
-  let cwd = process.cwd();
-  if (cwd.indexOf('/functions') >= 0) {
-    cwd += cwd.endsWith('/') ? '../../' : '/../../';
-  }
-  load(cwd);
+export const setEnv = (params: Array<string> = [], secrets: Array<string> = [], cwd?: string): void => {
+  load(cwd || process.cwd());
 
   if (process.env.FIREBASE_CONFIG) {
     const config: Record<string, string> = JSON.parse(process.env.FIREBASE_CONFIG);
