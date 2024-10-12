@@ -5,7 +5,7 @@ import { isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder, QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Auth, getAuth, signInWithCustomToken, signOut } from 'firebase/auth';
-import { collection, deleteDoc, doc, Firestore, GeoPoint, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, Primitive, query, QueryConstraint, startAfter, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, Firestore, GeoPoint, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, Primitive, query, QueryConstraint, setDoc, startAfter, Timestamp, updateDoc, where } from 'firebase/firestore';
 import uniqid from 'uniqid';
 
 import { QueryBuilder as QB } from '../QueryBuilder';
@@ -218,7 +218,12 @@ export class FirebaseRepository implements Repository {
     const fbObject = this.objectify(entity);
     if (fbObject) {
       const ref = doc(this.firestore, `${options.path}/${entity.id}`);
-      await updateDoc(ref, fbObject);
+      const snapshot = await getDoc(ref);
+      if (!snapshot.exists()) {
+        await setDoc(ref, fbObject);
+      } else {
+        await updateDoc(ref, fbObject);
+      }
     }
     return entity;
   }
