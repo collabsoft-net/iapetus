@@ -8,6 +8,7 @@ export * from './DTO';
 export * from './Entity';
 export * from './Entrypoint';
 export * from './Events';
+export * from './User';
 export * from './File';
 export * from './Paginated';
 export * from './Props';

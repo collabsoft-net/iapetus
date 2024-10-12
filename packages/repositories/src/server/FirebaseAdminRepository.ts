@@ -2,7 +2,7 @@
 
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { isOfType } from '@collabsoft-net/helpers';
-import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import axios from 'axios';
 import { app, AppOptions, auth, firestore } from 'firebase-admin';
 import firebase from 'firebase-admin';
@@ -50,6 +50,10 @@ export class FirebaseAdminRepository implements Repository {
   // ==========================================================================
 
   async isAuthenticated(): Promise<boolean> {
+    throw new Error('This feature is not supported in "admin" mode');
+  }
+
+  async currentUser(): Promise<User> {
     throw new Error('This feature is not supported in "admin" mode');
   }
 

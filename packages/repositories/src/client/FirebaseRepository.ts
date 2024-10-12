@@ -2,7 +2,7 @@
 
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { isOfType } from '@collabsoft-net/helpers';
-import { Entity, Event, EventListener, Paginated, QueryBuilder, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import { Entity, Event, EventListener, Paginated, QueryBuilder, QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Auth, getAuth, signInWithCustomToken, signOut } from 'firebase/auth';
 import { collection, deleteDoc, doc, Firestore, GeoPoint, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, Primitive, query, QueryConstraint, startAfter, Timestamp, updateDoc, where } from 'firebase/firestore';
@@ -50,6 +50,15 @@ export class FirebaseRepository implements Repository {
 
   async isAuthenticated(): Promise<boolean> {
     return this.auth.currentUser !== null;
+  }
+
+  async currentUser(): Promise<User|null> {
+    const user = this.auth.currentUser;
+    return user ? {
+      id: user.uid,
+      name: user.displayName,
+      email: user.email
+    } : null;
   }
 
   async authenticate(token: string): Promise<boolean> {

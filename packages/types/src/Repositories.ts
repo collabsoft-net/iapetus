@@ -3,11 +3,13 @@ import { EventEmitter } from './Events';
 import { Paginated } from './Paginated';
 import { QueryBuilder } from './QueryBuilder';
 import { StorageProvider } from './StorageProvider';
+import { User } from './User';
 
 export interface Repository extends EventEmitter {
   close(): Promise<void>;
-  isAuthenticated(): Promise<boolean>;
   authenticate(token: string): Promise<boolean>;
+  isAuthenticated(): Promise<boolean>;
+  currentUser(): Promise<User|null>;
   signOut(): Promise<void>;
 
   count(options?: QueryOptions): Promise<number>;

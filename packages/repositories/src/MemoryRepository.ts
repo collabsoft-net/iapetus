@@ -1,5 +1,5 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
-import { Entity, EntityArray, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider } from '@collabsoft-net/types';
+import { Entity, EntityArray, Event, EventListener, Paginated, QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import uniqid from 'uniqid';
 
 import { QueryBuilder } from './QueryBuilder';
@@ -44,6 +44,10 @@ export class MemoryRepository implements Repository {
 
   async isAuthenticated(): Promise<boolean> {
     return true;
+  }
+
+  async currentUser(): Promise<User> {
+    throw new Error('This feature is not supported in "memory" mode');
   }
 
   async authenticate(): Promise<boolean> {
