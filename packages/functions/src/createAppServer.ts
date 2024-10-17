@@ -19,6 +19,10 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
 
   const instance = new InversifyExpressServer(appContainer).setConfig((app) => {
     try {
+      if (configure) {
+        configure(app);
+      }
+
       app.set('trust proxy', 1);
       app.disable('x-powered-by');
       app.use(cookies());
@@ -50,10 +54,6 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
           instance.next(req, res, next);
         });
       });
-
-      if (configure) {
-        configure(app);
-      }
 
       setupExpressErrorHandler(app);
     } catch (exp) {
