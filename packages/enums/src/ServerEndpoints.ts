@@ -11,6 +11,7 @@ export enum JiraServerEndpoints {
 
   READ_PROJECT = '/rest/api/2/project/:projectIdOrKey',
   LIST_PROJECTS = '/rest/api/2/project',
+  SEARCH_PROJECTS = '/rest/api/2/projects/picker',
 
   READ_ISSUE = '/rest/api/2/issue/:issueIdOrKey',
 

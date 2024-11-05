@@ -86,38 +86,50 @@ export class JiraClientService extends AbstractAtlasClientService {
       });
       return data;
     } else {
-      const { data } = await this.client.get<Array<Jira.Project>>(this.getEndpointFor(this.endpoints.LIST_PROJECTS), { expand: expand?.join(',') });
-      let result = data.slice();
+      // Unfortunately, there are a lot of options that are not supported in P2
+      if (typeKey != undefined) {
+        throw new Error('The filter option `typeKey` is not supported in P2 mode');
+      } else if (category != undefined) {
+        throw new Error('The filter option `category` is not supported in P2 mode');
+      } else if (action != undefined) {
+        throw new Error('The filter option `action` is not supported in P2 mode');
+      } else if (expand != undefined) {
+        throw new Error('The filter option `expand` is not supported in P2 mode');
+      } else if (properties != undefined) {
+        throw new Error('The filter option `properties` is not supported in P2 mode');
+      } else if (startAt > 0) {
+        throw new Error('The filter option `startAt` is not supported in P2 mode');
+      } else if (orderBy != 'key') {
+        throw new Error('The filter option `orderBy` is not supported in P2 mode');
+      }
+
+      const { data } = await this.client.get<Jira.ProjectPickerResponse>(this.getEndpointFor(this.endpoints.SEARCH_PROJECTS), { query, maxResults });
+
+      const { projects, total } = data;
+      let result = projects.slice();
 
       if (id) {
-        result = result.filter(item => id.includes(item.id));
+        result = projects.filter(item => id.includes(item.id));
       }
 
       if (keys) {
         result = result.filter(item => keys.includes(item.key));
       }
 
-      if (query) {
-        result = result.filter(item => item.name.toLowerCase().includes(query) || item.key.toLowerCase().includes(query));
-      }
-
-      if (typeKey) {
-        result = result.filter(item => item.projectTypeKey === typeKey);
-      }
-
-      if (category) {
-        result = result.filter(item => +item.projectCategory.id === category);
-      }
-
-      // TODO: implement orderBy and action
-
       return {
         nextPage: undefined,
-        maxResults: result.length,
+        maxResults,
         startAt: 0,
-        total: result.length,
+        total,
         isLast: true,
-        values: result
+        values: result.map(item => ({
+          id: item.id,
+          key: item.key,
+          name: item.name,
+          avatarUrls: {
+            '16x16': item.avatar
+          }
+        }) as unknown as Jira.Project)
       }
     }
   }

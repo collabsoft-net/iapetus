@@ -996,6 +996,18 @@ declare global {
       avatarUrl: string;
     }
 
+    interface ProjectPickerResponse {
+      projects: Array<{
+        html: string;
+        name: string;
+        key: string;
+        id: string;
+        avatar: string;
+      }>;
+      total: number;
+      header: string;
+    }
+
     interface PagedOfProjects {
       nextPage?: string;
       maxResults: number;
