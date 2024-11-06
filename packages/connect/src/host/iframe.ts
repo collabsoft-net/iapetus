@@ -31,8 +31,15 @@ export const resize = (event: MessageEvent, AC: Host): void => {
 export const sizeToParent = (event: MessageEvent, AC: Host): void => {
   const frame = AC.findSource(event);
   const parent = frame?.parentElement;
+
   if (parent) {
+    const scrollTop = window.scrollY;
+    const viewportHeight = document.documentElement.clientHeight;
+    const offsetTop = parent.getBoundingClientRect().top;
+    const visibleHeaderHeight = Math.max(0, offsetTop - scrollTop);
+    const frameHeight = viewportHeight - visibleHeaderHeight;
+
+    frame.setAttribute('height', `${frameHeight}px`);
     frame.setAttribute('width', `${parent.scrollWidth}px`);
-    frame.setAttribute('height', `${parent.scrollHeight}px`);
   }
 }
