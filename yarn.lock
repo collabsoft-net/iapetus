@@ -157,6 +157,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/ds-lib@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@atlaskit/ds-lib@npm:3.3.0"
+  dependencies:
+    "@atlaskit/platform-feature-flags": "npm:^0.3.0"
+    "@babel/runtime": "npm:^7.0.0"
+    bind-event-listener: "npm:^3.0.0"
+    react-uid: "npm:^2.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 6502c664f2a23cb730b75c1d2714a3313f000ca8bd80efd48a77a084cec1f6f47c31000b630c34c3588530548bc323d06996dc93db0d74052bf5bf76a5cbe7d4
+  languageName: node
+  linkType: hard
+
 "@atlaskit/focus-ring@npm:^1.3.0":
   version: 1.3.6
   resolution: "@atlaskit/focus-ring@npm:1.3.6"
@@ -273,6 +287,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/platform-feature-flags@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@atlaskit/platform-feature-flags@npm:0.3.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.0.0"
+  checksum: b379e0b086cd84bb27fbcf6369ce7158fdb574f0f884d2091f1bece5058c1d1a7668465d7435ee3a8f6953b349075e5a585ea3034d159c2d8813531c7f67d8b0
+  languageName: node
+  linkType: hard
+
 "@atlaskit/portal@npm:^4.4.0":
   version: 4.4.0
   resolution: "@atlaskit/portal@npm:4.4.0"
@@ -348,6 +371,22 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: b78c2d545b529967c3802bf1ad1b7a77c8f5d3702d63547a51fc908e1ca27a3f7371dae49fbead1724b8af4bcb043ee86d12c04c11358add6fdcf8bdeb0b2b17
+  languageName: node
+  linkType: hard
+
+"@atlaskit/tokens@npm:2.5.0":
+  version: 2.5.0
+  resolution: "@atlaskit/tokens@npm:2.5.0"
+  dependencies:
+    "@atlaskit/ds-lib": "npm:^3.3.0"
+    "@atlaskit/platform-feature-flags": "npm:^0.3.0"
+    "@babel/runtime": "npm:^7.0.0"
+    "@babel/traverse": "npm:^7.23.2"
+    "@babel/types": "npm:^7.20.0"
+    bind-event-listener: "npm:^3.0.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: b70c825d06faf00c69fa9aa4ccae750df5ff5baf11bfb3ae8c3263e593b815a18e84ffb8c552aa85d0e6d6ef5a6a21e7bb42e5f13b3baf61e62f67590e28878c
   languageName: node
   linkType: hard
 
@@ -1196,6 +1235,7 @@ __metadata:
   resolution: "@collabsoft-net/connect@workspace:packages/connect"
   dependencies:
     "@atlaskit/modal-dialog": "npm:12.10.3"
+    "@atlaskit/tokens": "npm:2.5.0"
     "@collabsoft-net/helpers": "workspace:*"
     "@collabsoft-net/inversify": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
@@ -1223,6 +1263,7 @@ __metadata:
     typescript: "npm:5.3.3"
   peerDependencies:
     "@atlaskit/modal-dialog": "*"
+    "@atlaskit/tokens": "*"
     "@collabsoft-net/helpers": "*"
     "@collabsoft-net/inversify": "workspace:*"
     inversify: 6.0.2
@@ -6143,6 +6184,13 @@ __metadata:
   version: 2.1.1
   resolution: "bind-event-listener@npm:2.1.1"
   checksum: 89b3eb780ebcb79c7a992e0d313bcff46043ec68c0980b798a9b74759a4a3b4ff8b38a32af193fec081e8c3fb81fc6e7de1930848817de71d162c3ddd84a04e4
+  languageName: node
+  linkType: hard
+
+"bind-event-listener@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "bind-event-listener@npm:3.0.0"
+  checksum: 3d442307ee906b79f041433b065e7b259bd1e5231a74519271cc5beb485f7c469609da9c7f20fdd0b3ab340e4691fee826b76d003c71cf5ad955186aba5c256e
   languageName: node
   linkType: hard
 

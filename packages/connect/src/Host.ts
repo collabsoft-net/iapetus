@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 
+import { ThemeMutationObserver } from '@atlaskit/tokens';
 import { isOfType } from '@collabsoft-net/helpers';
 
 import { Events } from './client/Events';
@@ -213,6 +214,25 @@ export class Host {
     });
 
     await this.editor.init();
+
+    // Add a mutation observer for theming
+    new ThemeMutationObserver((theme) => {
+      // Emit the theme updated event to all frames
+      const frames = this.getFrames(this.options.appKey);
+      frames.forEach(frame => {
+        const addonKey = frame.getAttribute('data-ap-appkey');
+        const key = frame.getAttribute('data-ap-key');
+        const originId = frame.getAttribute('data-ap-origin');
+
+        frame.contentWindow?.postMessage({
+          name: Events.AP_THEMING_UPDATED,
+          addonKey,
+          originId,
+          key,
+          data: { theme }
+        }, '*')
+      });
+    }).observe();
 
     // Add an event listener for History PopState
     // This is sent to all frames to accomodate the undocumented AP.history.popState()

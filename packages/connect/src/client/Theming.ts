@@ -1,3 +1,7 @@
+import { Events } from './Events';
+import { eventListeners } from './Listeners';
+import { CallbackHandler } from './Types';
+
 type Theme = 'dark'|'light'|'spacing';
 
 const LIGHT_THEME_STYLING = process.env.LIGHT_THEME_STYLING;
@@ -19,6 +23,26 @@ export const InitializeThemingEventHandler = () => {
     surfacesStyles.setAttribute('href', 'https://connect-cdn.atl-paas.net/surfaces.css');
     surfacesStyles.setAttribute('data-surface', 'raised');
     document.head.appendChild(surfacesStyles);
+  }
+
+  // Register event listener for updated theme
+  const listener: CallbackHandler<{ theme: string }> = (data) => {
+    if (data) {
+      updateTheme(data.theme);
+    }
+  }
+
+  eventListeners.set(listener, {
+    name: Events.AP_THEMING_UPDATED,
+    once: false,
+    listener
+  });
+}
+
+const updateTheme = (theme: string) => {
+  const htmlNode = document.querySelector('html');
+  if (htmlNode) {
+    htmlNode.setAttribute('data-color-mode', theme);
   }
 }
 

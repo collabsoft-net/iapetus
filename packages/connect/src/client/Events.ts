@@ -68,6 +68,8 @@ export enum Events {
   AP_SCROLLPOSITION_GETPOSITION = 'AP.scrollPosition.getPosition()',
   AP_SCROLLPOSITION_SETVERTICALPOSITION = 'AP.scrollPosition.setVerticalPosition()',
 
+  AP_THEMING_UPDATED = 'AP.theming.updated()',
+
   AP_USER_GETCURRENTUSER = 'AP.user.getCurrentUser()',
   AP_USER_GETTIMEZONE = 'AP.user.getTimezone()',
   AP_USER_GETLOCALE = 'AP.user.getLocale()',
