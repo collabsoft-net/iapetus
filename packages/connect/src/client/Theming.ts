@@ -1,3 +1,5 @@
+import { ActiveThemeState } from '@atlaskit/tokens';
+
 import { Events } from './Events';
 import { eventListeners } from './Listeners';
 import { CallbackHandler } from './Types';
@@ -26,7 +28,7 @@ export const InitializeThemingEventHandler = () => {
   }
 
   // Register event listener for updated theme
-  const listener: CallbackHandler<{ theme: string }> = (data) => {
+  const listener: CallbackHandler<{ theme: Partial<ActiveThemeState> }> = (data) => {
     if (data) {
       updateTheme(data.theme);
     }
@@ -39,10 +41,10 @@ export const InitializeThemingEventHandler = () => {
   });
 }
 
-const updateTheme = (theme: string) => {
+const updateTheme = (theme: Partial<ActiveThemeState>) => {
   const htmlNode = document.querySelector('html');
   if (htmlNode) {
-    htmlNode.setAttribute('data-color-mode', theme);
+    htmlNode.setAttribute('data-color-mode', theme.colorMode || 'light');
   }
 }
 
