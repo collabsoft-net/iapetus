@@ -224,6 +224,7 @@ export class Host {
         const key = frame.getAttribute('data-ap-key');
         const originId = frame.getAttribute('data-ap-origin');
 
+        this.info(`[AC] User theme changed to ${theme.colorMode}, notifying all instances`);
         frame.contentWindow?.postMessage({
           name: Events.AP_THEMING_UPDATED,
           addonKey,
