@@ -213,8 +213,6 @@ export class Host {
       }
     });
 
-    await this.editor.init();
-
     // Add a mutation observer for theming
     new ThemeMutationObserver((theme) => {
       // Emit the theme updated event to all frames
@@ -271,6 +269,11 @@ export class Host {
         }, '*')
       });
     });
+
+    // Initialize custom Macro editor in Confluence
+    // NOTE: this should run last as it is based on interval polling
+    await this.editor.init();
+
   }
 
   public emit(originId: string, name: string): void;
