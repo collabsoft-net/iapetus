@@ -53,3 +53,9 @@ export enum ConfluenceServerEndpoints {
   MEMBEROF = '/rest/api/user/memberof',
   APP = '/rest/plugins/1.0/:appKey-key'
 }
+
+export enum BambooServerEndpoints {
+  PLANS = '/rest/api/latest/plan.json',
+  BUILDSTATUS = '/rest/api/latest/result/:projectKey.json',
+  STATUS = '/rest/api/latest/status/:planResultKey'
+}

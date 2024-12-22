@@ -1662,6 +1662,33 @@ declare global {
 
   }
 
+  namespace Bamboo {
+    interface BuildStatus {
+      buildState: string;
+      finished: boolean;
+      lifeCycleState: string;
+      state: string;
+      successful: boolean;
+      restartCount: number;
+    }
+
+    interface Plans {
+      plans: {
+        plan: Array<Plan>;
+      };
+    }
+
+    interface Plan {
+      key: string;
+      enabled: boolean;
+      name: string;
+      planKey: { key: string; };
+      shortKey: string;
+      shortName: string;
+      type: string;
+    }
+  }
+
   namespace UPM {
 
     interface App {
