@@ -22,3 +22,4 @@ export * from './Strategy';
 export * from './Tasks';
 export * from './Type';
 export * from './Validator';
+export * from './ExecutionPoint';
