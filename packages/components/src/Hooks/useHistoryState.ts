@@ -1,7 +1,9 @@
-import { AP, useContext } from '@collabsoft-net/components';
 import { ServiceIdentifier } from '@collabsoft-net/connect';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { QueryObserverResult, RefetchOptions, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query'
+
+import { AP } from '../Contexts';
+import { useContext } from './useContext';
 
 const getHistoryState = (state: string|AP.HistoryState): Record<string, string> => {
   const result: Record<string, string> = {};
