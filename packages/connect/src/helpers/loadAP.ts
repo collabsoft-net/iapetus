@@ -19,7 +19,7 @@ export const loadAP = async (options: {
   sizeToParent: false,
   margin: true,
   base: false
-}): Promise<AP.JiraInstance|AP.ConfluenceInstance> => {
+}): Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.PlatformInstance> => {
   const resize = new Boolean(options.resize).toString();
   const sizeToParent = new Boolean(options.sizeToParent).toString();
   const margin = new Boolean(options.margin).toString();
@@ -69,9 +69,10 @@ export const loadAP = async (options: {
       return { ...windowWithAP.AP } as AP.JiraInstance;
     } else if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
       return { ...windowWithAP.AP } as AP.ConfluenceInstance;
-    } else {
-      throw new Error();
+    } else if (windowWithAP.AP) {
+      return { ...windowWithAP.AP } as AP.PlatformInstance;
     }
+    throw new Error('Required global variable "window.AP" not available');
   } catch (err) {
     throw new Error('Atlassian Javascript API (AP) is not available');
   }
