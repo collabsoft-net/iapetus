@@ -2,7 +2,7 @@ import { WindowWithAP } from '../AP';
 
 const windowWithAP = window as unknown as WindowWithAP;
 
-export const waitForAP = async <T extends AP.JiraInstance|AP.ConfluenceInstance> (): Promise<T> => {
+export const waitForAP = async <T extends AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance> (): Promise<T> => {
   let count = 0;
   while (!windowWithAP.AP || count > 10) {
     await new Promise((resolve) => setTimeout(resolve, 200));

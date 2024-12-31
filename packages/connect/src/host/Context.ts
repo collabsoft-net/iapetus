@@ -9,7 +9,7 @@ type WindowWithContext = Window & {
 
 // This strongly depends on context managers to provide META information
 // TODO: also make the ContextManager, WebAction and ContextProviders part of either iapetus or a generic AC implementation Java package
-export const getContextFor = (host: 'jira'|'confluence'|'bamboo'|'bitbucket'): AP.JiraContext|AP.ConfluenceContext => {
+export const getContextFor = (host: 'jira'|'confluence'|'bamboo'|'bitbucket'): AP.JiraContext|AP.ConfluenceContext|AP.BambooContext => {
   if (host === 'jira') {
     const { JIRA, WRM } = (window as unknown as WindowWithContext);
     return {
@@ -43,8 +43,25 @@ export const getContextFor = (host: 'jira'|'confluence'|'bamboo'|'bitbucket'): A
         }
       }
     }
+  } else if (host === 'bamboo') {
+    return {
+      bamboo: {
+        project: {
+          id: '',
+          key: ''
+        },
+        plan: {
+          id: '',
+          key: ''
+        },
+        build: {
+          id: '',
+          key: ''
+        }
+      }
+    }
   } else {
-    throw new Error('Could not find required objects JIRA or Confluence, unable to detect context');
+    throw new Error(`Unable to detect context for host '${host}'`);
   }
 }
 

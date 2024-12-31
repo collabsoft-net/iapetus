@@ -6,7 +6,7 @@
 
 export {};
 
-export type WindowWithAP<T = AP.JiraInstance|AP.ConfluenceInstance> = Window & {
+export type WindowWithAP<T = AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance> = Window & {
   AP: T;
 }
 
@@ -44,6 +44,22 @@ declare global {
       navigator: Navigator & {
         getLocation: (callback: (location: NavigatorLocation) => void) => void;
         go: (target: NavigatorTargetConfluence, context: NavigatorContext) => void;
+      }
+    }
+
+    // Unfortunately, this does not exist because there is no cloud version of Bamboo
+    // However, to be able to re-use the same code between Atlassian products
+    // this emulates Atlassian Connect behaviour for Bamboo as if there was a Cloud version
+    type BambooInstance = PlatformInstance & {
+      bamboo: Bamboo;
+
+      context: Context & {
+        getContext: (callback?: (context: BambooContext) => void) => Promise<BambooContext>;
+      }
+
+      navigator: Navigator & {
+        getLocation: (callback: (location: NavigatorLocation) => void) => void;
+        go: (target: NavigatorTargetBamboo, context: NavigatorContext) => void;
       }
     }
 
@@ -123,6 +139,26 @@ declare global {
           key: string;
           id: string;
         }
+      }
+    }
+
+    // Unfortunately, this does not exist because there is no cloud version of Bamboo
+    // However, to be able to re-use the same code between Atlassian products
+    // this emulates Atlassian Connect behaviour for Bamboo as if there was a Cloud version
+    type BambooContext = {
+      bamboo: {
+        project: {
+          id: string;
+          key: string;
+        }
+        plan: {
+          id: string;
+          key: string;
+        };
+        build: {
+          id: string;
+          key: string;
+        };
       }
     }
 
@@ -352,6 +388,7 @@ declare global {
 
     type NavigatorTargetJira = 'dashboard'|'issue'|'addonModule'|'userProfile'|'projectAdminSummary'|'projectAdminTabPanel'|'site';
     type NavigatorTargetConfluence = 'contentview'|'contentedit'|'spaceview'|'spacetools'|'dashboard'|'userProfile'|'addonModule'|'contentlist'|'site';
+    type NavigatorTargetBamboo = 'project'|'plan'|'build'|'addonModule'|'site';
 
     interface NavigatorContext {
       contentId?: string;
@@ -369,6 +406,8 @@ declare global {
       customData?: Record<string, string>;
       versionOverride?: string;
       embeddedContentRender?: string;
+      planKey?: string;
+      buildResultKey?: string;
       relativeUrl?: string;
       absoluteUrl?: string;
     }
@@ -510,6 +549,10 @@ declare global {
       getContentProperty: <T> (key: string, callback: (property: T) => void) => void;
       setContentProperty: <T> (contentProperty: ConfluenceContentProperty<T>, callback: (result: { propery: ConfluenceContentProperty<T>, error: Error }) => void) => void;
       syncPropertyFromServer: <T> (key: string, callback: (property: ConfluenceContentProperty<T>) => void) => void;
+    }
+
+    type Bamboo = {
+      name: string
     }
 
     type ConfluenceContentProperty<T> = {

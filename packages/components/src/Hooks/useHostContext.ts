@@ -8,11 +8,11 @@ export const useHostContext = () => {
 
   const AP = useContext(APContext);
 
-  const [ context, setContext ] = useState<AP.JiraContext|AP.ConfluenceContext>();
+  const [ context, setContext ] = useState<AP.JiraContext|AP.ConfluenceContext|AP.BambooContext>();
   const [ isLoading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
-    if (isOfType<AP.JiraInstance>(AP, 'jira') || isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
+    if (isOfType<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance>(AP, 'context')) {
       AP.context.getContext().then(setContext).finally(() => setLoading(false));
     }
   }, [ AP ]);

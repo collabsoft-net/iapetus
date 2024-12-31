@@ -19,7 +19,7 @@ export const loadAP = async (options: {
   sizeToParent: false,
   margin: true,
   base: false
-}): Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.PlatformInstance> => {
+}): Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance> => {
   const resize = new Boolean(options.resize).toString();
   const sizeToParent = new Boolean(options.sizeToParent).toString();
   const margin = new Boolean(options.margin).toString();
@@ -36,8 +36,8 @@ export const loadAP = async (options: {
 
   try {
     const AP = await (windowWithAP.AP
-      ? new Promise<AP.JiraInstance|AP.ConfluenceInstance>(resolve => resolve(windowWithAP.AP))
-      : new Promise<AP.JiraInstance|AP.ConfluenceInstance>((resolve, reject) => {
+      ? new Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance>(resolve => resolve(windowWithAP.AP))
+      : new Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance>((resolve, reject) => {
         const script = document.createElement('script');
         script.onload = async function() {
           try {
@@ -69,8 +69,8 @@ export const loadAP = async (options: {
       return { ...windowWithAP.AP } as AP.JiraInstance;
     } else if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
       return { ...windowWithAP.AP } as AP.ConfluenceInstance;
-    } else if (windowWithAP.AP) {
-      return { ...windowWithAP.AP } as AP.PlatformInstance;
+    } else if (isOfType<AP.BambooInstance>(AP, 'bamboo')) {
+      return { ...windowWithAP.AP } as AP.BambooInstance;
     }
     throw new Error('Required global variable "window.AP" not available');
   } catch (err) {
