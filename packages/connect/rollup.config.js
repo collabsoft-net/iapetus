@@ -77,5 +77,17 @@ export default (async () => {
         'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
       })
     },
+    {
+      input: './dist/es2020/Polyfill-bitbucket.js',
+      output: {
+        file: './dist/ap-bitbucket.js',
+        format: 'iife'
+      },
+      ...common({
+        'process.env.LIGHT_THEME_STYLING': JSON.stringify(LIGHT_THEME_STYLING),
+        'process.env.DARK_THEME_STYLING': JSON.stringify(DARK_THEME_STYLING),
+        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
+      })
+    },    
   ]
 })();

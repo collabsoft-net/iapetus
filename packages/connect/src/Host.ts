@@ -429,8 +429,12 @@ export class Host {
   private contextEventHandler(name: Events, event: MessageEvent<unknown>) {
     switch (name) {
       case Events.AP_CONTEXT_GETCONTEXT:
-        const context = getContextFor(this.options.product);
-        this.reply(event, context);
+        if (this.options.product === 'bitbucket') {
+          this.unsupportedEvent(name);
+        } else {
+          const context = getContextFor(this.options.product);
+          this.reply(event, context);
+        }
         break;
       case Events.AP_CONTEXT_GETTOKEN:
         this.unsupportedEvent(name);

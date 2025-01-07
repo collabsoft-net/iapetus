@@ -59,3 +59,6 @@ export enum BambooServerEndpoints {
   BUILDSTATUS = '/rest/api/latest/result/:projectKey.json',
   STATUS = '/rest/api/latest/status/:planResultKey'
 }
+
+export enum BitbucketServerEndpoints {
+}

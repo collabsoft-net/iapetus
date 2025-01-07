@@ -6,7 +6,7 @@
 
 export {};
 
-export type WindowWithAP<T = AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance> = Window & {
+export type WindowWithAP<T = AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance> = Window & {
   AP: T;
 }
 
@@ -61,6 +61,10 @@ declare global {
         getLocation: (callback: (location: NavigatorLocation) => void) => void;
         go: (target: NavigatorTargetBamboo, context: NavigatorContext) => void;
       }
+    }
+
+    type BitbucketInstance = Omit<PlatformInstance, 'context'|'cookie'|'navigator'|'user'> & {
+      bitbucket: Bitbucket;
     }
 
     // https://developer.atlassian.com/cloud/jira/platform/about-the-connect-javascript-api/
@@ -553,6 +557,10 @@ declare global {
 
     type Bamboo = {
       name: string
+    }
+
+    type Bitbucket = {
+      name: string;
     }
 
     type ConfluenceContentProperty<T> = {
