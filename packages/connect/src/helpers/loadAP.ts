@@ -7,7 +7,7 @@ import { waitForAP } from './waitForAP';
 
 const windowWithAP = window as unknown as WindowWithAP;
 
-export const loadAP = async (options: {
+export const loadAP = async <T extends AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(options: {
   url?: string;
   resize: boolean;
   sizeToParent: boolean;
@@ -19,7 +19,7 @@ export const loadAP = async (options: {
   sizeToParent: false,
   margin: true,
   base: false
-}): Promise<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance> => {
+}): Promise<T> => {
   const resize = new Boolean(options.resize).toString();
   const sizeToParent = new Boolean(options.sizeToParent).toString();
   const margin = new Boolean(options.margin).toString();
@@ -60,21 +60,15 @@ export const loadAP = async (options: {
       throw new Error('Atlassian Javascript API (AP) is not available');
     }
 
+    // Update the global variable to reflect the current AP object
+    windowWithAP.AP = AP;
+
     // If this is a polyfill, initialise the handshake
     if (isOfType<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(AP, 'isPolyfill')) {
       await Handshake(options);
     }
 
-    if (isOfType<AP.JiraInstance>(AP, 'jira')) {
-      return { ...windowWithAP.AP } as AP.JiraInstance;
-    } else if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
-      return { ...windowWithAP.AP } as AP.ConfluenceInstance;
-    } else if (isOfType<AP.BambooInstance>(AP, 'bamboo')) {
-      return { ...windowWithAP.AP } as AP.BambooInstance;
-    } else if (isOfType<AP.BitbucketInstance>(AP, 'bitbucket')) {
-      return { ...windowWithAP.AP } as AP.BitbucketInstance;
-    }
-    throw new Error('Required global variable "window.AP" not available');
+    return { ...windowWithAP.AP } as T;
   } catch (err) {
     throw new Error('Atlassian Javascript API (AP) is not available');
   }
