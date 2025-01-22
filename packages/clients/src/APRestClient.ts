@@ -15,6 +15,10 @@ export class APRestClient implements RestClient {
     return instance;
   }
 
+  protected get client(): Promise<AP.Request> {
+    return new Promise(resolve => resolve(this.AP.request));
+  }
+
   async get<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async get<T>(endpoint: string, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async get<T>(endpoint: string, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
@@ -58,9 +62,7 @@ export class APRestClient implements RestClient {
   }
 
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const client = isOfType<AP.BitbucketInstance>(this.AP, 'bitbucket')
-      ? await new Promise<AP.Request>((resolve) => (this.AP as AP.BitbucketInstance).require<AP.Request>('proxyRequest', resolve))
-      : this.AP.request;
+    const client = await this.client;
 
     const fetchFromRemote = async (): Promise<AxiosResponse<T>> => {
       try {

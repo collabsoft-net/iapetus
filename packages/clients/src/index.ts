@@ -1,6 +1,7 @@
 
 export * from './AbstractAtlasRestClient';
 export * from './AbstractRestClient';
+export * from './APProxyRestClient';
 export * from './APRestClient';
 export * from './BambooRestClient';
 export * from './BitbucketRestClient';
