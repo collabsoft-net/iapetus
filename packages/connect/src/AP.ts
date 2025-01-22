@@ -65,6 +65,7 @@ declare global {
 
     type BitbucketInstance = Omit<PlatformInstance, 'context'|'cookie'|'navigator'|'user'> & {
       bitbucket: Bitbucket;
+      require: <T>(name: string, callback: (instance: T) => void) => void;
     }
 
     // https://developer.atlassian.com/cloud/jira/platform/about-the-connect-javascript-api/

@@ -61,7 +61,7 @@ export const loadAP = async (options: {
     }
 
     // If this is a polyfill, initialise the handshake
-    if (isOfType<AP.PlatformInstance>(AP, 'isPolyfill')) {
+    if (isOfType<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(AP, 'isPolyfill')) {
       await Handshake(options);
     }
 

@@ -21,7 +21,7 @@ const getHistoryState = (state: string|AP.HistoryState): Record<string, string> 
 export const useHistoryState = <T> (): [ T, UseMutationResult<string, Error, Partial<T>>, (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Record<string, string>, unknown>> ] => {
 
   const queryClient = useQueryClient();
-  const ACJS = useContext<AP.PlatformInstance>(AP, ServiceIdentifier.AP);
+  const ACJS = useContext<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(AP, ServiceIdentifier.AP);
 
   const { data, refetch } = useQuery({
     queryKey: [ 'ACJS.history.getState()' ],

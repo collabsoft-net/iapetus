@@ -13,6 +13,11 @@ export const BitbucketInstance: AP.BitbucketInstance = {
 
   bitbucket: {
     name: 'bitbucket'
+  },
+
+  require: <T>(name: string, callback: (result: T) => void) => {
+    const result = (BitbucketInstance as unknown as Record<string, unknown>)[name];
+    callback(result as T);
   }
 
 }

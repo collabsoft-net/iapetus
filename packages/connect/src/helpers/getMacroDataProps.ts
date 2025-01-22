@@ -5,7 +5,7 @@ import { Props } from '@collabsoft-net/types';
 import { ServiceIdentifier } from '../ServiceIdentifier';
 
 export const getMacroDataProps = async () => {
-  const AP = kernel.get<AP.PlatformInstance>(ServiceIdentifier.AP);
+  const AP = kernel.get<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(ServiceIdentifier.AP);
   return new Promise<Props|undefined>(resolve =>
     isOfType<AP.ConfluenceInstance>(AP, 'confluence')
       ? AP.confluence.getMacroData(resolve)

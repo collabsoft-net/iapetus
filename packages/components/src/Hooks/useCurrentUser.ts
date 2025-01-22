@@ -1,3 +1,4 @@
+import { isOfType } from '@collabsoft-net/helpers';
 import { useContext, useEffect, useState } from 'react';
 
 import { AP as APContext } from '../Contexts';
@@ -13,9 +14,9 @@ export const useCurrentUser = (accountId?: string|PromiseLike<string>): [ Jira.U
   const [ error, setError ] = useState<Error>();
 
   useEffect(() => {
-    if (!AP) {
+    if (!AP || !isOfType(AP, 'user')) {
       setUser(null);
-      setError(new Error('Cannot retrieve User, hook is executed outside of context of Atlassian host product'));
+      setError(new Error('Cannot retrieve User, hook is executed outside of context of Atlassian Jira or Confluence products'));
       setLoading(false);
     } else {
       if (!service) {

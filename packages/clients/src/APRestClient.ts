@@ -7,7 +7,7 @@ export class APRestClient implements RestClient {
 
   #duration?: number;
 
-  constructor(protected AP: AP.PlatformInstance, private cacheService?: CachingService) {}
+  constructor(protected AP: AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance, private cacheService?: CachingService) {}
 
   cached(duration: number): APRestClient {
     const instance = new APRestClient(this.AP, this.cacheService);
@@ -58,7 +58,9 @@ export class APRestClient implements RestClient {
   }
 
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const client = this.AP.request;
+    const client = isOfType<AP.BitbucketInstance>(this.AP, 'bitbucket')
+      ? await new Promise<AP.Request>((resolve) => (this.AP as AP.BitbucketInstance).require<AP.Request>('proxyRequest', resolve))
+      : this.AP.request;
 
     const fetchFromRemote = async (): Promise<AxiosResponse<T>> => {
       try {
