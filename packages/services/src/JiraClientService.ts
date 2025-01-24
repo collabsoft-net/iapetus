@@ -618,7 +618,7 @@ export class JiraClientService extends AbstractAtlasClientService {
       // As such, we should throw an error if the code is requesting the permissions for a different user to avoid unwanted permissions
 
       // Retrieve the current user
-      const { data } = await this.client.post<Jira.User>(this.endpoints.CURRENTUSER);
+      const { data } = await this.client.get<Jira.User>(this.endpoints.CURRENTUSER);
 
       // Make sure that the user key matches the provided accountId
       if (data.key !== accountId) {
@@ -649,7 +649,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     if (this.mode === Modes.P2) {
 
       // Retrieve the current user
-      const { data } = await this.client.post<Jira.User>(this.endpoints.CURRENTUSER);
+      const { data } = await this.client.get<Jira.User>(this.endpoints.CURRENTUSER);
 
       // Make sure that the user key matches the provided accountId
       if (data.key !== accountId) {
