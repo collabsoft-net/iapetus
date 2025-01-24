@@ -774,6 +774,9 @@ export class JiraClientService extends AbstractAtlasClientService {
       }
     }
 
+    let hasRequiredGlobalPermissions = false;
+    let hasRequiredProjectPermissions = false;
+
     // Are we requesting any global permissions?
     if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
 
@@ -782,18 +785,8 @@ export class JiraClientService extends AbstractAtlasClientService {
 
         // Check if we have ALL or ANY of the global permissions by matching the response array with the request array
         // If we need ALL global permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
-        const hasRequiredGlobalPermissions = globalPermissions[evaluator](item => bulkPermissionGrants.globalPermissions.includes(item));
+        hasRequiredGlobalPermissions = globalPermissions[evaluator](item => bulkPermissionGrants.globalPermissions.includes(item));
 
-        // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
-        if (!hasRequiredGlobalPermissions) {
-          return false;
-        }
-
-      // If we did not get any global permissions back in the response, it definitely does not match our request
-      // given that we requested at least one global permission (globalPermissions.length > 0)
-      // In this case we will return false and abort further processing
-      } else {
-        return false;
       }
     }
 
@@ -807,7 +800,7 @@ export class JiraClientService extends AbstractAtlasClientService {
         // We need to loop over every requested project permissions to check if the listed permissions match the listed project / issue
         // In addition, we need to check if we have ALL or ANY of the project/issue permissions
         // If we need ALL project/issue permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
-        const hasRequiredProjectPermissions = projectPermissions[evaluator](projectPermission =>
+        hasRequiredProjectPermissions = projectPermissions[evaluator](projectPermission =>
 
           // Each iteration of requested project permissions need to be evaluated independenly
           // It consists of an array of permissions and to which projects/issues the permission applies
@@ -857,23 +850,16 @@ export class JiraClientService extends AbstractAtlasClientService {
           })
         );
 
-        // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
-        if (!hasRequiredProjectPermissions) {
-          return false;
-        }
-
-      // If we did not get any project/issue permissions back in the response, it definitely does not match our request
-      // given that we requested at least one project/issue permission (projectPermissions.length > 0)
-      // In this case we will return false and abort further processing
-      } else {
-        return false;
       }
     }
 
-    // If we reached this part, neither global or project specific permissions returned false
-    // Either way, we are not going to mess around with permissions as things can becomes really icky
-    // so we are just going to return "COMPUTER SAYS NO" out of extreme precaution
-    return false;
+    // Now that we have collected all permissions, we need to return the right result
+    // Based on the mode, we either return AND or OR comparison of all permissions
+    if (mode === 'ALL') {
+      return hasRequiredGlobalPermissions && hasRequiredProjectPermissions;
+    } else {
+      return hasRequiredGlobalPermissions || hasRequiredProjectPermissions;
+    }
   }
 
   async listDynamicModules(): Promise<Jira.DynamicModulesRequest> {
