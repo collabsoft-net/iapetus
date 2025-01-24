@@ -7,6 +7,7 @@ import { useJiraUser } from '../../Hooks';
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number|PromiseLike<string|number>;
   requiredPermissions?: string|Array<string>;
+  requiredPermissionsMode?: 'ALL'|'ANY';
   expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>;
   properties?: Array<string>;
   loadingMessage?: JSX.Element;
@@ -19,7 +20,7 @@ interface JiraProjectProviderProps {
   }) => JSX.Element;
 }
 
-export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, expand, properties, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
+export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, requiredPermissionsMode, expand, properties, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
 
   const AP = useContext(APContext);
   const jiraClientService = useContext(JiraClientService);
@@ -48,7 +49,7 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, expan
             return service.hasPermissions(accountId, [ {
               projects: [ Number(project.id) ],
               permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
-            }]).then(setPermitted).catch(() => setPermitted(false));
+            }], undefined, requiredPermissionsMode).then(setPermitted).catch(() => setPermitted(false));
           } else {
             setPermitted(true);
           }
