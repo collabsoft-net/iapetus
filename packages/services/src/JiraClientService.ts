@@ -612,6 +612,19 @@ export class JiraClientService extends AbstractAtlasClientService {
 
     } else if (this.mode === Modes.P2) {
 
+      // We need to verify that the requested user matches the currently logged-in user
+      // The reason we need to do this, is because Server/DC does not have a means to request permissions by account ID
+      // We can only get the permissions for the currently logged-in user
+      // As such, we should throw an error if the code is requesting the permissions for a different user to avoid unwanted permissions
+
+      // Retrieve the current user
+      const { data } = await this.client.post<Jira.User>(this.endpoints.CURRENTUSER);
+
+      // Make sure that the user key matches the provided accountId
+      if (data.key !== accountId) {
+        throw new Error('IllegalArgumentException: due to constraints in the Jira API, we cannot retrieve permissions for any other user than the currently logged-in user');
+      }
+
       // The Jira Server/DC API does not support bulk checking of permissions
       // We will just have to go over each project and ask if the user has the requested permission
       for await (const projectId of projects) {
@@ -629,6 +642,34 @@ export class JiraClientService extends AbstractAtlasClientService {
     const evaluator = mode === 'ALL' ? 'every' : 'some';
     if (!accountId || (!projectPermissions && !globalPermissions)) return false;
 
+    // If we are currently on Server/DC, we need to verify that the requested user matches the currently logged-in user
+    // The reason we need to do this, is because Server/DC does not have a means to request permissions by account ID
+    // We can only get the permissions for the currently logged-in user
+    // As such, we should throw an error if the code is requesting the permissions for a different user to avoid unwanted permissions
+    if (this.mode === Modes.P2) {
+
+      // Retrieve the current user
+      const { data } = await this.client.post<Jira.User>(this.endpoints.CURRENTUSER);
+
+      // Make sure that the user key matches the provided accountId
+      if (data.key !== accountId) {
+        throw new Error('IllegalArgumentException: due to constraints in the Jira API, we cannot retrieve permissions for any other user than the currently logged-in user');
+      }
+
+    }
+
+    // ==================================================================================================================================
+    // There is a difference between the JIRA permissions API in Cloud & Server
+    // In order to ensure that the logic to determine the right permissions is identical between each host type
+    // we need to recreate the response from Cloud in the Server/DC environment
+    // ==================================================================================================================================
+
+    // This is the placeholder for the (simulated) Jira.BulkPermissionsGrant output
+    const bulkPermissionGrants: Jira.BulkPermissionGrants = {
+      projectPermissions: [],
+      globalPermissions: []
+    }
+
     if (this.mode === Modes.CONNECT) {
 
       // Retrieve the permissions from the JIRA API.
@@ -640,138 +681,198 @@ export class JiraClientService extends AbstractAtlasClientService {
         globalPermissions
       });
 
+      // Because the Jira Cloud API will return the required format, we do not need to do any magic here
+      bulkPermissionGrants.globalPermissions = data.globalPermissions;
+      bulkPermissionGrants.projectPermissions = data.projectPermissions;
+
+    } else if (this.mode === Modes.P2) {
+
       // Are we requesting any global permissions?
       if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
 
-        // Did we get any global permissions returned, and if so, is this in the form of an Array?
-        if (data.globalPermissions && Array.isArray(data.globalPermissions)) {
+        // Ok, so let's get all global permissions for this user
+        // We do this by asking the "My Permissions" endpoint without any filter, as it will return all permissions this user has
+        // This cannot be used for project specific permissions, but it can be used for global permissions
+        const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS);
 
-          // Check if we have ALL or ANY of the global permissions by matching the response array with the request array
-          // If we need ALL global permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
-          const hasRequiredGlobalPermissions = globalPermissions[evaluator](item => data.globalPermissions.includes(item));
+        // Transform the output of the Jira API to the required format in the expected Jira.BulkPermissionsGrant type
+        // We need to filter on the permission type ("GLOBAL") and make sure that this permission actually applies to the
+        const globalPermissionsForUser = Object.entries(data.permissions).filter(([, permission]) => permission.type === 'GLOBAL' && permission.havePermission).flatMap(([, permission]) => permission.key);
+        bulkPermissionGrants.globalPermissions = globalPermissionsForUser;
 
-          // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
-          if (!hasRequiredGlobalPermissions) {
-            return false;
-          }
-
-        // If we did not get any global permissions back in the response, it definitely does not match our request
-        // given that we requested at least one global permission (globalPermissions.length > 0)
-        // In this case we will return false and abort further processing
-        } else {
-          return false;
-        }
       }
 
       // Are we requesting any project/issue permisions
       if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
 
-        // Did we get any project/issue permissions returned, and if so, is this in the form of an Array?
-        if (data.projectPermissions && Array.isArray(data.projectPermissions)) {
+        // Loop over the project permissions that we are looking for
+        for await (const bulkPermission of projectPermissions || []) {
+          const { projects, issues, permissions } = bulkPermission || {};
 
-          // The requested permissions is actually an array, which includes further arrays of permisions, projects and issues
-          // We need to loop over every requested project permissions to check if the listed permissions match the listed project / issue
-          // In addition, we need to check if we have ALL or ANY of the project/issue permissions
-          // If we need ALL project/issue permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
-          const hasRequiredProjectPermissions = projectPermissions[evaluator](projectPermission =>
+          // Create a placeholder for the bulkProjectPermissionGrant for each specific permission
+          const bulkProjectPermissionGrants = new Map<string, Jira.BulkProjectPermissionGrants>();
+          permissions.forEach(permission => bulkProjectPermissionGrants.set(permission, { permission, projects: [], issues: [] }));
 
-            // Each iteration of requested project permissions need to be evaluated independenly
-            // It consists of an array of permissions and to which projects/issues the permission applies
-            // We evaluate based on the permissions, which is why we loop over each of the permissions in this iteration
-            projectPermission.permissions[evaluator](permission => {
+          // Loop over all the projects that are part of the project permissions request
+          for await (const projectId of projects || []) {
 
-              // Let's start by checking if there is an entry in the response that applies to the permission in this iteration
-              const hasPermission = data.projectPermissions.find(item => item.permission === permission);
+            // Get all the permissions that apply to this specific project
+            const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { projectId });
 
-              // If there is no permission, this iteration does not apply and we should return false for this iteration
-              // This is because the iteration only evaluates true if it also includes the permission in the response
-              if (!hasPermission) {
-                return false;
+            // Transform the output of the Jira API to the required format in the expected Jira.BulkPermissionsGrant type
+            // We need to filter on the permission type ("PROJECT") and make sure that this permission actually applies to the user
+            const projectPermissionsForUser = Object.entries(data.permissions).filter(([, permission]) => permission.type === 'PROJECT' && permission.havePermission).flatMap(([, permission]) => permission.key);
+
+            // Now loop over each of the permissions and update the grants (if applicable)
+            permissions.forEach(item => {
+              // Check if this permission applies to the user
+              if (projectPermissionsForUser.includes(item)) {
+                // We know for sure that this exists, so let's force typescript to cast it to the correct type
+                const bulkProjectPermissionGrant = bulkProjectPermissionGrants.get(item) as Jira.BulkProjectPermissionGrants;
+
+                // Add the project ID to the permission grant
+                bulkProjectPermissionGrant.projects.push(projectId);
+
+                // Update the permission grants map for this specific permission
+                bulkProjectPermissionGrants.set(item, bulkProjectPermissionGrant);
               }
+            });
 
-              // Check if we are looking for project permissions
-              if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
-                // Check if the matched permission in the response applies to projects
-                if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
-                  // Check if ALL or ANY of the projects in our request are also listed in the response
-                  const hasProjectPermission = projectPermission.projects[evaluator](item => hasPermission.projects.includes(item));
-
-                  // If the response does not include ANY or ALL of the requested projects, we return false for this iteration
-                  if (!hasProjectPermission) {
-                    return false;
-                  }
-                }
-              }
-
-              // Check if we are looking for issue permissions
-              if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
-                // Check if the matched permission in the response applies to issues
-                if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
-                  // Check if ALL or ANY of the issues in our request are also listed in the response
-                  const hasIssuePermission = projectPermission.issues[evaluator](item => hasPermission.issues.includes(item));
-
-                  // If the response does not include ANY or ALL of the requested issues, we return false for this iteration
-                  if (!hasIssuePermission) {
-                    return false;
-                  }
-                }
-              }
-
-              // If we reached this part, neither project nor issue permisions returned false
-              // That means this iteration matches the requested permissions and we return true
-              return true;
-            })
-          );
-
-          // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
-          if (!hasRequiredProjectPermissions) {
-            return false;
           }
 
-        // If we did not get any project/issue permissions back in the response, it definitely does not match our request
-        // given that we requested at least one project/issue permission (projectPermissions.length > 0)
-        // In this case we will return false and abort further processing
-        } else {
-          return false;
+          // Loop over all the issues that are part of the project permissions request
+          for await (const issueId of issues || []) {
+
+            // Get all the permissions that apply to this specific project
+            const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { issueId });
+
+            // Transform the output of the Jira API to the required format in the expected Jira.BulkPermissionsGrant type
+            // We need to filter on the permission type ("PROJECT") and make sure that this permission actually applies to the user
+            const issuePermissionsForUser = Object.entries(data.permissions).filter(([, permission]) => permission.type === 'PROJECT' && permission.havePermission).flatMap(([, permission]) => permission.key);
+
+            // Now loop over each of the permissions and update the grants (if applicable)
+            permissions.forEach(item => {
+              // Check if this permission applies to the user
+              if (issuePermissionsForUser.includes(item)) {
+                // We know for sure that this exists, so let's force typescript to cast it to the correct type
+                const bulkProjectPermissionGrant = bulkProjectPermissionGrants.get(item) as Jira.BulkProjectPermissionGrants;
+
+                // Add the project ID to the permission grant
+                bulkProjectPermissionGrant.issues.push(issueId);
+
+                // Update the permission grants map for this specific permission
+                bulkProjectPermissionGrants.set(item, bulkProjectPermissionGrant);
+              }
+            });
+
+          }
+
+          // Now that we have retrieved all permissions for projects and issues, turn the map into an array
+          bulkProjectPermissionGrants.forEach(item => bulkPermissionGrants.projectPermissions.push(item));
         }
+
       }
-
-      // If we reached this part, neither global or project specific permissions returned false
-      // So you probably have access?!
-      return true;
-
-    } else if (this.mode === Modes.P2) {
-
-      // TODO: we need to support `ANY` mode for Server
-      if (mode === 'ANY') throw new Error('This method does not support `ANY` mode in Server/DC environments');
-
-      let hasAllPermissions = true;
-
-      for await (const bulkPermission of projectPermissions || []) {
-        const { projects, issues, permissions } = bulkPermission || {};
-
-        for await (const projectId of projects || []) {
-          if (!hasAllPermissions) break;
-          const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { projectId });
-          hasAllPermissions = permissions[evaluator](permission => data.permissions[permission] && data.permissions[permission].havePermission);
-        }
-
-        for await (const issueId of issues || []) {
-          if (!hasAllPermissions) break;
-          const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS, { issueId });
-          hasAllPermissions = permissions[evaluator](permission => data.permissions[permission] && data.permissions[permission].havePermission);
-        }
-      }
-
-      for await (const permission of globalPermissions || []) {
-        if (!hasAllPermissions) break;
-        const { data } = await this.client.get<Jira.Permissions>(this.endpoints.MYPERMISSIONS);
-        hasAllPermissions = data.permissions[permission] && data.permissions[permission].havePermission;
-      }
-
-      return hasAllPermissions;
     }
 
+    // Are we requesting any global permissions?
+    if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
+
+      // Did we get any global permissions returned, and if so, is this in the form of an Array?
+      if (bulkPermissionGrants.globalPermissions && Array.isArray(bulkPermissionGrants.globalPermissions)) {
+
+        // Check if we have ALL or ANY of the global permissions by matching the response array with the request array
+        // If we need ALL global permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
+        const hasRequiredGlobalPermissions = globalPermissions[evaluator](item => bulkPermissionGrants.globalPermissions.includes(item));
+
+        // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
+        if (!hasRequiredGlobalPermissions) {
+          return false;
+        }
+
+      // If we did not get any global permissions back in the response, it definitely does not match our request
+      // given that we requested at least one global permission (globalPermissions.length > 0)
+      // In this case we will return false and abort further processing
+      } else {
+        return false;
+      }
+    }
+
+    // Are we requesting any project/issue permisions
+    if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
+
+      // Did we get any project/issue permissions returned, and if so, is this in the form of an Array?
+      if (bulkPermissionGrants.projectPermissions && Array.isArray(bulkPermissionGrants.projectPermissions)) {
+
+        // The requested permissions is actually an array, which includes further arrays of permisions, projects and issues
+        // We need to loop over every requested project permissions to check if the listed permissions match the listed project / issue
+        // In addition, we need to check if we have ALL or ANY of the project/issue permissions
+        // If we need ALL project/issue permissions to exist, `evaluator` will be the `every()` method, otherwise it will be `some()`.
+        const hasRequiredProjectPermissions = projectPermissions[evaluator](projectPermission =>
+
+          // Each iteration of requested project permissions need to be evaluated independenly
+          // It consists of an array of permissions and to which projects/issues the permission applies
+          // We evaluate based on the permissions, which is why we loop over each of the permissions in this iteration
+          projectPermission.permissions[evaluator](permission => {
+
+            // Let's start by checking if there is an entry in the response that applies to the permission in this iteration
+            const hasPermission = bulkPermissionGrants.projectPermissions.find(item => item.permission === permission);
+
+            // If there is no permission, this iteration does not apply and we should return false for this iteration
+            // This is because the iteration only evaluates true if it also includes the permission in the response
+            if (!hasPermission) {
+              return false;
+            }
+
+            // Check if we are looking for project permissions
+            if (projectPermission.projects && Array.isArray(projectPermission.projects)) {
+              // Check if the matched permission in the response applies to projects
+              if (hasPermission.projects && Array.isArray(hasPermission.projects)) {
+                // Check if ALL or ANY of the projects in our request are also listed in the response
+                const hasProjectPermission = projectPermission.projects[evaluator](item => hasPermission.projects.includes(item));
+
+                // If the response does not include ANY or ALL of the requested projects, we return false for this iteration
+                if (!hasProjectPermission) {
+                  return false;
+                }
+              }
+            }
+
+            // Check if we are looking for issue permissions
+            if (projectPermission.issues && Array.isArray(projectPermission.issues)) {
+              // Check if the matched permission in the response applies to issues
+              if (hasPermission.issues && Array.isArray(hasPermission.issues)) {
+                // Check if ALL or ANY of the issues in our request are also listed in the response
+                const hasIssuePermission = projectPermission.issues[evaluator](item => hasPermission.issues.includes(item));
+
+                // If the response does not include ANY or ALL of the requested issues, we return false for this iteration
+                if (!hasIssuePermission) {
+                  return false;
+                }
+              }
+            }
+
+            // If we reached this part, neither project nor issue permisions returned false
+            // That means this iteration matches the requested permissions and we return true
+            return true;
+          })
+        );
+
+        // If the response does not include the required permissions (either all, or at least one), we will return "false" and abort further processing
+        if (!hasRequiredProjectPermissions) {
+          return false;
+        }
+
+      // If we did not get any project/issue permissions back in the response, it definitely does not match our request
+      // given that we requested at least one project/issue permission (projectPermissions.length > 0)
+      // In this case we will return false and abort further processing
+      } else {
+        return false;
+      }
+    }
+
+    // If we reached this part, neither global or project specific permissions returned false
+    // Either way, we are not going to mess around with permissions as things can becomes really icky
+    // so we are just going to return "COMPUTER SAYS NO" out of extreme precaution
     return false;
   }
 
