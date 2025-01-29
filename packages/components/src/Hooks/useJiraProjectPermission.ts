@@ -5,7 +5,7 @@ import { JiraClientService } from '../Contexts';
 import { useHostContext } from './useHostContext';
 import { useJiraUser } from './useJiraUser';
 
-export const useJiraPermissions = (permissions: Array<Jira.BulkProjectPermissions>, accountId?: string): [ boolean|undefined, boolean, Error|undefined ] => {
+export const useJiraProjectPermissions = (permissions: Array<Jira.BulkProjectPermissions>, accountId?: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|undefined ] => {
 
   const service = useContext(JiraClientService);
   const [ context, isLoadingContext ] = useHostContext();
@@ -40,7 +40,7 @@ export const useJiraPermissions = (permissions: Array<Jira.BulkProjectPermission
         setLoading(false);
       } else {
         const accountId = user.accountId || user.key;
-        service.hasPermissions(accountId, permissions)
+        service.hasPermissions(accountId, permissions, undefined, mode)
           .then(setHasPermissions)
           .catch((err) => {
             setHasPermissions(undefined);

@@ -1,9 +1,9 @@
 import { useContext, useEffect,useState } from 'react';
 
 import { JiraClientService } from '../Contexts/JiraClientService';
-import { useJiraPermissions } from './useJiraPermission';
+import { useJiraProjectPermissions } from './useJiraProjectPermission';
 
-export const useJiraProject = (projectId: number, requiredPermissions?: Array<string>, expand?: Array<'description' | 'issueTypes' | 'lead' | 'projectKeys' | 'issueTypeHierarchy'>) => {
+export const useJiraProject = (projectId: number, requiredPermissions?: Array<string>, requiredPermissionsMode?: 'ALL'|'ANY', expand?: Array<'description' | 'issueTypes' | 'lead' | 'projectKeys' | 'issueTypeHierarchy'>) => {
 
   const service = useContext(JiraClientService);
 
@@ -11,12 +11,12 @@ export const useJiraProject = (projectId: number, requiredPermissions?: Array<st
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ error, setError ] = useState<Error>();
 
-  const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] = useJiraPermissions([
+  const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] = useJiraProjectPermissions([
     {
       projects: [ projectId ],
       permissions: requiredPermissions || []
     }
-  ]);
+  ], requiredPermissionsMode);
 
   useEffect(() => {
     if (!isLoadingPermissions) {
