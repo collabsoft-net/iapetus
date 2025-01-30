@@ -640,7 +640,13 @@ export class JiraClientService extends AbstractAtlasClientService {
 
   async hasPermissions(accountId: string, projectPermissions?: Array<Jira.BulkProjectPermissions>, globalPermissions?: Array<string>, mode: 'ALL'|'ANY' = 'ALL'): Promise<boolean> {
     const evaluator = mode === 'ALL' ? 'every' : 'some';
-    if (!accountId || (!projectPermissions && !globalPermissions)) return false;
+
+    // Check if we are looking for either Global or Project permissions (or both);
+    const isEvaluatingGlobalPermissions = (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0);
+    const isEvaluatingProjectPermissions = (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0);
+
+    // Validate the input. AccountID is required, and we need to either be evaluting Global or Project permissions (or both)
+    if (!accountId || (!isEvaluatingGlobalPermissions && !isEvaluatingProjectPermissions)) return false;
 
     // If we are currently on Server/DC, we need to verify that the requested user matches the currently logged-in user
     // The reason we need to do this, is because Server/DC does not have a means to request permissions by account ID
@@ -688,7 +694,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     } else if (this.mode === Modes.P2) {
 
       // Are we requesting any global permissions?
-      if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
+      if (isEvaluatingGlobalPermissions) {
 
         // Ok, so let's get all global permissions for this user
         // We do this by asking the "My Permissions" endpoint without any filter, as it will return all permissions this user has
@@ -703,7 +709,7 @@ export class JiraClientService extends AbstractAtlasClientService {
       }
 
       // Are we requesting any project/issue permisions
-      if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
+      if (isEvaluatingProjectPermissions) {
 
         // Loop over the project permissions that we are looking for
         for await (const bulkPermission of projectPermissions || []) {
@@ -774,11 +780,19 @@ export class JiraClientService extends AbstractAtlasClientService {
       }
     }
 
-    let hasRequiredGlobalPermissions = false;
-    let hasRequiredProjectPermissions = false;
+    // If we are not checking for global permissions, default to true
+    let hasRequiredGlobalPermissions = isEvaluatingGlobalPermissions ? false : true;
+    // If we are not checking for project permissions, default to true
+    let hasRequiredProjectPermissions = isEvaluatingProjectPermissions ? false : true;
+
+    // Check, check, double check: this should not be possible
+    // If this is the case, we should reject the request
+    if (hasRequiredGlobalPermissions && hasRequiredProjectPermissions) {
+      return false;
+    }
 
     // Are we requesting any global permissions?
-    if (globalPermissions && Array.isArray(globalPermissions) && globalPermissions.length > 0) {
+    if (isEvaluatingGlobalPermissions) {
 
       // Did we get any global permissions returned, and if so, is this in the form of an Array?
       if (bulkPermissionGrants.globalPermissions && Array.isArray(bulkPermissionGrants.globalPermissions)) {
@@ -791,7 +805,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     }
 
     // Are we requesting any project/issue permisions
-    if (projectPermissions && Array.isArray(projectPermissions) && projectPermissions.length > 0) {
+    if (isEvaluatingProjectPermissions) {
 
       // Did we get any project/issue permissions returned, and if so, is this in the form of an Array?
       if (bulkPermissionGrants.projectPermissions && Array.isArray(bulkPermissionGrants.projectPermissions)) {
