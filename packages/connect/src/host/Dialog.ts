@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import 'wr-dependency!com.atlassian.auiplugin:dialog2';
-
 import { isOfType } from '@collabsoft-net/helpers';
 
 import type { Message } from '../client/Types';
@@ -27,6 +25,11 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     const { originId, data: instanceOptions } = message;
     const { baseUrl } = AC.options;
     if (!instanceOptions) throw new BadRequestError();
+
+    // We need to make sure AJS.dialog2() is available
+    if (!windowWithAJS.AJS.dialog2) {
+      throw new Error('AJS.dialog2() is not available. Please make sure to add `com.atlassian.auiplugin:dialog2` as a dependency if you want to be able to use AP.dialog.')
+    }
 
     // Check if the instance has been defined on the host options
     const instance = AC.options.dialogs ? AC.options.dialogs[instanceOptions.key] : null;
@@ -117,6 +120,11 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
 *
 */
 export const DialogCloseEventHandler = (event: MessageEvent<unknown>, AC: Host) => {
+
+  // We need to make sure AJS.dialog2() is available
+  if (!windowWithAJS.AJS.dialog2) {
+    throw new Error('AJS.dialog2() is not available. Please make sure to add `com.atlassian.auiplugin:dialog2` as a dependency if you want to be able to use AP.dialog.')
+  }
 
   const message = AC.toMessage<Message<DialogCloseRequest<never>>>(event);
 

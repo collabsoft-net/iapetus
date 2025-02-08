@@ -64,6 +64,11 @@ export class MacroEditor {
   }
 
   public close(key: string, isCancelled?: boolean) {
+    // We need to make sure AJS.dialog2() is available
+    if (!windowWithMacroEditor.AJS.dialog2) {
+      throw new Error('AJS.dialog2() is not available. Please make sure to add `com.atlassian.auiplugin:dialog2` as a dependency if you want to be able to use the AP macro editor.')
+    }
+
     const dialog = windowWithMacroEditor.AJS.dialog2(`#ap-macroeditor-${key}`);
     if (dialog) {
       if (isCancelled) {
@@ -75,6 +80,11 @@ export class MacroEditor {
   }
 
   private open = (key: string, name: string, params: Record<string, string>, options: MacroEditorOptions) => {
+
+    // We need to make sure AJS.dialog2() is available
+    if (!windowWithMacroEditor.AJS.dialog2) {
+      throw new Error('AJS.dialog2() is not available. Please make sure to add `com.atlassian.auiplugin:dialog2` as a dependency if you want to be able to use the AP macro editor.')
+    }
 
     const isEditing = Object.keys(params).length > 0;
     const style = `width:${options.width || '50%'};height:${options.height || '50%'};z-index: 3000`;
