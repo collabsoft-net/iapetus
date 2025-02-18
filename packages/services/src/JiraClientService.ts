@@ -871,8 +871,17 @@ export class JiraClientService extends AbstractAtlasClientService {
     // Based on the mode, we either return AND or OR comparison of all permissions
     if (mode === 'ALL') {
       return hasRequiredGlobalPermissions && hasRequiredProjectPermissions;
-    } else {
+    } else if (isEvaluatingGlobalPermissions && isEvaluatingProjectPermissions) {
       return hasRequiredGlobalPermissions || hasRequiredProjectPermissions;
+    } else if (isEvaluatingGlobalPermissions) {
+      return hasRequiredGlobalPermissions;
+    } else if (isEvaluatingProjectPermissions) {
+      return hasRequiredProjectPermissions;
+    } else {
+      // This should not be possible, as all scenarios are alread covered
+      // but Typescript does not know this, so we should return false
+      // just to be sure
+      return false;
     }
   }
 
