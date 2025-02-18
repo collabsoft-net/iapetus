@@ -780,16 +780,9 @@ export class JiraClientService extends AbstractAtlasClientService {
       }
     }
 
-    // If we are not checking for global permissions, default to true
-    let hasRequiredGlobalPermissions = isEvaluatingGlobalPermissions ? false : true;
-    // If we are not checking for project permissions, default to true
-    let hasRequiredProjectPermissions = isEvaluatingProjectPermissions ? false : true;
-
-    // Check, check, double check: this should not be possible
-    // If this is the case, we should reject the request
-    if (hasRequiredGlobalPermissions && hasRequiredProjectPermissions) {
-      return false;
-    }
+    // Default to false, to ensure that we are not giving access by accident
+    let hasRequiredGlobalPermissions = false;
+    let hasRequiredProjectPermissions = false;
 
     // Are we requesting any global permissions?
     if (isEvaluatingGlobalPermissions) {
@@ -869,9 +862,9 @@ export class JiraClientService extends AbstractAtlasClientService {
 
     // Now that we have collected all permissions, we need to return the right result
     // Based on the mode, we either return AND or OR comparison of all permissions
-    if (mode === 'ALL') {
+    if (mode === 'ALL' && isEvaluatingGlobalPermissions && isEvaluatingProjectPermissions) {
       return hasRequiredGlobalPermissions && hasRequiredProjectPermissions;
-    } else if (isEvaluatingGlobalPermissions && isEvaluatingProjectPermissions) {
+    } else if (mode === 'ANY' && isEvaluatingGlobalPermissions && isEvaluatingProjectPermissions) {
       return hasRequiredGlobalPermissions || hasRequiredProjectPermissions;
     } else if (isEvaluatingGlobalPermissions) {
       return hasRequiredGlobalPermissions;
