@@ -39,7 +39,11 @@
     "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
     "nodemon": "3.0.3",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "@forge/bridge": "4.4.1"
+  },
+  "peerDependencies": {
+    "@forge/bridge": "4.4.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
