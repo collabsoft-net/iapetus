@@ -65,10 +65,10 @@ export abstract class AbstractRestClientService {
 
   private findNameForType<T>(type: Type<T>|T) {
     const mappings = this.typeMappings ? Array.from(this.typeMappings) : [];
-    return mappings.reduce((name: string|null, [ key, mapping ]) => {
+    return mappings.reduce((name: string|undefined, [ key, mapping ]) => {
       if (name) return name;
-      return isTypeOf(type, mapping) ? key : null;
-    }, null);
+      return isTypeOf(type, mapping) ? key : undefined;
+    }, undefined);
   }
 
 }

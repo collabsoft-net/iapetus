@@ -147,7 +147,7 @@ export abstract class AbstractAtlasClientService {
     await this.client.delete(this.endpoints.UNREGISTER_DYNAMIC_MODULE, undefined, { moduleKey });
   }
 
-  protected getEndpointFor(endpoint: string, pathParams: Record<string, unknown> = {}): string {
+  protected getEndpointFor(endpoint: string, pathParams: Record<string, string|string[]> = {}): string {
     const compiler = compile(endpoint);
     return compiler(pathParams);
   }

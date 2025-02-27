@@ -160,7 +160,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getIssue(issueIdOrKey: string|number, expand?: Array<'renderedFields'|'names'|'schema'|'transitions'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.Issue> {
-    const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey }), { expand: expand?.join(',')});
+    const { data } = await this.client.get<Jira.Issue>(this.getEndpointFor(this.endpoints.READ_ISSUE, { issueIdOrKey: `${issueIdOrKey}` }), { expand: expand?.join(',')});
     return data;
   }
 
@@ -175,7 +175,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async updateIssue(issueIdOrKey: string|number, data: Jira.IssueRequest, options?: Jira.EditIssueRequestParameters): Promise<void> {
-    const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey }), data, options as Record<string, string|number|boolean|undefined>);
+    const { statusText, status } = await this.client.put(this.getEndpointFor(this.endpoints.ISSUE_UPDATE, { issueIdOrKey: `${issueIdOrKey}` }), data, options as Record<string, string|number|boolean|undefined>);
     if (status !== StatusCodes.NO_CONTENT) {
       throw new Error(statusText);
     }
@@ -217,7 +217,7 @@ export class JiraClientService extends AbstractAtlasClientService {
 
   async getComments(issueIdOrKey: string|number, startAt = 0, maxResults = 50, orderBy?: 'created'|'-created'|'+created', expand: Array<string> = [], fetchAll = true): Promise<Array<Jira.Comment>> {
     const result: Array<Jira.Comment> = [];
-    const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey }), { startAt, maxResults, orderBy, expand: expand.join(',') });
+    const { data } = await this.client.get<Jira.PageOfComments>(this.getEndpointFor(this.endpoints.LIST_COMMENTS, { issueIdOrKey: `${issueIdOrKey}` }), { startAt, maxResults, orderBy, expand: expand.join(',') });
     result.push(...data.comments);
     if (fetchAll && data.total > (data.startAt + data.maxResults)) {
       result.push(...await this.getComments(issueIdOrKey, (startAt + maxResults), maxResults, orderBy, expand, fetchAll));
@@ -226,17 +226,17 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getComment(issueIdOrKey: string|number, commentId: string, options?: Jira.GetCommentRequestParameters): Promise<Jira.Comment> {
-    const { data } = await this.client.get<Jira.Comment>(this.getEndpointFor(this.endpoints.READ_COMMENT, { issueIdOrKey, commentId }), options as Record<string, string|number|boolean|undefined>|undefined);
+    const { data } = await this.client.get<Jira.Comment>(this.getEndpointFor(this.endpoints.READ_COMMENT, { issueIdOrKey: `${issueIdOrKey}`, commentId }), options as Record<string, string|number|boolean|undefined>|undefined);
     return data;
   }
 
-  async createComment(issueIdOrKey: string, body: string|Record<string, unknown>, expand: Array<string> = []): Promise<Jira.Comment> {
-    const { data } = await this.client.post<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_CREATE, { issueIdOrKey }), { body }, { expand: expand.join(',') });
+  async createComment(issueIdOrKey: string|number, body: string|Record<string, unknown>, expand: Array<string> = []): Promise<Jira.Comment> {
+    const { data } = await this.client.post<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_CREATE, { issueIdOrKey: `${issueIdOrKey}` }), { body }, { expand: expand.join(',') });
     return data;
   }
 
   async updateComment<T>(issueIdOrKey: string|number, commentId: string, body: string|Record<string, unknown>, properties?: Array<Atlassian.Connect.EntityProperty<T>>): Promise<Jira.Comment> {
-    const { data } = await this.client.put<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_UPDATE, { issueIdOrKey, commentId }), { body, properties });
+    const { data } = await this.client.put<Jira.Comment>(this.getEndpointFor(this.endpoints.COMMENT_UPDATE, { issueIdOrKey: `${issueIdOrKey}`, commentId }), { body, properties });
     return data;
   }
 
@@ -253,7 +253,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   async addAttachment(issueIdOrKey: string|number, content: string | Buffer, filename?: string, contentType?: string): Promise<Jira.Attachment> {
     const data = new FormData();
     data.append('file', content, { filename, contentType });
-    const { data: result } = await this.client.post<Jira.Attachment>(this.getEndpointFor(this.endpoints.ADD_ATTACHMENT, { issueIdOrKey }), data, undefined, {
+    const { data: result } = await this.client.post<Jira.Attachment>(this.getEndpointFor(this.endpoints.ADD_ATTACHMENT, { issueIdOrKey: `${issueIdOrKey}` }), data, undefined, {
       headers: {
         'Accept': 'application/json',
         'X-Atlassian-Token': 'no-check',
@@ -264,17 +264,17 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getVersion(id: string|number, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version> {
-    const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id }), { expand: expand?.join(',') });
+    const { data } = await this.client.get<Jira.Version>(this.getEndpointFor(this.endpoints.READ_VERSION, { id: `${id}` }), { expand: expand?.join(',') });
     return data;
   }
 
   async getVersions(projectIdOrKey: string|number, expand?: boolean): Promise<Array<Jira.Version>> {
-    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey }), { expand: expand ? 'operations' : undefined });
+    const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey: `${projectIdOrKey}` }), { expand: expand ? 'operations' : undefined });
     return data;
   }
 
   async getVersionsPaginatedFor(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string, orderBy?: 'description'|'-description'|'+description'|'name'|'-name'|'+name'|'releaseDate'|'-releaseDate'|'+releaseDate'|'sequence'|'-sequence'|'+sequence'|'startDate'|'-startDate'|'+startDate', status?: Array<'released'|'unreleased'|'archived'>, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.PagedResponse2<Jira.Version>> {
-    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query, orderBy, status: status?.join(','), expand: expand?.join(',') });
+    const { data } = await this.client.get<Jira.PagedResponse2<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS_PAGINATED, { projectIdOrKey: `${projectIdOrKey}` }), { startAt, maxResults, query, orderBy, status: status?.join(','), expand: expand?.join(',') });
     return data;
   }
 
@@ -331,13 +331,13 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getComponents(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {
-    const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey }));
+    const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey: `${projectIdOrKey}` }));
     return data;
   }
 
   async getComponentsPaginated(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
     if (this.mode === Modes.CONNECT) {
-      const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey }), { startAt, maxResults, query });
+      const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey: `${projectIdOrKey}` }), { startAt, maxResults, query });
       return data;
     } else {
       const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED), { startAt, maxResults, projectIds: projectIdOrKey, query });
@@ -346,7 +346,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getComponent(id: string|number): Promise<Jira.Component> {
-    const { data } = await this.client.get<Jira.Component>(this.getEndpointFor(this.endpoints.READ_COMPONENT, { id }));
+    const { data } = await this.client.get<Jira.Component>(this.getEndpointFor(this.endpoints.READ_COMPONENT, { id: `${id}` }));
     return data;
   }
 
@@ -372,7 +372,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getIssueFieldOption(fieldKey: string, optionId: number): Promise<Jira.IssueFieldOption> {
-    const { data } = await this.client.get<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId }));
+    const { data } = await this.client.get<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: `${optionId}` }));
     return data;
   }
 
@@ -382,12 +382,12 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async updateIssueFieldOption(fieldKey: string, issueFieldOption: Jira.IssueFieldOption): Promise<Jira.IssueFieldOption> {
-    const { data } = await this.client.put<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: issueFieldOption.id }), issueFieldOption);
+    const { data } = await this.client.put<Jira.IssueFieldOption>(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: `${issueFieldOption.id}` }), issueFieldOption);
     return data;
   }
 
   async deleteIssueFieldOption(fieldKey: string, optionId: number): Promise<boolean> {
-    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: optionId }));
+    const { status } = await this.client.delete(this.getEndpointFor(this.endpoints.ISSUE_FIELD_OPTION, { fieldKey, optionId: `${optionId}` }));
     return status === StatusCodes.NO_CONTENT;
   }
 
@@ -413,22 +413,22 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async getBoardFeatures(boardId: number): Promise<Jira.Features> {
-    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES, { boardId }));
+    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.BOARD_FEATURES, { boardId: `${boardId}` }));
     return data;
   }
 
   async getSprint(sprintId: number): Promise<Jira.Sprint> {
-    const { data } = await this.client.get<Jira.Sprint>(this.getEndpointFor(this.endpoints.SPRINT, { sprintId }));
+    const { data } = await this.client.get<Jira.Sprint>(this.getEndpointFor(this.endpoints.SPRINT, { sprintId: `${sprintId}` }));
     return data;
   }
 
   async getIssuesForSprint(sprintId: number, startAt?: number, maxResults?: number, jql?: string, validateQuery?: boolean, fields?: Array<string>, expand?: Array<'renderedFields'|'names'|'schema'|'transitions'|'editmeta'|'changelog'|'versionedRepresentations'>): Promise<Jira.IssuesForSprint> {
-    const { data } = await this.client.get<Jira.IssuesForSprint>(this.getEndpointFor(this.endpoints.SPRINT_ISSUES, { sprintId }), { startAt, maxResults, jql, validateQuery, fields: fields?.join(','), expand: expand?.join(',')});
+    const { data } = await this.client.get<Jira.IssuesForSprint>(this.getEndpointFor(this.endpoints.SPRINT_ISSUES, { sprintId: `${sprintId}` }), { startAt, maxResults, jql, validateQuery, fields: fields?.join(','), expand: expand?.join(',')});
     return data;
   }
 
   async getProjectFeatures(projectIdOrKey: string|number): Promise<Jira.Features> {
-    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.LIST_PROJECT_FEATURES, { projectIdOrKey }));
+    const { data } = await this.client.get<Jira.Features>(this.getEndpointFor(this.endpoints.LIST_PROJECT_FEATURES, { projectIdOrKey: `${projectIdOrKey}` }));
     return data;
   }
 
@@ -438,7 +438,7 @@ export class JiraClientService extends AbstractAtlasClientService {
   }
 
   async setProjectFeature(projectIdOrKey: string|number, featureKey: string, state: 'ENABLED'|'DISABLED'|'COMING_SOON'): Promise<Jira.Features> {
-    const { data } = await this.client.put<Jira.Features>(this.getEndpointFor(this.endpoints.UPDATE_PROJECT_FEATURE, { projectIdOrKey, featureKey }), { state });
+    const { data } = await this.client.put<Jira.Features>(this.getEndpointFor(this.endpoints.UPDATE_PROJECT_FEATURE, { projectIdOrKey: `${projectIdOrKey}`, featureKey }), { state });
     return data;
   }
 
