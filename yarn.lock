@@ -157,20 +157,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@atlaskit/ds-lib@npm:^2.6.0":
-  version: 2.7.0
-  resolution: "@atlaskit/ds-lib@npm:2.7.0"
-  dependencies:
-    "@atlaskit/platform-feature-flags": "npm:^0.3.0"
-    "@babel/runtime": "npm:^7.0.0"
-    bind-event-listener: "npm:^3.0.0"
-    react-uid: "npm:^2.2.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 8b49763276a7f6027d1eea62e8f57b6613953c96c4166a8439e18c14b68388d249f2662f55c623e68518463089dce1c87af40580d42623901968b04eebf2efc4
-  languageName: node
-  linkType: hard
-
 "@atlaskit/ds-lib@npm:^3.3.0":
   version: 3.3.0
   resolution: "@atlaskit/ds-lib@npm:3.3.0"
@@ -417,22 +403,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0
   checksum: 1c6f9a801d879c783bf3afa32e84bf4da22fe416e4c43c5eb731b2cb63e0c7f0ed649f5c2ce4f086b97d234db719f9aaf6d46764815a079c3db432ff59ad24bd
-  languageName: node
-  linkType: hard
-
-"@atlaskit/tokens@npm:^1.58.0":
-  version: 1.61.0
-  resolution: "@atlaskit/tokens@npm:1.61.0"
-  dependencies:
-    "@atlaskit/ds-lib": "npm:^2.6.0"
-    "@atlaskit/platform-feature-flags": "npm:^0.3.0"
-    "@babel/runtime": "npm:^7.0.0"
-    "@babel/traverse": "npm:^7.23.2"
-    "@babel/types": "npm:^7.20.0"
-    bind-event-listener: "npm:^3.0.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: a55337ac320708f513d4ac210b5bf1e873de34e7816c41855a4a0d2b201b7ffb31b2a8a444fe1f57fac393f5676e1763d7066c7c154a7906a68de3b47115aa67
   languageName: node
   linkType: hard
 
@@ -1435,15 +1405,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/forge@workspace:packages/forge"
   dependencies:
-    "@forge/bridge": "npm:4.3.0"
     "@types/node": "npm:<19.0.0"
     "@typescript-eslint/eslint-plugin": "npm:6.19.1"
     "@typescript-eslint/parser": "npm:6.19.1"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
     typescript: "npm:5.3.3"
-  peerDependencies:
-    "@forge/bridge": 4.3.0
   languageName: unknown
   linkType: soft
 
@@ -2423,26 +2390,6 @@ __metadata:
   version: 0.10.5
   resolution: "@firebase/webchannel-wrapper@npm:0.10.5"
   checksum: db445a389453a01416441961b9f468333b927d966bd8d0a9a66d65370103794c4ec34c98947e4dad0857f05c9c805ade28392256e613d04c84e1261eae4b82b8
-  languageName: node
-  linkType: hard
-
-"@forge/bridge@npm:4.3.0":
-  version: 4.3.0
-  resolution: "@forge/bridge@npm:4.3.0"
-  dependencies:
-    "@atlaskit/tokens": "npm:^1.58.0"
-    "@forge/i18n": "npm:0.0.2"
-    "@types/history": "npm:^4.7.11"
-  checksum: ed263070fdf2c2bf8acf75e4cba889982d321be22b089a082c78c777ee58ea61d97b2faccca3b7a82da6f3a09f8253dc4d4b4c9679542cea9a03c2ee07caf793
-  languageName: node
-  linkType: hard
-
-"@forge/i18n@npm:0.0.2":
-  version: 0.0.2
-  resolution: "@forge/i18n@npm:0.0.2"
-  dependencies:
-    lodash: "npm:^4.17.21"
-  checksum: abc977451a65bfcc4db0abb8f547787e6134961e35448cb8f8bf820caace383317169aca8a3ea81e92550daebc3f8fc11088d5243080036c4b3215b8927d9179
   languageName: node
   linkType: hard
 
@@ -5000,13 +4947,6 @@ __metadata:
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: 7a6d26cf6f43d3151caf4fec66ea11c9d23166e4f3102edfe45a94170654a54ea08cf3103d26b3928d7ebcc24162c90488e33986b7e3a5f8941225edd5eb18c7
-  languageName: node
-  linkType: hard
-
-"@types/history@npm:^4.7.11":
-  version: 4.7.11
-  resolution: "@types/history@npm:4.7.11"
-  checksum: 1da529a3485f3015daf794effa3185493bf7dd2551c26932389c614f5a0aab76ab97645897d1eef9c74ead216a3848fcaa019f165bbd6e4b71da6eff164b4c68
   languageName: node
   linkType: hard
 
