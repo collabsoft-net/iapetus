@@ -1442,6 +1442,8 @@ __metadata:
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
     typescript: "npm:5.3.3"
+  peerDependencies:
+    "@forge/bridge": 4.3.0
   languageName: unknown
   linkType: soft
 
