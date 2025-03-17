@@ -23,9 +23,10 @@ interface PageWithNavBarProps {
   Banner?: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
   inline?: boolean;
+  fullPage?: boolean;
 }
 
-export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, children }: PropsWithChildren<PageWithNavBarProps>) => {
+export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, fullPage, children }: PropsWithChildren<PageWithNavBarProps>) => {
 
   const margin = inline
     ? undefined
@@ -38,7 +39,7 @@ export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, child
       <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } fixedOnTop={ !inline } />
       <ScrollView fluid height='unset' margin={ margin }>
         <Row>
-          <Grid margin='0 auto' padding={ inline ? '16px 0' : '24px 0' }>
+          <Grid stretched={ fullPage } margin={ fullPage ? undefined : '0 auto' } padding={ inline ? '16px 0' : '24px 0' }>
             <Row>
               {children}
             </Row>
