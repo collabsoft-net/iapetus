@@ -173,14 +173,6 @@ export class APRestClient implements RestClient {
   private async fetchFromBitbucket<T>(type: string, url: string, data: unknown, params?: Record<string, string>): Promise<AxiosResponse<T>> {
     const client = await this.client;
 
-    // Make sure to make URL relative and prefix the API version
-    if (url.startsWith('https://api.bitbucket.org')) {
-      url = url.replace('https://api.bitbucket.org', '');
-    } else if (!url.startsWith('/2.0')) {
-      url = '/2.0' + url;
-    }
-
-    // Now perform the request
     const result = await new Promise<T>((resolve, reject) => client({
       type,
       url: this.getUrl(url, params),
