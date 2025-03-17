@@ -69,66 +69,12 @@ export class APRestClient implements RestClient {
   }
 
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const client = await this.client;
-
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => {
-      try {
-        const { body, xhr } = await client({
-          type,
-          url: this.getUrl(url, params),
-          data: data ? JSON.stringify(data) : undefined,
-          contentType: 'application/json',
-          experimental: true
-        });
-
-        let result;
-        try {
-          result = JSON.parse(body)
-        } catch (error) {
-          result = body;
-        }
-
-        return {
-          status: xhr.status,
-          statusText: xhr.statusText,
-          headers: this.getHeaders(xhr),
-          config: {
-            headers: new AxiosHeaders()
-          },
-          data: result
-        };
-      } catch (error) {
-        if (isOfType<AP.RequestResponseError>(error, 'xhr')) {
-          const { err, xhr } = error as AP.RequestResponseError;
-          return {
-            status: xhr.status,
-            statusText: xhr.statusText,
-            headers: this.getHeaders(xhr),
-            config: {
-              headers: new AxiosHeaders()
-            },
-              data: err as unknown as T
-          };
-        } else {
-          return {
-            status: 500,
-            statusText: '',
-            headers: {},
-            config: {
-              headers: new AxiosHeaders()
-            },
-              data: error as unknown as T
-          };
-        }
-      }
-    }
-
     if (this.cacheService) {
       const cacheKey = this.cacheService.toCacheKey(type, url, JSON.stringify(data), JSON.stringify(params));
-      const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.#duration);
-      return result || fetchFromRemote();
+      const result = await this.cacheService.get(cacheKey, () => this.fetchFromRemote<T>(type, url, data, params), cacheDuration || this.#duration);
+      return result || this.fetchFromRemote<T>(type, url, data, params);
     } else {
-      return fetchFromRemote();
+      return this.fetchFromRemote<T>(type, url, data, params);
     }
   }
 
@@ -162,6 +108,101 @@ export class APRestClient implements RestClient {
       });
     }
     return result;
+  }
+
+  private async fetchFromRemote<T>(type: string, url: string, data: unknown, params?: Record<string, string>): Promise<AxiosResponse<T>> {
+    try {
+      const client = await this.client;
+
+      // The Bitbucket implementation of AP.request is different from other hosts
+      // So we need to have a different fetch mechanism
+      if (isOfType<AP.BitbucketInstance>(this.AP, 'bitbucket')) {
+        return this.fetchFromBitbucket(type, url, data, params);
+      } else {
+        const { body, xhr } = await client({
+          type,
+          url: this.getUrl(url, params),
+          data: data ? JSON.stringify(data) : undefined,
+          contentType: 'application/json',
+          experimental: true
+        });
+
+        let result;
+        try {
+          result = JSON.parse(body)
+        } catch (error) {
+          result = body;
+        }
+
+        return {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: this.getHeaders(xhr),
+          config: {
+            headers: new AxiosHeaders()
+          },
+          data: result
+        };
+      }
+    } catch (error) {
+      if (isOfType<AP.RequestResponseError>(error, 'xhr')) {
+        const { err, xhr } = error as AP.RequestResponseError;
+        return {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: this.getHeaders(xhr),
+          config: {
+            headers: new AxiosHeaders()
+          },
+            data: err as unknown as T
+        };
+      } else {
+        return {
+          status: 500,
+          statusText: '',
+          headers: {},
+          config: {
+            headers: new AxiosHeaders()
+          },
+            data: error as unknown as T
+        };
+      }
+    }
+  }
+
+  private async fetchFromBitbucket<T>(type: string, url: string, data: unknown, params?: Record<string, string>): Promise<AxiosResponse<T>> {
+    const client = await this.client;
+
+    // Make sure to make URL relative and prefix the API version
+    if (url.startsWith('https://api.bitbucket.org')) {
+      url = url.replace('https://api.bitbucket.org', '');
+    } else if (!url.startsWith('/2.0')) {
+      url = '/2.0' + url;
+    }
+
+    // Now perform the request
+    const result = await new Promise<T>((resolve, reject) => client({
+      type,
+      url: this.getUrl(url, params),
+      data: data ? JSON.stringify(data) : undefined,
+      contentType: 'application/json',
+      experimental: true,
+      success: async (responseText: string) => {
+        const data: T = typeof responseText === 'string' ? JSON.parse(responseText) : responseText as unknown as T;
+        resolve(data);
+      },
+      error: reject
+    }));
+
+    return {
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: {
+        headers: new AxiosHeaders()
+      },
+      data: result
+    };
   }
 
   static getIdentifier(): symbol {
