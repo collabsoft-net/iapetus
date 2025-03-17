@@ -16,7 +16,14 @@ export class APRestClient implements RestClient {
   }
 
   protected get client(): Promise<AP.Request> {
-    return new Promise(resolve => resolve(this.AP.request));
+    const AP = this.AP;
+    if (isOfType<AP.PlatformInstance>(AP, 'request')) {
+      return new Promise(resolve => resolve(AP.request));
+    } else if (isOfType<AP.BitbucketInstance>(AP, 'require')) {
+      return new Promise(resolve => AP.require('request', resolve));
+    } else {
+      throw new Error(`Provided instance of AP does not support '.request()'`);
+    }
   }
 
   async get<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;

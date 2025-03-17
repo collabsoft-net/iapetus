@@ -63,7 +63,7 @@ declare global {
       }
     }
 
-    type BitbucketInstance = Omit<PlatformInstance, 'context'|'cookie'|'navigator'|'user'> & {
+    type BitbucketInstance = Omit<PlatformInstance, 'context'|'cookie'|'navigator'|'user'|'request'> & {
       bitbucket: Bitbucket;
       require: <T>(name: string, callback: (instance: T) => void) => void;
     }
