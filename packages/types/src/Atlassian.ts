@@ -1595,6 +1595,31 @@ declare global {
       workspace: Workspace;
     }
 
+    interface BranchingModelSettings {
+      type: 'branching_model_settings';
+      links: {
+        self: {
+          href: string;
+        }
+      },
+      branch_types: Array<{
+        enabled: boolean;
+        kind: 'bugfix'|'feature'|'hotfix'|'release'
+        prefix: string;
+      }>;
+      development: {
+        name: string|null;
+        use_mainbranch: boolean;
+        is_valid: boolean;
+      },
+      production: {
+        name: string|null;
+        use_mainbranch: boolean;
+        enabled: boolean;
+        is_valid: boolean;
+      }
+    }
+
     interface Workspace {
       links: Record<string, { href: string; }>;
       name: string;
