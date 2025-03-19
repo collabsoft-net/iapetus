@@ -22,11 +22,12 @@ interface PageWithNavBarProps {
   Icon: JSX.Element;
   Banner?: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
+  icons?: Array<JSX.Element>;
   inline?: boolean;
   fullPage?: boolean;
 }
 
-export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, fullPage, children }: PropsWithChildren<PageWithNavBarProps>) => {
+export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, icons, inline, fullPage, children }: PropsWithChildren<PageWithNavBarProps>) => {
 
   const margin = inline
     ? undefined
@@ -36,7 +37,7 @@ export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, inline, fullP
 
   return (
     <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken', inline ? colors.N0 : colors.N400A) }>
-      <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } fixedOnTop={ !inline } />
+      <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } icons={ icons } fixedOnTop={ !inline } />
       <ScrollView fluid height='unset' margin={ margin }>
         <Row>
           <Grid stretched={ fullPage } margin={ fullPage ? undefined : '0 auto' } padding={ inline ? '16px 0' : '24px 0' }>

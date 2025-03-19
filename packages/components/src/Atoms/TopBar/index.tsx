@@ -15,6 +15,7 @@ interface TopBarProps {
   Icon: JSX.Element;
   Banner?: JSX.Element;
   breadCrumbs?: Array<string|JSX.Element>;
+  icons?: Array<JSX.Element>;
   fixedOnTop?: boolean;
 }
 
@@ -28,7 +29,7 @@ const Topbar = withProps<{ fixedOnTop?: boolean }>()(styled(Grid))`
   `}
 `;
 
-export const TopBar = ({ title, Icon, Banner, breadCrumbs, fixedOnTop }: TopBarProps) => (
+export const TopBar = ({ title, Icon, Banner, breadCrumbs, icons, fixedOnTop }: TopBarProps) => (
   <Topbar fixedOnTop={ fixedOnTop } borderBottom={ fixedOnTop ? `1px solid ${token('color.border', colors.N20)}` : undefined } background={ token('elevation.surface', colors.N0) } fluid={ fixedOnTop }>
     { Banner && (
       <Row>
@@ -58,6 +59,12 @@ export const TopBar = ({ title, Icon, Banner, breadCrumbs, fixedOnTop }: TopBarP
               { element }
             </Column>
           </Fragment>
+        ))}
+        <Column stretched></Column>
+        { icons?.map(icon => (
+          <Column margin='0 8px 0 0'>
+            { icon }
+          </Column>
         ))}
       </Grid>
     </Row>
