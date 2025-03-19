@@ -61,9 +61,9 @@ export const TopBar = ({ title, Icon, Banner, breadCrumbs, icons, fixedOnTop }: 
           </Fragment>
         ))}
         <Column stretched></Column>
-        { icons?.map(icon => (
-          <Column margin='0 8px 0 0'>
-            { icon }
+        { icons?.map(element => (
+          <Column key={ element.key } margin='0 8px 0 0'>
+            { element }
           </Column>
         ))}
       </Grid>
