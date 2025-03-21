@@ -1595,6 +1595,15 @@ declare global {
       workspace: Workspace;
     }
 
+    interface BranchModel {
+      development: Branch;
+      types: Array<{
+        id: 'BUGFIX'|'FEATURE'|'HOTFIX'|'RELEASE';
+        displayName: string;
+        prefix: string;
+      }>;
+    }
+
     interface BranchingModelSettings {
       type: 'branching_model_settings';
       links: {
