@@ -28,7 +28,7 @@ export const Card = ({ header, padding, children, ...props }: PropsWithChildren<
       </CardHeader>
     )}
 
-    <Row padding={ padding }>
+    <Row padding={ padding } stretched>
       { children }
     </Row>
   </Container>
