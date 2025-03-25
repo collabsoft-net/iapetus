@@ -114,7 +114,7 @@ export enum BitbucketCloudEndpoints {
   USER = '/2.0/user/:accountId',
 
   REPOSITORY = `/2.0/repositories/:owner/:slug`,
-  BRANCH_MODEL = '/2.0/repositories/:owner/:slug/branching-model/settings`',
+  BRANCH_MODEL = `/2.0/repositories/:owner/:slug/branching-model/settings`,
 
   BRANCH = `/2.0/repositories/:owner/:slug/refs/branches/:name`,
   BRANCHES = `/2.0/repositories/:owner/:slug/refs/branches`,

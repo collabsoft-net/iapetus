@@ -5,10 +5,14 @@ import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
 
-@injectable()
-export class BitbucketClientService extends AbstractAtlasClientService {
+type UserOrAccount<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.Account : Bitbucket.User;
+type BranchModelOrBranchingModelSettings<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.BranchingModelSettings : Bitbucket.BranchModel;
+type CommitOrBaseCommit<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.Page<Bitbucket.BaseCommit> : Bitbucket.Paginated<Bitbucket.Commit>;
 
-  constructor(protected client: RestClient, protected mode: Modes) {
+@injectable()
+export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasClientService {
+
+  constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
     this.endpoints = mode === Modes.CONNECT ? BitbucketCloudEndpoints : BitbucketServerEndpoints;
   }
@@ -17,18 +21,23 @@ export class BitbucketClientService extends AbstractAtlasClientService {
     return this.getInstance(this.client.cached(duration), this.mode);
   }
 
-  async user(): Promise<Bitbucket.Account>;
-  async user(accountId: string): Promise<Bitbucket.Account>;
-  async user(accountId: number): Promise<Bitbucket.User>;
-  async user(accountId?: string|number): Promise<Bitbucket.Account|Bitbucket.User> {
-    if (this.mode === Modes.P2 && !accountId) {
-      throw new Error('This method is not available for Atlassian Bitbucket Data Center');
-    }
+  async user(): Promise<UserOrAccount<Mode>>;
+  async user(accountId: string): Promise<UserOrAccount<Mode>>;
+  async user(accountId: number): Promise<UserOrAccount<Mode>>;
+  async user(accountId?: string|number): Promise<UserOrAccount<Mode>> {
+    if (this.mode === Modes.P2) {
+      if (!accountId) {
+        throw new Error('This method is not available for Atlassian Bitbucket Data Center');
+      }
 
-    const { data } = accountId
-      ? await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.USER, { accountId: `${accountId}` }))
-      : await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.CURRENT_USER));
-    return data;
+      const result = await this.client.get<Bitbucket.User>(this.getEndpointFor(this.endpoints.USER, { accountId: `${accountId}` })).then(({data}) => data);
+      return result as UserOrAccount<Mode>;
+    } else {
+      const result = accountId
+        ? await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.USER, { accountId: `${accountId}` })).then(({data}) => data)
+        : await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.USER)).then(({data}) => data);
+      return result as UserOrAccount<Mode>;
+    }
   }
 
   async seats(workspaceIdentifier: string): Promise<number> {
@@ -45,15 +54,15 @@ export class BitbucketClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async branchingModel(projectKey: string, slug: string): Promise<Bitbucket.BranchModel>;
-  async branchingModel(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.BranchingModelSettings>;
-  async branchingModel(owner: string, slug: string): Promise<Bitbucket.BranchModel|Bitbucket.BranchingModelSettings> {
+  async branchingModel(projectKey: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>>;
+  async branchingModel(workspaceSlugOrUUID: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>>;
+  async branchingModel(owner: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>> {
     if (this.mode === Modes.CONNECT) {
       const { data } = await this.client.get<Bitbucket.BranchingModelSettings>(this.getEndpointFor(this.endpoints.BRANCH_MODEL, { owner, slug }));
-      return data;
+      return data as BranchModelOrBranchingModelSettings<Mode>;
     } else {
       const { data } = await this.client.get<Bitbucket.BranchModel>(this.getEndpointFor(this.endpoints.BRANCH_MODEL, { owner, slug }));
-      return data;
+      return data as BranchModelOrBranchingModelSettings<Mode>;
     }
   }
 
@@ -82,15 +91,15 @@ export class BitbucketClientService extends AbstractAtlasClientService {
 
   // BitBucket API does not support retrieving list of commit from SHA marker
   // As such, we can only properly support BitBucket by retrieving all commits for now
-  async commits(projectKey: string, slug: string, until?: string): Promise<Bitbucket.Paginated<Bitbucket.Commit>>;
-  async commits(workspaceSlugOrUUID: string, slug: string, revision?: string): Promise<Bitbucket.Page<Bitbucket.BaseCommit>>;
-  async commits(owner: string, slug: string, marker?: string): Promise<Bitbucket.Paginated<Bitbucket.Commit>|Bitbucket.Page<Bitbucket.BaseCommit>> {
+  async commits(projectKey: string, slug: string, until?: string): Promise<CommitOrBaseCommit<Mode>>;
+  async commits(workspaceSlugOrUUID: string, slug: string, revision?: string): Promise<CommitOrBaseCommit<Mode>>;
+  async commits(owner: string, slug: string, marker?: string): Promise<CommitOrBaseCommit<Mode>> {
     if (this.mode === Modes.CONNECT) {
       const { data } = await this.client.get<Bitbucket.Page<Bitbucket.BaseCommit>>(this.getEndpointFor(this.endpoints.COMMITS, { owner, slug, revision: marker || '' }))
-      return data;
+      return data as CommitOrBaseCommit<Mode>;
     } else {
       const { data } = await this.client.get<Bitbucket.Paginated<Bitbucket.Commit>>(this.getEndpointFor(this.endpoints.COMMITS, { owner, slug }), { limit: 200, until: marker });
-      return data;
+      return data as CommitOrBaseCommit<Mode>;
     }
   }
 
@@ -138,7 +147,7 @@ export class BitbucketClientService extends AbstractAtlasClientService {
     throw new Error('This method is not available for Atlassian Bitbucket');
   }
 
-  protected getInstance(client: RestClient, mode: Modes): BitbucketClientService {
+  protected getInstance<Mode extends Modes>(client: RestClient, mode: Mode): BitbucketClientService<Mode> {
     return new BitbucketClientService(client, mode);
   }
 
