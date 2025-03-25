@@ -108,3 +108,16 @@ export enum ConfluenceCloudEndpoints {
   REGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
   UNREGISTER_DYNAMIC_MODULE = '/rest/atlassian-connect/1/app/module/dynamic',
 }
+
+export enum BitbucketCloudEndpoints {
+  CURRENT_USER = '/2.0/user',
+  USER = '/2.0/user/:accountId',
+
+  REPOSITORY = `/2.0/repositories/:owner/:slug`,
+  BRANCH_MODEL = '/2.0/repositories/:owner/:slug/branching-model/settings`',
+
+  BRANCH = `/2.0/repositories/:owner/:slug/refs/branches/:name`,
+  BRANCHES = `/2.0/repositories/:owner/:slug/refs/branches`,
+  TAGS = `/2.0/repositories/:owner/:slug/refs/tags`,
+  COMMITS = `/2.0/repositories/:owner/:slug/commits{/:revision}`
+}

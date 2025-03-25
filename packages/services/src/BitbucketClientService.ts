@@ -1,4 +1,5 @@
-import { BitbucketServerEndpoints, Modes } from '@collabsoft-net/enums';
+import { BitbucketCloudEndpoints, BitbucketServerEndpoints, Modes } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
@@ -7,13 +8,127 @@ import { AbstractAtlasClientService } from '.';
 @injectable()
 export class BitbucketClientService extends AbstractAtlasClientService {
 
-  constructor(protected client: RestClient) {
-    super(client, Modes.P2);
-    this.endpoints = BitbucketServerEndpoints;
+  constructor(protected client: RestClient, protected mode: Modes) {
+    super(client, mode);
+    this.endpoints = mode === Modes.CONNECT ? BitbucketCloudEndpoints : BitbucketServerEndpoints;
   }
 
   cached(duration: number) {
-    return this.getInstance(this.client.cached(duration));
+    return this.getInstance(this.client.cached(duration), this.mode);
+  }
+
+  async user(): Promise<Bitbucket.Account>;
+  async user(accountId: string): Promise<Bitbucket.Account>;
+  async user(accountId: number): Promise<Bitbucket.User>;
+  async user(accountId?: string|number): Promise<Bitbucket.Account|Bitbucket.User> {
+    if (this.mode === Modes.P2 && !accountId) {
+      throw new Error('This method is not available for Atlassian Bitbucket Data Center');
+    }
+
+    const { data } = accountId
+      ? await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.USER, { accountId: `${accountId}` }))
+      : await this.client.get<Bitbucket.Account>(this.getEndpointFor(this.endpoints.CURRENT_USER));
+    return data;
+  }
+
+  async seats(workspaceIdentifier: string): Promise<number> {
+    if (this.mode === Modes.P2) {
+      throw new Error('This method is not available for Atlassian Bitbucket Data Center');
+    }
+    return this.getSeatsPaginated(workspaceIdentifier);
+  }
+
+  async repository(projectKey: string, slug: string): Promise<Bitbucket.Repository>;
+  async repository(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.Repository>;
+  async repository(owner: string, slug: string): Promise<Bitbucket.Repository> {
+    const { data } = await this.client.get<Bitbucket.Repository>(this.getEndpointFor(this.endpoints.REPOSITORY, { owner, slug }));
+    return data;
+  }
+
+  async branchingModel(projectKey: string, slug: string): Promise<Bitbucket.BranchModel>;
+  async branchingModel(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.BranchingModelSettings>;
+  async branchingModel(owner: string, slug: string): Promise<Bitbucket.BranchModel|Bitbucket.BranchingModelSettings> {
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.get<Bitbucket.BranchingModelSettings>(this.getEndpointFor(this.endpoints.BRANCH_MODEL, { owner, slug }));
+      return data;
+    } else {
+      const { data } = await this.client.get<Bitbucket.BranchModel>(this.getEndpointFor(this.endpoints.BRANCH_MODEL, { owner, slug }));
+      return data;
+    }
+  }
+
+  async branch(workspaceSlugOrUUID: string, repositorySlugOrUUID: string, name: string): Promise<Bitbucket.Branch> {
+    if (this.mode === Modes.P2) {
+      throw new Error('This method is not available for Atlassian Bitbucket Data Center');
+    }
+
+    const { data } = await this.client.get<Bitbucket.Branch>(this.getEndpointFor(this.endpoints.BRANCH, { owner: workspaceSlugOrUUID, slug: repositorySlugOrUUID, name }));
+    return data;
+  }
+
+  async branches(projectKey: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Branch>>;
+  async branches(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Branch>>;
+  async branches(owner: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Branch>> {
+    const result = await this.fetchAll<Bitbucket.Branch>(this.getEndpointFor(this.endpoints.BRANCHES, { owner, slug }));
+    return result;
+  }
+
+  async tags(projectKey: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Tag>>;
+  async tags(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Tag>>;
+  async tags(owner: string, slug: string): Promise<Bitbucket.Page<Bitbucket.Tag>> {
+    const result = await this.fetchAll<Bitbucket.Tag>(this.getEndpointFor(this.endpoints.TAGS, { owner, slug }));
+    return result;
+  }
+
+  // BitBucket API does not support retrieving list of commit from SHA marker
+  // As such, we can only properly support BitBucket by retrieving all commits for now
+  async commits(projectKey: string, slug: string, until?: string): Promise<Bitbucket.Paginated<Bitbucket.Commit>>;
+  async commits(workspaceSlugOrUUID: string, slug: string, revision?: string): Promise<Bitbucket.Page<Bitbucket.BaseCommit>>;
+  async commits(owner: string, slug: string, marker?: string): Promise<Bitbucket.Paginated<Bitbucket.Commit>|Bitbucket.Page<Bitbucket.BaseCommit>> {
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.get<Bitbucket.Page<Bitbucket.BaseCommit>>(this.getEndpointFor(this.endpoints.COMMITS, { owner, slug, revision: marker || '' }))
+      return data;
+    } else {
+      const { data } = await this.client.get<Bitbucket.Paginated<Bitbucket.Commit>>(this.getEndpointFor(this.endpoints.COMMITS, { owner, slug }), { limit: 200, until: marker });
+      return data;
+    }
+  }
+
+  private async getSeatsPaginated(workspace: string|number, next?: string) {
+    let result = 0;
+    const url = next ? next : `/workspaces/${workspace}/members`;
+    const { data } = await this.client.get<Bitbucket.Page<unknown>>(url);
+    if (data.size && data.size > 0) {
+      return data.size;
+    } else {
+      result = data.pagelen;
+      if (result <= 10000 && data.next) {
+        result += await this.getSeatsPaginated(workspace, data.next);
+      }
+    }
+    return result;
+  }
+
+  private async fetchAll<T>(url: string, start?: number): Promise<Bitbucket.Page<T>> {
+    const { data } = await this.client.get<Bitbucket.Page<T>|Bitbucket.Paginated<T>>(url, { start });
+
+    const values: Array<T> = data.values.slice();
+    if (isOfType<Bitbucket.Page<T>>(data, 'next')) {
+      const result = await this.fetchAll<T>(data.next);
+      values.push(...result.values);
+    } else if (isOfType<Bitbucket.Paginated<T>>(data, 'isLastPage') && !data.isLastPage) {
+      const result = await this.fetchAll<T>(url, start);
+      values.push(...result.values);
+    }
+
+    return {
+      size: values.length,
+      page: 0,
+      pagelen: 0,
+      next: '',
+      previous: '',
+      values
+    }
   }
 
   listDynamicModules(): Promise<unknown> {
@@ -23,8 +138,8 @@ export class BitbucketClientService extends AbstractAtlasClientService {
     throw new Error('This method is not available for Atlassian Bitbucket');
   }
 
-  protected getInstance(client: RestClient): BitbucketClientService {
-    return new BitbucketClientService(client);
+  protected getInstance(client: RestClient, mode: Modes): BitbucketClientService {
+    return new BitbucketClientService(client, mode);
   }
 
   static getIdentifier(): symbol {

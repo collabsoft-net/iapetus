@@ -61,4 +61,12 @@ export enum BambooServerEndpoints {
 }
 
 export enum BitbucketServerEndpoints {
+  USER = '/user/:accountId',
+
+  REPOSITORY = `/projects/:owner/repos/:slug`,
+  BRANCH_MODEL = `/rest/branch-utils/latest/projects/:owner/repos/:slug/branchmodel`,
+
+  BRANCHES = '/projects/:owner/repos/:slug/branches',
+  TAGS = '/projects/:owner/repos/:slug/tags',
+  COMMITS = '/projects/:owner/repos/:slug/commits'
 }
