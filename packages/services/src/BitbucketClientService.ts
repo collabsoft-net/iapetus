@@ -138,7 +138,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
       const result = await this.fetchAll<T>(data.next);
       values.push(...result.values);
     } else if (isOfType<Bitbucket.Paginated<T>>(data, 'isLastPage') && !data.isLastPage) {
-      const result = await this.fetchAll<T>(url, start);
+      const result = await this.fetchAll<T>(url, data.nextPageStart);
       values.push(...result.values);
     }
 
