@@ -131,7 +131,9 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
   }
 
   private async fetchAll<T>(url: string, start?: number): Promise<Bitbucket.Page<T>> {
-    const { data } = await this.client.get<Bitbucket.Page<T>|Bitbucket.Paginated<T>>(url, { start });
+    const { data } = start
+      ? await this.client.get<Bitbucket.Page<T>|Bitbucket.Paginated<T>>(url, { start })
+      : await this.client.get<Bitbucket.Page<T>|Bitbucket.Paginated<T>>(url);
 
     const values: Array<T> = data.values.slice();
     if (isOfType<Bitbucket.Page<T>>(data, 'next')) {
