@@ -65,6 +65,7 @@ export enum BitbucketServerEndpoints {
 
   REPOSITORY = `/projects/:owner/repos/:slug`,
   BRANCH_MODEL = `/rest/branch-utils/latest/projects/:owner/repos/:slug/branchmodel`,
+  DEFAULT_BRANCH = `projects/:owner/repos/:slug/default-branch`,
 
   BRANCHES = '/projects/:owner/repos/:slug/branches',
   TAGS = '/projects/:owner/repos/:slug/tags',

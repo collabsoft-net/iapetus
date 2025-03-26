@@ -66,6 +66,18 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
     }
   }
 
+  async defaultBranch(projectKey: string, slug: string): Promise<Bitbucket.Branch>;
+  async defaultBranch(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.Branch>;
+  async defaultBranch(owner: string, slug: string): Promise<Bitbucket.Branch> {
+    if (this.mode === Modes.CONNECT) {
+      const repository = await this.repository(owner, slug);
+      return this.branch(owner, slug, repository.mainbranch.name);
+    } else {
+      const { data } = await this.client.get<Bitbucket.Branch>(this.getEndpointFor(this.endpoints.DEFAULT_BRANCH, { owner, slug }));
+      return data;
+    }
+  }
+
   async branch(workspaceSlugOrUUID: string, repositorySlugOrUUID: string, name: string): Promise<Bitbucket.Branch> {
     if (this.mode === Modes.P2) {
       throw new Error('This method is not available for Atlassian Bitbucket Data Center');
