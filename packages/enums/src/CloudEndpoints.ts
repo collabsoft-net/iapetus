@@ -113,6 +113,8 @@ export enum BitbucketCloudEndpoints {
   CURRENT_USER = '/2.0/user',
   USER = '/2.0/user/:accountId',
 
+  WORKSPACE_MEMBERS = `/2.0/workspaces/:workspace/members`,
+
   REPOSITORY = `/2.0/repositories/:owner/:slug`,
   BRANCH_MODEL = `/2.0/repositories/:owner/:slug/branching-model/settings`,
 
