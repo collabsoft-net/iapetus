@@ -97,7 +97,8 @@ export enum ConfluenceCloudEndpoints {
 
   CONTENT_PERMISSIONS = '/rest/api/content/:id/permission/check',
 
-  SPACE = '/rest/api/space/:spaceKey',
+  SEARCH = '/rest/api/search',
+  SPACE = '/api/v2/spaces/:id',
 
   APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
   USER_PROPERTY_BY_KEY = '/rest/api/user/:userId/property/:propertyKey',

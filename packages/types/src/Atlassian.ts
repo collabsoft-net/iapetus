@@ -71,6 +71,59 @@ declare global {
       size: number;
     }
 
+    interface MultiEntityResult<T> {
+      results: Array<T>;
+      _links: {
+        next: string;
+        base: string;
+      }
+    }
+
+    interface SearchPageResponseSearchResult {
+      results: Array<SearchResult>;
+      start: number;
+      limit: number;
+      size: number;
+      totalSize: number;
+      cqlQuery: string;
+      searchDuration: number;
+      archivedResultCount: number;
+      _links: {
+        base: string;
+        context: string;
+        next?: string;
+        self: string;
+      }
+    }
+
+    interface SearchResult {
+      content?: Content;
+      user?: User;
+      space?: Space;
+      title: string;
+      excerpt: string;
+      url: string;
+      resultParentContainer?: ContainerSummary;
+      resultGlobalContainer?: ContainerSummary;
+      breadcrumbs: Array<Breadcrumb>;
+      entityType: string;
+      iconCssClass: string;
+      lastModified: string;
+      friendlyLastModified: string;
+      score?: number;
+    }
+
+    interface ContainerSummary {
+      title: string;
+      displayUrl: string;
+    }
+
+    interface Breadcrumb {
+      label: string;
+      url: string;
+      separator: string;
+    }
+
     interface Group {
       id: string;
       type: 'group';
@@ -252,6 +305,22 @@ declare global {
       }
     }
 
+    interface SpaceBulk {
+      id: string;
+      key: string;
+      name: string;
+      type: SpaceType;
+      status: SpaceStatus;
+      authorId: string;
+      createdAt: string;
+      homepageId: string;
+      description: SpaceDescriptionV2;
+      icon: SpaceIcon;
+      _links: {
+        webui: string;
+      }
+    }
+
     interface Space {
       id?: number;
       key: string;
@@ -278,6 +347,62 @@ declare global {
       };
     }
 
+    interface SpaceV2 {
+      id: string;
+      key: string;
+      name: string;
+      type: SpaceType;
+      status: SpaceStatus;
+      authorId: string;
+      createdAt: string;
+      homepageId: string;
+      description: SpaceDescriptionV2;
+      icon?: SpaceIcon;
+      labels?: {
+        results: Array<LabelV2>;
+        meta: OptionalFieldMeta;
+      };
+      properties?: {
+        results: Array<SpaceProperty>;
+        meta: OptionalFieldMeta;
+      };
+      operations?: {
+        results: Array<Operation>;
+        meta: OptionalFieldMeta;
+      };
+      permissions?: {
+        results: Array<SpacePermissionAssignment>;
+        meta: OptionalFieldMeta;
+      };
+    }
+
+    type SpaceType = 'global'|'collaboration'|'knowledge_base'|'personal';
+    type SpaceStatus = 'current'|'archived';
+
+    interface SpaceProperty {
+      id: string;
+      key: string;
+      value: unknown;
+      createdAt: string;
+      createdBy: string;
+      version: {
+        createdAt: string;
+        createdBy: string;
+        message: string;
+        number: number;
+      }
+    }
+
+    interface SpaceIcon {
+      path: string;
+      apiDownloadLink: string;
+    }
+
+    interface Operation {
+      operation: string;
+      targetType: string;
+    }
+
     interface Icon {
       path: string;
       width: number;
@@ -292,6 +417,11 @@ declare global {
       size: number;
     }
 
+    interface OptionalFieldMeta {
+      hasMore: boolean;
+      curstor: string;
+    }
+
     interface Label {
       prefix: string;
       name: string;
@@ -299,10 +429,26 @@ declare global {
       label: string;
     }
 
+    interface LabelV2 {
+      prefix: string;
+      name: string;
+      id: string;
+    }
+
     interface SpaceDescription {
       value: string;
       representation: 'plain'|'view';
       embeddedContent: Array<Content>;
+    }
+
+    interface SpaceDescriptionV2 {
+      plan: BodyType;
+      view: BodyType;
+    }
+
+    interface BodyType {
+      representation: 'plain'|'view';
+      value: string;
     }
 
     interface SpaceSettings {
@@ -333,6 +479,20 @@ declare global {
       operation: OperationCheckResult;
       anonymousAccess: boolean;
       unlicensedAccess: boolean;
+    }
+
+    interface SpacePermissionAssignment {
+      id: string;
+      principle: SpacePermissionPrinciple;
+      operation: {
+        key: ContentOperation;
+        targetType: 'page'|'blogpost'|'comment'|'attachment'|'whiteboard'|'database'|'embed'|'folder'|'space'|'application'|'userProfile';
+      }
+    }
+
+    interface SpacePermissionPrinciple {
+      type: 'user'|'group'|'role';
+      id: string;
     }
 
     interface OperationCheckResult {

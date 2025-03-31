@@ -36,6 +36,60 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data;
   }
 
+  async search({
+    cql,
+    cqlcontext,
+    cursor,
+    next,
+    prev,
+    limit,
+    start,
+    includeArchivedSpaces,
+    excludeCurrentSpaces,
+    excerpt,
+    sitePermissionTypeFilter,
+    expand
+  }: {
+    cql: string;
+    cqlcontext?: string;
+    cursor?: string;
+    next?: boolean;
+    prev?: boolean;
+    limit?: number;
+    start?: number;
+    includeArchivedSpaces?: boolean;
+    excludeCurrentSpaces?: boolean;
+    excerpt?: 'highlight'|'indexed'|'none'|'highlight_unescaped'|'indexed_unescaped';
+    sitePermissionTypeFilter?: 'all'|'externalCollaborator'|'none';
+    expand?: Array<string>;
+  }): Promise<Confluence.SearchPageResponseSearchResult> {
+    const { data } = await this.client.get<Confluence.SearchPageResponseSearchResult>(this.endpoints.SEARCH, {
+      cql: encodeURIComponent(cql),
+      cqlcontext,
+      cursor,
+      next,
+      prev,
+      limit,
+      start,
+      includeArchivedSpaces,
+      excludeCurrentSpaces,
+      excerpt,
+      sitePermissionTypeFilter,
+      expand: Array.isArray(expand) ? expand.join(',') : undefined
+    });
+    return data;
+  }
+
+  async getSpace(spaceIdOrKey: string) {
+    if (this.mode === Modes.CONNECT) {
+      const { data } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: spaceIdOrKey }));
+      return data;
+    } else {
+      const { data } = await this.client.get<Confluence.Space>(this.getEndpointFor(this.endpoints.SPACE, { spaceKey: spaceIdOrKey }));
+      return data;
+    }
+  }
+
   async getContent(contentId: number): Promise<Confluence.Content> {
     const { data } = await this.client.get<Confluence.Content>(`/rest/api/content/${contentId}`);
     return data;
@@ -80,15 +134,24 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return false;
   }
 
-  async hasSpacePermission(spaceKey: string, operation: Confluence.ContentOperation, accountId?: string): Promise<boolean> {
-    const { data: space } = await this.client.get<Confluence.Space>(this.getEndpointFor(this.endpoints.SPACE, { spaceKey }), { extend: 'permissions' });
-    if (space && space.permissions) {
-      const permission = space.permissions.find(item => item.operation.operation === operation && item.operation.targetType === 'space');
-      if (permission) {
-        if (accountId) {
-          return permission.subjects.user.results.some(user => user.accountId === accountId);
-        } else {
-          return permission.anonymousAccess;
+  async hasSpacePermission(spaceIdOrKey: string, operation: Confluence.ContentOperation, accountId?: string): Promise<boolean> {
+    if (this.mode === Modes.CONNECT) {
+      const { data: space } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: spaceIdOrKey }), { 'include-permissions': 'true' });
+      if (space && space.permissions) {
+        const permissions = space.permissions.results.filter(item => item.operation.key === operation && item.operation.targetType === 'space');
+        const hasPermission = permissions.some(item => item.principle.id === accountId);
+        return hasPermission;
+      }
+    } else {
+      const { data: space } = await this.client.get<Confluence.Space>(this.getEndpointFor(this.endpoints.SPACE, { spaceKey: spaceIdOrKey }), { extend: 'permissions' });
+      if (space && space.permissions) {
+        const permission = space.permissions.find(item => item.operation.operation === operation && item.operation.targetType === 'space');
+        if (permission) {
+          if (accountId) {
+            return permission.subjects.user.results.some(user => user.accountId === accountId);
+          } else {
+            return permission.anonymousAccess;
+          }
         }
       }
     }
