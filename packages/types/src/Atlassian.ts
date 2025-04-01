@@ -173,6 +173,8 @@ declare global {
       _links: Record<string, string>;
     }
 
+    type ContentStatus = 'current'|'draft'|'archived'|'historical'|'trashed'|'deleted'|'any';
+
     interface ContentBody {
       value: string;
       representation: 'view'|'export_view'|'styled_view'|'storage'|'editor'|'editor2'|'anonymous_export_view'|'wiki'|'atlas_doc_format';
@@ -517,6 +519,32 @@ declare global {
         group: PaginatedResponse<Group>;
       }
     }
+
+    interface PageBulk {
+      id: string;
+      status: ContentStatus;
+      title: string;
+      spaceId: string;
+      parentId: string;
+      parentType: ParentContentType;
+      position: number;
+      authorId: string;
+      ownerId: string;
+      lastOwnerId: string;
+      createdAt: string;
+      version: Version;
+      body: {
+        storage?: BodyType;
+        atlas_doc_format?: BodyType;
+      };
+      links: {
+        webui: string;
+        editui: string;
+        tinyui: string;
+      }
+    }
+
+    type ParentContentType = 'page'|'whiteboard'|'database'|'embed'|'folder';
 
     interface Message {
       translation?: string;

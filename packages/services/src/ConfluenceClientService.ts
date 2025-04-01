@@ -90,6 +90,34 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     }
   }
 
+  async getPages(
+    spaceId: string,
+    depth?: number,
+    sort?: 'id'|'-id'|'created-date'|'-created-date'|'modified-date'|'-modified-date'|'title'|'-title',
+    status?: Array<'current'|'archived'|'deleted'|'trashed'>,
+    title?: string,
+    bodyFormat?: 'storage'|'atlas_doc_format',
+    cursor?: string,
+    limit?: number,
+    fetchAll = true
+  ): Promise<Array<Confluence.PageBulk>> {
+    const result: Array<Confluence.PageBulk> = [];
+    const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.PageBulk>>(this.getEndpointFor(this.endpoints.PAGES, { id: spaceId }), {
+      depth,
+      sort,
+      status: status?.join(','),
+      title,
+      'body-format': bodyFormat,
+      cursor,
+      limit: fetchAll ? 250 : limit
+    });
+    result.push(...data.results);
+    if (fetchAll && data._links.next) {
+      result.push(...await this.getPages(spaceId, depth, sort, status, title, bodyFormat, cursor, limit, fetchAll));
+    }
+    return result;
+  }
+
   async getContent(contentId: number): Promise<Confluence.Content> {
     const { data } = await this.client.get<Confluence.Content>(`/rest/api/content/${contentId}`);
     return data;
