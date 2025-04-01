@@ -64,7 +64,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     expand?: Array<string>;
   }): Promise<Confluence.SearchPageResponseSearchResult> {
     const { data } = await this.client.get<Confluence.SearchPageResponseSearchResult>(this.endpoints.SEARCH, {
-      cql: encodeURIComponent(cql),
+      cql,
       cqlcontext,
       cursor,
       next,
