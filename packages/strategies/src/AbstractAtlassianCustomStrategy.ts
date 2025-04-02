@@ -13,7 +13,7 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
 
   protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
 
-  protected abstract get clientIdentifierKey(): string;
+  protected abstract get clientIdentifierKey(): 'clientId'|'clientKey'|'tenantId';
 
   protected async process(request: express.Request): Promise<T> {
     const identifier = await this.findIdentifier(request);

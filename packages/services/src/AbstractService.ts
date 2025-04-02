@@ -1,8 +1,8 @@
-import { DefaultService, DTO,Entity, EntityArray, Paginated, QueryBuilder, QueryOptions, Repository, Validator } from '@collabsoft-net/types';
+import { DefaultService, Entity, EntityArray, EntityDTO, Paginated, QueryBuilder, QueryOptions, Repository, Validator } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractService<T extends Entity, X extends DTO> implements DefaultService<T, X> {
+export abstract class AbstractService<T extends Entity, X extends EntityDTO<T>> implements DefaultService<T, X> {
 
   constructor(protected repository: Repository<T>, protected options: QueryOptions) {}
 
@@ -47,7 +47,7 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findById(id, { ...this.options, ...options });
   }
 
-  async findByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
+  async findByProperty(key: keyof T, value: string|number|boolean, options: QueryOptions = {}): Promise<T|null> {
     return this.repository.findByProperty(key, value, { ...this.options, ...options });
   }
 
@@ -61,7 +61,7 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findAll({ ...this.options, ...options });
   }
 
-  async findAllByProperty(key: string, value: string|number|boolean, options: QueryOptions = {}): Promise<Paginated<T>> {
+  async findAllByProperty(key: keyof T, value: string|number|boolean, options: QueryOptions = {}): Promise<Paginated<T>> {
     return this.repository.findAllByProperty(key, value, { ...this.options, ...options });
   }
 
@@ -71,10 +71,10 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findAllByQuery(qb, { ...this.options, ...options });
   }
 
-  async save(entity: T): Promise<T> {
+  async save(entity: T, options: QueryOptions = {}): Promise<T> {
     const errors = this.validate(entity);
     if (errors.length > 0) return Promise.reject(new Error(errors[0]));
-    return this.repository.save(entity, {...this.options, instanceId: this.options.instanceId || entity.instanceId});
+    return this.repository.save(entity, {...this.options, ...options});
   }
 
   async saveAll(entities: Array<T>): Promise<Array<T>> {
@@ -94,13 +94,13 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     await this.repository.deleteById(id, this.options);
   }
 
-  abstract isValidEntity(entity: Entity|DTO): boolean;
-  protected abstract get validators(): Array<Validator>;
+  abstract isValidEntity(entity: T|X): boolean;
+  protected abstract get validators(): Array<Validator<T>>;
   protected registerEventListeners(): void {}
 
-  validate(entity: Entity): Array<string> {
+  validate(entity: T): Array<string> {
     const messages = [] as Array<string>;
-    this.validators.forEach((validator: Validator) => {
+    this.validators.forEach((validator: Validator<T>) => {
       if (!validator.validate(entity)) {
         messages.push(validator.toString());
       }

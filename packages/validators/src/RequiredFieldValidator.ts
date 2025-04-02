@@ -3,9 +3,9 @@ import { Entity } from '@collabsoft-net/types';
 
 import AbstractValidator from './AbstractValidator';
 
-export class RequiredFieldValidator extends AbstractValidator {
+export class RequiredFieldValidator<T extends Entity> extends AbstractValidator<T> {
 
-  validate(entity: Entity): boolean {
+  validate(entity: T): boolean {
 
     const keys = Object.keys(entity).map(key => Object.prototype.hasOwnProperty.call(entity, key));
     if (!keys) {
@@ -46,7 +46,7 @@ export class RequiredFieldValidator extends AbstractValidator {
     } else if (this.label) {
       return `${this.label} is a required field`;
     } else if (this.field) {
-      return `${this.field} is a required field`;
+      return `${String(this.field)} is a required field`;
     } else {
       return 'Some field has been marked required, but I am not sure which one';
     }

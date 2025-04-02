@@ -1,5 +1,5 @@
 
-export interface Entity extends Record<string, unknown> {
+export interface Entity {
   id: string;
 }
 

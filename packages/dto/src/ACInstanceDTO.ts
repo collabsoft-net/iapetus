@@ -1,10 +1,12 @@
 
 import { ACInstance } from '@collabsoft-net/entities';
-import { DTO } from '@collabsoft-net/types';
+import { EntityDTO } from '@collabsoft-net/types';
 
-export class ACInstanceDTO extends DTO implements Omit<ACInstance, 'id'> {
+export class ACInstanceDTO extends EntityDTO<ACInstance> {
 
   key: string;
+  clientId?: string;
+  tenantId?: string;
   clientKey: string;
   sharedSecret: string;
   serverVersion: string;
@@ -15,11 +17,13 @@ export class ACInstanceDTO extends DTO implements Omit<ACInstance, 'id'> {
   serviceEntitlementNumber: string;
   eventType: 'installed' | 'uninstalled' | 'enabled' | 'disabled';
   oauthClientId: string;
+  active: boolean;
   lastActive: number;
 
   constructor(data: ACInstance|ACInstanceDTO) {
     super(data.id);
     this.key = data.key;
+    this.clientId = data.clientId;
     this.clientKey = data.clientKey;
     this.sharedSecret = data.sharedSecret;
     this.serverVersion = data.serverVersion;
@@ -30,6 +34,7 @@ export class ACInstanceDTO extends DTO implements Omit<ACInstance, 'id'> {
     this.serviceEntitlementNumber = data.serviceEntitlementNumber;
     this.eventType = data.eventType;
     this.oauthClientId = data.oauthClientId;
+    this.active = data.active;
     this.lastActive = data.lastActive;
   }
 

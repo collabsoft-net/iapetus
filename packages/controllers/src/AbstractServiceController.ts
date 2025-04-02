@@ -25,7 +25,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
           Object.keys(query).forEach((key) => {
             const value = query[key];
             if (value && typeof value === 'string') {
-              queryBuilder = this.toQuery(key, value, queryBuilder);
+              queryBuilder = this.toQuery(key as keyof T, value, queryBuilder);
             }
           });
           return queryBuilder;
@@ -63,7 +63,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
           Object.keys(query).forEach((key) => {
             const value = query[key];
             if (value && typeof value === 'string') {
-              queryBuilder = this.toQuery(key, value, queryBuilder);
+              queryBuilder = this.toQuery(key as keyof T, value, queryBuilder);
             }
           });
           return queryBuilder;

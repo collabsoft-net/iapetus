@@ -3,6 +3,8 @@ import { Entity } from '@collabsoft-net/types';
 
 export interface ACInstance extends Entity {
   key: string;
+  clientId?: string;
+  tenantId?: string;
   clientKey: string;
   sharedSecret: string;
   serverVersion: string;
@@ -13,5 +15,6 @@ export interface ACInstance extends Entity {
   oauthClientId: string;
   serviceEntitlementNumber: string;
   eventType: 'installed' | 'uninstalled' | 'enabled' | 'disabled';
+  active: boolean;
   lastActive: number;
 }

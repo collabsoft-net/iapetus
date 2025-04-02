@@ -18,13 +18,13 @@ export interface Repository<T extends Entity> extends EventEmitter {
   countByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<number>;
 
   findById(id: string, options?: QueryOptions): Promise<T|null>;
-  findByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<T|null>;
+  findByProperty(key: keyof T, value: string|number|boolean, options?: QueryOptions): Promise<T|null>;
   findByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
   findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
   findByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<T|null>;
 
   findAll(options?: QueryOptions): Promise<Paginated<T>>;
-  findAllByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<T>>;
+  findAllByProperty(key: keyof T, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<T>>;
   findAllByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<Paginated<T>>;
   findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<Paginated<T>>;
   findAllByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<Paginated<T>>;

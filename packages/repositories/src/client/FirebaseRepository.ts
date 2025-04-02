@@ -117,7 +117,7 @@ export class FirebaseRepository<T extends Entity> implements Repository<T> {
     return snapshot.exists() ? <T>snapshot.data() : null;
   }
 
-  async findByProperty(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByProperty(key: keyof T, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
     return this.findByQuery(qb => qb.where(key, '==', value), options);
   }
@@ -169,7 +169,7 @@ export class FirebaseRepository<T extends Entity> implements Repository<T> {
     };
   }
 
-  async findAllByProperty(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByProperty(key: keyof T, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }

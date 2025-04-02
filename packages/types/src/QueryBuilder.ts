@@ -6,7 +6,6 @@ export interface QueryBuilder<T extends Entity> {
   orderBy(key: keyof T, direction: 'asc'|'desc'): QueryBuilder<T>;
   where(key: keyof T, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder<T>;
   limit(value: number, offset?: number): QueryBuilder<T>;
-  matches(item: Record<keyof T, string|number|Array<unknown>>, condition: Condition<T>): boolean;
 }
 
 export interface Condition<T> {

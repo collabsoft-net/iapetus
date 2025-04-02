@@ -1,6 +1,6 @@
 
 import { Entity } from './Entity';
 
-export interface Validator {
-  validate(entity: Entity): boolean;
+export interface Validator<T extends Entity> {
+  validate(entity: T): boolean;
 }
