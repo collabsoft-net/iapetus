@@ -16,8 +16,12 @@ export class EntityDTO<T extends Entity> implements Omit<Entity, 'id'> {
 
   constructor(id?: string);
   constructor(entity: T|EntityDTO<T>);
-  constructor(idOrEntity: string|T|EntityDTO<T>) {
-    this.id = typeof idOrEntity === 'string' ? idOrEntity : idOrEntity.id;
+  constructor(idOrEntity?: string|T|EntityDTO<T>) {
+    this.id = idOrEntity
+      ? typeof idOrEntity === 'string'
+        ? idOrEntity
+        : idOrEntity.id
+      : undefined;
   }
 
 }
