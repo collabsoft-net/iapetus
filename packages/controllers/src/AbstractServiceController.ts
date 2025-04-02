@@ -100,11 +100,11 @@ export abstract class AbstractServiceController<T extends Entity, X extends DTO,
     }
   }
 
-  protected toQuery(key: string, value: string|number|boolean, query: QueryBuilder): QueryBuilder {
+  protected toQuery(key: keyof T, value: string|number|boolean, query: QueryBuilder<T>): QueryBuilder<T> {
     return this.defaultQuery(key, value, query);
   }
 
-  protected defaultQuery(key: string, value: string|number|boolean, query: QueryBuilder): QueryBuilder {
+  protected defaultQuery(key: keyof T, value: string|number|boolean, query: QueryBuilder<T>): QueryBuilder<T> {
     return query.where(key, '==', value);
   }
 }

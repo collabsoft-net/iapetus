@@ -5,7 +5,7 @@ import { QueryBuilder } from './QueryBuilder';
 import { StorageProvider } from './StorageProvider';
 import { User } from './User';
 
-export interface Repository extends EventEmitter {
+export interface Repository<T extends Entity> extends EventEmitter {
   close(): Promise<void>;
   authenticate(token: string): Promise<boolean>;
   isAuthenticated(): Promise<boolean>;
@@ -13,29 +13,29 @@ export interface Repository extends EventEmitter {
   signOut(): Promise<void>;
 
   count(options?: QueryOptions): Promise<number>;
-  countByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<number>;
-  countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<number>;
-  countByQuery<A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends QueryOptions>(qb: A, options?: B): Promise<number>;
+  countByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<number>;
+  countByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<number>;
+  countByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<number>;
 
-  findById<T extends Entity>(id: string, options?: QueryOptions): Promise<T|null>;
-  findByProperty<T extends Entity>(key: string, value: string|number|boolean, options?: QueryOptions): Promise<T|null>;
-  findByQuery<T extends Entity>(qb: QueryBuilder, options?: QueryOptions): Promise<T|null>;
-  findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<T|null>;
-  findByQuery<T extends Entity, A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends QueryOptions>(qb: A, options?: B): Promise<T|null>;
+  findById(id: string, options?: QueryOptions): Promise<T|null>;
+  findByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<T|null>;
+  findByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
+  findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
+  findByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<T|null>;
 
-  findAll<T extends Entity>(options?: QueryOptions): Promise<Paginated<T>>;
-  findAllByProperty<T extends Entity>(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<T>>;
-  findAllByQuery<T extends Entity>(qb: QueryBuilder, options?: QueryOptions): Promise<Paginated<T>>;
-  findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<Paginated<T>>;
-  findAllByQuery<T extends Entity, A extends QueryBuilder|((qb: QueryBuilder) => QueryBuilder),B extends QueryOptions>(qb: A, options?: B): Promise<Paginated<T>>;
+  findAll(options?: QueryOptions): Promise<Paginated<T>>;
+  findAllByProperty(key: string, value: string|number|boolean, options?: QueryOptions): Promise<Paginated<T>>;
+  findAllByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<Paginated<T>>;
+  findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<Paginated<T>>;
+  findAllByQuery<A extends QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>),B extends QueryOptions>(qb: A, options?: B): Promise<Paginated<T>>;
 
-  save<T extends Entity>(entity: T, options?: QueryOptions): Promise<T>;
-  saveAll<T extends Entity>(entities: Array<T>, options?: QueryOptions): Promise<Array<T>>;
+  save(entity: T, options?: QueryOptions): Promise<T>;
+  saveAll(entities: Array<T>, options?: QueryOptions): Promise<Array<T>>;
 
-  delete<T extends Entity>(entity: T, options?: QueryOptions): Promise<void>;
+  delete(entity: T, options?: QueryOptions): Promise<void>;
   deleteById(id: string, options?: QueryOptions): Promise<void>;
   deleteAll(options?: QueryOptions): Promise<void>;
-  deleteAll<T extends Entity>(entities: Array<T>, options?: QueryOptions): Promise<void>;
+  deleteAll(entities: Array<T>, options?: QueryOptions): Promise<void>;
 
   deleteFromStorage(url: string): Promise<void>;
   storage: StorageProvider;

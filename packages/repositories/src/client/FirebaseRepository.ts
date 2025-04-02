@@ -14,7 +14,7 @@ type FirestorePrimitive = Primitive|GeoPoint|Timestamp;
 interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
 interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
 
-export class FirebaseRepository implements Repository {
+export class FirebaseRepository<T extends Entity> implements Repository<T> {
 
   private fb: FirebaseApp;
   private auth: Auth;
@@ -94,8 +94,8 @@ export class FirebaseRepository implements Repository {
     }
   }
 
-  async countByQuery(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<number>;
-  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<number>;
+  async countByQuery(qb: QueryBuilder<T>, options: FirebaseQueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseQueryOptions): Promise<number>;
   async countByQuery(qb: unknown, options: FirebaseQueryOptions = { path: '/' }): Promise<number> {
     await this.validateQueryOptions(options);
 
@@ -103,7 +103,7 @@ export class FirebaseRepository implements Repository {
       throw new Error('You can only use count for collections, not individual documents');
     }
 
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
     const constraints = this.toConstraints(queryBuilder);
 
     const ref = collection(this.firestore, options.path);
@@ -111,24 +111,24 @@ export class FirebaseRepository implements Repository {
     return snapshot.data().count;
   }
 
-  async findById<T extends Entity>(id: string, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
+  async findById(id: string, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     const ref = doc(this.firestore, `${options.path}/${id}`);
     const snapshot = await getDoc(ref);
     return snapshot.exists() ? <T>snapshot.data() : null;
   }
 
-  async findByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByProperty(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
     return this.findByQuery(qb => qb.where(key, '==', value), options);
   }
 
-  async findByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByQuery(qb: QueryBuilder<T>, options: FirebaseQueryOptions): Promise<T|null>;
+  async findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseQueryOptions): Promise<T|null>;
+  async findByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: FirebaseQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
 
     const queryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
-    const result = await this.findAllByQuery<T>(queryBuilder.limit(1), options);
+    const result = await this.findAllByQuery(queryBuilder.limit(1), options);
 
     // Do not assume deconstruction, make sure that we actually get expected Paginated<T> returned
     if (!isOfType<Paginated<T>>(result, 'values')) {
@@ -138,7 +138,7 @@ export class FirebaseRepository implements Repository {
     return result.values[0];
   }
 
-  async findAll<T extends Entity>(options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAll(options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     let total = 0;
@@ -169,21 +169,21 @@ export class FirebaseRepository implements Repository {
     };
   }
 
-  async findAllByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByProperty(key: string, value: string|number|boolean, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }
 
-  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: unknown, options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByQuery(qb: QueryBuilder<T>, options: FirebaseQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: FirebaseQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
       throw new Error('You can only search within collections, not individual documents');
     }
 
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
     const constraints = this.toConstraints(queryBuilder);
 
     const ref = collection(this.firestore, options.path);
@@ -203,13 +203,13 @@ export class FirebaseRepository implements Repository {
     };
   }
 
-  async saveAll<T extends Entity>(entities: Array<T>, options: FirebaseQueryOptions = { path: '/' }): Promise<Array<T>> {
+  async saveAll(entities: Array<T>, options: FirebaseQueryOptions = { path: '/' }): Promise<Array<T>> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     await this.validateQueryOptions(options);
     return Promise.all(entities.map(entity => this.save(entity, options)));
   }
 
-  async save<T extends Entity>(entity: T, options: FirebaseQueryOptions = { path: '/' }): Promise<T> {
+  async save(entity: T, options: FirebaseQueryOptions = { path: '/' }): Promise<T> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     entity.id = entity.id || uniqid();
     await this.validateQueryOptions(options);
@@ -229,15 +229,15 @@ export class FirebaseRepository implements Repository {
   }
 
   async deleteAll(options: FirebaseQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>, options?: FirebaseQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>|FirebaseQueryOptions, options?: FirebaseQueryOptions): Promise<void> {
+  async deleteAll(entities: Array<T>, options?: FirebaseQueryOptions): Promise<void>;
+  async deleteAll(entities: Array<T>|FirebaseQueryOptions, options?: FirebaseQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     const _options = (!options) ? entities as FirebaseQueryOptions : options;
 
     // Remove entities
     if (Array.isArray(entities)) {
       return this.validateQueryOptions(_options)
-        .then(() => Promise.all(entities.map((entity: Entity) => this.delete(entity, _options))))
+        .then(() => Promise.all(entities.map((entity: T) => this.delete(entity, _options))))
         .then(() => Promise.resolve());
 
     // Remove single document
@@ -252,7 +252,7 @@ export class FirebaseRepository implements Repository {
     }
   }
 
-  async delete<T extends Entity>(entity: T, options: FirebaseQueryOptions): Promise<void> {
+  async delete(entity: T, options: FirebaseQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     return this.deleteById(entity.id, options);
   }
@@ -280,7 +280,7 @@ export class FirebaseRepository implements Repository {
     return Promise.resolve();
   }
 
-  private toConstraints(queryBuilder: QueryBuilder): Array<QueryConstraint> {
+  private toConstraints(queryBuilder: QueryBuilder<T>): Array<QueryConstraint> {
     const constraints: Array<QueryConstraint> = [];
 
     queryBuilder.conditions.forEach((condition) => {
@@ -293,7 +293,7 @@ export class FirebaseRepository implements Repository {
       } else if (!condition.value) {
         // Skip empty filter statement
       } else {
-        constraints.push(where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value));
+        constraints.push(where(String(condition.key), <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value));
       }
     });
 

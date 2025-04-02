@@ -1,16 +1,17 @@
+import { Entity } from './Entity';
 
-export interface QueryBuilder {
+export interface QueryBuilder<T extends Entity> {
 
-  get conditions(): Array<Condition>;
-  orderBy(key: string, direction: 'asc'|'desc'): QueryBuilder;
-  where(key: string, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder;
-  limit(value: number, offset?: number): QueryBuilder;
-  matches(item: Record<string, string|number|boolean|Array<unknown>>, condition: Condition): boolean;
+  get conditions(): Array<Condition<T>>;
+  orderBy(key: keyof T, direction: 'asc'|'desc'): QueryBuilder<T>;
+  where(key: keyof T, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder<T>;
+  limit(value: number, offset?: number): QueryBuilder<T>;
+  matches(item: Record<keyof T, string|number|Array<unknown>>, condition: Condition<T>): boolean;
 }
 
-export interface Condition {
-  key: string;
-  operator: string;
+export interface Condition<T> {
+  key: keyof T|'orderBy'|'limit'|'offset';
+  operator: WhereFilterOp|'asc'|'desc';
   value: string|number|boolean|Array<unknown>;
 }
 

@@ -4,21 +4,21 @@ import { Entity, EntityArray, ObjectArray } from './Entity';
 import { Paginated } from './Paginated';
 import { QueryBuilder } from './QueryBuilder';
 
-export interface DefaultService<T extends Entity, X extends DTO> extends BaseService {
+export interface DefaultService<T extends Entity, X extends DTO> extends BaseService<T> {
   count(): Promise<number>;
-  countByQuery(qb: QueryBuilder): Promise<number>;
-  countByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<number>;
+  countByQuery(qb: QueryBuilder<T>): Promise<number>;
+  countByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>): Promise<number>;
   countByQuery(qb: unknown): Promise<number>;
 
   findById(id: string): Promise<T|null>;
   findByProperty(key: string, value: string|number|boolean): Promise<T|null>;
-  findByQuery(qb: QueryBuilder): Promise<T|null>;
-  findByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<T|null>;
+  findByQuery(qb: QueryBuilder<T>): Promise<T|null>;
+  findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>): Promise<T|null>;
 
   findAll(): Promise<Paginated<T>>;
   findAllByProperty(key: string, value: string|number|boolean): Promise<Paginated<T>>;
-  findAllByQuery(qb: QueryBuilder): Promise<Paginated<T>>;
-  findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<Paginated<T>>;
+  findAllByQuery(qb: QueryBuilder<T>): Promise<Paginated<T>>;
+  findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>): Promise<Paginated<T>>;
 
   toDTO(entity: T): X;
   toEntityArray<Y extends Entity>(items: Array<Y>): EntityArray<Y>;

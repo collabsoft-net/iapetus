@@ -16,7 +16,7 @@ type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Times
 interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
 interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
 
-export class FirebaseAdminRepository implements Repository {
+export class FirebaseAdminRepository<T extends Entity> implements Repository<T> {
 
   private fb: app.App;
   private firestore: firestore.Firestore;
@@ -103,8 +103,8 @@ export class FirebaseAdminRepository implements Repository {
     }
   }
 
-  async countByQuery(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
-  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<number>;
+  async countByQuery(qb: QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<number>;
   async countByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<number> {
     await this.validateQueryOptions(options);
 
@@ -113,7 +113,7 @@ export class FirebaseAdminRepository implements Repository {
     }
 
     let collection: firestore.Query = this.firestore.collection(options.path);
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
       if (condition.key === 'orderBy') {
@@ -125,7 +125,7 @@ export class FirebaseAdminRepository implements Repository {
       } else if (!condition.value) {
         // Skip empty filter statement
       } else {
-        collection = collection.where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
+        collection = collection.where(String(condition.key), <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
       }
     });
 
@@ -133,23 +133,23 @@ export class FirebaseAdminRepository implements Repository {
     return ref.data().count;
   }
 
-  async findById<T extends Entity>(id: string, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
+  async findById(id: string, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
     const ref = await this.firestore.doc(`${options.path}/${id}`).get();
     return ref ? <T>ref.data() : null;
   }
 
-  async findByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByProperty(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
     return this.findByQuery(qb => qb.where(key, '==', value), options);
   }
 
-  async findByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<T|null>;
-  async findByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
+  async findByQuery(qb: QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<T|null>;
+  async findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<T|null>;
+  async findByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T|null> {
     await this.validateQueryOptions(options);
 
     const queryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
-    const result = await this.findAllByQuery<T>(queryBuilder.limit(1), options);
+    const result = await this.findAllByQuery(queryBuilder.limit(1), options);
 
     // Do not assume deconstruction, make sure that we actually get expected Paginated<T> returned
     if (!isOfType<Paginated<T>>(result, 'values')) {
@@ -159,7 +159,7 @@ export class FirebaseAdminRepository implements Repository {
     return result.values[0];
   }
 
-  async findAll<T extends Entity>(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAll(options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     let total = 0;
@@ -188,14 +188,14 @@ export class FirebaseAdminRepository implements Repository {
     };
   }
 
-  async findAllByProperty<T extends Entity>(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByProperty(key: string, value: string|number|boolean, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
     return this.findAllByQuery((ref) => ref.where(key, '==', value), options);
   }
 
-  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
+  async findAllByQuery(qb: QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseAdminQueryOptions): Promise<Paginated<T>>;
+  async findAllByQuery(qb: unknown, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Paginated<T>> {
     await this.validateQueryOptions(options);
 
     if (options.path.split('/').length % 2 === 1) {
@@ -203,7 +203,7 @@ export class FirebaseAdminRepository implements Repository {
     }
 
     let collection: firestore.Query = this.firestore.collection(options.path);
-    const queryBuilder: QueryBuilder = typeof qb === 'function' ? qb(new QB()) : qb;
+    const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
       if (condition.key === 'orderBy') {
@@ -215,7 +215,7 @@ export class FirebaseAdminRepository implements Repository {
       } else if (!condition.value) {
         // Skip empty filter statement
       } else {
-        collection = collection.where(condition.key, <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
+        collection = collection.where(String(condition.key), <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
       }
     });
 
@@ -234,13 +234,13 @@ export class FirebaseAdminRepository implements Repository {
     };
   }
 
-  async saveAll<T extends Entity>(entities: Array<T>, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Array<T>> {
+  async saveAll(entities: Array<T>, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<Array<T>> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     await this.validateQueryOptions(options);
     return Promise.all(entities.map(entity => this.save(entity, options)));
   }
 
-  async save<T extends Entity>(entity: T, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T> {
+  async save(entity: T, options: FirebaseAdminQueryOptions = { path: '/' }): Promise<T> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     entity.id = entity.id || uniqid();
     await this.validateQueryOptions(options);
@@ -254,14 +254,14 @@ export class FirebaseAdminRepository implements Repository {
   }
 
   async deleteAll(options: FirebaseAdminQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>, options?: FirebaseAdminQueryOptions): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>|FirebaseAdminQueryOptions, options?: FirebaseAdminQueryOptions): Promise<void> {
+  async deleteAll(entities: Array<T>, options?: FirebaseAdminQueryOptions): Promise<void>;
+  async deleteAll(entities: Array<T>|FirebaseAdminQueryOptions, options?: FirebaseAdminQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     const _options = (!options) ? entities as FirebaseAdminQueryOptions : options;
 
     if (Array.isArray(entities)) {
       return this.validateQueryOptions(_options)
-        .then(() => Promise.all(entities.map((entity: Entity) => this.delete(entity, _options))))
+        .then(() => Promise.all(entities.map((entity: T) => this.delete(entity, _options))))
         .then(() => Promise.resolve());
     } else {
       return this.validateQueryOptions(_options)
@@ -270,7 +270,7 @@ export class FirebaseAdminRepository implements Repository {
     }
   }
 
-  async delete<T extends Entity>(entity: T, options: FirebaseAdminQueryOptions): Promise<void> {
+  async delete(entity: T, options: FirebaseAdminQueryOptions): Promise<void> {
     if (this.readOnly) throw new Error('The repository has been initialized in read-only mode, mutations are not allowed');
     return this.deleteById(entity.id, options);
   }

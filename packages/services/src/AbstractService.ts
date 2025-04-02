@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 @injectable()
 export abstract class AbstractService<T extends Entity, X extends DTO> implements DefaultService<T, X> {
 
-  constructor(protected repository: Repository, protected options: QueryOptions) {}
+  constructor(protected repository: Repository<T>, protected options: QueryOptions) {}
 
   abstract toDTO(entity: T): X;
 
@@ -37,9 +37,9 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.count({ ...this.options, ...options });
   }
 
-  async countByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<number>;
-  async countByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<number>;
-  async countByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<number> {
+  async countByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<number>;
+  async countByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<number>;
+  async countByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: QueryOptions = {}): Promise<number> {
     return this.repository.countByQuery(qb, { ...this.options, ...options });
   }
 
@@ -51,9 +51,9 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findByProperty(key, value, { ...this.options, ...options });
   }
 
-  async findByQuery(qb: QueryBuilder, options?: QueryOptions): Promise<T|null>;
-  async findByQuery(qb: (qb: QueryBuilder) => QueryBuilder, options?: QueryOptions): Promise<T|null>;
-  async findByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<T|null> {
+  async findByQuery(qb: QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
+  async findByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options?: QueryOptions): Promise<T|null>;
+  async findByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: QueryOptions = {}): Promise<T|null> {
     return this.repository.findByQuery(qb, { ...this.options, ...options });
   }
 
@@ -65,9 +65,9 @@ export abstract class AbstractService<T extends Entity, X extends DTO> implement
     return this.repository.findAllByProperty(key, value, { ...this.options, ...options });
   }
 
-  async findAllByQuery(qb: QueryBuilder): Promise<Paginated<T>>;
-  async findAllByQuery(qb: (qb: QueryBuilder) => QueryBuilder): Promise<Paginated<T>>;
-  async findAllByQuery(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: QueryOptions = {}): Promise<Paginated<T>> {
+  async findAllByQuery(qb: QueryBuilder<T>): Promise<Paginated<T>>;
+  async findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>): Promise<Paginated<T>>;
+  async findAllByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: QueryOptions = {}): Promise<Paginated<T>> {
     return this.repository.findAllByQuery(qb, { ...this.options, ...options });
   }
 

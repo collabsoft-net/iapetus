@@ -1,6 +1,5 @@
 import { ACInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
-import { Repository } from '@collabsoft-net/types';
 import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
@@ -11,7 +10,6 @@ import { AbstractScheduledPubSubHandler } from './AbstractScheduledPubSubHandler
 export abstract class AbstractScheduledTenantIteratorPubSubHandler extends AbstractScheduledPubSubHandler {
 
   constructor(
-    protected repository: Repository,
     protected instanceService: AbstractService<ACInstance, ACInstanceDTO>
   ) {
     super();

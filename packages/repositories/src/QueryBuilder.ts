@@ -1,13 +1,13 @@
 
-import { Condition, QueryBuilder as IQueryBuilder, WhereFilterOp } from '@collabsoft-net/types';
+import { Condition, Entity, QueryBuilder as IQueryBuilder, WhereFilterOp } from '@collabsoft-net/types';
 
-export class QueryBuilder implements IQueryBuilder {
+export class QueryBuilder<T extends Entity> implements IQueryBuilder<T> {
 
-  private _whereConditions: Array<Condition> = [];
-  private _sortingConditions: Array<Condition> = [];
-  private _limitConditions: Array<Condition> = [];
+  private _whereConditions: Array<Condition<T>> = [];
+  private _sortingConditions: Array<Condition<T>> = [];
+  private _limitConditions: Array<Condition<T>> = [];
 
-  get conditions(): Array<Condition> {
+  get conditions(): Array<Condition<T>> {
     return [
       ...this._whereConditions.slice(),
       ...this._sortingConditions.slice(),
@@ -15,20 +15,17 @@ export class QueryBuilder implements IQueryBuilder {
     ];
   }
 
-  where(key: string, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder {
-    this._whereConditions.push({ key, operator, value });
-    if (operator === '!=') {
-      this._whereConditions.push({ key: 'orderBy', operator: 'asc', value: key });
-    }
+  where(key: keyof T, operator: WhereFilterOp, value: string|number|boolean|Array<unknown>): QueryBuilder<T> {
+    this._whereConditions.push({ key: String(key), operator, value });
     return this;
   }
 
-  orderBy(key: string, direction: 'asc'|'desc' = 'asc'): QueryBuilder {
-    this._sortingConditions.push({ key: 'orderBy', operator: direction, value: key });
+  orderBy(key: keyof T, direction: 'asc'|'desc' = 'asc'): QueryBuilder<T> {
+    this._sortingConditions.push({ key: 'orderBy', operator: direction, value: typeof key === 'symbol' ? key.toString() : key });
     return this;
   }
 
-  limit(value: number, offset?: number): QueryBuilder {
+  limit(value: number, offset?: number): QueryBuilder<T> {
     this._limitConditions.push({ key: 'limit', operator: '==', value });
     if (offset) {
       this._limitConditions.push({ key: 'offset', operator: '==', value: offset });
@@ -36,7 +33,7 @@ export class QueryBuilder implements IQueryBuilder {
     return this;
   }
 
-  matches(item: Record<string, string|number|boolean|Array<unknown>>, condition: Condition): boolean {
+  matches(item: Record<keyof T, string|number|boolean|Array<unknown>>, condition: Condition<T>): boolean {
     const prop = item[condition.key];
     const value = condition.value;
 
@@ -46,6 +43,7 @@ export class QueryBuilder implements IQueryBuilder {
       case '==': return prop === value;
       case '>=': return prop >= value;
       case '>': return prop > value;
+      case '!=': return prop != value;
       case 'array-contains': return Array.isArray(prop) && prop.includes(value);
       default: return false;
     }

@@ -7,7 +7,7 @@ import { FirebaseAdminRepository } from './FirebaseAdminRepository';
 
 const DEFAULT_CACHE_TIMEOUT_IN_SECONDS = 300;
 
-export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
+export class CachedFirebaseAdminRepository<T extends Entity> extends FirebaseAdminRepository<T> {
 
   constructor(name: string, private cacheService: CachingService, options?: AppOptions, readOnly?: boolean) {
     super(name, options, readOnly);
@@ -15,7 +15,7 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
 
   // ==========================================================================
 
-  async findAll<T extends Entity>(options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Paginated<T>> {
+  async findAll(options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Paginated<T>> {
     const cacheKey = this.cacheService.toCacheKey(this.name, options.path);
     const result = await this.cacheService.get<Paginated<T>>(cacheKey, () => super.findAll(options), options.expiresInSeconds);
 
@@ -27,11 +27,11 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     }
   }
 
-  async findAllByQuery<T extends Entity>(qb: QueryBuilder, options: FirebaseAdminQueryOptionsWithCache): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: (qb: QueryBuilder) => QueryBuilder, options: FirebaseAdminQueryOptionsWithCache): Promise<Paginated<T>>;
-  async findAllByQuery<T extends Entity>(qb: QueryBuilder|((qb: QueryBuilder) => QueryBuilder), options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Paginated<T>> {
-    const queryBuilder = typeof qb === 'function' ? qb(new QueryBuilder) : qb;
-    const cacheKey = this.cacheService.toCacheKey(this.name, options.path, ...queryBuilder.conditions.map(item => `${item.key}-${item.operator}-${item.value}`));
+  async findAllByQuery(qb: QueryBuilder<T>, options: FirebaseAdminQueryOptionsWithCache): Promise<Paginated<T>>;
+  async findAllByQuery(qb: (qb: QueryBuilder<T>) => QueryBuilder<T>, options: FirebaseAdminQueryOptionsWithCache): Promise<Paginated<T>>;
+  async findAllByQuery(qb: QueryBuilder<T>|((qb: QueryBuilder<T>) => QueryBuilder<T>), options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<Paginated<T>> {
+    const queryBuilder = typeof qb === 'function' ? qb(new QueryBuilder<T>) : qb;
+    const cacheKey = this.cacheService.toCacheKey(this.name, options.path, ...queryBuilder.conditions.map(item => `${String(item.key)}-${item.operator}-${item.value}`));
     const result = await this.cacheService.get<Paginated<T>>(cacheKey, () => super.findAllByQuery(queryBuilder, options), options.expiresInSeconds);
 
     if (result) {
@@ -42,11 +42,11 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
     }
   }
 
-  async findById<T extends Entity>(id: string, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T|null> {
+  async findById(id: string, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T|null> {
     return !isNullOrEmpty(id) ? this.cacheService.get<T>(this.cacheService.toCacheKey(this.name, options.path, id), () => super.findById(id, options)) : null;
   }
 
-  async save<T extends Entity>(entity: T, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T> {
+  async save(entity: T, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T> {
     const result = await super.save(entity, options);
     await this.cacheService.set(this.cacheService.toCacheKey(this.name, options.path, result.id), result, options.expiresInSeconds);
     await this.flushQueryBasedCacheKeys(options);
@@ -54,8 +54,8 @@ export class CachedFirebaseAdminRepository extends FirebaseAdminRepository {
   }
 
   async deleteAll(options: FirebaseAdminQueryOptionsWithCache): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>, options?: FirebaseAdminQueryOptionsWithCache): Promise<void>;
-  async deleteAll<T extends Entity>(entities: Array<T>|FirebaseAdminQueryOptionsWithCache, options?: FirebaseAdminQueryOptionsWithCache): Promise<void> {
+  async deleteAll(entities: Array<T>, options?: FirebaseAdminQueryOptionsWithCache): Promise<void>;
+  async deleteAll(entities: Array<T>|FirebaseAdminQueryOptionsWithCache, options?: FirebaseAdminQueryOptionsWithCache): Promise<void> {
     if (Array.isArray(entities)) {
       await super.deleteAll(entities, options);
     } else {
