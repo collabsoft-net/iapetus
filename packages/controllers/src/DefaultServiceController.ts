@@ -1,4 +1,4 @@
-import { DTO, Entity, Paginated } from '@collabsoft-net/types';
+import { Entity, EntityDTO, Paginated } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { httpDelete, httpGet, httpHead, httpPost, requestBody, requestParam } from 'inversify-express-utils';
 import { StatusCodeResult } from 'inversify-express-utils/lib/results';
@@ -6,7 +6,7 @@ import { StatusCodeResult } from 'inversify-express-utils/lib/results';
 import { AbstractServiceController } from '.';
 
 @injectable()
-export abstract class DefaultServiceController<T extends Entity, X extends DTO, Y extends Session> extends AbstractServiceController<T, X, Y> {
+export abstract class DefaultServiceController<T extends Entity, X extends EntityDTO<T>, Y extends Session> extends AbstractServiceController<T, X, Y> {
 
   @httpPost('/')
   async create(@requestBody() item: X): Promise<X|StatusCodeResult> {

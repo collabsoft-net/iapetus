@@ -1,5 +1,5 @@
 import { PageDTO } from '@collabsoft-net/dto';
-import { DefaultService, DTO, Entity, Paginated, QueryBuilder } from '@collabsoft-net/types';
+import { DefaultService, Entity, EntityDTO, Paginated, QueryBuilder } from '@collabsoft-net/types';
 import { captureException } from '@sentry/minimal';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
@@ -9,7 +9,7 @@ import { StatusCodeResult } from 'inversify-express-utils/lib/results';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export abstract class AbstractServiceController<T extends Entity, X extends DTO, Y extends Session> extends AbstractController<Y> {
+export abstract class AbstractServiceController<T extends Entity, X extends EntityDTO<T>, Y extends Session> extends AbstractController<Y> {
 
   protected abstract service: DefaultService<T, X>;
 

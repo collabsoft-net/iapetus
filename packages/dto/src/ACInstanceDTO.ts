@@ -24,6 +24,7 @@ export class ACInstanceDTO extends EntityDTO<ACInstance> {
     super(data.id);
     this.key = data.key;
     this.clientId = data.clientId;
+    this.tenantId = data.tenantId;
     this.clientKey = data.clientKey;
     this.sharedSecret = data.sharedSecret;
     this.serverVersion = data.serverVersion;
