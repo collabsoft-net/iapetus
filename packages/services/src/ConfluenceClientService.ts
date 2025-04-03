@@ -90,7 +90,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     }
   }
 
-  async getPages(
+  async getPagesForSpace(
     spaceId: string,
     depth?: number,
     sort?: 'id'|'-id'|'created-date'|'-created-date'|'modified-date'|'-modified-date'|'title'|'-title',
@@ -102,7 +102,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     fetchAll = true
   ): Promise<Array<Confluence.PageBulk>> {
     const result: Array<Confluence.PageBulk> = [];
-    const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.PageBulk>>(this.getEndpointFor(this.endpoints.PAGES, { id: spaceId }), {
+    const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.PageBulk>>(this.getEndpointFor(this.endpoints.SPACE_PAGES, { id: spaceId }), {
       depth,
       sort,
       status: status?.join(','),
@@ -113,7 +113,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     });
     result.push(...data.results);
     if (fetchAll && data._links.next) {
-      result.push(...await this.getPages(spaceId, depth, sort, status, title, bodyFormat, cursor, limit, fetchAll));
+      result.push(...await this.getPagesForSpace(spaceId, depth, sort, status, title, bodyFormat, cursor, limit, fetchAll));
     }
     return result;
   }
