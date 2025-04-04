@@ -55,7 +55,9 @@ const Content = ({ space, size, href, inline, truncate, isValidating, isDisabled
         } else if (!space || !isOfType<Confluence.Space|Confluence.SpaceV2>(space, 'icon')) {
           return <WarningIcon label='Space not found' />;
         } else {
-          return <Avatar appearance='square' src={ space.icon?.path } size={ size || 'xsmall' } isDisabled={ isDisabled || space?.status === 'archived' } />;
+          const baseUrl = isOfType<Confluence.SpaceV2>(space, '_links') ? space._links.base : '';
+          const iconUrl = `${baseUrl.replace('/wiki', '')}${space.icon?.path}`;
+          return <Avatar appearance='square' src={ iconUrl } size={ size || 'xsmall' } isDisabled={ isDisabled || space?.status === 'archived' } />;
         }
       })()}
     </AvatarWrapper>

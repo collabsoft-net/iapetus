@@ -319,6 +319,7 @@ declare global {
       description: SpaceDescriptionV2;
       icon: SpaceIcon;
       _links: {
+        base: string;
         webui: string;
       }
     }
@@ -351,6 +352,7 @@ declare global {
         createdDate: string;
         createdBy?: User;
       };
+      links: Record<string, string>;
     }
 
     interface SpaceV2RequestOptions {
@@ -390,6 +392,10 @@ declare global {
         results: Array<SpacePermissionAssignment>;
         meta: OptionalFieldMeta;
       };
+      _links: {
+        base: string;
+        webui: string;
+      }
     }
 
     type SpaceType = 'global'|'collaboration'|'knowledge_base'|'personal';
