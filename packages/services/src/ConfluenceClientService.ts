@@ -94,13 +94,13 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
 
       const options = ops as Confluence.SpaceV2RequestOptions;
       const { data } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: String(spaceIdOrKey) }), {
-        descriptionFormat: options?.descriptionFormat,
-        includeIcon: options?.includeIcon,
-        includeOperations: options?.includeOperations,
-        includeProperties: options?.includeProperties,
-        includePermissions: options?.includePermissions,
-        includeRoleAssignments: options?.includeRoleAssignments,
-        includeLabels: options?.includeLabels
+        'description-format': options?.descriptionFormat,
+        'include-icon': options?.includeIcon,
+        'include-operations': options?.includeOperations,
+        'include-properties': options?.includeProperties,
+        'include-permissions': options?.includePermissions,
+        'include-role-assignments': options?.includeRoleAssignments,
+        'include-labels': options?.includeLabels
       });
       return data as Space<Mode>;
     } else {
