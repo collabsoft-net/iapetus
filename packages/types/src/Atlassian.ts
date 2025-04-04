@@ -323,6 +323,10 @@ declare global {
       }
     }
 
+    interface SpaceRequestOptions {
+      expand?: Array<string>;
+    }
+
     interface Space {
       id?: number;
       key: string;
@@ -347,6 +351,16 @@ declare global {
         createdDate: string;
         createdBy?: User;
       };
+    }
+
+    interface SpaceV2RequestOptions {
+      descriptionFormat?: 'plain'|'view';
+      includeIcon?: boolean;
+      includeOperations?: boolean;
+      includeProperties?: boolean;
+      includePermissions?: boolean;
+      includeRoleAssignments?: boolean;
+      includeLabels?: boolean;
     }
 
     interface SpaceV2 {

@@ -1,3 +1,4 @@
+import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { useEffect, useState } from 'react';
@@ -58,7 +59,7 @@ export function usePermission(type: 'container'|'entity', permission: 'view'|'ed
 
         if (isOfType<AP.JiraContext>(context, 'jira')) {
 
-          const jiraClientService = service as JiraClientService;
+          const jiraClientService = service as JiraClientService<Modes>;
 
           if (type === 'container' && !bulkCheckIds && !context.jira.project.id) {
             setHasPermission(undefined);
@@ -82,7 +83,7 @@ export function usePermission(type: 'container'|'entity', permission: 'view'|'ed
 
         } else if (isOfType<AP.ConfluenceContext>(context, 'confluence')) {
 
-          const confluenceClientService = service as ConfluenceClientService;
+          const confluenceClientService = service as ConfluenceClientService<Modes>;
 
           if (type === 'container' && !bulkCheckIds && !context.confluence.space.key) {
             setHasPermission(undefined);

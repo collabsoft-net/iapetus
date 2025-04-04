@@ -7,10 +7,14 @@ import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
 
-@injectable()
-export class ConfluenceClientService extends AbstractAtlasClientService {
+type SpaceIdOrKey<T extends Modes> = T extends Modes.CONNECT ? number : string;
+type Space<T extends Modes> = T extends Modes.CONNECT ? Confluence.SpaceV2 : Confluence.Space;
+type SpaceRequestOptions<T extends Modes> = T extends Modes.CONNECT ? Confluence.SpaceV2RequestOptions : Confluence.SpaceRequestOptions;
 
-  constructor(protected client: RestClient, protected mode: Modes) {
+@injectable()
+export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasClientService<Mode> {
+
+  constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
     this.endpoints = mode === Modes.CONNECT ? ConfluenceCloudEndpoints : ConfluenceServerEndpoints;
   }
@@ -80,13 +84,35 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     return data;
   }
 
-  async getSpace(spaceIdOrKey: string) {
+  async getSpace(id: SpaceIdOrKey<Mode>, options?: SpaceRequestOptions<Mode>): Promise<Space<Mode>>;
+  async getSpace(key: SpaceIdOrKey<Mode>, options?: SpaceRequestOptions<Mode>): Promise<Space<Mode>>;
+  async getSpace(spaceIdOrKey: SpaceIdOrKey<Mode>, ops?: SpaceRequestOptions<Mode>): Promise<Space<Mode>> {
     if (this.mode === Modes.CONNECT) {
-      const { data } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: spaceIdOrKey }));
-      return data;
+      if (typeof spaceIdOrKey === 'string') {
+        throw new Error('Confluence Cloud does not support retrieving Space by key');
+      }
+
+      const options = ops as Confluence.SpaceV2RequestOptions;
+      const { data } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: String(spaceIdOrKey) }), {
+        descriptionFormat: options?.descriptionFormat,
+        includeIcon: options?.includeIcon,
+        includeOperations: options?.includeOperations,
+        includeProperties: options?.includeProperties,
+        includePermissions: options?.includePermissions,
+        includeRoleAssignments: options?.includeRoleAssignments,
+        includeLabels: options?.includeLabels
+      });
+      return data as Space<Mode>;
     } else {
-      const { data } = await this.client.get<Confluence.Space>(this.getEndpointFor(this.endpoints.SPACE, { spaceKey: spaceIdOrKey }));
-      return data;
+      if (typeof spaceIdOrKey === 'number') {
+        throw new Error('Confluence Data Center does not support retrieving Space by id');
+      }
+
+      const options = ops as Confluence.SpaceRequestOptions;
+      const { data } = await this.client.get<Confluence.Space>(this.getEndpointFor(this.endpoints.SPACE, { spaceKey: spaceIdOrKey }), {
+        expand: options?.expand?.join(',')
+      });
+      return data as Space<Mode>;
     }
   }
 
@@ -279,7 +305,7 @@ export class ConfluenceClientService extends AbstractAtlasClientService {
     await this.client.post(this.endpoints.REGISTER_DYNAMIC_MODULE, JSON.stringify(dynamicModules));
   }
 
-  protected getInstance(client: RestClient, mode: Modes): ConfluenceClientService {
+  protected getInstance(client: RestClient, mode: Mode): ConfluenceClientService<Mode> {
     return new ConfluenceClientService(client, mode);
   }
 

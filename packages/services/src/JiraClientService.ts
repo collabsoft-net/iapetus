@@ -8,9 +8,9 @@ import { injectable } from 'inversify';
 import { AbstractAtlasClientService } from '.';
 
 @injectable()
-export class JiraClientService extends AbstractAtlasClientService {
+export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientService<Mode> {
 
-  constructor(protected client: RestClient, protected mode: Modes) {
+  constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
     this.endpoints = mode === Modes.CONNECT ? JiraCloudEndpoints : JiraServerEndpoints;
   }
@@ -887,7 +887,7 @@ export class JiraClientService extends AbstractAtlasClientService {
     await this.client.post(this.endpoints.REGISTER_DYNAMIC_MODULE, JSON.stringify(dynamicModules));
   }
 
-  protected getInstance(client: RestClient, mode: Modes): JiraClientService {
+  protected getInstance(client: RestClient, mode: Mode): JiraClientService<Mode> {
     return new JiraClientService(client, mode);
   }
 

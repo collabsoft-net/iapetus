@@ -1,5 +1,6 @@
 
 
+import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { useEffect, useState } from 'react';
@@ -49,7 +50,7 @@ export function useEntityPermission(permissions: Array<string>|Confluence.Conten
             setError(new Error('Cannot check for permissions, the "issueId" parameter is invalid'));
             setLoading(false);
           } else {
-            const jiraClientService = service as JiraClientService;
+            const jiraClientService = service as JiraClientService<Modes>;
             const entityId = issueIdOrType || context.jira.issue.id;
 
             if (!entityId) {
@@ -78,7 +79,7 @@ export function useEntityPermission(permissions: Array<string>|Confluence.Conten
             setLoading(false);
           } else {
 
-            const confluenceClientService = service as ConfluenceClientService;
+            const confluenceClientService = service as ConfluenceClientService<Modes>;
 
             if (issueIdOrType === 'content') {
               const contentId = accountIdOrContentIdOrSpaceKey || context.confluence.content.id;

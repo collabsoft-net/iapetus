@@ -10,17 +10,17 @@ import type { ConfluenceClientService } from './ConfluenceClientService';
 import type { JiraClientService } from './JiraClientService';
 
 @injectable()
-export abstract class AbstractAtlasClientService {
+export abstract class AbstractAtlasClientService<Mode extends Modes> {
 
   protected endpoints: Record<string, string>;
 
-  constructor(protected client: RestClient, protected mode: Modes) {
+  constructor(protected client: RestClient, protected mode: Mode) {
     this.endpoints = mode === Modes.CONNECT ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
   }
 
-  abstract cached(duration: number): AbstractAtlasClientService;
+  abstract cached(duration: number): AbstractAtlasClientService<Mode>;
 
-  as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService {
+  as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService<Mode> {
     if (isOfType<AbstractAtlasRestClient>(this.client, 'as')) {
       const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
       return this.getInstance(impersonatedClient, this.mode);
@@ -35,7 +35,7 @@ export abstract class AbstractAtlasClientService {
   }
 
   async getEntityProperty<T>(entityType: Jira.EntityType|Confluence.EntityType, entityId: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
-    if (isOfType<JiraClientService>(this, 'getIssue')) {
+    if (isOfType<JiraClientService<Mode>>(this, 'getIssue')) {
       switch (entityType) {
         case 'app': return this.getAppProperty(entityId, propertyKey);
         case 'user': return this.getUserProperty(entityId, propertyKey);
@@ -43,7 +43,7 @@ export abstract class AbstractAtlasClientService {
         case 'issue': return this.getIssueProperty(entityId, propertyKey);
         case 'comment': return this.getCommentProperty(entityId, propertyKey);
       }
-    } else if (isOfType<ConfluenceClientService>(this, 'getContent')) {
+    } else if (isOfType<ConfluenceClientService<Mode>>(this, 'getContent')) {
       switch (entityType) {
         case 'app': return this.getAppProperty(entityId, propertyKey);
         case 'user': return this.getUserProperty(entityId, propertyKey);
@@ -78,7 +78,7 @@ export abstract class AbstractAtlasClientService {
   }
 
   async setEntityProperty<T>(entityType: Jira.EntityType|Confluence.EntityType, entityId: string, property: Atlassian.Connect.EntityProperty<T>): Promise<void> {
-    if (isOfType<JiraClientService>(this, 'getIssue')) {
+    if (isOfType<JiraClientService<Mode>>(this, 'getIssue')) {
       switch (entityType) {
         case 'app': return this.setAppProperty(entityId, property);
         case 'user': return this.setUserProperty(entityId, property);
@@ -86,7 +86,7 @@ export abstract class AbstractAtlasClientService {
         case 'issue': return this.setIssueProperty(entityId, property);
         case 'comment': return this.setCommentProperty(entityId, property);
       }
-    } else if (isOfType<ConfluenceClientService>(this, 'getContent')) {
+    } else if (isOfType<ConfluenceClientService<Mode>>(this, 'getContent')) {
       switch (entityType) {
         case 'app': return this.setAppProperty(entityId, property);
         case 'user': return this.setUserProperty(entityId, property);
@@ -152,6 +152,6 @@ export abstract class AbstractAtlasClientService {
     return compiler(pathParams);
   }
 
-  protected abstract getInstance(client: RestClient, mode: Modes): AbstractAtlasClientService;
+  protected abstract getInstance(client: RestClient, mode: Modes): AbstractAtlasClientService<Mode>;
 
 }

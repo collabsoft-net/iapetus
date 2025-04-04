@@ -10,7 +10,7 @@ type BranchModelOrBranchingModelSettings<T extends Modes> = T extends Modes.CONN
 type CommitOrBaseCommit<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.Page<Bitbucket.BaseCommit> : Bitbucket.Paginated<Bitbucket.Commit>;
 
 @injectable()
-export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasClientService {
+export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasClientService<Mode> {
 
   constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
@@ -161,7 +161,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
     throw new Error('This method is not available for Atlassian Bitbucket');
   }
 
-  protected getInstance<Mode extends Modes>(client: RestClient, mode: Mode): BitbucketClientService<Mode> {
+  protected getInstance(client: RestClient, mode: Mode): BitbucketClientService<Mode> {
     return new BitbucketClientService(client, mode);
   }
 

@@ -5,7 +5,7 @@ import { injectable } from 'inversify';
 import { AbstractAtlasClientService } from '.';
 
 @injectable()
-export class BambooClientService extends AbstractAtlasClientService {
+export class BambooClientService extends AbstractAtlasClientService<Modes.P2> {
 
   constructor(protected client: RestClient) {
     super(client, Modes.P2);
