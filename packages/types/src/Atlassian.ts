@@ -540,6 +540,83 @@ declare global {
       }
     }
 
+    interface PageRequestOptions {
+      bodyFormat?: 'storage'|'atlas_doc_format'|'view'|'export_view'|'anonymous_export_view'|'styled_view'|'editor';
+      getDraft?: boolean;
+      status?: Array<ContentStatus>;
+      version?: number;
+      includeLabels?: boolean;
+      includeProperties?: boolean;
+      includeLikes?: boolean;
+      includeVersions?: boolean;
+      includeVersion?: boolean;
+      includeFavoritedByCurrentUserStatus?: boolean;
+      includeWebresources?: boolean;
+      includeCollaborators?: boolean;
+      includeDirectChildren?: boolean;
+    }
+
+    interface PageSingle {
+      id: number;
+      status: ContentStatus;
+      title: string;
+      spaceId: string;
+      parentId: string;
+      parentType: ParentContentType;
+      position: number;
+      authorId: string;
+      ownerId: string;
+      lastOwnerId: string;
+      createdAt: string;
+      version: Version;
+      body: {
+        storage?: BodyType;
+        atlas_doc_format?: BodyType;
+        view?: BodyType;
+        export_view?: BodyType;
+        anonymous_export_view?: BodyType;
+        styled_view?: BodyType;
+        editor?: BodyType;
+      };
+      labels: {
+        results: Array<Label>;
+        meta: OptionalFieldMeta;
+      };
+      properties: {
+        results: Array<ContentProperty>;
+        meta: OptionalFieldMeta;
+      };
+      operations: {
+        results: Array<Operation>;
+        meta: OptionalFieldMeta;
+      };
+      likes: {
+        results: Array<Like>;
+        meta: OptionalFieldMeta;
+      };
+      versions: {
+        results: Array<Version>;
+        meta: OptionalFieldMeta;
+      };
+      isFavoritedByCurrentUser: boolean;
+      _links: {
+        webui: string;
+        tinyui: string;
+        editui: string;
+      }
+    }
+
+    interface ContentProperty {
+      id: string;
+      key: string;
+      value: unknown;
+      version: Version;
+    }
+
+    interface Like {
+      accountId: string;
+    }
+
     interface PageBulk {
       id: string;
       status: ContentStatus;

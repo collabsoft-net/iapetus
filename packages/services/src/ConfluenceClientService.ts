@@ -116,6 +116,25 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     }
   }
 
+  async getPage(id: number, options?: Confluence.PageRequestOptions) {
+    const { data } = await this.client.get<Confluence.PageSingle>(this.getEndpointFor(this.endpoints.PAGE, { id: String(id) }), {
+      'body-format': options?.bodyFormat,
+      'get-draft': options?.getDraft,
+      'status': options?.status?.join(','),
+      'version': options?.version,
+      'include-labels': options?.includeLabels,
+      'include-properties': options?.includeProperties,
+      'include-likes': options?.includeLikes,
+      'include-versions': options?.includeVersions,
+      'include-version': options?.includeVersion,
+      'include-favorited-by-current-user-status': options?.includeFavoritedByCurrentUserStatus,
+      'include-webresources': options?.includeWebresources,
+      'include-collaborators': options?.includeCollaborators,
+      'include-direct-children': options?.includeDirectChildren
+    });
+    return data;
+  }
+
   async getPagesForSpace(
     spaceId: string,
     depth?: number,
