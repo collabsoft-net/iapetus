@@ -840,6 +840,19 @@ declare global {
         [key: string]: string|object;
       }
     }
+
+    interface ExtensionParameters {
+      macroMetadata: {
+        macroId: { value: string; };
+        placeholder: Array<{
+          type: string
+          data: Record<string, string>;
+        }>;
+        schemaVersion: { value: string; };
+        title: string;
+      };
+      macroParams: Record<string, { value: string; }>;
+    }
   }
 
   namespace Jira {
