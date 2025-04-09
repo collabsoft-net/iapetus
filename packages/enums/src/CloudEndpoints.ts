@@ -104,6 +104,8 @@ export enum ConfluenceCloudEndpoints {
   PAGES = '/api/v2/pages',
   PAGE = '/api/v2/pages/:id',
 
+  CONTENTBODY_CONVERT_ASYNC = '/rest/api/contentbody/convert/async/:idOrTo',
+
   APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
   USER_PROPERTY_BY_KEY = '/rest/api/user/:userId/property/:propertyKey',
   SPACE_PROPERTY_BY_KEY = '/rest/api/space/:spaceIdOrKey/property/:propertyKey',

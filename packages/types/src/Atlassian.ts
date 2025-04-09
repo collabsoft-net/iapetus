@@ -757,6 +757,89 @@ declare global {
 
     type ContentOperation = 'administer'|'archive'|'clear_permissions'|'copy'|'create'|'create_space'|'delete'|'export'|'move'|'purge'|'purge_version'|'read'|'restore'|'restrict_content'|'update'|'use';
 
+    interface ConvertTaskRequestDTO {
+      value: string;
+      representation: 'view'|'export_view'|'styled_view'|'storage'|'editor'|'editor2'|'anonymous_export_view'|'wiki'|'atlas_doc_format'|'plain';
+      [key: string]: unknown;
+    }
+
+    interface ConvertTaskRequestOptions {
+      expand?: Array<'embeddedContent'|'mediaToken'|'macroRenderedOutput'|'webresource.superbatch.uris.js'|'webresource.superbatch.uris.css'|'webresource.superbatch.uris.all'|'webresource.superbatch.tags.all'|'webresource.superbatch.tags.css'|'webresource.superbatch.tags.js'|'webresource.uris.js'|'webresource.uris.css'|'webresource.uris.all'|'webresource.tags.all'|'webresource.tags.css'|'webresource.tags.js'>;
+      spaceKeyContext?: string;
+      contentIdContext?: string;
+      allowCache?: boolean;
+      embeddedContentRender?: 'current'|'version-at-save'
+    }
+
+    interface ConvertTaskResponse {
+      asyncId: string;
+    }
+
+    interface ConvertedBodyResponse {
+      value?: string;
+      representation?: 'view'|'export_view'|'styled_view'|'storage'|'editor'|'editor2'|'anonymous_export_view'|'wiki'|'atlas_doc_format';
+      renderTaskId?: string;
+      error?: string;
+      status?: 'WORKING'|'QUEUED'|'FAILED'|'COMPLETED'|'RERUNNING';
+      embeddedContent?: Array<{
+        entityId: number;
+        entityType: string;
+        entity: {
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      }>;
+      webresource?: {
+        _expandable: {
+          uris: string|object;
+          [key: string]: unknown;
+        };
+        keys?: Array<string>;
+        contexts?: Array<string>;
+        uris?: {
+          all: string|Array<string>;
+          css: string|Array<string>;
+          js: string|Array<string>;
+        }
+        tags?: {
+          all: string;
+          css: string;
+          data: string
+          js: string;
+        };
+        superbatch?: {
+          uris: {
+            all: string|Array<string>;
+            css: string|Array<string>;
+            js: string|Array<string>;
+          };
+          tags: {
+            all: string;
+            css: string;
+            data: string
+            js: string;
+          };
+          metatags: string;
+          _expandable: object;
+        };
+      }
+      mediaToken?: {
+        collectionIds: Array<string>;
+        contentId: string;
+        expiryDateTime: string;
+        fileIds: Array<string>;
+        token: string;
+      };
+      _expandable?: {
+        content: string;
+        embeddedContent: string;
+        webresource: string;
+        mediaToken: string;
+      };
+      _links?: {
+        [key: string]: string|object;
+      }
+    }
   }
 
   namespace Jira {

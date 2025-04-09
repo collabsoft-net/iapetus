@@ -168,6 +168,22 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     return data;
   }
 
+  async startConvertTask(to: 'editor'|'export_view'|'storage'|'styled_view'|'view'|'atlas_doc_format', requestBody: Confluence.ConvertTaskRequestDTO, options?: Confluence.ConvertTaskRequestOptions): Promise<string> {
+    const { data } = await this.client.post<Confluence.ConvertTaskResponse>(this.getEndpointFor(this.endpoints.CONTENTBODY_CONVERT_ASYNC, { idOrTo: to }), requestBody, {
+      expand: options?.expand?.join(','),
+      spaceKeyContext: options?.spaceKeyContext,
+      contentIdContext: options?.contentIdContext,
+      allowCache: options?.allowCache,
+      embeddedContentRender: options?.embeddedContentRender
+    });
+    return data.asyncId;
+  }
+
+  async getConvertTask(id: string) {
+    const { data } = await this.client.get<Confluence.ConvertedBodyResponse>(this.getEndpointFor(this.endpoints.CONTENTBODY_CONVERT_ASYNC, { idOrTo: id }));
+    return data;
+  }
+
   async hasContentPermission(contentId: string, subject: Confluence.PermissionSubjectWithGroupId, operation: Confluence.ContentOperation): Promise<boolean> {
     if (this.mode === Modes.CONNECT) {
       const { data: permission } = await this.client.post<Confluence.PermissionCheckResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId }), {
