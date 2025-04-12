@@ -80,6 +80,15 @@ declare global {
       }
     }
 
+    interface AttachmentsRequestOptions {
+      sort?: 'created-date'|'-created-date'|'modified-date'|'-modified-date';
+      cursor?: string;
+      status?: Array<'current'|'archived'|'trashed'>;
+      mediaType?: string;
+      filename?: string;
+      limit?: number;
+    }
+
     interface AttachmentRequestOptions {
       version?: string;
       includeLabels?: boolean;

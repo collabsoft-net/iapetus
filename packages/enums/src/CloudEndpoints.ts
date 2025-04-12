@@ -104,7 +104,13 @@ export enum ConfluenceCloudEndpoints {
   PAGES = '/api/v2/pages',
   PAGE = '/api/v2/pages/:id',
 
+  ATTACHMENTS = '/api/v2/attachments',
   ATTACHMENT = '/api/v2/attachments/:id',
+  ATTACHMENTS_FOR_BLOG_POST = '/api/v2/blogposts/:id/attachments',
+  ATTACHMENTS_FOR_PAGE = '/api/v2/pages/:id/attachments',
+  ATTACHMENTS_FOR_CUSTOM_CONTENT = '/api/v2/custom-content/:id/attachments',
+  ATTACHMENTS_FOR_LABEL = '/api/v2/labels/:id/attachments',
+
   CONTENTBODY_CONVERT_ASYNC = '/rest/api/contentbody/convert/async/:idOrTo',
 
   APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',

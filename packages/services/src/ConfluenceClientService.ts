@@ -35,6 +35,113 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     return data;
   }
 
+  async getAttachments(options?: Confluence.AttachmentsRequestOptions, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
+    try {
+      const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.endpoints.ATTACHMENTS, {
+        sort: options?.sort,
+        cursor: options?.cursor,
+        status: options?.status?.join(','),
+        mediaType: options?.mediaType,
+        filename: options?.filename,
+        limit: options?.limit
+      });
+
+      const results = data?.results || [];
+      if (fetchAll && data._links.next) {
+        results.push(...await this.getAttachments({ ...options, cursor: data._links.next }, fetchAll));
+      }
+
+      return results;
+    } catch (_ignored) {
+      return [];
+    }
+  }
+
+  async getBlogPostAttachments(id: string, options?: Confluence.AttachmentsRequestOptions, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
+    try {
+      const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.getEndpointFor(this.endpoints.ATTACHMENTS_FOR_BLOG_POST, { id }), {
+        sort: options?.sort,
+        cursor: options?.cursor,
+        status: options?.status?.join(','),
+        mediaType: options?.mediaType,
+        filename: options?.filename,
+        limit: options?.limit
+      });
+
+      const results = data?.results || [];
+      if (fetchAll && data._links.next) {
+        results.push(...await this.getAttachments({ ...options, cursor: data._links.next }, fetchAll));
+      }
+
+      return results;
+    } catch (_ignored) {
+      return [];
+    }
+  }
+
+  async getPageAttachments(id: string, options?: Confluence.AttachmentsRequestOptions, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
+    try {
+      const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.getEndpointFor(this.endpoints.ATTACHMENTS_FOR_PAGE, { id }), {
+        sort: options?.sort,
+        cursor: options?.cursor,
+        status: options?.status?.join(','),
+        mediaType: options?.mediaType,
+        filename: options?.filename,
+        limit: options?.limit
+      });
+
+      const results = data?.results || [];
+      if (fetchAll && data._links.next) {
+        results.push(...await this.getAttachments({ ...options, cursor: data._links.next }, fetchAll));
+      }
+
+      return results;
+    } catch (_ignored) {
+      return [];
+    }
+  }
+
+  async getCustomContentAttachments(id: string, options?: Confluence.AttachmentsRequestOptions, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
+    try {
+      const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.getEndpointFor(this.endpoints.ATTACHMENTS_FOR_CUSTOM_CONTENT, { id }), {
+        sort: options?.sort,
+        cursor: options?.cursor,
+        status: options?.status?.join(','),
+        mediaType: options?.mediaType,
+        filename: options?.filename,
+        limit: options?.limit
+      });
+
+      const results = data?.results || [];
+      if (fetchAll && data._links.next) {
+        results.push(...await this.getAttachments({ ...options, cursor: data._links.next }, fetchAll));
+      }
+
+      return results;
+    } catch (_ignored) {
+      return [];
+    }
+  }
+
+  async getLabelAttachments(id: string, options?: Omit<Confluence.AttachmentsRequestOptions, 'status'|'mediaType'|'filename'>, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
+    try {
+      const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.getEndpointFor(this.endpoints.ATTACHMENTS_FOR_LABEL, { id }), {
+        sort: options?.sort,
+        cursor: options?.cursor,
+        limit: options?.limit
+      });
+
+      const results = data?.results || [];
+      if (fetchAll && data._links.next) {
+        results.push(...await this.getAttachments({ ...options, cursor: data._links.next }, fetchAll));
+      }
+
+      return results;
+    } catch (_ignored) {
+      return [];
+    }
+  }
+
   async getAttachment(id: string, options?: Confluence.AttachmentRequestOptions) {
     const { data } = await this.client.get<Confluence.AttachmentSingle>(this.getEndpointFor(this.endpoints.ATTACHMENT, { id }), {
       version: options?.version,
@@ -48,8 +155,35 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     return data;
   }
 
-  async downloadAttachment(id: string): Promise<Buffer>;
-  async downloadAttachment(url: string): Promise<Buffer>;
+  async getAttachmentByFileId(fileId: string, options?: Confluence.AttachmentsRequestOptions & { pageId?: string, blogId?: string, labelId?: string, customContentId?: string}): Promise<Confluence.AttachmentSingle|null> {
+    try {
+      const attachments = [];
+      if (options?.pageId || options?.blogId || options?.labelId || options?.customContentId) {
+        if (options?.pageId) {
+          attachments.push(...await this.getPageAttachments(options.pageId, options, true));
+        }
+        if (options?.blogId) {
+          attachments.push(...await this.getBlogPostAttachments(options.blogId, options, true));
+        }
+        if (options?.labelId) {
+          attachments.push(...await this.getPageAttachments(options.labelId, options, true));
+        }
+        if (options?.customContentId) {
+          attachments.push(...await this.getCustomContentAttachments(options.customContentId, options, true));
+        }
+      } else {
+        attachments.push(...await this.getAttachments(options, true));
+      }
+
+      const result = attachments.find(item => item.fileId === fileId);
+      return result || null;
+    } catch (_ignored) {
+      return null;
+    }
+  }
+
+  async downloadAttachment(id: string): Promise<Buffer|null>;
+  async downloadAttachment(url: string): Promise<Buffer|null>;
   async downloadAttachment(idOrUrl: string): Promise<Buffer|null> {
     try {
 
