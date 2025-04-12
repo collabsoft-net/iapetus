@@ -73,10 +73,47 @@ declare global {
 
     interface MultiEntityResult<T> {
       results: Array<T>;
+      meta: OptionalFieldMeta;
       _links: {
         next: string;
         base: string;
       }
+    }
+
+    interface AttachmentRequestOptions {
+      version?: string;
+      includeLabels?: boolean;
+      includeProperties?: boolean;
+      includeOperations?: boolean;
+      includeVersions?: boolean;
+      includeVersion?: boolean;
+      includeCollaborators?: boolean;
+    }
+
+    interface AttachmentSingle {
+      id: string;
+      status: ContentStatus;
+      title: string;
+      createdAt: string;
+      pageId: string;
+      blogPostId: string;
+      customContentId: string;
+      mediaType: string;
+      mediaTypeDescription: string;
+      comment: string;
+      fileId: string;
+      fileSize: number;
+      webuiLink: string;
+      downloadLink: string;
+      version: Version;
+      labels: MultiEntityResult<Label>;
+      properties: MultiEntityResult<ContentProperty>;
+      operations: MultiEntityResult<Operation>;
+      versions: MultiEntityResult<Version>;
+      _links: {
+        webui: string;
+        download: string;
+      };
     }
 
     interface SearchPageResponseSearchResult {

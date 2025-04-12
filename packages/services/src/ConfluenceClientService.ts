@@ -35,6 +35,44 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     return data;
   }
 
+  async getAttachment(id: string, options?: Confluence.AttachmentRequestOptions) {
+    const { data } = await this.client.get<Confluence.AttachmentSingle>(this.getEndpointFor(this.endpoints.ATTACHMENT, { id }), {
+      version: options?.version,
+      'include-labels': options?.includeLabels,
+      'include-properties': options?.includeProperties,
+      'include-operations': options?.includeOperations,
+      'include-versions': options?.includeVersions,
+      'include-version': options?.includeVersion,
+      'include-collaborators': options?.includeCollaborators
+    });
+    return data;
+  }
+
+  async downloadAttachment(id: string): Promise<Buffer>;
+  async downloadAttachment(url: string): Promise<Buffer>;
+  async downloadAttachment(idOrUrl: string): Promise<Buffer|null> {
+    try {
+
+      let url;
+      if (idOrUrl.startsWith('http') || idOrUrl.startsWith('/')) {
+        url = idOrUrl;
+      } else {
+        const attachment = await this.getAttachment(idOrUrl);
+        url = attachment.downloadLink;
+      }
+
+      const { data } = await this.client.get<never>(url, undefined, { responseType: 'arraybuffer' });
+      if (data) {
+        const buffer = Buffer.from(data, 'binary');
+        return buffer;
+      }
+
+      return null;
+    } catch (_ignored) {
+      return null;
+    }
+  }
+
   async getMacroBody(contentId: string, macroId: string, version = 0): Promise<Confluence.MacroInstance> {
     const { data } = await this.client.get<Confluence.MacroInstance>(`/rest/api/content/${contentId}/history/${version}/macro/id/${macroId}`);
     return data;
