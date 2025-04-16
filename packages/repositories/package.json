@@ -20,15 +20,35 @@
     "node": ">=18"
   },
   "exports": {
-    "./client": {
-      "types": "./dist/types/client/index.d.ts",
-      "require": "./dist/cjs/client/index.js",
-      "import": "./dist/es2020/client/index.js"
+    "./MemoryRepository": {
+      "types": "./dist/types/MemoryRepository.d.ts",
+      "require": "./dist/cjs/MemoryRepository.js",
+      "import": "./dist/es2020/MemoryRepository.js"
     },
-    "./server": {
-      "types": "./dist/types/server/index.d.ts",
-      "require": "./dist/cjs/server/index.js",
-      "import": "./dist/es2020/server/index.js"
+    "./QueryBuilder": {
+      "types": "./dist/types/QueryBuilder.d.ts",
+      "require": "./dist/cjs/QueryBuilder.js",
+      "import": "./dist/es2020/QueryBuilder.js"
+    },
+    "./client/FirebaseRepository": {
+      "types": "./dist/types/client/FirebaseRepository.d.ts",
+      "require": "./dist/cjs/client/FirebaseRepository.js",
+      "import": "./dist/es2020/client/FirebaseRepository.js"
+    },
+    "./server/CachedFirebaseAdminRepository": {
+      "types": "./dist/types/server/CachedFirebaseAdminRepository.d.ts",
+      "require": "./dist/cjs/server/CachedFirebaseAdminRepository.js",
+      "import": "./dist/es2020/server/CachedFirebaseAdminRepository.js"
+    },
+    "./server/FirebaseAdminRepository": {
+      "types": "./dist/types/server/FirebaseAdminRepository.d.ts",
+      "require": "./dist/cjs/server/FirebaseAdminRepository.js",
+      "import": "./dist/es2020/server/FirebaseAdminRepository.js"
+    },
+    "./server/FirebaseAdminStorageProvider": {
+      "types": "./dist/types/server/FirebaseAdminStorageProvider.d.ts",
+      "require": "./dist/cjs/server/FirebaseAdminStorageProvider.js",
+      "import": "./dist/es2020/server/FirebaseAdminStorageProvider.js"
     }
   },
   "scripts": {
