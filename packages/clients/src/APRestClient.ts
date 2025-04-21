@@ -29,52 +29,58 @@ export class APRestClient implements RestClient {
   async get<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async get<T>(endpoint: string, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async get<T>(endpoint: string, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.GET, endpoint, undefined, params, duration);
+    return this.request(RestClientMethods.GET, endpoint, undefined, params, config, duration);
   }
 
   async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async post<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.POST, endpoint, data, params, duration);
+    return this.request(RestClientMethods.POST, endpoint, data, params, config, duration);
   }
 
   async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async put<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.PUT, endpoint, data, params, duration);
+    return this.request(RestClientMethods.PUT, endpoint, data, params, config, duration);
   }
 
   async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async patch<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.PATCH, endpoint, data, params, duration);
+    return this.request(RestClientMethods.PATCH, endpoint, data, params, config, duration);
   }
 
   async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async delete<T>(endpoint: string, data?: unknown, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.DELETE, endpoint, data, params, duration);
+    return this.request(RestClientMethods.DELETE, endpoint, data, params, config, duration);
   }
 
   async head<T>(endpoint: string, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async head<T>(endpoint: string, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>>;
   async head<T>(endpoint: string, params?: Record<string, string>, configOrCacheDuration?: AxiosRequestConfig|number, cacheDuration?: number): Promise<AxiosResponse<T>> {
+    const config = typeof configOrCacheDuration === 'number' ? undefined : configOrCacheDuration;
     const duration = typeof configOrCacheDuration === 'number' ? configOrCacheDuration : cacheDuration;
-    return this.request(RestClientMethods.HEAD, endpoint, undefined, params, duration);
+    return this.request(RestClientMethods.HEAD, endpoint, undefined, params, config, duration);
   }
 
-  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, cacheDuration?: number): Promise<AxiosResponse<T>> {
+  protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     if (this.cacheService) {
       const cacheKey = this.cacheService.toCacheKey(type, url, JSON.stringify(data), JSON.stringify(params));
-      const result = await this.cacheService.get(cacheKey, () => this.fetchFromRemote<T>(type, url, data, params), cacheDuration || this.#duration);
-      return result || this.fetchFromRemote<T>(type, url, data, params);
+      const result = await this.cacheService.get(cacheKey, () => this.fetchFromRemote<T>(type, url, data, params, config), cacheDuration || this.#duration);
+      return result || this.fetchFromRemote<T>(type, url, data, params, config);
     } else {
-      return this.fetchFromRemote<T>(type, url, data, params);
+      return this.fetchFromRemote<T>(type, url, data, params, config);
     }
   }
 
@@ -110,21 +116,30 @@ export class APRestClient implements RestClient {
     return result;
   }
 
-  private async fetchFromRemote<T>(type: string, url: string, data: unknown, params?: Record<string, string>): Promise<AxiosResponse<T>> {
+  private async fetchFromRemote<T>(type: string, url: string, data: unknown, params?: Record<string, string>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     try {
       const client = await this.client;
 
       // The Bitbucket implementation of AP.request is different from other hosts
       // So we need to have a different fetch mechanism
       if (isOfType<AP.BitbucketInstance>(this.AP, 'bitbucket')) {
-        return this.fetchFromBitbucket(type, url, data, params);
+        return this.fetchFromBitbucket(type, url, data, params, config);
       } else {
+
+        // Retrieve settings from config (if available)
+        data = data || config?.data;
+        const binaryAttachment = config?.responseType === 'arraybuffer';
+        const headers: Record<string, string> = {};
+        Object.entries(config?.headers || {}).forEach(([ key, value ]) => { headers[key] = value; });
+
         const { body, xhr } = await client({
           type,
           url: this.getUrl(url, params),
           data: data ? JSON.stringify(data) : undefined,
+          headers,
           contentType: 'application/json',
-          experimental: true
+          experimental: true,
+          binaryAttachment
         });
 
         let result;
@@ -170,15 +185,23 @@ export class APRestClient implements RestClient {
     }
   }
 
-  private async fetchFromBitbucket<T>(type: string, url: string, data: unknown, params?: Record<string, string>): Promise<AxiosResponse<T>> {
+  private async fetchFromBitbucket<T>(type: string, url: string, data: unknown, params?: Record<string, string>, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const client = await this.client;
+
+    // Retrieve settings from config (if available)
+    data = data || config?.data;
+    const binaryAttachment = config?.responseType === 'arraybuffer';
+    const headers: Record<string, string> = {};
+    Object.entries(config?.headers || {}).forEach(([ key, value ]) => { headers[key] = value; });
 
     const result = await new Promise<T>((resolve, reject) => client({
       type,
       url: this.getUrl(url, params),
       data: data ? JSON.stringify(data) : undefined,
+      headers,
       contentType: 'application/json',
       experimental: true,
+      binaryAttachment,
       success: async (responseText: string) => {
         const data: T = typeof responseText === 'string' ? JSON.parse(responseText) : responseText as unknown as T;
         resolve(data);
