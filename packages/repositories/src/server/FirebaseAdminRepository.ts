@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { MemoryEmitter } from '@collabsoft-net/emitters';
-import { isOfType } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import { app, AppOptions, auth, firestore } from 'firebase-admin';
 import firebase from 'firebase-admin';
@@ -111,7 +111,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
         collection = collection.limit(condition.value as number);
       } else if (condition.key === 'offset') {
         collection = collection.startAfter(condition.value);
-      } else if (!condition.value) {
+      } else if (isNullOrEmpty(condition.value)) {
         // Skip empty filter statement
       } else {
         collection = collection.where(String(condition.key), <FirebaseFirestore.WhereFilterOp>condition.operator, condition.value);
