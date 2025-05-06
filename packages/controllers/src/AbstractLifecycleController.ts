@@ -9,32 +9,32 @@ import { StatusCodeResult } from 'inversify-express-utils/lib/results';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export abstract class AbstractLifecycleController<T extends Session> extends AbstractController<T> {
+export abstract class AbstractLifecycleController<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractController<Y> {
 
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<T, X>;
 
-  async InstallHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
+  async InstallHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, true);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async UninstallHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
+  async UninstallHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, false);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async EnabledHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
+  async EnabledHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, true);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async DisabledHandler(@requestBody() instance: ACInstance): Promise<StatusCodeResult> {
+  async DisabledHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
     await this.createOrUpdate(instance, false);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  protected async createOrUpdate(instance: ACInstance, active: boolean): Promise<void> {
-    const current = await this.service.findById(instance.clientKey) || {};
+  protected async createOrUpdate(instance: T|X, active: boolean): Promise<void> {
+    const current = await this.service.findById(instance.clientKey) || {} as T;
     await this.service.save({ ...current, ...instance, active, lastActive: new Date().getTime() });
   }
 
