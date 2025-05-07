@@ -1,5 +1,6 @@
 import '@collabsoft-net/functions';
 
+import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { decodeSymmetric, SymmetricAlgorithm } from 'atlassian-jwt';
@@ -10,7 +11,7 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> extends AbstractJWTStrategy<Atlassian.JWT, T> {
+export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractJWTStrategy<T, X, Atlassian.JWT, Y> {
 
   protected get strategyOptions(): StrategyOptions {
     return {
@@ -34,7 +35,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
     super();
   }
 
-  protected async process(request: express.Request, payload?: Atlassian.JWT,): Promise<T> {
+  protected async process(request: express.Request, payload?: Atlassian.JWT): Promise<Y> {
     if (!payload) throw new Error('Invalid Atlassian JWT token');
     const { iss, sub } = payload;
 
@@ -51,7 +52,7 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends Session> exten
     }
   }
 
-  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<T>;
+  protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
 
 
 }

@@ -8,7 +8,7 @@ import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session> implements PubSubHandler<T> {
+export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session, Y extends ACInstance, Z extends ACInstanceDTO> implements PubSubHandler<T> {
 
   abstract name: string;
   abstract topic: string;
@@ -21,12 +21,12 @@ export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extend
   }
 
   constructor(
-    private instanceService: AbstractService<ACInstance, ACInstanceDTO>,
+    private instanceService: AbstractService<Y, Z>,
     protected eventEmitter: EventEmitter
   ) {}
 
   protected abstract run(event: T): Promise<void>;
-  protected abstract toSession(instance: ACInstance): Promise<X>;
+  protected abstract toSession(instance: Y): Promise<X>;
 
   async process(event: CloudEvent<MessagePublishedData<CustomEvent<T>>>): Promise<void> {
     const { log, error } = logger;
