@@ -7,10 +7,10 @@ import { ACInstanceDTO } from '../../dto/dist/types';
 import { AbstractScheduledPubSubHandler } from './AbstractScheduledPubSubHandler';
 
 @injectable()
-export abstract class AbstractScheduledTenantIteratorPubSubHandler extends AbstractScheduledPubSubHandler {
+export abstract class AbstractScheduledTenantIteratorPubSubHandler<T extends ACInstance, X extends ACInstanceDTO> extends AbstractScheduledPubSubHandler {
 
   constructor(
-    protected instanceService: AbstractService<ACInstance, ACInstanceDTO>
+    protected instanceService: AbstractService<T, X>
   ) {
     super();
   }

@@ -8,7 +8,7 @@ import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends Session> implements TaskHandler<T> {
+export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends Session, Y extends ACInstance, Z extends ACInstanceDTO> implements TaskHandler<T> {
 
   abstract name: string;
   requireActiveInstance = true;
@@ -20,12 +20,12 @@ export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends 
   }
 
   constructor(
-    private instanceService: AbstractService<ACInstance, ACInstanceDTO>,
+    private instanceService: AbstractService<Y, Z>,
     protected eventEmitter: EventEmitter
   ) {}
 
   protected abstract run(event: T): Promise<void>;
-  protected abstract toSession(instance: ACInstance): Promise<X>;
+  protected abstract toSession(instance: Y|Z): Promise<X>;
 
   async process({ name, data }: CustomEvent<T>): Promise<void> {
     const { log, error } = logger;

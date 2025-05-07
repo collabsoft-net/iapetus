@@ -11,15 +11,15 @@ import { injectable } from 'inversify';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> extends AbstractBearerStrategy<T> {
+export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractBearerStrategy<T, X, Y> {
 
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<T, X>;
 
   constructor(private allowAnonymousAccess = false) {
     super();
   }
 
-  protected async process(request: express.Request, token?: string): Promise<T> {
+  protected async process(request: express.Request, token?: string): Promise<Y> {
     if (!token) throw new Error('Invalid Bearer token');
 
     const { iss, exp } = decodeSymmetric(token, '', SymmetricAlgorithm.HS256, true);
@@ -41,6 +41,6 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends Session> ex
     }
   }
 
-  protected abstract toSession(payload: Atlassian.JWT, instance: ACInstance): Promise<T>;
+  protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
 
 }

@@ -7,18 +7,18 @@ import * as express from 'express';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractStrategy<T, X extends Session> {
+export abstract class AbstractStrategy<T extends ACInstance, X extends ACInstanceDTO, Y, Z extends Session> {
 
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<T, X>;
 
-  protected abstract process(request: express.Request): Promise<X>;
-  protected abstract process(request: express.Request, token?: T): Promise<X>;
+  protected abstract process(request: express.Request): Promise<Z>;
+  protected abstract process(request: express.Request, token?: Y): Promise<Z>;
 
   next(_req: express.Request, _res: express.Response, next: express.NextFunction): void {
     next();
   }
 
-  protected async updateLastActive(instance: ACInstance, { headers }: express.Request) {
+  protected async updateLastActive(instance: T, { headers }: express.Request) {
     if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
       // Only update the lastActive if non-existant or less than 24 hours ago
       if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {

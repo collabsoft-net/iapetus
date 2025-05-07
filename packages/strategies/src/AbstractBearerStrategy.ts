@@ -12,7 +12,7 @@ import { IStrategyOptions, Strategy, VerifyFunctions } from 'passport-http-beare
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractBearerStrategy<X extends Session> extends AbstractStrategy<string, X> implements IStrategy {
+export abstract class AbstractBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractStrategy<T, X, string, Y> implements IStrategy {
 
   get name(): string {
     return 'bearer';
@@ -22,16 +22,16 @@ export abstract class AbstractBearerStrategy<X extends Session> extends Abstract
     return { session: false };
   }
 
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<T, X>;
   protected abstract get strategyOptions(): IStrategyOptions;
 
   get strategy(): passport.Strategy {
     const _name = this.name;
     const _options = { ...this.strategyOptions, passReqToCallback: true };
 
-    return new (class BearerStrategy<T extends VerifyFunctions> extends Strategy<T> {
+    return new (class BearerStrategy<Z extends VerifyFunctions> extends Strategy<Z> {
       name = _name;
-    })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: X) => void) => {
+    })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: Y) => void) => {
       try {
         const session = await this.process(request, token);
         done(null, session);

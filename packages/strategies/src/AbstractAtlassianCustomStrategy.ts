@@ -9,13 +9,13 @@ import { injectable } from 'inversify';
 import { AbstractCustomStrategy } from './AbstractCustomStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends AbstractCustomStrategy<T> {
+export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractCustomStrategy<T, X, Y> {
 
-  protected abstract get service(): AbstractService<ACInstance, ACInstanceDTO>;
+  protected abstract get service(): AbstractService<T, X>;
 
   protected abstract get clientIdentifierKey(): 'clientId'|'clientKey'|'tenantId';
 
-  protected async process(request: express.Request): Promise<T> {
+  protected async process(request: express.Request): Promise<Y> {
     const identifier = await this.findIdentifier(request);
     if (identifier) {
       const instance = await this.service.findByProperty(this.clientIdentifierKey, identifier);
@@ -30,7 +30,7 @@ export abstract class AbstractAtlassianCustomStrategy<T extends Session> extends
     }
   }
 
-  protected abstract toSession(request: express.Request, instance: ACInstance): Promise<T>;
+  protected abstract toSession(request: express.Request, instance: T): Promise<Y>;
 
   private async findIdentifier(request: express.Request): Promise<string|null> {
     const { clientId, clientKey, tenantId } = request.query;
