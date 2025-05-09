@@ -11,7 +11,9 @@ import uniqid from 'uniqid';
 import { QueryBuilder as QB } from '../QueryBuilder';
 
 type FirestorePrimitive = Primitive|GeoPoint|Timestamp;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
 
 export class FirebaseRepository<T extends Entity> implements Repository<T> {

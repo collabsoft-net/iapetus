@@ -26,7 +26,9 @@ export const BambooInstance: AP.BambooInstance = {
       return new Promise<AP.BambooContext>((resolve, reject) => {
         postMessage(Events.AP_CONTEXT_GETCONTEXT, (data?: AP.BambooContext) => {
           if (data) {
-            callback && callback(data);
+            if (callback) {
+              callback(data);
+            }
             resolve(data);
           } else {
             reject()

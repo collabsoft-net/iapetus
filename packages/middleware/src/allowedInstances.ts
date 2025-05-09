@@ -5,7 +5,6 @@ export const allowedInstances = [
   'https://collabsoft-jonas-dev.atlassian.net',
   'https://collabsoft-acc.atlassian.net',
   'https://remie-figma.atlassian.net',
-  'https://juliet-collabsoft.atlassian.net',
   'https://ffc-migration.atlassian.net',
   'https://jari-acc.atlassian.net'
 ];

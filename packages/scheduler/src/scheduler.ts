@@ -15,7 +15,7 @@ export const hasJob = async (name: string): Promise<boolean> => {
   try {
     const [ existingJob ] = await scheduler.getJob({ name });
     return existingJob !== undefined;
-  } catch (error) {
+  } catch (_ignored) {
     return false;
   }
 }

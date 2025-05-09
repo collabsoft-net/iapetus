@@ -71,7 +71,9 @@ export const ConfluenceInstance: AP.ConfluenceInstance = {
       return new Promise<AP.ConfluenceContext>((resolve, reject) => {
         postMessage(Events.AP_CONTEXT_GETCONTEXT, (data?: AP.ConfluenceContext) => {
           if (data) {
-            callback && callback(data);
+            if (callback) {
+              callback(data);
+            }
             resolve(data);
           } else {
             reject()

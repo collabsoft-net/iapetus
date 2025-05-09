@@ -102,7 +102,9 @@ export const ProjectWithAvatar = ({ project, projectId, inline, truncate, isVali
       </JiraProviders.Project>
     );
   } else {
-    onError && onError();
+    if (onError) {
+      onError();
+    }
     return <></>;
   }
 };

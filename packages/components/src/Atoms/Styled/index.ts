@@ -3,7 +3,7 @@ import { Property } from 'csstype';
 import { ThemedCssFunction, ThemedStyledFunction } from 'styled-components';
 
 export const withProps = <U>() =>
-    <P, T, O>( // eslint-disable-line
+    <P, T, O>(
         fn: ThemedStyledFunction<P, T, O>|ThemedCssFunction<P>
     ) => fn as unknown as ThemedStyledFunction<P & U, T, O & U>;
 

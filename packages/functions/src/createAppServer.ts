@@ -13,7 +13,7 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (name: string, container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void|Record<string, HttpsFunction> => {
+export const createAppServer = (name: string, container: inversify.Container | (() => inversify.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void|Record<string, HttpsFunction> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
@@ -43,7 +43,9 @@ export const createAppServer = (name: string, container: inversify.interfaces.Co
 
       strategies.forEach((instance) => {
         passport.use(instance.strategy)
-        !isProduction() && logger.info(`Registering strategy [${instance.name}]`);
+        if (!isProduction()) {
+          logger.info(`Registering strategy [${instance.name}]`);
+        }
         app.get(`/api/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
           const options = instance.options;
           options.state = req.query ? Buffer.from(JSON.stringify(req.query)).toString('base64') : undefined;

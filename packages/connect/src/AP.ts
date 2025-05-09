@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 // The reason these unused vars are here is because they are placeholders
 // They are taken from the AP / Connect documentation and can be used once the method is implemented
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 
 export {};
 

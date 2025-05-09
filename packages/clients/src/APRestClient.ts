@@ -145,7 +145,7 @@ export class APRestClient implements RestClient {
         let result;
         try {
           result = JSON.parse(body)
-        } catch (error) {
+        } catch (_ignored) {
           result = body;
         }
 

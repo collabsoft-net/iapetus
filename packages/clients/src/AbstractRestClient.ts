@@ -102,7 +102,7 @@ export abstract class AbstractRestClient implements RestClient {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
         const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
         return result || fetchFromRemote();
-      } catch (err) {
+      } catch (_ignored) {
         return fetchFromRemote();
       }
     } else {

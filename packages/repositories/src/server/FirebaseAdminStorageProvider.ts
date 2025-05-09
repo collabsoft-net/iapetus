@@ -88,8 +88,8 @@ export class FirebaseAdminStorageProvider implements StorageProvider {
       },
       isLocked: async () => {
         const [ metadata ] = await file.getMetadata();
-        if (metadata.metadata?.locked) {
-          const lockedAt = parseInt(metadata.metadata.locked);
+        if (metadata.metadata?.locked && (typeof metadata.metadata?.locked === 'number' || typeof metadata.metadata?.locked === 'string')) {
+          const lockedAt = Number(metadata.metadata.locked);
           return lockedAt > new Date().getTime();
         } else {
           return false;

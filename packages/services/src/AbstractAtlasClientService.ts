@@ -60,7 +60,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -72,7 +72,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
 
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }

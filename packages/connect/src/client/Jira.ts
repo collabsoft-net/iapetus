@@ -52,7 +52,9 @@ export const JiraInstance: AP.JiraInstance = {
       return new Promise<AP.JiraContext>((resolve, reject) => {
         postMessage(Events.AP_CONTEXT_GETCONTEXT, (data?: AP.JiraContext) => {
           if (data) {
-            callback && callback(data);
+            if (callback) {
+              callback(data);
+            }
             resolve(data);
           } else {
             reject()

@@ -4,21 +4,24 @@ import { Events } from './Events';
 import { eventListeners } from './Listeners';
 import { CallbackHandler } from './Types';
 
-type Theme = 'dark'|'light'|'spacing';
+type Theme = 'dark'|'light'|'spacing'|'typography';
 
 const LIGHT_THEME_STYLING = process.env.LIGHT_THEME_STYLING;
 const DARK_THEME_STYLING = process.env.DARK_THEME_STYLING;
 const SPACING_STYLING = process.env.SPACING_STYLING;
+const TYPOGRAPHY_STYLING = process.env.TYPOGRAPHY_STYLING;
 
 export const InitializeThemingEventHandler = () => {
   if (document.head) {
     createInlineStyle('dark');
     createInlineStyle('light');
     createInlineStyle('spacing');
+    createInlineStyle('typography');
 
     createLinkElement('dark');
     createLinkElement('light');
     createLinkElement('spacing');
+    createLinkElement('typography');
 
     const surfacesStyles = document.createElement('link');
     surfacesStyles.setAttribute('rel', 'stylesheet');
@@ -54,7 +57,9 @@ const createInlineStyle = (theme: Theme) => {
       ? DARK_THEME_STYLING
       : theme === 'light'
         ? LIGHT_THEME_STYLING
-        : SPACING_STYLING;
+        : theme === 'spacing'
+          ? SPACING_STYLING
+          : TYPOGRAPHY_STYLING;
 
   if (content) {
     const style = document.createElement('style');

@@ -15,7 +15,7 @@ export abstract class AbstractBackupPubSubHandler implements ScheduledPubSubHand
     if (process.env.FIREBASE_CONFIG) {
       try {
         return JSON.parse(process.env.FIREBASE_CONFIG) as AppOptions;
-      } catch (err) {
+      } catch (_ignored) {
         return undefined;
       }
     }

@@ -15,7 +15,7 @@ const scheduledPubSubEmulatorJobs: Record<string, CronJob> = {};
 export const PubSubHandlers = Symbol.for('PubSubHandlers');
 export const ScheduledPubSubHandlers = Symbol.for('ScheduledPubSubHandlers');
 
-export const registerPubSubHandlers = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: Partial<PubSubOptions>|Partial<ScheduleOptions> = { memory: '4GiB', timeoutSeconds: 540 }): PubSubHandlers => {
+export const registerPubSubHandlers = (container: inversify.Container | (() => inversify.Container), options: Partial<PubSubOptions>|Partial<ScheduleOptions> = { memory: '4GiB', timeoutSeconds: 540 }): PubSubHandlers => {
   const result: PubSubHandlers = {};
   const appContainer = typeof container === 'function' ? container() : container;
 
@@ -25,7 +25,9 @@ export const registerPubSubHandlers = (container: inversify.interfaces.Container
   pubSubHandlers.forEach(handler => {
     const name = handler.name || handler.topic;
     handler.timeoutSeconds = handler.timeoutSeconds || (typeof options.timeoutSeconds === 'number' ? options.timeoutSeconds : undefined)
-    !isProduction() && logger.log(`[${name}] Registering PubSub subscription for topic ${handler.topic}`)
+    if (!isProduction()) {
+      logger.log(`[${name}] Registering PubSub subscription for topic ${handler.topic}`);
+    }
     result[name] = onMessagePublished<CustomEvent<TenantAwareEvent>>({
       ...options,
       topic: handler.topic,

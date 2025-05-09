@@ -16,7 +16,6 @@ export * from './PubSub';
 export * from './QueryBuilder';
 export * from './Repositories';
 export * from './RestClient';
-export * from './Root';
 export * from './StorageProvider';
 export * from './Strategy';
 export * from './Tasks';

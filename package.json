@@ -9,18 +9,19 @@
     "build": "yarn run lerna run build --concurrency 2",
     "reinstall": "yarn clean && yarn && yarn run lerna exec yarn --concurrency 1",
     "start": "yarn run nodemon --watch ./**/src -e '.ts' --exec 'yarn run lerna run build'",
-    "prerelease": "yarn run lerna publish prerelease -y"
+    "prerelease": "yarn run lerna publish prerelease -y",
+    "upgrade-all": "yarn up -E \"@*/*\" && yarn up -E \"*\""
   },
   "devDependencies": {
     "@types/node": "<19.0.0",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "eslint": "8.56.0",
-    "eslint-plugin-simple-import-sort": "10.0.0",
-    "lerna": "8.0.2",
-    "node-gyp": "10.0.1",
-    "nodemon": "3.0.3",
-    "typescript": "5.3.3"
+    "@typescript-eslint/eslint-plugin": "8.32.0",
+    "@typescript-eslint/parser": "8.32.0",
+    "eslint": "9.26.0",
+    "eslint-plugin-simple-import-sort": "12.1.1",
+    "lerna": "8.2.2",
+    "node-gyp": "11.2.0",
+    "nodemon": "3.1.10",
+    "typescript": "5.8.3"
   },
   "resolutions": {
     "styled-components": "3.2.6",

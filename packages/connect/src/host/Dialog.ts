@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { isOfType } from '@collabsoft-net/helpers';
 
@@ -186,7 +185,7 @@ export const DialogCustomDataEventHandler = (event: MessageEvent<unknown>, AC: H
         AC.reply(event, result.customData);
       }
     }
-  } catch (ignored) {
+  } catch (_ignored) {
     //Ignore
   }
 }

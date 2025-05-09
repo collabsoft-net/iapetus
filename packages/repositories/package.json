@@ -53,7 +53,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "lint": "yarn run eslint",
     "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
     "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
@@ -69,25 +69,25 @@
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/emitters": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
-    "@firebase/app-types": "0.9.0",
-    "@google-cloud/storage": "7.7.0",
+    "@google-cloud/storage": "7.16.0",
     "@types/node": "<19.0.0",
     "@types/uniqid": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "eslint": "8.56.0",
-    "firebase-admin": "12.0.0",
-    "nodemon": "3.0.3",
-    "typescript": "5.3.3",
+    "@typescript-eslint/eslint-plugin": "8.32.0",
+    "@typescript-eslint/parser": "8.32.0",
+    "eslint": "9.26.0",
+    "firebase": "11.7.1",
+    "firebase-admin": "13.3.0",
+    "nodemon": "3.1.10",
+    "typescript": "5.8.3",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "@collabsoft-net/dto": "^1.0.0-alpha.165",
-    "@collabsoft-net/emitters": "1.0.0-alpha.44",
-    "@google-cloud/storage": "6.7.0",
-    "firebase": "10.14.0",
-    "firebase-admin": "11.2.1",
-    "uniqid": "5.4.0"
+    "@collabsoft-net/dto": "*",
+    "@collabsoft-net/emitters": "*",
+    "@google-cloud/storage": "^7.16.0",
+    "firebase": "^11.7.0",
+    "firebase-admin": "^13.3.0",
+    "uniqid": "^5.4.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -1,6 +1,6 @@
 import { CachingExpirationPolicy, CachingService, Type } from '@collabsoft-net/types';
 import { createHash } from 'crypto';
-import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts } from 'redis';
+import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts, RespVersions, TypeMapping } from 'redis';
 
 const DEFAULT_TTL = 30 * 60;
 
@@ -14,10 +14,10 @@ interface RedisServiceOptions {
 
 export class RedisService implements CachingService {
 
-  private primaryEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  private primaryEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts, RespVersions, TypeMapping>;
   private writeTimeout: number;
 
-  private readEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts>;
+  private readEndpoint: RedisClientType<RedisModules, RedisFunctions, RedisScripts, RespVersions, TypeMapping>;
   private readTimeout: number;
 
   private expirationPolicy: CachingExpirationPolicy;
@@ -47,7 +47,9 @@ export class RedisService implements CachingService {
     }
 
     const result = await this.withTimeout(async () => this.readEndpoint.exists(key), this.readTimeout);
-    this.verbose && console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
+    if (this.verbose) {
+      console.info(result > 0 ? `[REDIS] ${key} exists in cache` : `[REDIS] ${key} does not exist in cache`);
+    }
     return result > 0;
   }
 
@@ -72,25 +74,35 @@ export class RedisService implements CachingService {
     }
 
     if (!this.readEndpoint.isReady) {
-      this.verbose && console.info(`[REDIS] miss from cache for key ${key}, server is not ready`);
+      if (this.verbose) {
+        console.info(`[REDIS] miss from cache for key ${key}, server is not ready`);
+      }
       return loader ? loader() : null;
     }
 
     if (forceRefresh === true) {
-      this.verbose && console.info(`[REDIS] force refresh requested, flushing key ${key}`);
+      if (this.verbose) {
+        console.info(`[REDIS] force refresh requested, flushing key ${key}`);
+      }
       await this.flush(key).catch(() => {});
     }
 
     const reply = await this.withTimeout(async () => this.readEndpoint.get(key), this.readTimeout).catch(() => null);
     if (reply) {
-      this.verbose && console.info(`[REDIS] hit from cache for key ${key}`);
+      if (this.verbose) {
+        console.info(`[REDIS] hit from cache for key ${key}`);
+      }
 
       if (this.expirationPolicy === 'expireAfterAccess') {
         if (this.primaryEndpoint.isReady) {
-          this.verbose && console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+          if (this.verbose) {
+            console.info(`[REDIS] Refreshing expiration time of ${key}, adding another ${expiresInSeconds} seconds`);
+          }
           await this.withTimeout(async () => this.primaryEndpoint.expire(key, expiresInSeconds), this.writeTimeout).catch(() => {});
         } else {
-          this.verbose && console.info(`[REDIS] Unable to refresh expiration time of ${key}, primary endpoint not available`);
+          if (this.verbose) {
+            console.info(`[REDIS] Unable to refresh expiration time of ${key}, primary endpoint not available`);
+          }
         }
       }
 
@@ -98,7 +110,9 @@ export class RedisService implements CachingService {
         const result: T = JSON.parse(reply);
         return type ? new type(result) : result;
       } catch (error) {
-        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        if (this.verbose) {
+          console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        }
         await this.flush(key).catch(() => {});
         const result = loader ? loader() : null;
         if (result) {
@@ -108,37 +122,51 @@ export class RedisService implements CachingService {
       }
     } else if (loader) {
       try {
-        this.verbose && console.info(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
+        if (this.verbose) {
+          console.info(`[REDIS] miss from cache for key ${key}, trying to retrieve from loader`);
+        }
         const result = await loader();
         if (result) {
           await this.set(key, result, expiresInSeconds).catch(() => {});
           return type ? new type(result) : result;
         }
-        this.verbose && console.info(`[REDIS] miss from loader for key ${key}`);
+        if (this.verbose) {
+          console.info(`[REDIS] miss from loader for key ${key}`);
+        }
         return null;
       } catch (error) {
-        this.verbose && console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        if (this.verbose) {
+          console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
+        }
         return null;
       }
     }
 
-    this.verbose && console.info(`[REDIS] miss from both cache and loader for key ${key}`);
+    if (this.verbose) {
+      console.info(`[REDIS] miss from both cache and loader for key ${key}`);
+    }
     return null;
   }
 
   async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
     if (!this.primaryEndpoint.isReady) {
-      this.verbose && console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
+      if (this.verbose) {
+        console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
+      }
       return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
     try {
       const payload = JSON.stringify(data);
-      this.verbose && console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
+      if (this.verbose) {
+        console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
+      }
       await this.withTimeout(async () => this.primaryEndpoint.setEx(key, expiresInSeconds, payload), this.writeTimeout);
       return null;
     } catch (error) {
-      this.verbose && console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
+      if (this.verbose) {
+        console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
+      }
       return error as Error;
     }
   }
@@ -147,18 +175,26 @@ export class RedisService implements CachingService {
     const keys = Array.isArray(key) ? key : [ key ];
 
     if (!this.primaryEndpoint.isReady) {
-      this.verbose && console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
+      if (this.verbose) {
+        console.info(`[REDIS] cannot flush key(s) '${keys.join(',')}', server is not ready`);
+      }
     } else {
-      this.verbose && console.info(`[REDIS] flushing key(s) '${keys.join(',')}'`);
+      if (this.verbose) {
+        console.info(`[REDIS] flushing key(s) '${keys.join(',')}'`);
+      }
       await this.withTimeout(() => this.primaryEndpoint.unlink(keys), this.writeTimeout);
     }
   }
 
   async flushAll() {
     if (!this.primaryEndpoint.isReady) {
-      this.verbose && console.info(`[REDIS] cannot flush, server is not ready`);
+      if (this.verbose) {
+        console.info(`[REDIS] cannot flush, server is not ready`);
+      }
     } else {
-      this.verbose && console.info(`[REDIS] flushing all keys`);
+      if (this.verbose) {
+        console.info(`[REDIS] flushing all keys`);
+      }
       await this.withTimeout(() => this.primaryEndpoint.flushAll(), this.writeTimeout);
     }
   }
@@ -166,7 +202,9 @@ export class RedisService implements CachingService {
   toCacheKey(...args: Array<string|number|undefined>): string {
     const value = args.filter(item => item !== undefined).join('-');
     const result = createHash('md5').update(value).digest('hex');
-    this.verbose && console.info(`[REDIS] Created cache key '${result}' based on provided arguments '${value}'`);
+    if (this.verbose) {
+      console.info(`[REDIS] Created cache key '${result}' based on provided arguments '${value}'`);
+    }
     return result;
   }
 

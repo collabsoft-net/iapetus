@@ -22,7 +22,9 @@ function getState(type?: 'hash'|'all', callback?: (state?: string|AP.HistoryStat
   }
 
   postMessage(Events.AP_HISTORY_GETSTATE, { type }, (data?: string|AP.HistoryState) => {
-    callback && callback(data);
+    if (callback) {
+      callback(data);
+    }
   });
 
   // We should not reach this, but if we do, we need to return something to match the AP typings
@@ -191,7 +193,9 @@ export const PlatformInstance: AP.PlatformInstance = {
 
   context: {
     getToken: function (callback?: ((token: string) => string) | undefined): Promise<string> {
-      callback && callback('');
+      if (callback) {
+        callback('');
+      }
       return Promise.resolve('');
     }
   },

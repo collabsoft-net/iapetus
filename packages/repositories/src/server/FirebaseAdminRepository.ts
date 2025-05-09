@@ -12,7 +12,9 @@ import { QueryBuilder as QB } from '../QueryBuilder';
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
 
 type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Timestamp;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|FirestoreArray> {}
 
 export class FirebaseAdminRepository<T extends Entity> implements Repository<T> {

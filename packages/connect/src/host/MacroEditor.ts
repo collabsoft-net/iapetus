@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { MacroEditorOptions, WindowWithMacroEditor } from '../client/Types';
 import { Host, HostOptions } from '../Host';
 

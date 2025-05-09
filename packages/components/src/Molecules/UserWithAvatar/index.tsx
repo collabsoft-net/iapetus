@@ -81,7 +81,9 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
   const instance = useContext(AP);
 
   if (!instance) {
-    onError && onError(new Error('Failed to retrieve instance of AP, please make sure the AP context is inititalized'));
+    if (onError) {
+      onError(new Error('Failed to retrieve instance of AP, please make sure the AP context is inititalized'));
+    }
     return <></>;
   }
 
@@ -114,7 +116,9 @@ export const UserWithAvatar = ({ user, accountId, inline, truncate, isValidating
       </>
     );
   } else {
-    onError && onError(new Error('Failed to load user: neither "user" property nor "accountId" property has been set.'));
+    if (onError) {
+      onError(new Error('Failed to load user: neither "user" property nor "accountId" property has been set.'));
+    }
     return <></>;
   }
 };

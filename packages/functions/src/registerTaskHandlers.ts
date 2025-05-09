@@ -7,7 +7,7 @@ import * as inversify from 'inversify';
 
 export const TaskHandlers = Symbol.for('TaskHandlers');
 
-export const registerTaskHandlers = (container: inversify.interfaces.Container | (() => inversify.interfaces.Container), options: TaskQueueOptions = {
+export const registerTaskHandlers = (container: inversify.Container | (() => inversify.Container), options: TaskQueueOptions = {
   retryConfig: {
     maxAttempts: 3,
   },
@@ -20,7 +20,9 @@ export const registerTaskHandlers = (container: inversify.interfaces.Container |
   const taskHandlers = appContainer.isBound(TaskHandlers) ? appContainer.getAll<TaskHandler<TenantAwareEvent>>(TaskHandlers) : [];
 
   taskHandlers.forEach(handler => {
-    !isProduction() && logger.log(`[${handler.name}] Registering Task ${handler.name}`)
+    if (!isProduction()) {
+      logger.log(`[${handler.name}] Registering Task ${handler.name}`);
+    }
     result[handler.name] = onTaskDispatched<CustomEvent<TenantAwareEvent>>({ ...options, ...(handler.options || {}) }, ({ data }) => handler.process(data))
   });
 

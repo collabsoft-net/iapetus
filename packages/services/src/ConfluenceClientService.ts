@@ -423,7 +423,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.SPACE_PROPERTY_BY_KEY, { spaceIdOrKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -432,7 +432,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.CONTENT_PROPERTY_BY_KEY, { contentId, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }

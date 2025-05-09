@@ -4,7 +4,7 @@ import { AbstractService } from '@collabsoft-net/services';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { requestBody } from 'inversify-express-utils';
-import { StatusCodeResult } from 'inversify-express-utils/lib/results';
+import { results } from 'inversify-express-utils';
 
 import { AbstractController } from './AbstractController';
 
@@ -13,22 +13,22 @@ export abstract class AbstractLifecycleController<T extends ACInstance, X extend
 
   protected abstract get service(): AbstractService<T, X>;
 
-  async InstallHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
+  async InstallHandler(@requestBody() instance: T|X): Promise<results.StatusCodeResult> {
     await this.createOrUpdate(instance, true);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async UninstallHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
+  async UninstallHandler(@requestBody() instance: T|X): Promise<results.StatusCodeResult> {
     await this.createOrUpdate(instance, false);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async EnabledHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
+  async EnabledHandler(@requestBody() instance: T|X): Promise<results.StatusCodeResult> {
     await this.createOrUpdate(instance, true);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }
 
-  async DisabledHandler(@requestBody() instance: T|X): Promise<StatusCodeResult> {
+  async DisabledHandler(@requestBody() instance: T|X): Promise<results.StatusCodeResult> {
     await this.createOrUpdate(instance, false);
     return this.statusCode(StatusCodes.NO_CONTENT);
   }

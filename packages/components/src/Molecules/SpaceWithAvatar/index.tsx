@@ -104,7 +104,9 @@ export const SpaceWithAvatar = ({ space, spaceId, inline, truncate, isValidating
       </ConfluenceProviders.Space>
     );
   } else {
-    onError && onError();
+    if (onError) {
+      onError();
+    }
     return <></>;
   }
 };

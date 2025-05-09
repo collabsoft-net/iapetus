@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect, should, use as chaiUse } from 'chai';
 import chaiString from 'chai-string';
 import { mkdirSync } from 'fs';
@@ -25,12 +26,12 @@ export async function fetch(url: string, options: RequestInit = {}): Promise<unk
   return result;
 }
 
-export async function findElement(selector: string|Array<string>) {
+export async function findElement(selector: string|Array<string>): Promise<WebdriverIO.Element|undefined> {
   const items = Array.isArray(selector) ? selector : [ selector ];
   for await (const item of items) {
     const isValidSelector = await exists(item, false);
     if (isValidSelector) {
-      return browser.$(item);
+      return browser.$(item).getElement();
     }
   }
 }
@@ -42,7 +43,7 @@ export async function use(selector?: string|Array<string>): Promise<void> {
     await waitUntil(async () => exists(selector), 60000, undefined, 200);
     const iframe = await findElement(selector);
     if (iframe) {
-      browser.switchToFrame(iframe);
+      browser.switchFrame(iframe);
     }
   }
 }
@@ -53,7 +54,7 @@ export async function waitUntil(condition: () => boolean|Promise<boolean>, timeo
 
 export async function waitForDisplayed(selector: string|Array<string>, timeout = 10000): Promise<boolean> {
   const items = Array.isArray(selector) ? selector : [ selector ];
-  await Promise.all(items.map(item => browser.$(item).then((elm: WebdriverIO.Element) => elm.waitForDisplayed({ timeout })).catch(() => {})));
+  await Promise.all(items.map(item => browser.$(item).getElement().then((elm: WebdriverIO.Element) => elm.waitForDisplayed({ timeout })).catch(() => {})));
   return exists(selector);
 }
 
@@ -66,7 +67,7 @@ export async function exists(selector: string|Array<string>, assert = true): Pro
     if (isExisting) exists = true;
   }
 
-  if (assert) { expect(exists, `Expected ${selector} to exists, but it does not`).to.be.true; }
+  if (assert) expect(exists, `Expected ${selector} to exists, but it does not`).to.not.be.true;
   return exists;
 }
 
@@ -149,7 +150,7 @@ export async function hasChildren(selector: string|Array<string>, expected?: num
   let hasChildren = false;
 
   for await (const item of items) {
-    const elements = await browser.$$(item);
+    const elements = await browser.$$(item).getElements();
     if (elements) {
       if (expected && elements.length === expected) {
         hasChildren = true;
@@ -207,7 +208,7 @@ export async function clearValue(selector: string|Array<string>): Promise<void> 
 
 export async function click(selector: string, waitForElement?: string|Array<string>, timeout?: number): Promise<void> {
   await waitForDisplayed(selector);
-  const elm = await browser.$(selector);
+  const elm = await browser.$(selector).getElement();
   elm.scrollIntoView();
   elm.click();
   if (waitForElement) await waitForDisplayed(waitForElement, timeout);
@@ -227,7 +228,7 @@ export function captureScreenshot(name: string): void {
 }
 
 const exec = async (selector: string, method: string, ...args: Array<unknown>) => {
-  const elm = await browser.$(selector);
+  const elm = await browser.$(selector).getElement();
   // eslint-disable-next-line
   return (elm as any)[method](...args);
 };

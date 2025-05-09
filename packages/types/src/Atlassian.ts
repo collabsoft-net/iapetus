@@ -905,6 +905,7 @@ declare global {
 
     type EntityType = 'app'|'user'|'project'|'issue'|'comment';
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface User extends ApplicationUser {}
 
     interface Permission {
@@ -1934,6 +1935,7 @@ declare global {
       params?: Record<string, string>;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface CompositeCondition extends Partial<Record<'or'|'and', Array<SingleCondition|CompositeCondition>>> {}
 
   }

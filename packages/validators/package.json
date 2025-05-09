@@ -21,7 +21,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "lint": "yarn run eslint",
     "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
     "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
@@ -36,10 +36,10 @@
   "devDependencies": {
     "@collabsoft-net/types": "workspace:*",
     "@types/node": "<19.0.0",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "eslint": "8.56.0",
-    "nodemon": "3.0.3",
-    "typescript": "5.3.3"
+    "@typescript-eslint/eslint-plugin": "8.32.0",
+    "@typescript-eslint/parser": "8.32.0",
+    "eslint": "9.26.0",
+    "nodemon": "3.1.10",
+    "typescript": "5.8.3"
   }
 }

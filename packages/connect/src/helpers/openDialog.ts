@@ -34,7 +34,9 @@ export function openDialog<T, X>(key: string, optionsOrDataOrCallback?: AP.Dialo
   if (AP) {
     const cb = (typeof optionsOrDataOrCallback === 'function' ? optionsOrDataOrCallback : callback) as DialogCallback<T>|undefined;
     return new Promise<T|undefined>(resolve => AP.dialog.create<X>(generateDialogOptions(key, optionsOrDataOrCallback)).on<T>('close', (data?: T) => {
-      cb && cb(data);
+      if (cb) {
+        cb(data);
+      }
       resolve(data);
     }));
   } else {

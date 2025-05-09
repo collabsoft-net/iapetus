@@ -1,5 +1,5 @@
+import { load } from '@collabsoft-net/envify-nconf';
 import { isNullOrEmpty, isProduction } from '@collabsoft-net/helpers';
-import { load } from '@gdn/envify-nconf';
 import * as firebase from 'firebase-admin';
 import { logger } from 'firebase-functions';
 import { defineSecret, defineString } from 'firebase-functions/params';
@@ -29,7 +29,7 @@ export const setEnv = (params: Array<string> = [], secrets: Array<string> = [], 
       if (!isNullOrEmpty(value)) {
         process.env[key] = value;
       }
-    } catch(ignored) {
+    } catch(_ignored) {
       // Ignore this error
     }
   });

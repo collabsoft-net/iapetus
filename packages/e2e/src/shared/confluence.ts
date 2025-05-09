@@ -66,8 +66,8 @@ export const waitForMacroToLoad = async (extensionKey: string): Promise<void> =>
 export const saveCustomMacroEditor = async (): Promise<void> => {
   const isMacroEditorOpen = await browser.isVisible('section[role="dialog"] footer.aui-dialog2-footer');
   if (isMacroEditorOpen) {
-    const parent = await browser.$('section[role="dialog"] footer.aui-dialog2-footer');
-    const elm = await parent.$('button=Insert') || await parent.$('button=Save');
+    const parent = await browser.$('section[role="dialog"] footer.aui-dialog2-footer').getElement();
+    const elm = await parent.$('button=Insert').getElement() || await parent.$('button=Save').getElement();
     if (elm) {
       elm.click();
     }
@@ -84,9 +84,9 @@ export const closeMacroEditor = async (): Promise<void> => {
 export const closeCustomMacroEditor = async (): Promise<void> => {
   const isMacroEditorOpen = await browser.isVisible('section[role="dialog"] footer.aui-dialog2-footer');
   if (isMacroEditorOpen) {
-    const parent = browser.$('section[role="dialog"] footer.aui-dialog2-footer');
+    const parent = await browser.$('section[role="dialog"] footer.aui-dialog2-footer').getElement();
     if (parent) {
-      const elm = parent.$('button=Cancel');
+      const elm = await parent.$('button=Cancel').getElement();
       if (elm) {
         elm.click();
       }

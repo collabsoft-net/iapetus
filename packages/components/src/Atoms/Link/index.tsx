@@ -1,4 +1,4 @@
-import Button, { Spacing } from '@atlaskit/button';
+import { LinkButton,Spacing } from '@atlaskit/button/new';
 import React from 'react';
 import { PropsWithChildren } from 'react';
 
@@ -9,5 +9,5 @@ interface LinkProps  {
 }
 
 export const Link = ({ href, target, spacing, children }: PropsWithChildren<LinkProps>): JSX.Element => (
-  <Button appearance='link' href={ href } spacing={ spacing || 'none' } rel='noreferrer' target={ target || '_blank' }>{ children }</Button>
+  <LinkButton href={ href } spacing={ spacing } rel='noreferrer' target={ target || '_blank' }>{ children }</LinkButton>
 );

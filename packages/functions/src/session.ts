@@ -6,7 +6,7 @@ export {};
 
 declare global {
 
-  /* eslint-disable-next-line @typescript-eslint/no-empty-interface */
+
   interface Session extends Record<string, unknown> {
     accountId: string;
     instance: ACInstance;
@@ -15,7 +15,7 @@ declare global {
 
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Express {
-  /* eslint-disable-next-line @typescript-eslint/no-empty-interface */
+  /* eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
     interface User extends Session {}
   }
 }

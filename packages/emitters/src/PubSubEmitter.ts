@@ -86,7 +86,7 @@ export class PubSubEmitter implements EventEmitter {
         } else {
           subscription = topic.subscription(topicName);
         }
-      } catch (error) {
+      } catch (_ignored) {
         await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
       } finally {
         count++;
@@ -114,7 +114,7 @@ export class PubSubEmitter implements EventEmitter {
           const topics = await topic.create();
           topic = topics[0];
         }
-      } catch (error) {
+      } catch (_ignored) {
         await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
       } finally {
         count++;

@@ -21,7 +21,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "yarn run eslint . -c ../../.eslintrc.js --ignore-path ../../.eslintignore --ext .ts,.tsx",
+    "lint": "yarn run eslint",
     "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
     "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
     "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
@@ -35,25 +35,25 @@
   },
   "devDependencies": {
     "@collabsoft-net/types": "workspace:*",
-    "@google-cloud/pubsub": "4.1.1",
+    "@google-cloud/pubsub": "5.0.0",
     "@types/node": "<19.0.0",
     "@types/uniqid": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "axios": "1.6.7",
-    "eslint": "8.56.0",
-    "firebase": "10.7.2",
-    "nodemon": "3.0.3",
-    "typescript": "5.3.3",
+    "@typescript-eslint/eslint-plugin": "8.32.0",
+    "@typescript-eslint/parser": "8.32.0",
+    "axios": "1.9.0",
+    "eslint": "9.26.0",
+    "firebase": "11.7.1",
+    "nodemon": "3.1.10",
+    "typescript": "5.8.3",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "axios": "1.6.7",
-    "uniqid": "5.4.0"
+    "axios": "^1.9.0",
+    "uniqid": "^5.4.0"
   },
   "optionalDependencies": {
-    "@google-cloud/pubsub": "4.1.1",
-    "firebase": "10.7.2"
+    "@google-cloud/pubsub": "^5.0.0",
+    "firebase": "^11.7.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

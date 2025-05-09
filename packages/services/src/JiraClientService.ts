@@ -446,7 +446,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -458,7 +458,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
 
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.USER_PROPERTY_BY_KEY, { propertyKey }), params);
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -467,7 +467,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.PROJECT_PROPERTY_BY_KEY, { projectIdOrKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -476,7 +476,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.ISSUE_PROPERTY_BY_KEY, { issueIdOrKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }
@@ -485,7 +485,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     try {
       const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.COMMENT_PROPERTY_BY_KEY, { commentId, propertyKey }));
       return status === StatusCodes.OK ? data : null;
-    } catch (error) {
+    } catch (_ignored) {
       return null;
     }
   }

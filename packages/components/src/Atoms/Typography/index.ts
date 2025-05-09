@@ -1,13 +1,13 @@
 
-import { fontFamily, fontSize } from '@atlaskit/theme';
-import { h100, h200, h300, h400, h500, h600, h700, h800, h900 } from '@atlaskit/theme/typography';
+import { token } from '@atlaskit/tokens';
 import { Property } from 'csstype';
 import styled, { css } from 'styled-components';
 
 import { withProps } from '../Styled';
 
 export interface HeadingProps {
-  weight: 'h100'|'h200'|'h300'|'h400'|'h500'|'h600'|'h700'|'h800'|'h900';
+  weight?: 'h100'|'h200'|'h300'|'h400'|'h500'|'h600'|'h700'|'h800'|'h900';
+  size?: 'xxsmall'|'xsmall'|'small'|'medium'|'large'|'xlarge'|'xxlarge';
   color?: Property.Color;
   display?: Property.Display;
   margin?: Property.Margin;
@@ -16,16 +16,29 @@ export interface HeadingProps {
 
 const heading = withProps<HeadingProps>()(css)`
   display: ${props => props.display || 'block'};
-  font-family: ${fontFamily()};
-  ${props => props.weight === 'h100' && h100()}
-  ${props => props.weight === 'h200' && h200()}
-  ${props => props.weight === 'h300' && h300()}
-  ${props => props.weight === 'h400' && h400()}
-  ${props => props.weight === 'h500' && h500()}
-  ${props => props.weight === 'h600' && h600()}
-  ${props => props.weight === 'h700' && h700()}
-  ${props => props.weight === 'h800' && h800()}
-  ${props => props.weight === 'h900' && h900()}
+
+  ${props => {
+    if (props.weight) {
+      switch(props.weight) {
+        case 'h100': return `font: ${token('font.heading.xxsmall')};`
+        case 'h200': return `font: ${token('font.heading.xsmall')};`
+        case 'h300': return `font: ${token('font.heading.small')};`
+        case 'h400': return `font: ${token('font.heading.medium')};`
+        case 'h500': return `font: ${token('font.heading.large')};`
+        case 'h600': return `font: ${token('font.heading.xlarge')};`
+        case 'h700':
+        case 'h800':
+        case 'h900': return `font: ${token('font.heading.xxlarge')};`
+        default:
+          return `font: ${token('font.heading.medium')};`
+      }
+    } else if (props.size) {
+      return `font: ${token(`font.heading.${props.size as 'xxsmall'|'xsmall'|'small'|'medium'|'large'|'xlarge'|'xxlarge'}`)};`
+    } else {
+      return `font: ${token('font.heading.medium')};`
+    }
+  }}
+
   ${props => props.margin ? `margin: ${props.margin};` : 'margin-top: 0;'}
   ${props => props.color && `color: ${props.color};`}
   -webkit-font-smoothing: antialiased;
@@ -50,11 +63,7 @@ type ParagraphProps = {
 };
 
 export const Paragraph = withProps<ParagraphProps>()(styled.p)`
-  font-family: ${fontFamily()};
-  font-style: normal;
-  font-weight: normal;
-  font-size: ${fontSize()}px;
-  line-height: 20px;
+  font: ${token('font.body')};
   ${props => props.color && `color: ${props.color};`}
   ${props => props.inline && `display: inline;`}
   ${props => props.display && `display: ${props.display};`}

@@ -85,7 +85,7 @@ export class CachedFirebaseAdminRepository<T extends Entity> extends FirebaseAdm
       const cacheKey = this.cacheService.toCacheKey(this.name, options.path, 'QueryBasedCacheKeys');
       const queryBasedCacheKeys = await this.cacheService.get<Array<string>>(cacheKey) || [];
       await this.cacheService.flush([ cacheKey, ...queryBasedCacheKeys ]);
-    } catch (err) {
+    } catch (_ignored) {
       // We can ignore this
     }
   }
