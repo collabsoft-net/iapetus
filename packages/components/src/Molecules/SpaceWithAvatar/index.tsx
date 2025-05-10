@@ -6,8 +6,8 @@ import { ConfluenceProviders } from '../../index';
 import { EntityWithAvatar, EntityWithAvatarProps, EntityWithAvatarState } from '../EntityWithAvatar';
 
 export type SpaceWithAvatarProps = Omit<EntityWithAvatarProps<Confluence.Space|Confluence.SpaceV2>, 'entity'|'components'> & {
-  space?: Confluence.Space|Confluence.SpaceV2|null,
-  spaceIdOrKey?: string,
+  space?: Confluence.Space|Confluence.SpaceV2|null;
+  spaceIdOrKey?: string|number;
   component?: (state: EntityWithAvatarState<Confluence.Space|Confluence.SpaceV2>) => JSX.Element;
   onError?: (error?: Error) => void;
 };
