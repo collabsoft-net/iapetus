@@ -20,14 +20,14 @@ const heading = withProps<HeadingProps>()(css)`
   ${props => {
     if (props.weight) {
       switch(props.weight) {
-        case 'h100': return `font: ${token('font.heading.xxsmall')};`
-        case 'h200': return `font: ${token('font.heading.xsmall')};`
-        case 'h300': return `font: ${token('font.heading.small')};`
-        case 'h400': return `font: ${token('font.heading.medium')};`
-        case 'h500': return `font: ${token('font.heading.large')};`
-        case 'h600': return `font: ${token('font.heading.xlarge')};`
-        case 'h700':
-        case 'h800':
+        case 'h100':
+        case 'h200': return `font: ${token('font.heading.xxsmall')};`
+        case 'h300':
+        case 'h400': return `font: ${token('font.heading.xsmall')};`
+        case 'h500': return `font: ${token('font.heading.small')};`
+        case 'h600': return `font: ${token('font.heading.medium')};`
+        case 'h700': return `font: ${token('font.heading.large')};`
+        case 'h800': return `font: ${token('font.heading.xlarge')};`
         case 'h900': return `font: ${token('font.heading.xxlarge')};`
         default:
           return `font: ${token('font.heading.medium')};`
