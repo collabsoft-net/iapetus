@@ -19,7 +19,12 @@ export const Link = ({ type, onError, ...props }: LinkProps) => {
       }
       return <></>;
     } else {
-      return <DSLink {...props} href="#" onClick={ () => ACJS.navigator.go('site', { relativeUrl: props.href }) } />
+      return <DSLink {...props} href="#" onClick={ (event) => {
+        event.bubbles = false;
+        event.preventDefault();
+        event.stopPropagation();
+        ACJS.navigator.go('site', { relativeUrl: props.href });
+      }} />
     }
   } else if (type === 'external') {
     return <DSLink {...props} rel="noreferrer" target="_blank" />
