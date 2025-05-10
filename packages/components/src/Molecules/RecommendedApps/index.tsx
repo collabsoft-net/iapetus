@@ -1,7 +1,7 @@
+import Link from '@atlaskit/link';
 import React from 'react';
 
 import { Grid, Row } from '../../Atoms/Grid';
-import { Link } from '../../Atoms/Link';
 import { Header, Paragraph } from '../../Atoms/Typography';
 import { IconWithLabel } from '../IconWithLabel';
 
@@ -25,7 +25,7 @@ export const RecommendedApps = ({ title, description, apps }: RecommendedAppsPro
       { apps.map(({ icon, url, name }) => (
         <Row key={name} margin='8px 0 0 0'>
           <IconWithLabel src={ icon } size='medium' margin='0 8px 0 0' appearance='square' align='center'>
-            <Link href={url}>{ name }</Link>
+            <Link href={url} target="_blank" rel="noreferrer">{ name }</Link>
           </IconWithLabel>
         </Row>
       ))}

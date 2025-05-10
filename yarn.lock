@@ -242,6 +242,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/link@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@atlaskit/link@npm:3.1.0"
+  dependencies:
+    "@atlaskit/css": "npm:^0.10.0"
+    "@atlaskit/platform-feature-flags": "npm:^1.1.0"
+    "@atlaskit/primitives": "npm:^14.2.0"
+    "@atlaskit/tokens": "npm:^4.5.0"
+    "@babel/runtime": "npm:^7.0.0"
+    "@compiled/react": "npm:^0.18.3"
+  peerDependencies:
+    react: ^18.2.0
+  checksum: 9a89c29b4d7d170c4ff735c95a0c40cbbf780ecd8af59bd9bb08ef2c1297816a647b21df467d98ea760fe87f36712295295afa83a1dbc8f70b3bbb72d0555075
+  languageName: node
+  linkType: hard
+
 "@atlaskit/motion@npm:^5.1.0":
   version: 5.1.2
   resolution: "@atlaskit/motion@npm:5.1.2"
@@ -295,7 +311,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@atlaskit/primitives@npm:^14.3.0, @atlaskit/primitives@npm:^14.4.0, @atlaskit/primitives@npm:^14.6.0":
+"@atlaskit/primitives@npm:^14.2.0, @atlaskit/primitives@npm:^14.3.0, @atlaskit/primitives@npm:^14.4.0, @atlaskit/primitives@npm:^14.6.0":
   version: 14.7.1
   resolution: "@atlaskit/primitives@npm:14.7.1"
   dependencies:
@@ -1187,6 +1203,7 @@ __metadata:
     "@atlaskit/avatar": "npm:25.0.4"
     "@atlaskit/button": "npm:23.0.7"
     "@atlaskit/css-reset": "npm:7.2.0"
+    "@atlaskit/link": "npm:3.1.0"
     "@atlaskit/section-message": "npm:8.2.3"
     "@atlaskit/theme": "npm:18.0.1"
     "@collabsoft-net/connect": "workspace:*"

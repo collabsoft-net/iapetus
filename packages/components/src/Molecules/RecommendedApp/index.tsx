@@ -1,9 +1,9 @@
 import Avatar from '@atlaskit/avatar';
+import Link from '@atlaskit/link';
 import React from 'react';
 import styled from 'styled-components';
 
 import { Column, Grid } from '../../Atoms/Grid';
-import { Link } from '../../Atoms/Link';
 
 interface RecommendedAppProps {
   logo: string;
@@ -20,7 +20,7 @@ export const RecommendedApp = ({ logo, name, url }: RecommendedAppProps): JSX.El
         <Avatar size='medium' appearance='square' src={ logo } />
       </ImageWrapper>
       <Column stretched align='center'>
-        <Link href={url}>{ name }</Link>
+        <Link href={url} target="_blank" rel="noreferrer">{ name }</Link>
       </Column>
     </Grid>
   );

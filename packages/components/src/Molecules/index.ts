@@ -1,5 +1,6 @@
 
 export * from './Block';
+export * from './EntityWithAvatar';
 export * from './IconWithLabel';
 export * from './PageWithTopBar';
 export * from './ProjectWithAvatar';
