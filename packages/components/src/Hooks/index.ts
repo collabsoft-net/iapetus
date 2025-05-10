@@ -1,4 +1,4 @@
-
+export * from './useACJS';
 export * from './useConfluenceApplicationPermission';
 export * from './useConfluenceContentPermission';
 export * from './useConfluenceSpacePermission';

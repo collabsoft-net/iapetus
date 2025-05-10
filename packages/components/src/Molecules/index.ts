@@ -2,6 +2,7 @@
 export * from './Block';
 export * from './EntityWithAvatar';
 export * from './IconWithLabel';
+export * from './Link';
 export * from './PageWithTopBar';
 export * from './ProjectWithAvatar';
 export * from './RecommendedApp';
