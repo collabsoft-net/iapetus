@@ -1,35 +1,26 @@
+import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import React from 'react';
 
 import { GridProps } from '../../Atoms/';
-import { JiraProviders } from '../../index';
-import { EntityWithAvatar, EntityWithAvatarProps, EntityWithAvatarState } from '../EntityWithAvatar';
+import { IconWithLabel, JiraProviders } from '../../index';
+import { EntityWithAvatar, EntityWithAvatarProps } from '../EntityWithAvatar';
 
-export type ProjectWithAvatarProps = Omit<EntityWithAvatarProps<Jira.Project>, 'entity'|'components'> & {
+export type projectWithAvatarProps = Omit<EntityWithAvatarProps<Jira.Project>, 'entity'> & {
   project?: Jira.Project|null;
   projectIdOrKey?: string|number;
-  component?: (state: EntityWithAvatarState<Jira.Project>) => JSX.Element;
   onError?: (error?: Error) => void;
 };
 
-export const ProjectWithAvatar = ({ project, projectIdOrKey, component, onError, ...props }: ProjectWithAvatarProps & GridProps): JSX.Element => {
-  if (project) {
-    return component
-      ? component({ entity: project, isLoading: false })
-      : <EntityWithAvatar {...props} entity={ project } isLoading={ false } />
-  } else if (typeof projectIdOrKey !== 'undefined') {
-    return (
-      <JiraProviders.Project projectIdOrKey={ projectIdOrKey } loadingMessage={ <Spinner size='medium' /> }>
-        { ({ project: currentProject, loading }) => component
-          ? component({ entity: currentProject, isLoading: loading })
-          : <EntityWithAvatar {...props} entity={ currentProject } isLoading={ loading } />
-        }
-      </JiraProviders.Project>
-    );
-  } else {
-    if (onError) {
-      onError();
-    }
-    return <></>;
-  }
-};
+export const projectWithAvatar = ({ project, projectIdOrKey, onError, ...props }: projectWithAvatarProps & GridProps): JSX.Element =>
+  project ? (
+    <EntityWithAvatar {...props} entity={ project } isLoading={ false } />
+  ) : typeof projectIdOrKey !== 'undefined' ? (
+    <JiraProviders.Project projectIdOrKey={ projectIdOrKey } loadingMessage={ <Spinner size='medium' /> }>
+      { ({ project: currentproject, loading }) => <EntityWithAvatar {...props} entity={ currentproject } isLoading={ loading } /> }
+    </JiraProviders.Project>
+  ) : (
+    <IconWithLabel src={ <WarningIcon label='Project Key or ID not provided' /> } margin='0 4px 0 0'>
+      Project Key or ID not provided
+    </IconWithLabel>
+  )
