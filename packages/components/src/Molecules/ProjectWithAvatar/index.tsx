@@ -12,7 +12,7 @@ export type projectWithAvatarProps = Omit<EntityWithAvatarProps<Jira.Project>, '
   onError?: (error?: Error) => void;
 };
 
-export const projectWithAvatar = ({ project, projectIdOrKey, onError, ...props }: projectWithAvatarProps & GridProps): JSX.Element =>
+export const ProjectWithAvatar = ({ project, projectIdOrKey, onError, ...props }: projectWithAvatarProps & GridProps): JSX.Element =>
   project ? (
     <EntityWithAvatar {...props} entity={ project } isLoading={ false } />
   ) : typeof projectIdOrKey !== 'undefined' ? (
