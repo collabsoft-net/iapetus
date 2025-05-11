@@ -9,7 +9,7 @@ import * as JiraProviders from '../../Providers/jira';
 import { EntityWithAvatar, EntityWithAvatarProps } from '../EntityWithAvatar';
 import { IconWithLabel } from '../IconWithLabel';
 
-export type UserWithAvatarProps = Omit<EntityWithAvatarProps<Jira.User|Confluence.User>, 'entity'|'components'> & {
+export type UserWithAvatarProps = Omit<EntityWithAvatarProps<Jira.User|Confluence.User>, 'entity'> & {
   user?: Jira.User|Confluence.User|null,
   accountId?: string
 };
