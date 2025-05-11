@@ -2,7 +2,8 @@
 import DSLink, { LinkProps as ILinkProps } from '@atlaskit/link';
 import { isOfType } from '@collabsoft-net/helpers';
 import React from 'react';
-import { useACJS } from 'src/Hooks';
+
+import { useACJS } from '../../Hooks';
 
 type LinkProps = ILinkProps & {
   type: 'product'|'app'|'external';
