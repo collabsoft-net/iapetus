@@ -18,6 +18,7 @@ export interface EntityWithAvatarProps<T extends Jira.Project|Jira.User|Confluen
   size?: SizeType
   inline?: boolean;
   truncate?: boolean;
+  subtle?: boolean;
   shouldFitContainer?: boolean;
   href?: string;
   isLoading?: boolean
@@ -63,7 +64,7 @@ const getAvatarSource = (entity: Jira.Project|Jira.User|Confluence.Space|Conflue
   }
 }
 
-export const EntityWithAvatar = <T extends Jira.Project|Jira.User|Confluence.Space|Confluence.SpaceV2|Confluence.User> ({ entity, size, inline, truncate, shouldFitContainer, href, isLoading, isDisabled, components, onClick, ...rest }: EntityWithAvatarProps<T> & GridProps): JSX.Element =>
+export const EntityWithAvatar = <T extends Jira.Project|Jira.User|Confluence.Space|Confluence.SpaceV2|Confluence.User> ({ entity, size, inline, truncate, subtle, shouldFitContainer, href, isLoading, isDisabled, components, onClick, ...rest }: EntityWithAvatarProps<T> & GridProps): JSX.Element =>
   components?.Element ? (
     <components.Element entity={ entity } isLoading={ isLoading } />
   ) : (
@@ -89,14 +90,14 @@ export const EntityWithAvatar = <T extends Jira.Project|Jira.User|Confluence.Spa
         ) : (
           <Paragraph truncate={ truncate } margin={ inline ? '0 0 0 4px' : '0 0 0 8px' } display={ inline ? 'inline-block' : undefined }>
             { onClick ? (
-                <Link href='#' onClick={ (event: React.MouseEvent<HTMLAnchorElement>) => {
+                <Link href='#' appearance={ subtle ? 'subtle' : 'default' } onClick={ (event: React.MouseEvent<HTMLAnchorElement>) => {
                   event.bubbles = false;
                   event.preventDefault();
                   event.stopPropagation();
                   onClick();
                 }}>{ getLabelFor(entity) }</Link>
             ) : href ? (
-              <Link href={ href } target="_blank">{ getLabelFor(entity) }</Link>
+              <Link appearance={ subtle ? 'subtle' : 'default' } href={ href } target="_blank">{ getLabelFor(entity) }</Link>
             ) : (
               <span>{ getLabelFor(entity) }</span>
             )}
