@@ -3,7 +3,7 @@ import { isProduction } from '@collabsoft-net/helpers';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import { captureException, setupExpressErrorHandler } from '@sentry/node';
 import cookies from 'cookie-parser';
-import * as express from 'express';
+import type { Application } from 'express';
 import { logger } from 'firebase-functions';
 import { HttpsFunction, HttpsOptions, onRequest } from 'firebase-functions/v2/https';
 import { StatusCodes } from 'http-status-codes';
@@ -13,7 +13,7 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (name: string, container: inversify.Container | (() => inversify.Container), options: HttpsOptions = {}, configure?: (app: express.Application) => void): void|Record<string, HttpsFunction> => {
+export const createAppServer = (name: string, container: inversify.Container | (() => inversify.Container), options: HttpsOptions = {}, configure?: (app: Application) => void): void|Record<string, HttpsFunction> => {
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 

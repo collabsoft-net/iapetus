@@ -1,7 +1,7 @@
 import Avatar from '@atlaskit/avatar';
 import Link from '@atlaskit/link';
+import styled from '@emotion/styled';
 import React from 'react';
-import styled from 'styled-components';
 
 import { Column, Grid } from '../../Atoms/Grid';
 

@@ -39,13 +39,13 @@
     "@typescript-eslint/parser": "8.32.0",
     "eslint": "9.26.0",
     "inversify": "7.5.1",
-    "inversify-inject-decorators": "3.1.0",
     "nodemon": "3.1.10",
+    "reflect-metadata": "0.2.2",
     "typescript": "5.8.3"
   },
   "peerDependencies": {
     "inversify": "^7.5.0",
-    "inversify-inject-decorators": "^3.1.0"
+    "reflect-metadata": "0.2.2"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

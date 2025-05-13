@@ -1,9 +1,7 @@
 
 import { token } from '@atlaskit/tokens';
+import styled from '@emotion/styled';
 import { Property } from 'csstype';
-import styled, { css } from 'styled-components';
-
-import { withProps } from '../Styled';
 
 export interface HeadingProps {
   weight?: 'h100'|'h200'|'h300'|'h400'|'h500'|'h600'|'h700'|'h800'|'h900';
@@ -14,7 +12,7 @@ export interface HeadingProps {
   truncate?: boolean;
 }
 
-const heading = withProps<HeadingProps>()(css)`
+export const Header = styled.span<HeadingProps>`
   display: ${props => props.display || 'block'};
 
   ${props => {
@@ -51,8 +49,6 @@ const heading = withProps<HeadingProps>()(css)`
   `}
 `;
 
-export const Header = withProps<HeadingProps>()(styled.span)`${heading}`;
-
 type ParagraphProps = {
   color?: Property.Color;
   inline?: boolean;
@@ -62,7 +58,7 @@ type ParagraphProps = {
   truncate?: boolean;
 };
 
-export const Paragraph = withProps<ParagraphProps>()(styled.p)`
+export const Paragraph = styled.p<ParagraphProps>`
   font: ${token('font.body')};
   ${props => props.color && `color: ${props.color};`}
   ${props => props.inline && `display: inline;`}

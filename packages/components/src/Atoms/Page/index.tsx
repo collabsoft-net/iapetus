@@ -1,6 +1,6 @@
+import styled from '@emotion/styled';
 import { Property } from 'csstype';
 import React, { HTMLAttributes, PropsWithChildren } from 'react';
-import styled from 'styled-components';
 
 import { getSizeProps,SizeProps } from '../Styled';
 

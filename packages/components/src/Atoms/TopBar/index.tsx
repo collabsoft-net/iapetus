@@ -2,12 +2,11 @@ import ChevronRight from '@atlaskit/icon/glyph/chevron-right';
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import { isOfType } from '@collabsoft-net/helpers';
+import styled from '@emotion/styled';
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 
 import { IconWithLabel } from '../../Molecules/IconWithLabel';
 import { Column, Grid, Row } from '../Grid';
-import { withProps } from '../Styled';
 import { Header } from '../Typography';
 
 interface TopBarProps {
@@ -19,7 +18,7 @@ interface TopBarProps {
   fixedOnTop?: boolean;
 }
 
-const Topbar = withProps<{ fixedOnTop?: boolean }>()(styled(Grid))`
+const Topbar = styled(Grid)<{ fixedOnTop?: boolean }>`
   ${props => props.fixedOnTop && `
     position: fixed;
     top: 0;

@@ -1,6 +1,5 @@
 
 import { Container, ContainerModule } from 'inversify';
-import getDecorators from 'inversify-inject-decorators';
 
 import { BindingLifecyclePhases } from './BindingLifecyclePhases';
 
@@ -47,4 +46,3 @@ class KernelImpl extends Container implements Kernel {
 
 const instance = new KernelImpl();
 export default instance;
-export const { lazyInject } = getDecorators(instance, false);

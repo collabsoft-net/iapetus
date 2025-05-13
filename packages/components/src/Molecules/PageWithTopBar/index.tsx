@@ -1,7 +1,7 @@
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
+import styled from '@emotion/styled';
 import React, { PropsWithChildren } from 'react';
-import styled from 'styled-components';
 
 import { Grid, Row } from '../../Atoms/Grid';
 import { Page } from '../../Atoms/Page';

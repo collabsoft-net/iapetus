@@ -3,10 +3,10 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Link from '@atlaskit/link';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
+import styled from '@emotion/styled';
 import React from 'react';
-import styled from 'styled-components';
 
-import { Column, Grid, GridProps, Paragraph, Row, withProps } from '../../Atoms/';
+import { Column, Grid, GridProps, Paragraph, Row } from '../../Atoms/';
 
 export interface EntityWithAvatarState<T extends Jira.Project|Jira.User|Confluence.Space|Confluence.SpaceV2|Confluence.User> {
   entity?: T|null,
@@ -31,7 +31,7 @@ export interface EntityWithAvatarProps<T extends Jira.Project|Jira.User|Confluen
   }
 }
 
-const Wrapper = withProps<{ inline?: boolean }>()(styled(Grid))`
+const Wrapper = styled(Grid)<{ inline?: boolean }>`
   display: ${props => props.inline ? 'inline-flex' : 'flex'};
   display: ${props => props.inline ? 'inline-flex' : 'flex'};
   display: ${(props: { inline?: boolean }) => props.inline ? 'inline-flex' : 'flex'};

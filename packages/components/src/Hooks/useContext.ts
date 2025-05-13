@@ -1,6 +1,6 @@
 
 import kernel from '@collabsoft-net/inversify';
-import { ServiceIdentifier } from 'inversify';
+import type { ServiceIdentifier } from 'inversify';
 import React from 'react';
 
 export function useContext<T>(context: React.Context<T>, serviceIdentifier?: ServiceIdentifier<T>): T;
