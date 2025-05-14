@@ -4,7 +4,7 @@ import 'reflect-metadata';
 import { isOfType } from '@collabsoft-net/helpers';
 import { EntryPoint, ExecutionPoint,Props } from '@collabsoft-net/types';
 import React, { PropsWithChildren } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 interface ExtendedDocument extends Document {
   arrive: (selector: string, callback: (rootElem: Element) => Promise<void>) => void;
@@ -36,12 +36,12 @@ const bind = async (entrypoint: EntryPoint<Props>|ExecutionPoint, rootElem: Elem
       });
 
     const element = await entrypoint.getElement(props);
-
     const app = container ? React.createElement(container, { children: element }) : element;
+    createRoot(rootElem).render(app);
 
-    ReactDOM.render(app, rootElem, () => {
-      if (callback) callback();
-    });
+    if (callback) {
+      callback();
+    }
   }
 };
 
