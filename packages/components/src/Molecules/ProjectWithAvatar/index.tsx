@@ -19,6 +19,8 @@ export const ProjectWithAvatar = ({ project, projectIdOrKey, onError, ...props }
     <JiraProviders.Project projectIdOrKey={ projectIdOrKey } loadingMessage={ <Spinner size='medium' /> }>
       { ({ project: currentproject, loading }) => <EntityWithAvatar {...props} entity={ currentproject } isLoading={ loading } /> }
     </JiraProviders.Project>
+  ) : props.isLoading ? (
+    <Spinner size='medium' />
   ) : (
     <IconWithLabel src={ <WarningIcon label='Project Key or ID not provided' /> } margin='0 4px 0 0'>
       Project Key or ID not provided

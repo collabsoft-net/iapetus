@@ -19,6 +19,8 @@ export const SpaceWithAvatar = ({ space, spaceIdOrKey, onError, ...props }: Spac
     <ConfluenceProviders.Space spaceIdOrKey={ spaceIdOrKey } options={{ includeIcon: true }} loadingMessage={ <Spinner size='medium' /> }>
       { ({ space: currentSpace, loading }) => <EntityWithAvatar {...props} entity={ currentSpace } isLoading={ loading } /> }
     </ConfluenceProviders.Space>
+  ) : props.isLoading ? (
+    <Spinner size='medium' />
   ) : (
     <IconWithLabel src={ <WarningIcon label='Space Key or ID not provided' /> } margin='0 4px 0 0'>
       Space Key or ID not provided

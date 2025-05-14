@@ -33,6 +33,8 @@ export const UserWithAvatar = ({ user, accountId, ...props }: UserWithAvatarProp
           <EntityWithAvatar {...props} />
         )}
       </>
+  ) : props.isLoading ? (
+    <Spinner size='medium' />
   ) : (
     <IconWithLabel src={ <WarningIcon label='user account ID not provided' /> } margin='0 4px 0 0'>
       User account ID not provided
