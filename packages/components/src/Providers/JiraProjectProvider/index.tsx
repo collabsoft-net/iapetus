@@ -1,62 +1,50 @@
-import { useContext, useEffect,useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 
-import { AP as APContext } from '../../Contexts/AP';
 import { JiraClientService } from '../../Contexts/JiraClientService';
 import { useJiraUser } from '../../Hooks';
 
 interface JiraProjectProviderProps {
-  projectIdOrKey: string|number|PromiseLike<string|number>;
+  projectIdOrKey: string|number;
   requiredPermissions?: string|Array<string>;
   requiredPermissionsMode?: 'ALL'|'ANY';
   expand?: Array<'description'|'issueTypes'|'lead'|'projectKeys'|'issueTypeHierarchy'>;
   properties?: Array<string>;
   loadingMessage?: JSX.Element;
-  cacheDuration?: number;
+  expiresInSeconds?: number;
   children: (args: {
     project?: Jira.Project;
     permitted?: boolean;
-    errors?: Error;
+    errors: Error|null;
     loading: boolean;
   }) => JSX.Element;
 }
 
-export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, requiredPermissionsMode, expand, properties, loadingMessage, cacheDuration, children }: JiraProjectProviderProps): JSX.Element => {
-
-  const AP = useContext(APContext);
+export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, requiredPermissionsMode, expand, properties, loadingMessage, expiresInSeconds, children }: JiraProjectProviderProps): JSX.Element => {
   const jiraClientService = useContext(JiraClientService);
+
   const [ user ] = useJiraUser();
+  const accountId = user?.accountId || user?.key;
 
-  const [ project, setProject ] = useState<Jira.Project>();
-  const [ permitted, setPermitted ] = useState<boolean>();
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ errors, setErrors ] = useState<Error>();
+  const { data: project, isLoading: isLoadingProject, isFetching: isFetchingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
+    queryKey: [ 'JiraClientService.getProject()', projectIdOrKey, expand?.join(','), properties?.join(',') ],
+    queryFn: () => jiraClientService?.getProject(projectIdOrKey, expand, properties),
+    staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
+    enabled: typeof jiraClientService !== 'undefined' && typeof projectIdOrKey !== 'undefined'
+  });
 
-  useEffect(() => {
-    if (!AP) {
-      setErrors(new Error(`Failed to retrieve instance of AP, please make sure the AP context is inititalized`));
-      setLoading(false);
-    } else if (!jiraClientService) {
-      setErrors(new Error(`Failed to retrieve instance of JiraClientService, please make sure the JiraClientService context is inititalized`));
-      setLoading(false);
-    } else if (user) {
-      const service = cacheDuration ? jiraClientService.cached(cacheDuration) : jiraClientService;
-      new Promise<string|number>(resolve => resolve(projectIdOrKey))
-        .then(idOrKey => service.getProject(idOrKey, expand, properties))
-        .then(project => {
-          setProject(project);
-          if (requiredPermissions) {
-            const accountId = user.accountId || user.key;
-            return service.hasPermissions(accountId, [ {
-              projects: [ Number(project.id) ],
-              permissions: Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ]
-            }], undefined, requiredPermissionsMode).then(setPermitted).catch(() => setPermitted(false));
-          } else {
-            setPermitted(true);
-          }
-          return;
-        }).catch(setErrors).finally(() => setLoading(false));
-    }
-  }, [ user ])
+  const permissions = requiredPermissions ? Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ] : [];
+  const checkForPermissions = typeof jiraClientService !== 'undefined' && typeof project !== 'undefined' && typeof accountId !== 'undefined' && typeof permissions !== 'undefined';
+
+  const { data: permitted, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error: permissionsError } = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'JiraClientService.hasPermissions', accountId, permissions.join(','), requiredPermissionsMode ],
+    queryFn: () => jiraClientService?.hasPermissions(String(accountId), [ { projects: [ Number(project?.id) ], permissions }], undefined, requiredPermissionsMode).catch(() => false),
+    staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
+    enabled: checkForPermissions
+  });
+
+  const loading = (isLoadingProject || isFetchingProject) && (checkForPermissions && isLoadingPermissions && isFetchingPermissions);
+  const errors = projectError || permissionsError;
 
   return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
 }
