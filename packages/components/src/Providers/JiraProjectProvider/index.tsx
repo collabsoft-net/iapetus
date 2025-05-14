@@ -43,7 +43,7 @@ export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, requi
     enabled: checkForPermissions
   });
 
-  const loading = (isLoadingProject || isFetchingProject) && (checkForPermissions && isLoadingPermissions && isFetchingPermissions);
+  const loading = (isLoadingProject || isFetchingProject) || (checkForPermissions && (isLoadingPermissions || isFetchingPermissions));
   const errors = projectError || permissionsError;
 
   return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
