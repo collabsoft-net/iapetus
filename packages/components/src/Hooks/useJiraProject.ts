@@ -30,7 +30,7 @@ export const useJiraProject = (projectIdOrKey?: string|number, requiredPermissio
 
   const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] =
     checkForPermissions
-      ? useJiraProjectPermissions(project, requiredPermissions || [], accountId, requiredPermissionsMode)
+      ? useJiraProjectPermissions(requiredPermissions || [],project, accountId, requiredPermissionsMode)
       : [ undefined, false, null ];
 
   const loading = isLoadingProject || isFetchingProject || isLoadingPermissions;
