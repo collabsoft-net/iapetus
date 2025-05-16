@@ -1,4 +1,4 @@
-import { useConfluenceUser } from 'src/Hooks';
+import { useConfluenceUser } from '../../Hooks';
 
 interface ConfluenceUserProviderProps {
   accountId: string;

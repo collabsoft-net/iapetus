@@ -1,6 +1,4 @@
-import { useConfluenceSpace } from 'src/Hooks/useConfluenceSpace';
-
-import { useConfluenceUser } from '../../Hooks';
+import { useConfluenceSpace, useConfluenceUser } from '../../Hooks';
 
 interface ConfluenceSpaceProviderProps {
   spaceIdOrKey: string|number;
