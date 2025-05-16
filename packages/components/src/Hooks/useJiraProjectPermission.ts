@@ -1,54 +1,26 @@
+import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { useContext, useEffect, useState } from 'react';
+import { JiraClientService } from '@collabsoft-net/services';
+import { useQuery } from '@tanstack/react-query';
 
-import { JiraClientService } from '../Contexts';
-import { useHostContext } from './useHostContext';
-import { useJiraUser } from './useJiraUser';
+import { useProductClientService } from './useProductClientService';
 
-export const useJiraProjectPermissions = (permissions: Array<Jira.BulkProjectPermissions>, accountId?: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|undefined ] => {
+export function useJiraProjectPermissions(project: Jira.Project, permissions: string|Array<string>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useJiraProjectPermissions(projectId: number, permissions: string|Array<string>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useJiraProjectPermissions(projects: Array<number>, permissions: string|Array<string>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useJiraProjectPermissions(projectOrIdOrIds: Jira.Project|number|Array<number>, permissions: string|Array<string>, accountId: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|null ] {
+  const service = useProductClientService<JiraClientService<Modes>>();
 
-  const service = useContext(JiraClientService);
-  const [ context, isLoadingContext ] = useHostContext();
-  const [ user, isLoadingUser, userError ] = useJiraUser(accountId);
+  const requiredPermissions = Array.isArray(permissions) ? permissions : [ permissions ];
+  const projects: Array<number> = isOfType<Jira.Project>(projectOrIdOrIds, 'id') ? [ Number(projectOrIdOrIds.id) ] : typeof projectOrIdOrIds === 'number' ? [ projectOrIdOrIds ] : projectOrIdOrIds;
 
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-  const [ hasPermissions, setHasPermissions ] = useState<boolean>();
-  const [ error, setError ] = useState<Error|undefined>();
+  const { data: permitted, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error: permissionsError } = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'JiraClientService.hasPermissions', accountId, requiredPermissions.join(','), mode ],
+    queryFn: () => service.hasPermissions(accountId, [ { projects, permissions: requiredPermissions }], undefined, mode).catch(() => false)
+  });
 
-  useEffect(() => {
-    if (!isLoadingContext && !isLoadingUser) {
+  const isLoading = isLoadingPermissions || isFetchingPermissions;
+  const error = permissionsError;
 
-      if (!context) {
-        setHasPermissions(undefined);
-        setError(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian host product'));
-        setLoading(false);
-      } else if (!isOfType<AP.JiraContext>(context, 'jira')) {
-        setHasPermissions(undefined);
-        setError(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Jira'));
-        setLoading(false);
-      } else if (!permissions || !Array.isArray(permissions)) {
-        setHasPermissions(undefined);
-        setError(new Error('Cannot check for permissions, the "permissions" parameter is invalid (Array expected)'));
-        setLoading(false);
-      } else if (!service) {
-        setHasPermissions(undefined);
-        setError(new Error('Failed to connect to Atlassian API, JiraClientService is missing'));
-        setLoading(false);
-      } else if (!user) {
-        setHasPermissions(undefined);
-        setError(userError);
-        setLoading(false);
-      } else {
-        const accountId = user.accountId || user.key;
-        service.hasPermissions(accountId, permissions, undefined, mode)
-          .then(setHasPermissions)
-          .catch((err) => {
-            setHasPermissions(undefined);
-            setError(err);
-          }).finally(() => setLoading(false))
-      }
-    }
-  }, [ isLoadingContext, isLoadingUser ]);
-
-  return [ hasPermissions, isLoading, error ];
+  return [ permitted, isLoading, error ];
 }

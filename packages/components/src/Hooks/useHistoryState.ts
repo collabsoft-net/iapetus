@@ -1,9 +1,7 @@
-import { ServiceIdentifier } from '@collabsoft-net/connect';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { QueryObserverResult, RefetchOptions, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { AP } from '../Contexts';
-import { useContext } from './useContext';
+import { useACJS } from './useACJS';
 
 const getHistoryState = (state: string|AP.HistoryState): Record<string, string> => {
   const result: Record<string, string> = {};
@@ -20,8 +18,8 @@ const getHistoryState = (state: string|AP.HistoryState): Record<string, string> 
 
 export const useHistoryState = <T> (): [ T, UseMutationResult<string, Error, Partial<T>>, (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Record<string, string>, unknown>> ] => {
 
+  const ACJS = useACJS();
   const queryClient = useQueryClient();
-  const ACJS = useContext<AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance>(AP, ServiceIdentifier.AP);
 
   const { data, refetch } = useQuery({
     queryKey: [ 'ACJS.history.getState()' ],

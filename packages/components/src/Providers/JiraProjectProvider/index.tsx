@@ -1,8 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
-import { useContext } from 'react';
-
-import { JiraClientService } from '../../Contexts/JiraClientService';
-import { useJiraUser } from '../../Hooks';
+import { useJiraProject, useJiraUser } from '../../Hooks';
 
 interface JiraProjectProviderProps {
   projectIdOrKey: string|number;
@@ -21,30 +17,14 @@ interface JiraProjectProviderProps {
 }
 
 export const JiraProjectProvider = ({ projectIdOrKey, requiredPermissions, requiredPermissionsMode, expand, properties, loadingMessage, expiresInSeconds, children }: JiraProjectProviderProps): JSX.Element => {
-  const jiraClientService = useContext(JiraClientService);
-
-  const [ user ] = useJiraUser();
+  const permissions = requiredPermissions ? Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ] : undefined;
+  const [ user, isLoadingJiraUser ] = permissions ? useJiraUser() : [ undefined, false ];
   const accountId = user?.accountId || user?.key;
 
-  const { data: project, isLoading: isLoadingProject, isFetching: isFetchingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
-    queryKey: [ 'JiraClientService.getProject()', projectIdOrKey, expand?.join(','), properties?.join(',') ],
-    queryFn: () => jiraClientService?.getProject(projectIdOrKey, expand, properties),
-    staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
-    enabled: typeof jiraClientService !== 'undefined' && typeof projectIdOrKey !== 'undefined'
-  });
+  const [ project, permitted, isLoadingProject, error ] = !isLoadingJiraUser
+    ? useJiraProject(projectIdOrKey, permissions, accountId, requiredPermissionsMode, { expand, properties, expiresInSeconds })
+    : [ undefined, undefined, true, null ];
 
-  const permissions = requiredPermissions ? Array.isArray(requiredPermissions) ? requiredPermissions : [ requiredPermissions ] : [];
-  const checkForPermissions = typeof jiraClientService !== 'undefined' && typeof project !== 'undefined' && typeof accountId !== 'undefined' && typeof permissions !== 'undefined';
-
-  const { data: permitted, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error: permissionsError } = useQuery<boolean|undefined, Error>({
-    queryKey: [ 'JiraClientService.hasPermissions', accountId, permissions.join(','), requiredPermissionsMode ],
-    queryFn: () => jiraClientService?.hasPermissions(String(accountId), [ { projects: [ Number(project?.id) ], permissions }], undefined, requiredPermissionsMode).catch(() => false),
-    staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
-    enabled: checkForPermissions
-  });
-
-  const loading = (isLoadingProject || isFetchingProject) || (checkForPermissions && (isLoadingPermissions || isFetchingPermissions));
-  const errors = projectError || permissionsError;
-
-  return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors });
+  const loading = isLoadingJiraUser || isLoadingProject;
+  return loading && loadingMessage ? loadingMessage : children({ project, permitted, loading, errors: error });
 }

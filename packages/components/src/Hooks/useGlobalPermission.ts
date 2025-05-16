@@ -1,0 +1,42 @@
+
+
+import { Modes } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
+import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { useQuery } from '@tanstack/react-query';
+
+import { useProductClientService } from './useProductClientService';
+
+export const useGlobalPermission = (permissions: string|Array<string>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ] => {
+
+  const requiredPermissions = Array.isArray(permissions) ? permissions : [ permissions ];
+  const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
+
+  const jiraGlobalPermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'JiraClientService.hasPermissions()', accountId, requiredPermissions.join(','), mode ],
+    queryFn: () => isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
+    ? service.hasPermissions(accountId, undefined, requiredPermissions, mode).catch(() => false)
+    : Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Jira')),
+    enabled: isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
+  });
+
+  const confluenceGlobalPermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'ConfluenceClientService.hasApplicationPermission()', accountId, requiredPermissions.join(','), mode ],
+    queryFn: () => isOfType<ConfluenceClientService<Modes>>(service, 'hasApplicationPermission')
+    ? service.hasApplicationPermission(accountId, requiredPermissions[0] as Confluence.ContentOperation).catch(() => false)
+    : Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Confluence')),
+    enabled: isOfType<ConfluenceClientService<Modes>>(service, 'hasApplicationPermission')
+  });
+
+  if (!isOfType<JiraClientService<Modes>>(service, 'hasPermissions') && !isOfType<ConfluenceClientService<Modes>>(service, 'hasApplicationPermission')) {
+    throw new Error('Cannot check for permissions, hook is executed outside of context of supported Atlassian host product');
+  }
+
+  const { data: hasPermissions, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error } =
+    isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
+      ? jiraGlobalPermissionsQuery
+      : confluenceGlobalPermissionsQuery;
+
+  const isLoading = isLoadingPermissions || isFetchingPermissions;
+  return [ hasPermissions, isLoading, error ];
+}

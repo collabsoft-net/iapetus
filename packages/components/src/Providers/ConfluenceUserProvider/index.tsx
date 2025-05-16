@@ -1,38 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
-
-import { ConfluenceClientService } from '../../Contexts/ConfluenceClientService';
+import { useConfluenceUser } from 'src/Hooks';
 
 interface ConfluenceUserProviderProps {
-  accountId: string|PromiseLike<string>;
+  accountId: string;
   loadingMessage?: JSX.Element;
-  cacheDuration?: number;
+  expiresInSeconds?: number;
   children: (args: {
     user?: Confluence.User;
-    errors?: Error;
     loading: boolean;
+    errors?: Error|null;
   }) => JSX.Element;
 }
 
-export const ConfluenceUserProvider = ({ accountId, loadingMessage, cacheDuration, children }: ConfluenceUserProviderProps): JSX.Element => {
-
-  const service = useContext(ConfluenceClientService);
-
-  const [ user, setUser ] = useState<Confluence.User>();
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ errors, setErrors ] = useState<Error>();
-
-  useEffect(() => {
-    if (service) {
-      const instance = cacheDuration ? service.cached(cacheDuration) : service;
-      new Promise<string>(resolve => resolve(accountId))
-        .then(id => instance.getUser(id).then(setUser))
-        .catch(setErrors)
-        .finally(() => setLoading(false));
-    } else {
-      setErrors(new Error(`Failed to retrieve instance of ConfluenceClientService, please make sure the ConfluenceClientService context is inititalized`));
-      setLoading(false);
-    }
-  }, [ service ]);
-
-  return loading && loadingMessage ? loadingMessage : children({ user, loading, errors });
+export const ConfluenceUserProvider = ({ accountId, loadingMessage, expiresInSeconds, children }: ConfluenceUserProviderProps): JSX.Element => {
+  const [ user, loading, error ] = useConfluenceUser(accountId, expiresInSeconds);
+  return loading && loadingMessage ? loadingMessage : children({ user, loading, errors: error });
 }

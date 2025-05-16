@@ -3,125 +3,86 @@
 import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-import { useCurrentUser } from './useCurrentUser';
-import { useHostContext } from './useHostContext';
-import { useHostService } from './useHostService';
+import { useProductClientService } from './useProductClientService';
 
-export function useEntityPermission(permissions: Array<string>, issueId?: number, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function useEntityPermission(permissions: Confluence.ContentOperation, type: 'content', contentId?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function useEntityPermission(permissions: Confluence.ContentOperation, type: 'space', spaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ];
-export function useEntityPermission(permissions: Array<string>|Confluence.ContentOperation, issueIdOrType?: number|'content'|'space', accountIdOrContentIdOrSpaceKey?: string, accountId?: string): [ boolean|undefined, boolean, Error|undefined ] {
+export function useEntityPermission(type: 'issue', permissions: string|Array<string>, issueId: number, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'issue', permissions: string|Array<string>, issueIds: Array<number>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'project', permissions: string|Array<string>, projectId: number, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'project', permissions: string|Array<string>, projectIds: Array<number>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'content', permissions: Confluence.ContentOperation, contentId: string, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'content', permissions: Confluence.ContentOperation, contentIds: Array<string>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'space', permissions: Confluence.ContentOperation, spaceIdOrKey: string|number, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'space', permissions: Confluence.ContentOperation, spaceIdsOrKeys: Array<string|number>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
+export function useEntityPermission(type: 'project'|'issue'|'content'|'space', permissions: string|Array<string>|Confluence.ContentOperation, singleOrBulkEntityId: number|string|Array<string|number>, accountId: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|null ] {
 
-  const service = useHostService();
-  const [ context, isLoadingContext ] = useHostContext();
-  const [ user, isLoadingUser, userError ] = useCurrentUser(typeof issueIdOrType === 'number' ? accountIdOrContentIdOrSpaceKey : accountId);
+  const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
 
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-  const [ hasPermissions, setHasPermissions ] = useState<boolean>();
-  const [ error, setError ] = useState<Error>();
+  const requiredPermissions = Array.isArray(permissions) ? permissions : [ permissions ];
 
-  useEffect(() => {
-    if (!isLoadingContext && !isLoadingUser ) {
+  const jiraIssuePermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'JiraClientService.hasPermissions()', type, singleOrBulkEntityId, accountId, requiredPermissions.join(','), mode ],
+    queryFn: () => isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
+    ? service.hasPermissions(accountId, [{
+        issues: Array.isArray(singleOrBulkEntityId) ? singleOrBulkEntityId.map(Number) : [ singleOrBulkEntityId ].map(Number),
+        permissions: requiredPermissions
+      }], undefined, mode).catch(() => false)
+    : Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Jira')),
+    enabled: type === 'issue'
+  });
 
-      if (!context) {
-        setHasPermissions(undefined);
-        setError(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian host product'));
-        setLoading(false);
-      } else if (!service) {
-        setHasPermissions(undefined);
-        setError(new Error('Failed to connect to Atlassian API, either JiraClientService or ConfluenceClientService is missing'));
-        setLoading(false);
-      } else if (!user) {
-        setHasPermissions(undefined);
-        setError(userError);
-        setLoading(false);
+  const jiraProjectPermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'JiraClientService.hasPermissions()', type, singleOrBulkEntityId, accountId, requiredPermissions.join(','), mode ],
+    queryFn: () => isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
+    ? service.hasPermissions(accountId, [{
+        projects: Array.isArray(singleOrBulkEntityId) ? singleOrBulkEntityId.map(Number) : [ singleOrBulkEntityId ].map(Number),
+        permissions: requiredPermissions
+      }], undefined, mode).catch(() => false)
+    : Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Jira')),
+    enabled: type === 'project'
+  });
+
+  const confluenceContentPermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'ConfluenceClientService.hasContentPermission()', type, singleOrBulkEntityId, accountId, requiredPermissions.join(','), mode ],
+    queryFn: async () => {
+      if (!isOfType<ConfluenceClientService<Modes>>(service, 'hasContentPermission')) {
+        return Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Confluence'));
+      } else if (!Array.isArray(singleOrBulkEntityId)) {
+        return service.hasContentPermission(String(singleOrBulkEntityId), { type: 'user', identifier: accountId }, requiredPermissions[0] as Confluence.ContentOperation).catch(() => false)
       } else {
-
-        if (isOfType<AP.JiraContext>(context, 'jira')) {
-
-          if (!Array.isArray(permissions)) {
-            setHasPermissions(undefined);
-            setError(new Error('Cannot check for permissions, the "permissions" parameter is invalid (Array expected)'));
-            setLoading(false);
-          } else if (issueIdOrType !== undefined && typeof issueIdOrType !== 'number') {
-            setHasPermissions(undefined);
-            setError(new Error('Cannot check for permissions, the "issueId" parameter is invalid'));
-            setLoading(false);
-          } else {
-            const jiraClientService = service as JiraClientService<Modes>;
-            const entityId = issueIdOrType || context.jira.issue.id;
-
-            if (!entityId) {
-              setHasPermissions(undefined);
-              setError(new Error('Cannot check for permissions, failed to determine issue ID'));
-              setLoading(false);
-            } else {
-              const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
-              jiraClientService.hasPermissions(accountId, [
-                {
-                  issues: [ Number(entityId) ],
-                  permissions
-                }
-              ]).then(setHasPermissions).catch((err) => {
-                setHasPermissions(undefined);
-                setError(err);
-              }).finally(() => setLoading(false));
-            }
-          }
-
-        } else if (isOfType<AP.ConfluenceContext>(context, 'confluence')) {
-
-          if (Array.isArray(permissions)) {
-            setHasPermissions(undefined);
-            setError(new Error('Cannot check for permissions, the "permissions" parameter is invalid (String expected)'));
-            setLoading(false);
-          } else {
-
-            const confluenceClientService = service as ConfluenceClientService<Modes>;
-
-            if (issueIdOrType === 'content') {
-              const contentId = accountIdOrContentIdOrSpaceKey || context.confluence.content.id;
-              if (!contentId) {
-                setHasPermissions(undefined);
-                setError(new Error('Cannot check for permissions, failed to determine content ID'));
-                setLoading(false);
-              } else {
-                const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
-                confluenceClientService.hasContentPermission(contentId, { type: 'user', identifier: accountId }, permissions)
-                .then(setHasPermissions)
-                .catch((err) => {
-                  setHasPermissions(false);
-                  setError(err);
-                }).finally(() => setLoading(false));
-              }
-
-            } else if (issueIdOrType === 'space') {
-              const spaceKey = accountIdOrContentIdOrSpaceKey || context.confluence.space.key;
-              if (!spaceKey) {
-                setHasPermissions(undefined);
-                setError(new Error('Cannot check for permissions, failed to determine space key'));
-                setLoading(false);
-              } else {
-                confluenceClientService.hasSpacePermission(spaceKey, permissions)
-                  .then(setHasPermissions)
-                  .catch((err) => {
-                    setHasPermissions(false);
-                    setError(err);
-                  }).finally(() => setLoading(false));
-              }
-
-            } else {
-              setHasPermissions(undefined);
-              setError(new Error('Cannot check for permissions, the "type" parameter is invalid (either "content" or "space" expected)'));
-              setLoading(false);
-            }
-          }
-        }
+        const allEntityPermissions = await Promise.all(singleOrBulkEntityId.map(entityId => service.hasContentPermission(String(entityId), { type: 'user', identifier: accountId }, requiredPermissions[0] as Confluence.ContentOperation).catch(() => false)));
+        return mode === 'ALL' ? allEntityPermissions.every(result => result === true) : allEntityPermissions.some(result => result === true);
       }
-    }
-  }, [ isLoadingContext, isLoadingUser ]);
+    },
+    enabled: type === 'content'
+  });
 
+  const confluenceSpacePermissionsQuery = useQuery<boolean|undefined, Error>({
+    queryKey: [ 'ConfluenceClientService.hasSpacePermission()', type, singleOrBulkEntityId, accountId, requiredPermissions.join(','), mode ],
+    queryFn: async () => {
+      if (!isOfType<ConfluenceClientService<Modes>>(service, 'hasContentPermission')) {
+        return Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Confluence'));
+      } else if (!Array.isArray(singleOrBulkEntityId)) {
+        return service.hasSpacePermission(String(singleOrBulkEntityId), requiredPermissions[0] as Confluence.ContentOperation, accountId).catch(() => false);
+      } else {
+        const allEntityPermissions = await Promise.all(singleOrBulkEntityId.map(entityId => service.hasSpacePermission(String(entityId), requiredPermissions[0] as Confluence.ContentOperation, accountId).catch(() => false)));
+        return mode === 'ALL' ? allEntityPermissions.every(result => result === true) : allEntityPermissions.some(result => result === true);
+      }
+    },
+    enabled: type === 'space'
+  });
+
+  const { data: hasPermissions, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error } =
+    type === 'issue'
+    ? jiraIssuePermissionsQuery
+    : type === 'project'
+      ? jiraProjectPermissionsQuery
+      : type === 'content'
+        ? confluenceContentPermissionsQuery
+        : confluenceSpacePermissionsQuery;
+
+  const isLoading = isLoadingPermissions || isFetchingPermissions;
   return [ hasPermissions, isLoading, error ];
+
 }

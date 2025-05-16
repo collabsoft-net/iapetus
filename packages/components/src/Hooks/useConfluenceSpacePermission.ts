@@ -1,55 +1,19 @@
-import { isOfType } from '@collabsoft-net/helpers';
-import { useContext, useEffect, useState } from 'react';
+import { useCurrentAccountId } from './useCurrentAccountId';
+import { useEntityPermission } from './useEntityPermission';
+import { useProductContext } from './useProductContext';
 
-import { ConfluenceClientService } from '../Contexts';
-import { useConfluenceUser } from './useConfluenceUser';
-import { useHostContext } from './useHostContext';
+export const useConfluenceSpacePermissions = (operation: Confluence.ContentOperation, spaceIdOrKey?: string|number, accountId?: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ] => {
+  const [ context, isLoadingContext ] = useProductContext<AP.ConfluenceContext>();
+  const entityId = spaceIdOrKey || context?.confluence.space.key;
 
-export const useConfluenceSpacePermissions = (operation?: Confluence.ContentOperation, spaceId?: string, accountId?: string) => {
+  const [ currentAccountId, isLoadingAccountId ] = useCurrentAccountId();
+  const atlassianAccountId = accountId || currentAccountId;
 
-  const service = useContext(ConfluenceClientService);
-  const [ user, isLoadingUser, userError ] = useConfluenceUser(accountId);
-  const [ context, isLoadingContext ] = useHostContext();
+  const checkForPermissions = (!isLoadingContext && entityId) && (!isLoadingAccountId && atlassianAccountId);
 
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-  const [ hasPermissions, setHasPermissions ] = useState<boolean>();
-  const [ error, setError ] = useState<Error>();
+  const [ hasPermission, isLoading, error ] = checkForPermissions
+    ? useEntityPermission('space', operation, entityId, atlassianAccountId, mode)
+    : [ undefined, true, null ];
 
-  useEffect(() => {
-    if (!isLoadingUser && !isLoadingContext) {
-      if (!operation) {
-        setHasPermissions(true);
-        setLoading(false);
-      } else if (!isOfType<AP.ConfluenceContext>(context, 'confluence')) {
-        setHasPermissions(undefined);
-        setError(new Error('Cannot determine Confluence content permissions, hook is executed outside of context of Confluence host product'));
-        setLoading(false);
-      } else if (!service) {
-        setHasPermissions(undefined);
-        setError(new Error('Failed to connect to Confluence API, ConfluenceClientService is missing'));
-        setLoading(false);
-      } else if (!user) {
-        setHasPermissions(undefined);
-        setError(userError || new Error('Could not determine Confluence permissions, User was not found'));
-        setLoading(false);
-      } else {
-        const id = spaceId || context.confluence.space.id;
-        if (!id) {
-          setHasPermissions(undefined);
-          setError(new Error('Could not determine Confluence permissions, space ID was not found'));
-          setLoading(false);
-        } else {
-          const accountId = user?.accountId || (isOfType<Jira.User>(user, 'key') ? user?.key : user?.userKey);
-          service.hasSpacePermission(id, operation, accountId)
-            .then(setHasPermissions)
-            .catch((err) => {
-              setHasPermissions(false);
-              setError(err);
-            }).finally(() => setLoading(false))
-        }
-      }
-    }
-  }, [ service, isLoadingUser, isLoadingContext ]);
-
-  return [ hasPermissions, isLoading, error ];
+  return [ hasPermission, isLoading, error];
 }

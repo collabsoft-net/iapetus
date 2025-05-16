@@ -1,43 +1,36 @@
-import { useContext, useEffect,useState } from 'react';
+import { Modes } from '@collabsoft-net/enums';
+import { JiraClientService } from '@collabsoft-net/services';
+import { useQuery } from '@tanstack/react-query';
 
-import { JiraClientService } from '../Contexts/JiraClientService';
 import { useJiraProjectPermissions } from './useJiraProjectPermission';
+import { useProductClientService } from './useProductClientService';
 
-export const useJiraProject = (projectId: number, requiredPermissions?: Array<string>, requiredPermissionsMode?: 'ALL'|'ANY', expand?: Array<'description' | 'issueTypes' | 'lead' | 'projectKeys' | 'issueTypeHierarchy'>) => {
+interface UseJiraProjectOptions {
+  expand?: Array<'description' | 'issueTypes' | 'lead' | 'projectKeys' | 'issueTypeHierarchy'>;
+  properties?: Array<string>;
+  expiresInSeconds?: number
+}
 
-  const service = useContext(JiraClientService);
+export const useJiraProject = (projectIdOrKey: string|number, requiredPermissions?: Array<string>, accountId?: string, requiredPermissionsMode?: 'ALL'|'ANY', options?: UseJiraProjectOptions): [ Jira.Project|undefined, boolean|undefined, boolean, Error|null ] => {
 
-  const [ project, setProject ] = useState<Jira.Project>();
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ error, setError ] = useState<Error>();
+  const service = useProductClientService<JiraClientService<Modes>>();
 
-  const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] = useJiraProjectPermissions([
-    {
-      projects: [ projectId ],
-      permissions: requiredPermissions || []
-    }
-  ], requiredPermissionsMode);
+  const { data: project, isLoading: isLoadingProject, isFetching: isFetchingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
+    queryKey: [ 'JiraClientService.getProject()', projectIdOrKey, options?.expand?.join(','), options?.properties?.join(',') ],
+    queryFn: () => service.getProject(projectIdOrKey, options?.expand, options?.properties),
+    staleTime: options?.expiresInSeconds ? options.expiresInSeconds * 1000 : undefined,
+    enabled: typeof service !== 'undefined' && typeof projectIdOrKey !== 'undefined'
+  });
 
-  useEffect(() => {
-    if (!isLoadingPermissions) {
-      if (!service) {
-        setProject(undefined);
-        setError(new Error('Failed to connect to Atlassian API, JiraClientService is missing'));
-        setLoading(false);
-      } else if (jiraPermissionsError) {
-        setProject(undefined);
-        setError(jiraPermissionsError);
-        setLoading(false);
-      } else {
-        service.getProject(projectId, expand)
-          .then(setProject)
-          .catch((err) => {
-            setProject(undefined);
-            setError(err);
-          }).finally(() => setLoading(false));
-      }
-    }
-  }, [ isLoadingPermissions ]);
+  const checkForPermissions = typeof project !== 'undefined' && typeof accountId !== 'undefined' && typeof requiredPermissions !== 'undefined';
+
+  const [ hasRequiredPermissions, isLoadingPermissions, jiraPermissionsError ] =
+    checkForPermissions
+      ? useJiraProjectPermissions(project, requiredPermissions || [], accountId, requiredPermissionsMode)
+      : [ undefined, false, null ];
+
+  const loading = isLoadingProject || isFetchingProject || isLoadingPermissions;
+  const error = projectError || jiraPermissionsError;
 
   return [ project, hasRequiredPermissions, loading, error ];
 }

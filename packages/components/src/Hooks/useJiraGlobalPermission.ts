@@ -1,13 +1,13 @@
 import { useCurrentAccountId } from './useCurrentAccountId';
 import { useGlobalPermission } from './useGlobalPermission';
 
-export const useConfluenceApplicationPermissions = (operation: Confluence.ContentOperation, accountId?: string, mode?: 'ALL'|'ANY') => {
+export function useJiraGlobalPermissions(permissions: Array<string>, accountId?: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|null ] {
   const [ currentAccountId, isLoadingAccountId ] = useCurrentAccountId();
   const atlassianAccountId = accountId || currentAccountId;
   const checkForPermissions = !isLoadingAccountId && atlassianAccountId;
 
   const [ hasPermission, isLoading, error ] = checkForPermissions
-    ? useGlobalPermission(operation, atlassianAccountId, mode)
+    ? useGlobalPermission(permissions, atlassianAccountId, mode)
     : [ undefined, true, null ];
 
   return [ hasPermission, isLoading, error];

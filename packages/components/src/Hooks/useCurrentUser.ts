@@ -1,45 +1,26 @@
+import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { useContext, useEffect, useState } from 'react';
+import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { useQuery } from '@tanstack/react-query';
 
-import { AP as APContext } from '../Contexts';
-import { useHostService } from './useHostService';
+import { useACJS } from './useACJS';
+import { useCurrentAccountId } from './useCurrentAccountId';
+import { useProductClientService } from './useProductClientService';
 
-export const useCurrentUser = (accountId?: string|PromiseLike<string>): [ Jira.User|Confluence.User|null, boolean, Error|undefined ] => {
+export const useCurrentUser = <T extends Jira.User|Confluence.User> (expiresInSeconds?: number): [ T|undefined, boolean, Error|null ] => {
+  const ACJS = useACJS();
+  const [ accountId, isLoadingAccountId, accountIdError ] = useCurrentAccountId();
+  const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
 
-  const AP = useContext(APContext);
-  const service = useHostService();
+  const { data: user, isLoading: isLoadingUser, isFetching: isFetchingUser, error: userError } = useQuery<T, Error>({
+    queryKey: [ isOfType<AP.JiraInstance>(ACJS, 'jira') ? 'JiraClientService.getUser()' : 'ConfluenceClientService.getUser()', accountId ],
+    queryFn: () => service.getUser(accountId as string) as Promise<T>,
+    staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
+    enabled: typeof accountId !== 'undefined' && (isOfType<AP.JiraInstance>(ACJS, 'jira') || isOfType<AP.ConfluenceInstance>(ACJS, 'confluence'))
+  });
 
-  const [ isLoading, setLoading ] = useState<boolean>(true);
-  const [ user, setUser ] = useState<Jira.User|Confluence.User|null>(null);
-  const [ error, setError ] = useState<Error>();
-
-  useEffect(() => {
-    if (!AP || !isOfType(AP, 'user')) {
-      setUser(null);
-      setError(new Error('Cannot retrieve User, hook is executed outside of context of Atlassian Jira or Confluence products'));
-      setLoading(false);
-    } else {
-      if (!service) {
-        setUser(null);
-        setError(new Error('Failed to connect to Atlassian API, either JiraClientService or ConfluenceClientService is missing'));
-        setLoading(false);
-      } else {
-        new Promise<string>(resolve => accountId ? resolve(accountId) : AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId)))
-          .then(id => {
-            if (!id) {
-              return Promise.reject(new Error('Could not retrieve Atlassian user, account ID was not found'));
-            } else {
-              return service.getUser(id).then(setUser)
-            }
-          })
-          .catch((err) => {
-            setUser(null);
-            setError(err);
-            setLoading(false);
-          }).finally(() => setLoading(false));
-      }
-    }
-  }, []);
+  const isLoading = isLoadingUser || isFetchingUser || isLoadingAccountId;
+  const error = userError || accountIdError;
 
   return [ user, isLoading, error ];
 }
