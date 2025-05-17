@@ -1,7 +1,6 @@
 import { isOfType } from '@collabsoft-net/helpers';
 
 import { useEntityPermission } from './useEntityPermission';
-import { useProductContext } from './useProductContext';
 
 export function useJiraProjectPermissions(permissions: string|Array<string>, accountId?: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
 export function useJiraProjectPermissions(permissions: string|Array<string>, project: Jira.Project , accountId?: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
@@ -14,14 +13,14 @@ export function useJiraProjectPermissions(
   mode: 'ALL'|'ANY' = 'ALL'
 ): [ boolean|undefined, boolean, Error|null ] {
 
-  const projects: Array<number> =
+  const projects: Array<number>|undefined =
     isOfType<Jira.Project>(projectOrIdOrKeyOrAccountId, 'id')
       ? [ Number(projectOrIdOrKeyOrAccountId.id) ]
       : typeof projectOrIdOrKeyOrAccountId === 'number'
         ? [ projectOrIdOrKeyOrAccountId ]
         : Array.isArray(projectOrIdOrKeyOrAccountId)
           ? projectOrIdOrKeyOrAccountId
-          : [];
+          : undefined;
 
   const accountId = typeof projectOrIdOrKeyOrAccountId === 'string'
     ? projectOrIdOrKeyOrAccountId
@@ -29,13 +28,5 @@ export function useJiraProjectPermissions(
       ? accountIdOrMode
       : undefined;
 
-  const [ context, isLoadingContext ] = useProductContext<AP.JiraContext>();
-  if (context && projects.length === 0) {
-    projects.push(Number(context.jira.project.id));
-  }
-
-  const [ permitted, isLoadingPermissions, errors ] = useEntityPermission('project', permissions, projects, accountId, mode);
-
-  const isLoading = (projects.length === 0 && isLoadingContext) || isLoadingPermissions;
-  return [ permitted, isLoading, errors ];
+  return useEntityPermission('project', permissions, projects as Array<number>, accountId as string, mode);
 }

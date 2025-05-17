@@ -1,14 +1,4 @@
-import { useCurrentAccountId } from './useCurrentAccountId';
 import { useGlobalPermission } from './useGlobalPermission';
 
-export const useConfluenceApplicationPermissions = (operation: Confluence.ContentOperation, accountId?: string, mode?: 'ALL'|'ANY') => {
-  const [ currentAccountId, isLoadingAccountId ] = useCurrentAccountId();
-  const atlassianAccountId = accountId || currentAccountId;
-  const checkForPermissions = !isLoadingAccountId && atlassianAccountId;
-
-  const [ hasPermission, isLoading, error ] = checkForPermissions
-    ? useGlobalPermission(operation, atlassianAccountId, mode)
-    : [ undefined, true, null ];
-
-  return [ hasPermission, isLoading, error];
-}
+export const useConfluenceApplicationPermissions = (operation: Confluence.ContentOperation, accountId?: string, mode?: 'ALL'|'ANY') =>
+  useGlobalPermission(operation, accountId as string, mode);
