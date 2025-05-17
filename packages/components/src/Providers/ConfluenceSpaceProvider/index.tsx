@@ -1,4 +1,4 @@
-import { useConfluenceSpace, useConfluenceUser } from '../../Hooks';
+import { useConfluenceSpace } from '../../Hooks';
 
 interface ConfluenceSpaceProviderProps {
   spaceIdOrKey: string|number;
@@ -16,14 +16,7 @@ interface ConfluenceSpaceProviderProps {
 }
 
 export const ConfluenceSpaceProvider = ({ spaceIdOrKey, requiredPermission, requiredPermissionsMode, options, loadingMessage, expiresInSeconds, children }: ConfluenceSpaceProviderProps): JSX.Element => {
-  const [ user, isLoadingUser ] = requiredPermission ? useConfluenceUser() : [ undefined, false ];
-  const accountId = user?.accountId || user?.userKey;
-
-  const [ space, permitted, isLoadingProject, error ] = !isLoadingUser
-    ? useConfluenceSpace(spaceIdOrKey, requiredPermission, accountId, requiredPermissionsMode, options, expiresInSeconds)
-    : [ undefined, undefined, true, null ];
-
-  const loading = isLoadingUser || isLoadingProject;
+  const [ space, permitted, loading, error ] = useConfluenceSpace(spaceIdOrKey, requiredPermission, undefined, requiredPermissionsMode, options, expiresInSeconds)
   return loading && loadingMessage ? loadingMessage : children({ space, permitted, loading, errors: error });
 
 }
