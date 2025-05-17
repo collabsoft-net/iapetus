@@ -19,7 +19,7 @@ export const useJiraProject = (projectIdOrKey?: string|number, requiredPermissio
   const [ context ] = useProductContext<AP.JiraContext>();
   const idOrKey = projectIdOrKey || context?.jira?.project?.id;
 
-  const { data: project, isLoading: isLoadingProject, isFetching: isFetchingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
+  const { data: project, isLoading: isLoadingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
     queryKey: [ 'JiraClientService.getProject()', projectIdOrKey, options?.expand?.join(','), options?.properties?.join(',') ],
     queryFn: () => service.getProject(String(idOrKey), options?.expand, options?.properties),
     staleTime: options?.expiresInSeconds ? options.expiresInSeconds * 1000 : undefined,
@@ -33,7 +33,7 @@ export const useJiraProject = (projectIdOrKey?: string|number, requiredPermissio
       ? useJiraProjectPermissions(requiredPermissions || [],project, accountId, requiredPermissionsMode)
       : [ undefined, false, null ];
 
-  const loading = isLoadingProject || isFetchingProject || isLoadingPermissions;
+  const loading = isLoadingProject || isLoadingPermissions;
   const error = projectError || jiraPermissionsError;
 
   return [ project, hasRequiredPermissions, loading, error ];

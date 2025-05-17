@@ -97,7 +97,7 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
     enabled: type === 'space' && typeof atlassianAccountId !== 'undefined' && typeof entityId !== 'undefined'
   });
 
-  const { data: hasPermissions, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error } =
+  const { data: hasPermissions, isLoading, error } =
     type === 'issue'
     ? jiraIssuePermissionsQuery
     : type === 'project'
@@ -106,7 +106,6 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
         ? confluenceContentPermissionsQuery
         : confluenceSpacePermissionsQuery;
 
-  const isLoading = isLoadingPermissions || isFetchingPermissions;
   return [ hasPermissions, isLoading, error ];
 
 }

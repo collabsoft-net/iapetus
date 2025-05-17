@@ -12,14 +12,14 @@ export const useCurrentUser = <T extends Jira.User|Confluence.User> (expiresInSe
   const [ accountId, isLoadingAccountId, accountIdError ] = useCurrentAccountId();
   const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
 
-  const { data: user, isLoading: isLoadingUser, isFetching: isFetchingUser, error: userError } = useQuery<T, Error>({
+  const { data: user, isLoading: isLoadingUser, error: userError } = useQuery<T, Error>({
     queryKey: [ isOfType<AP.JiraInstance>(ACJS, 'jira') ? 'JiraClientService.getUser()' : 'ConfluenceClientService.getUser()', accountId ],
     queryFn: () => service.getUser(accountId as string) as Promise<T>,
     staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
     enabled: typeof accountId !== 'undefined' && (isOfType<AP.JiraInstance>(ACJS, 'jira') || isOfType<AP.ConfluenceInstance>(ACJS, 'confluence'))
   });
 
-  const isLoading = isLoadingUser || isFetchingUser || isLoadingAccountId;
+  const isLoading = isLoadingUser || isLoadingAccountId;
   const error = userError || accountIdError;
 
   return [ user, isLoading, error ];

@@ -39,11 +39,10 @@ export const useGlobalPermission = (permissions: string|Array<string>, accountId
     enabled: isOfType<ConfluenceClientService<Modes>>(service, 'hasApplicationPermission') && typeof atlassianAccountId !== 'undefined'
   });
 
-  const { data: hasPermissions, isLoading: isLoadingPermissions, isFetching: isFetchingPermissions, error } =
+  const { data: hasPermissions, isLoading, error } =
     isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
       ? jiraGlobalPermissionsQuery
       : confluenceGlobalPermissionsQuery;
 
-  const isLoading = isLoadingPermissions || isFetchingPermissions;
   return [ hasPermissions, isLoading, error ];
 }

@@ -9,7 +9,7 @@ export const useConfluenceSpace = (spaceIdOrKey: string|number, requiredPermissi
 
   const service = useProductClientService<ConfluenceClientService<Modes>>();
 
-  const { data: space, isLoading: isLoadingSpace, isFetching: isFetchingSpace, error: spaceError } = useQuery<Confluence.Space|Confluence.SpaceV2|undefined, Error>({
+  const { data: space, isLoading: isLoadingSpace, error: spaceError } = useQuery<Confluence.Space|Confluence.SpaceV2|undefined, Error>({
     queryKey: [ 'ConfluenceClientService.getSpace()', spaceIdOrKey, JSON.stringify(options), requiredPermission, accountId ],
     queryFn: () => service.getSpace(spaceIdOrKey, options),
     staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
@@ -23,7 +23,7 @@ export const useConfluenceSpace = (spaceIdOrKey: string|number, requiredPermissi
       ? useConfluenceSpacePermissions(requiredPermission, spaceIdOrKey, accountId, requiredPermissionsMode)
       : [ undefined, false, null ];
 
-  const loading = isLoadingSpace || isFetchingSpace || isLoadingPermissions;
+  const loading = isLoadingSpace || isLoadingPermissions;
   const error = spaceError || permissionsError;
 
   return [ space, hasRequiredPermissions, loading, error ];
