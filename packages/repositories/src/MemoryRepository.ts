@@ -4,27 +4,14 @@ import uniqid from 'uniqid';
 
 import { QueryBuilder } from './QueryBuilder';
 
-const SEED_CACHEKEY = 'MemoryRepository:seed'
-
 export class MemoryRepository<T extends Entity> implements Repository<T> {
 
+  private seed: Record<string, unknown>;
   private emitter: MemoryEmitter;
 
   constructor(seed: string|Record<string, unknown>) {
-    const currentSeed = window.sessionStorage.getItem(SEED_CACHEKEY);
-    if (!currentSeed) {
-      this.seed = (typeof seed === 'string') ? JSON.parse(seed) : seed;
-    }
+    this.seed = (typeof seed === 'string') ? JSON.parse(seed) : seed;
     this.emitter = new MemoryEmitter();
-  }
-
-  private get seed(): Record<string, unknown> {
-    const value = window.sessionStorage.getItem(SEED_CACHEKEY);
-    return value ? JSON.parse(value) : {};
-  }
-
-  private set seed(value: Record<string, unknown>) {
-    window.sessionStorage.setItem(SEED_CACHEKEY, JSON.stringify(value));
   }
 
   async on(event: typeof Event|string, listener: EventListener): Promise<void> {
