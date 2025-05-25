@@ -1217,28 +1217,44 @@ declare global {
     }
 
     interface Version {
-      self: string;
+      approvers?: Array<VersionApprover>;
+      archived?: boolean;
+      description?: string;
+      driver?: string;
+      expand?: string;
       id?: string;
-      name: string;
-      description: string;
-      archived: boolean;
-      released: boolean;
-      releaseDate: string;
-      overdue: boolean;
-      userReleaseDate: string;
-      projectId: number;
-      startDate: string;
       issuesStatusForFixVersion?: VersionIssuesStatus;
+      moveUnfixedIssuesTo?: string;
+      name?: string;
+      operations?: {
+        href?: string;
+        iconClass?: string;
+        id?: string;
+        label?: string;
+        styleClass?: string;
+        title?: string;
+        weight?: number;
+      };
+      overdue?: boolean;
+      project?: string;
+      projectId?: string;
+      releaseDate?: string;
+      released?: boolean;
+      self?: string;
+      startDate?: string;
+      userReleaseDate?: string;
+      userStartDate?: string;
     }
 
     interface CreateVersionRequest {
       archived?: boolean;
       description?: string;
+      expand?: Array<'operations'|'issuesstatus'|'driver'|'approvers'>;
       name: string;
       projectId: number;
       releaseDate?: string|null;
+      released?: boolean;
       startDate?: string|null;
-      expand?: Array<'operations'|'issuesstatus'>;
     }
 
     interface UpdateVersionRequest extends Pick<CreateVersionRequest, 'archived'|'description'|'releaseDate'|'startDate'|'expand'> {
@@ -1251,6 +1267,13 @@ declare global {
       customFieldReplacementList?: Array<CustomFieldReplacement>;
       moveAffectedIssuesTo?: number;
       moveFixIssuesTo?: number;
+    }
+
+    interface VersionApprover {
+      accountId: string;
+      declineReason: string;
+      description: string;
+      status: 'PENDING'|'APPROVED'|'DECLINED'
     }
 
     interface CustomFieldReplacement {
@@ -1301,19 +1324,20 @@ declare global {
     }
 
     interface Component {
-      self: string;
+      ari?: string;
+      assignee?: ApplicationUser;
+      assigneeType?: ComponentAssigneeType;
+      description?: string;
       id?: string;
-      name: string;
-      description: string;
-      lead: ApplicationUser;
-      leadAccountId: string;
-      assigneeType: ComponentAssigneeType;
-      assignee: ApplicationUser;
-      realAssigneeType: string;
-      realAssignee: ApplicationUser;
       isAssigneeTypeValid: boolean;
+      lead?: ApplicationUser;
+      metadata?: unknown;
+      name: string;
       project: string;
       projectId: number;
+      realAssignee?: ApplicationUser;
+      realAssigneeType?: ComponentAssigneeType;
+      self: string;
     }
 
     type ComponentAssigneeType = 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
@@ -1637,7 +1661,7 @@ declare global {
       children: Array<RequestTypeFieldValueDTO>;
     }
 
-    interface Release extends Omit<Version, 'releaseDate'|'startDate'> {
+    interface Release extends Omit<Version, 'releaseDate'|'startDate'|'operations'> {
       operations: Array<{ href: string, label: string, styleClass: string }>;
       releaseDate: { formatted: string, iso: string, datePickerFormatted: string };
       startDate: { formatted: string, iso: string, datePickerFormatted: string };
