@@ -1346,7 +1346,7 @@ declare global {
       name: string;
       description?: string;
       leadAccountId?: string;
-      assigneeType: ComponentAssigneeType;
+      assigneeType?: ComponentAssigneeType;
       project: string;
     }
 
