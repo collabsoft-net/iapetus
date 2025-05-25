@@ -1217,15 +1217,17 @@ declare global {
     }
 
     interface Version {
+      id: string;
+      self: string;
+      name: string;
+      projectId: number;
       approvers?: Array<VersionApprover>;
       archived?: boolean;
       description?: string;
       driver?: string;
       expand?: string;
-      id?: string;
       issuesStatusForFixVersion?: VersionIssuesStatus;
       moveUnfixedIssuesTo?: string;
-      name?: string;
       operations?: {
         href?: string;
         iconClass?: string;
@@ -1237,10 +1239,8 @@ declare global {
       };
       overdue?: boolean;
       project?: string;
-      projectId?: string;
       releaseDate?: string;
       released?: boolean;
-      self?: string;
       startDate?: string;
       userReleaseDate?: string;
       userStartDate?: string;
@@ -1324,20 +1324,20 @@ declare global {
     }
 
     interface Component {
+      id: string;
+      self: string;
+      name: string;
+      project: string;
+      projectId: number;
       ari?: string;
       assignee?: ApplicationUser;
       assigneeType?: ComponentAssigneeType;
       description?: string;
-      id?: string;
       isAssigneeTypeValid: boolean;
       lead?: ApplicationUser;
       metadata?: unknown;
-      name: string;
-      project: string;
-      projectId: number;
       realAssignee?: ApplicationUser;
       realAssigneeType?: ComponentAssigneeType;
-      self: string;
     }
 
     type ComponentAssigneeType = 'COMPONENT_LEAD'|'PROJECT_LEAD'|'PROJECT_DEFAULT'|'UNASSIGNED';
