@@ -16,7 +16,7 @@ const getHistoryState = (state: string|AP.HistoryState): Record<string, string> 
   return result;
 }
 
-export const useHistoryState = <T> (): [ T, UseMutationResult<string, Error, Partial<T>>, (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Record<string, string>, unknown>> ] => {
+export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMutationResult<string, Error, Partial<T>>, (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Record<string, string>, unknown>> ] => {
 
   const ACJS = useACJS();
   const queryClient = useQueryClient();
