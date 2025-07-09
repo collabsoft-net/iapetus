@@ -1,14 +1,11 @@
-import { ClientService, PlatformBridge } from '@collabsoft-net/types';
-import { getMacroDataProps } from "./getMacroDataProps";
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { ForgeRestClient } from './ForgeRestClient';
-import { createPlaceholder } from './createPlaceholder';
+import { createPlaceholder, ForgeRestClient, getMacroDataProps } from '@collabsoft-net/forge';
 import { view } from '@forge/bridge';
+import { CreatePlatformBridge } from '../CreatePlatformBridge';
+import { ClientService } from '../ClientService';
 
-type TCreatePlatformBridge = <T extends Applications> (product: T) => Promise<PlatformBridge<T>>;
-
-export const createPlatformBridge: TCreatePlatformBridge = async <T extends Applications> (product: T) => ({
+export const createPlatformBridge: CreatePlatformBridge = async <T extends Applications> (product: T) => ({
   
   init: {
     createPlaceholder: createPlaceholder

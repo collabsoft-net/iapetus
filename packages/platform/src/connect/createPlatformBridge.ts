@@ -1,18 +1,24 @@
 import { APRestClient } from '@collabsoft-net/clients';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { ClientService, PlatformBridge } from '@collabsoft-net/types';
+import { waitForAP, getMacroDataProps, createPlaceholder } from '@collabsoft-net/connect';
+import { CreatePlatformBridge } from '../CreatePlatformBridge';
+import { ClientService } from '../ClientService';
 
-import { getMacroDataProps } from './getMacroDataProps';
-import { waitForAP } from './waitForAP';
-
-type TCreatePlatformBridge = <T extends Applications> (product: T) => Promise<PlatformBridge<T>>;
-
-export const createPlatformBridge: TCreatePlatformBridge = async <T extends Applications> (product: T) => {
+export const createPlatformBridge: CreatePlatformBridge = async <T extends Applications> (product: T) => {
 
   const AP = await waitForAP();
 
   return {
+
+    init: {
+      createPlaceholder: createPlaceholder
+    },
+
+    theming: {
+      enable: async () => AP.theming.initializeTheming()
+    },
+
     macro: {
       getProperties: getMacroDataProps
     },

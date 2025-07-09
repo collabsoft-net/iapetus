@@ -1661,6 +1661,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@collabsoft-net/platform@workspace:packages/platform":
+  version: 0.0.0-use.local
+  resolution: "@collabsoft-net/platform@workspace:packages/platform"
+  dependencies:
+    "@collabsoft-net/enums": "workspace:*"
+    "@collabsoft-net/services": "workspace:*"
+    "@collabsoft-net/types": "workspace:*"
+    "@types/node": "npm:<19.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:6.19.1"
+    "@typescript-eslint/parser": "npm:6.19.1"
+    eslint: "npm:8.56.0"
+    nodemon: "npm:3.0.3"
+    typescript: "npm:5.3.3"
+  peerDependencies:
+    "@collabsoft-net/connect": "*"
+    "@collabsoft-net/forge": "*"
+  languageName: unknown
+  linkType: soft
+
 "@collabsoft-net/repositories@workspace:packages/repositories":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/repositories@workspace:packages/repositories"
