@@ -15,7 +15,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
   protected endpoints: Record<string, string>;
 
   constructor(protected client: RestClient, protected mode: Mode) {
-    this.endpoints = mode === Modes.CONNECT ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
+    this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
   }
 
   abstract cached(duration: number): AbstractAtlasClientService<Mode>;

@@ -10,3 +10,4 @@ export * from './reportResults';
 export * from './resizeFix';
 export * from './waitForAP';
 export * from './loadAP';
+export * from './createPlatformBridge';

@@ -12,7 +12,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
 
   constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
-    this.endpoints = mode === Modes.CONNECT ? JiraCloudEndpoints : JiraServerEndpoints;
+    this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? JiraCloudEndpoints : JiraServerEndpoints;
   }
 
   cached(duration: number) {
@@ -30,7 +30,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
   }
 
   async getUser(accountId: string): Promise<Jira.User> {
-    const { data } = this.mode === Modes.CONNECT
+    const { data } = (this.mode === Modes.CONNECT || this.mode === Modes.FORGE)
       ? await this.client.get<Jira.User>(this.endpoints.USER, { accountId })
       : await this.client.get<Jira.User>(this.endpoints.USER, { key: accountId });
     return data;
@@ -70,7 +70,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     orderBy: 'category'|'-category'|'+category'|'key'|'-key'|'+key'|'name'|'-name'|'+name'|'owner'|'-owner'|'+owner'|'issueCount'|'-issueCount'|'+issueCount'|'lastIssueUpdatedDate'|'-lastIssueUpdatedDate'|'+lastIssueUpdatedDate'|'archivedDate'|'+archivedDate'|'-archivedDate'|'deletedDate'|'+deletedDate'|'-deletedDate' = 'key'
   ): Promise<Jira.PagedOfProjects> {
 
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data } = await this.client.get<Jira.PagedOfProjects>(this.getEndpointFor(this.endpoints.SEARCH_PROJECTS), {
         query,
         id: id?.join(','),
@@ -321,7 +321,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
   }
 
   async getRelease(projectKey: string, versionId: string): Promise<Jira.Release|Jira.VersionWithIssueStatus> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const result = await this.getVersion(versionId, [ 'issuesstatus' ]);
       return result as Jira.VersionWithIssueStatus
     } else {
@@ -336,7 +336,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
   }
 
   async getComponentsPaginated(projectIdOrKey: string|number, startAt = 0, maxResults = 50, query?: string): Promise<Jira.PagedResponse2<Jira.Component>> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED, { projectIdOrKey: `${projectIdOrKey}` }), { startAt, maxResults, query });
       return data;
     } else {
@@ -578,7 +578,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
 
     const result = new Map<number, boolean>();
 
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
 
       // Retrieve the permissions from the JIRA API.
       // This will return an array of permissions per project/issue. If the user has the requested permission, it will be listed in the array.
@@ -676,7 +676,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
       globalPermissions: []
     }
 
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
 
       // Retrieve the permissions from the JIRA API.
       // This will return an array of permissions per project/issue. If the user has the requested permission, it will be listed in the array.

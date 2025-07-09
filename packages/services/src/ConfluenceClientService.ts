@@ -7,16 +7,16 @@ import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
 
-type SpaceIdOrKey<T extends Modes> = T extends Modes.CONNECT ? number : string;
-type Space<T extends Modes> = T extends Modes.CONNECT ? Confluence.SpaceV2 : Confluence.Space;
-type SpaceRequestOptions<T extends Modes> = T extends Modes.CONNECT ? Confluence.SpaceV2RequestOptions : Confluence.SpaceRequestOptions;
+type SpaceIdOrKey<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? number : string;
+type Space<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? Confluence.SpaceV2 : Confluence.Space;
+type SpaceRequestOptions<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? Confluence.SpaceV2RequestOptions : Confluence.SpaceRequestOptions;
 
 @injectable()
 export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasClientService<Mode> {
 
   constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
-    this.endpoints = mode === Modes.CONNECT ? ConfluenceCloudEndpoints : ConfluenceServerEndpoints;
+    this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? ConfluenceCloudEndpoints : ConfluenceServerEndpoints;
   }
 
   cached(duration: number) {
@@ -29,7 +29,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async getUser(accountId: string, expand?: Array<string>): Promise<Confluence.User> {
-    const { data } = this.mode === Modes.CONNECT
+    const { data } = (this.mode === Modes.CONNECT || this.mode === Modes.FORGE)
       ? await this.client.get<Confluence.User>(this.endpoints.USER, { accountId, expand: expand?.join(',') })
       : await this.client.get<Confluence.User>(this.endpoints.USER, { key: accountId });
     return data;
@@ -259,7 +259,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   async getSpace(id: SpaceIdOrKey<Mode>, options?: SpaceRequestOptions<Mode>): Promise<Space<Mode>>;
   async getSpace(key: SpaceIdOrKey<Mode>, options?: SpaceRequestOptions<Mode>): Promise<Space<Mode>>;
   async getSpace(spaceIdOrKey: SpaceIdOrKey<Mode>, ops?: SpaceRequestOptions<Mode>): Promise<Space<Mode>> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       if (typeof spaceIdOrKey === 'string') {
         throw new Error('Confluence Cloud does not support retrieving Space by key');
       }
@@ -357,7 +357,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async hasContentPermission(contentId: string, subject: Confluence.PermissionSubjectWithGroupId, operation: Confluence.ContentOperation): Promise<boolean> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data: permission } = await this.client.post<Confluence.PermissionCheckResponse>(this.getEndpointFor(this.endpoints.CONTENT_PERMISSIONS, { id: contentId }), {
         subject,
         operation
@@ -396,7 +396,7 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async hasSpacePermission(spaceIdOrKey: string, operation: Confluence.ContentOperation, accountId?: string): Promise<boolean> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data: space } = await this.client.get<Confluence.SpaceV2>(this.getEndpointFor(this.endpoints.SPACE, { id: spaceIdOrKey }), { 'include-permissions': 'true' });
       if (space && space.permissions) {
         const permissions = space.permissions.results.filter(item => item.operation.key === operation && item.operation.targetType === 'space');

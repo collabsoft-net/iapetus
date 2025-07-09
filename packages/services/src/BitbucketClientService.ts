@@ -5,16 +5,16 @@ import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
 
-type UserOrAccount<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.Account : Bitbucket.User;
-type BranchModelOrBranchingModelSettings<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.BranchingModelSettings : Bitbucket.BranchModel;
-type CommitOrBaseCommit<T extends Modes> = T extends Modes.CONNECT ? Bitbucket.Page<Bitbucket.BaseCommit> : Bitbucket.Paginated<Bitbucket.Commit>;
+type UserOrAccount<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? Bitbucket.Account : Bitbucket.User;
+type BranchModelOrBranchingModelSettings<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? Bitbucket.BranchingModelSettings : Bitbucket.BranchModel;
+type CommitOrBaseCommit<T extends Modes> = T extends Modes.CONNECT|Modes.FORGE ? Bitbucket.Page<Bitbucket.BaseCommit> : Bitbucket.Paginated<Bitbucket.Commit>;
 
 @injectable()
 export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasClientService<Mode> {
 
   constructor(protected client: RestClient, protected mode: Mode) {
     super(client, mode);
-    this.endpoints = mode === Modes.CONNECT ? BitbucketCloudEndpoints : BitbucketServerEndpoints;
+    this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? BitbucketCloudEndpoints : BitbucketServerEndpoints;
   }
 
   cached(duration: number) {
@@ -57,7 +57,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
   async branchingModel(projectKey: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>>;
   async branchingModel(workspaceSlugOrUUID: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>>;
   async branchingModel(owner: string, slug: string): Promise<BranchModelOrBranchingModelSettings<Mode>> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data } = await this.client.get<Bitbucket.BranchingModelSettings>(this.getEndpointFor(this.endpoints.BRANCH_MODEL, { owner, slug }));
       return data as BranchModelOrBranchingModelSettings<Mode>;
     } else {
@@ -69,7 +69,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
   async defaultBranch(projectKey: string, slug: string): Promise<Bitbucket.Branch>;
   async defaultBranch(workspaceSlugOrUUID: string, slug: string): Promise<Bitbucket.Branch>;
   async defaultBranch(owner: string, slug: string): Promise<Bitbucket.Branch> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const repository = await this.repository(owner, slug);
       return this.branch(owner, slug, repository.mainbranch.name);
     } else {
@@ -106,7 +106,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
   async commits(projectKey: string, slug: string, until?: string): Promise<CommitOrBaseCommit<Mode>>;
   async commits(workspaceSlugOrUUID: string, slug: string, revision?: string): Promise<CommitOrBaseCommit<Mode>>;
   async commits(owner: string, slug: string, marker?: string): Promise<CommitOrBaseCommit<Mode>> {
-    if (this.mode === Modes.CONNECT) {
+    if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { data } = await this.client.get<Bitbucket.Page<Bitbucket.BaseCommit>>(this.getEndpointFor(this.endpoints.COMMITS, { owner, slug, revision: marker || '' }))
       return data as CommitOrBaseCommit<Mode>;
     } else {
