@@ -45,13 +45,7 @@ const bind = async (entrypoint: EntryPoint<Props>|ExecutionPoint, rootElem: Elem
   }
 };
 
-export async function render(modules: Array<EntryPoint<Props>|ExecutionPoint>, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>): Promise<void>;
-export async function render(modules: Array<EntryPoint<Props>|ExecutionPoint>, callback?: () => void, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>): Promise<void>;
-export async function render(modules: Array<EntryPoint<Props>|ExecutionPoint>, callbackOrContainer?: (() => void)|React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>): Promise<void> {
-
-  const callback = !isOfType<React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>>(callbackOrContainer, 'displayName') ? callbackOrContainer : () => {};
-  container = isOfType<React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>>(callbackOrContainer, 'displayName') ? callbackOrContainer : container;
-
+export const render = async (modules: Array<EntryPoint<Props>|ExecutionPoint>, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>, callback?: () => void): Promise<void> => {
   // Register application entrypoints for rendering
   modules.forEach((entrypoint) => {
     const selector = entrypoint.selector || `#${entrypoint.name}`;
