@@ -1665,6 +1665,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/platform@workspace:packages/platform"
   dependencies:
+    "@collabsoft-net/connect": "workspace:*"
     "@collabsoft-net/enums": "workspace:*"
     "@collabsoft-net/services": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
