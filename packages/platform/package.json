@@ -12,23 +12,6 @@
   "files": [
     "dist"
   ],
-  "exports": {
-    "./connect": {
-      "types": "./dist/types/connect/index.d.ts",
-      "require": "./dist/cjs/connect/index.js",
-      "import": "./dist/es2020/connect/index.js"
-    },
-    "./forge": {
-      "types": "./dist/types/forge/index.d.ts",
-      "require": "./dist/cjs/forge/index.js",
-      "import": "./dist/es2020/forge/index.js"
-    },
-    "./p2": {
-      "types": "./dist/types/p2/index.d.ts",
-      "require": "./dist/cjs/p2/index.js",
-      "import": "./dist/es2020/p2/index.js"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
