@@ -13,10 +13,9 @@ import { ConfluenceClientService } from '@collabsoft-net/services';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
 import React, { PropsWithChildren, useState } from 'react';
-import { useProductContext } from 'src/Hooks';
 
 import { Column, Grid, Header, Row } from '../../Atoms';
-import { useProductClientService } from '../../Hooks/useProductClientService'
+import { useProductClientService,useProductContext } from '../../Hooks';
 
 interface ConfluencePreviewProps {
   showDisplayToolbar?: boolean;
