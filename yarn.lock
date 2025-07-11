@@ -1274,8 +1274,8 @@ __metadata:
     "@atlaskit/link": "npm:3.1.0"
     "@atlaskit/section-message": "npm:8.2.3"
     "@atlaskit/skeleton": "npm:2.0.3"
-    "@collabsoft-net/connect": "workspace:*"
     "@collabsoft-net/helpers": "workspace:*"
+    "@collabsoft-net/platform": "workspace:*"
     "@collabsoft-net/services": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@emotion/react": "npm:11.14.0"
@@ -1302,8 +1302,8 @@ __metadata:
     "@atlaskit/link": 3.1.0
     "@atlaskit/section-message": ^8.2.0
     "@atlaskit/skeleton": 2.0.3
-    "@collabsoft-net/connect": "*"
     "@collabsoft-net/helpers": "*"
+    "@collabsoft-net/platform": "*"
     "@collabsoft-net/services": "*"
     "@collabsoft-net/types": "*"
     "@emotion/react": 11.14.0
@@ -1661,12 +1661,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/platform@workspace:packages/platform":
+"@collabsoft-net/platform@workspace:*, @collabsoft-net/platform@workspace:packages/platform":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/platform@workspace:packages/platform"
   dependencies:
     "@collabsoft-net/connect": "workspace:*"
     "@collabsoft-net/enums": "workspace:*"
+    "@collabsoft-net/helpers": "workspace:*"
     "@collabsoft-net/services": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@types/node": "npm:<19.0.0"
@@ -1678,6 +1679,7 @@ __metadata:
   peerDependencies:
     "@collabsoft-net/connect": "*"
     "@collabsoft-net/forge": "*"
+    "@collabsoft-net/helpers": "*"
   languageName: unknown
   linkType: soft
 
