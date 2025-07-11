@@ -77,11 +77,11 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
   const contentId = isOfType<Platform.ConfluenceContentContext>(context, 'content') ? Number(context.content?.id) : -1;
 
   const { data: pageName } = useQuery({
-    queryKey: [ 'Service.getContent()', contentId ],
+    queryKey: [ 'Service.getPage()', contentId ],
     queryFn: async () => {
       const service = bridge.client;
-      if (isOfType<ConfluenceClientService<Modes>>(service, 'getContent')) {
-        const content = await service.getContent(contentId);
+      if (isOfType<ConfluenceClientService<Modes>>(service, 'getPage')) {
+        const content = await service.getPage(contentId);
         return content.title;
       } else {
         return '';

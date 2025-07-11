@@ -336,8 +336,11 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async getContent(contentId: number): Promise<Confluence.Content> {
-    const { data } = await this.client.get<Confluence.Content>(`/rest/api/content/${contentId}`);
-    return data;
+    if (this.mode === Modes.P2) {
+      const { data } = await this.client.get<Confluence.Content>(`/rest/api/content/${contentId}`);
+      return data;
+    }
+    throw new Error('The getContent() method is no longer supported for Confluence Cloud');
   }
 
   async startConvertTask(to: 'editor'|'export_view'|'storage'|'styled_view'|'view'|'atlas_doc_format', requestBody: Confluence.ConvertTaskRequestDTO, options?: Confluence.ConvertTaskRequestOptions): Promise<string> {
