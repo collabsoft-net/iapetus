@@ -6,7 +6,7 @@ import { router, view } from '@forge/bridge';
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
 
   const context = await view.getContext();
-  const historyObj = await view.createHistory();
+  const historyObj = await view.createHistory().catch(() => null);
 
   return {
     
@@ -71,10 +71,20 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     history: {
-      back: historyObj.goBack,
-      forward: historyObj.goForward,
-      go: historyObj.go,
+      back: () => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
+        historyObj.goBack()
+      },
+      forward: () => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
+        historyObj.goForward()
+      },
+      go: (delta: number) => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
+        historyObj.go(delta)
+      },
       getState: (type?: 'hash'|'all'|undefined, callback?: (data: string|Platform.HistoryState) => void) => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
         const location = historyObj.location;
         const state: Platform.HistoryState = {
           hash: location.hash,
@@ -95,20 +105,27 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         }
       },
       pushState: (newState: string, _?: string, url?: string) => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
         url = url || historyObj.createHref(historyObj.location);
         historyObj.push(url, newState);
       },
-      replaceState: (url: string) => () => historyObj.replace(url),
-      popState: (handler: (state: Platform.HistoryPopState) => void) => historyObj.listen((location) => {
-        handler({
-          hash: location.hash,
-          href: historyObj.createHref(location),
-          key: location.key,
-          newURL: historyObj.createHref(location),
-          query: location.search,
-          state: location.state
+      replaceState: (url: string) => () => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
+        historyObj.replace(url)
+      },
+      popState: (handler: (state: Platform.HistoryPopState) => void) => {
+        if (!historyObj) throw new Error('History API is not available within this module.');
+        historyObj.listen((location) => {
+          handler({
+            hash: location.hash,
+            href: historyObj.createHref(location),
+            key: location.key,
+            newURL: historyObj.createHref(location),
+            query: location.search,
+            state: location.state
+          })
         })
-      })
+      }
     },
 
     macro: {
