@@ -1,9 +1,9 @@
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
-import { isOfType } from '@collabsoft-net/helpers';
+import { Applications } from '@collabsoft-net/enums';
 import React from 'react';
+import { usePlatformBridge } from 'src/Hooks';
 
-import { useACJS } from '../../Hooks';
 import * as ConfluenceProviders from '../../Providers/confluence';
 import * as JiraProviders from '../../Providers/jira';
 import { EntityWithAvatar, EntityWithAvatarProps } from '../EntityWithAvatar';
@@ -15,17 +15,17 @@ export type UserWithAvatarProps = Omit<EntityWithAvatarProps<Jira.User|Confluenc
 };
 
 export const UserWithAvatar = ({ user, accountId, ...props }: UserWithAvatarProps): JSX.Element => {
-  const ACJS = useACJS();
+  const bridge = usePlatformBridge();
 
   return user ? (
     <EntityWithAvatar {...props} entity={ user } isLoading={ false } />
   ) : typeof accountId !== 'undefined' ? (
       <>
-        { isOfType<AP.JiraInstance>(ACJS, 'jira') ? (
+        { bridge.product === Applications.JIRA ? (
           <JiraProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
             { ({ user: currentUser, loading }) => <EntityWithAvatar {...props} entity={ currentUser } isLoading={ loading }  /> }
           </JiraProviders.User>
-        ) : isOfType<AP.ConfluenceInstance>(ACJS, 'confluence') ? (
+        ) : bridge.product === Applications.CONFLUENCE ? (
           <ConfluenceProviders.User accountId={ accountId } loadingMessage={ <Spinner size='medium' /> }>
             { ({ user: currentUser, loading }) => <EntityWithAvatar {...props} entity={ currentUser } isLoading={ loading }  /> }
           </ConfluenceProviders.User>

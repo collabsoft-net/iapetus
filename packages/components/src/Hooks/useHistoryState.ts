@@ -1,9 +1,9 @@
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { QueryObserverResult, RefetchOptions, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { useACJS } from './useACJS';
+import { usePlatformBridge } from './usePlatformBridge';
 
-const getHistoryState = (state: string|AP.HistoryState): Record<string, string> => {
+const getHistoryState = (state: string|Platform.HistoryState): Record<string, string> => {
   const result: Record<string, string> = {};
 
   const query = new URLSearchParams(state);
@@ -18,12 +18,12 @@ const getHistoryState = (state: string|AP.HistoryState): Record<string, string> 
 
 export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMutationResult<string, Error, Partial<T>>, (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<Record<string, string>, unknown>> ] => {
 
-  const ACJS = useACJS();
+  const bridge = usePlatformBridge();
   const queryClient = useQueryClient();
 
   const { data, refetch } = useQuery({
     queryKey: [ 'ACJS.history.getState()' ],
-    queryFn: () => new Promise<string|AP.HistoryState>(resolve => ACJS.history.getState('hash', resolve)),
+    queryFn: () => new Promise<string|Platform.HistoryState>(resolve => bridge.history.getState('hash', resolve)),
     select: (state) => getHistoryState(state),
     initialData: '',
   });
@@ -36,11 +36,11 @@ export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMu
           query.set(key, value);
         }
       });
-      ACJS.history.pushState(query.toString());
+      bridge.history.pushState(query.toString());
       return Promise.resolve(query.toString() || '');
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([ 'ACJS.history.getState()' ], () => data || '');
+      queryClient.setQueryData([ 'bridge.history.getState()' ], () => data || '');
     }
   });
 

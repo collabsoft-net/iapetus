@@ -1,3 +1,3 @@
 
-export * from './createPlatformBridge';
+export * from './createBridge';
 export * from '@collabsoft-net/connect';

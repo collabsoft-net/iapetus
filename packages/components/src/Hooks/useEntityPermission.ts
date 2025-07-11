@@ -5,9 +5,9 @@ import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { useQuery } from '@tanstack/react-query';
 
+import { useContentContext } from './useContentContext';
 import { useCurrentAccountId } from './useCurrentAccountId';
-import { useProductClientService } from './useProductClientService';
-import { useProductContext } from './useProductContext';
+import { usePlatformBridge } from './usePlatformBridge';
 
 export function useEntityPermission(type: 'issue', permissions: string|Array<string>, issueId: number, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
 export function useEntityPermission(type: 'issue', permissions: string|Array<string>, issueIds: Array<number>, accountId: string, mode?: 'ALL'|'ANY'): [ boolean|undefined, boolean, Error|null ];
@@ -20,8 +20,8 @@ export function useEntityPermission(type: 'space', permissions: Confluence.Conte
 export function useEntityPermission(type: 'project'|'issue'|'content'|'space', permissions: string|Array<string>|Confluence.ContentOperation, singleOrBulkEntityId: number|string|Array<string|number>, accountId: string, mode: 'ALL'|'ANY' = 'ALL'): [ boolean|undefined, boolean, Error|null ] {
   const requiredPermissions = Array.isArray(permissions) ? permissions : [ permissions ];
 
-  const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
-  if (!isOfType<JiraClientService<Modes>>(service, 'hasPermissions') && !isOfType<ConfluenceClientService<Modes>>(service, 'hasApplicationPermission')) {
+  const bridge = usePlatformBridge();
+  if (!isOfType<JiraClientService<Modes>>(bridge.client, 'hasPermissions') && !isOfType<ConfluenceClientService<Modes>>(bridge.client, 'hasApplicationPermission')) {
     return [ undefined, false, new Error('Cannot check for permissions, hook is executed outside of context of supported Atlassian host product') ];
   }
 
@@ -32,13 +32,13 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
     return [ undefined, false, new Error('Cannot check for permissions, user account ID is required') ];
   }
 
-  const [ context, isLoadingContext ] = useProductContext<AP.ConfluenceContext>();
+  const [ context, isLoadingContext ] = useContentContext();
   const entityId = singleOrBulkEntityId
     ? singleOrBulkEntityId
-    : (type === 'project' || type === 'issue') && isOfType<AP.JiraContext>(context, 'jira')
-      ? context.jira[type].id
-      : (type === 'content' || type === 'space') && isOfType<AP.ConfluenceContext>(context, 'confluence')
-        ? context.confluence[type].id
+    : (type === 'project' || type === 'issue') && isOfType<Platform.JiraContentContext>(context, type)
+      ? context[type]?.id
+      : (type === 'content' || type === 'space') && isOfType<Platform.ConfluenceContentContext>(context, type)
+        ? context[type]?.id
         : undefined;
 
   if (!isLoadingContext && typeof entityId === 'undefined') {
@@ -47,8 +47,8 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
 
   const jiraIssuePermissionsQuery = useQuery<boolean|undefined, Error>({
     queryKey: [ 'JiraClientService.hasPermissions()', type, entityId, atlassianAccountId, requiredPermissions.join(','), mode ],
-    queryFn: () => isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
-    ? service.hasPermissions(String(atlassianAccountId), [{
+    queryFn: () => isOfType<JiraClientService<Modes>>(bridge.client, 'hasPermissions')
+    ? bridge.client.hasPermissions(String(atlassianAccountId), [{
         issues: Array.isArray(entityId) ? entityId.map(Number) : [ entityId ].map(Number),
         permissions: requiredPermissions
       }], undefined, mode).catch(() => false)
@@ -58,8 +58,8 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
 
   const jiraProjectPermissionsQuery = useQuery<boolean|undefined, Error>({
     queryKey: [ 'JiraClientService.hasPermissions()', type, entityId, atlassianAccountId, requiredPermissions.join(','), mode ],
-    queryFn: () => isOfType<JiraClientService<Modes>>(service, 'hasPermissions')
-    ? service.hasPermissions(String(atlassianAccountId), [{
+    queryFn: () => isOfType<JiraClientService<Modes>>(bridge.client, 'hasPermissions')
+    ? bridge.client.hasPermissions(String(atlassianAccountId), [{
         projects: Array.isArray(entityId) ? entityId.map(Number) : [ entityId ].map(Number),
         permissions: requiredPermissions
       }], undefined, mode).catch(() => false)
@@ -70,6 +70,7 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
   const confluenceContentPermissionsQuery = useQuery<boolean|undefined, Error>({
     queryKey: [ 'ConfluenceClientService.hasContentPermission()', type, entityId, atlassianAccountId, requiredPermissions.join(','), mode ],
     queryFn: async () => {
+      const service = bridge.client;
       if (!isOfType<ConfluenceClientService<Modes>>(service, 'hasContentPermission')) {
         return Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Confluence'));
       } else if (!Array.isArray(entityId)) {
@@ -85,6 +86,7 @@ export function useEntityPermission(type: 'project'|'issue'|'content'|'space', p
   const confluenceSpacePermissionsQuery = useQuery<boolean|undefined, Error>({
     queryKey: [ 'ConfluenceClientService.hasSpacePermission()', type, entityId, atlassianAccountId, requiredPermissions.join(','), mode ],
     queryFn: async () => {
+      const service = bridge.client;
       if (!isOfType<ConfluenceClientService<Modes>>(service, 'hasContentPermission')) {
         return Promise.reject(new Error('Cannot check for permissions, hook is executed outside of context of Atlassian Confluence'));
       } else if (!Array.isArray(entityId)) {

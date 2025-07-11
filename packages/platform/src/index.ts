@@ -1,2 +1,3 @@
 
-export * from './PlatformBridge';
+export * from './Platform';
+export * from './ServiceIdentifier';

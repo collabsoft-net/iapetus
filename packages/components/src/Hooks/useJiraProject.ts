@@ -1,10 +1,9 @@
-import { Modes } from '@collabsoft-net/enums';
-import { JiraClientService } from '@collabsoft-net/services';
+import { isOfType } from '@collabsoft-net/helpers';
 import { useQuery } from '@tanstack/react-query';
 
+import { useContentContext } from './useContentContext';
 import { useJiraProjectPermissions } from './useJiraProjectPermission';
-import { useProductClientService } from './useProductClientService';
-import { useProductContext } from './useProductContext';
+import { usePlatformBridge } from './usePlatformBridge';
 
 interface UseJiraProjectOptions {
   expand?: Array<'description' | 'issueTypes' | 'lead' | 'projectKeys' | 'issueTypeHierarchy'>;
@@ -14,16 +13,16 @@ interface UseJiraProjectOptions {
 
 export const useJiraProject = (projectIdOrKey?: string|number, requiredPermissions?: Array<string>, accountId?: string, requiredPermissionsMode?: 'ALL'|'ANY', options?: UseJiraProjectOptions): [ Jira.Project|undefined, boolean|undefined, boolean, Error|null ] => {
 
-  const service = useProductClientService<JiraClientService<Modes>>();
+  const bridge = usePlatformBridge();
 
-  const [ context ] = useProductContext<AP.JiraContext>();
-  const idOrKey = projectIdOrKey || context?.jira?.project?.id;
+  const [ context ] = useContentContext<Platform.JiraContentContext>();
+  const idOrKey = projectIdOrKey || context?.project?.id;
 
   const { data: project, isLoading: isLoadingProject, error: projectError } = useQuery<Jira.Project|undefined, Error>({
-    queryKey: [ 'JiraClientService.getProject()', projectIdOrKey, options?.expand?.join(','), options?.properties?.join(',') ],
-    queryFn: () => service.getProject(String(idOrKey), options?.expand, options?.properties),
+    queryKey: [ 'bridge.client.getProject()', projectIdOrKey, options?.expand?.join(','), options?.properties?.join(',') ],
+    queryFn: () => isOfType(bridge.client, 'getProject') ? bridge.client.getProject(String(idOrKey), options?.expand, options?.properties) : undefined,
     staleTime: options?.expiresInSeconds ? options.expiresInSeconds * 1000 : undefined,
-    enabled: typeof service !== 'undefined' && typeof idOrKey !== 'undefined'
+    enabled: isOfType(bridge.client, 'getProject') && typeof idOrKey !== 'undefined'
   });
 
   const checkForPermissions = typeof project !== 'undefined' && typeof accountId !== 'undefined' && typeof requiredPermissions !== 'undefined';

@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import React, { PropsWithChildren, useState } from 'react';
 
 import { Column, Grid, Header, Row } from '../../Atoms';
-import { useProductClientService,useProductContext } from '../../Hooks';
+import { useContentContext,usePlatformBridge } from '../../Hooks';
 
 interface ConfluencePreviewProps {
   showDisplayToolbar?: boolean;
@@ -68,17 +68,18 @@ const OptionalNavColumn = styled(Column)`
 
 export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, children }: PropsWithChildren<ConfluencePreviewProps>): JSX.Element => {
 
-  const service = useProductClientService();
-  const [ context, isLoadingContext ] = useProductContext();
+  const bridge = usePlatformBridge();
+  const [ context, isLoadingContext ] = useContentContext();
 
   const [ pageSize, setPageSize ] = useState<PageSize>(defaultPageSize || 'fixed-width');
   const [ macroSize, setMacroSize ] = useState<MacroSize>('center');
 
-  const contentId = isOfType<AP.ConfluenceContext>(context, 'confluence') ? Number(context.confluence.content.id) : -1;
+  const contentId = isOfType<Platform.ConfluenceContentContext>(context, 'content') ? Number(context.content?.id) : -1;
 
   const { data: pageName } = useQuery({
     queryKey: [ 'Service.getContent()', contentId ],
     queryFn: async () => {
+      const service = bridge.client;
       if (isOfType<ConfluenceClientService<Modes>>(service, 'getContent')) {
         const content = await service.getContent(contentId);
         return content.title;

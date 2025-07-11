@@ -1,20 +1,16 @@
-import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { useQuery } from '@tanstack/react-query';
 
-import { useACJS } from './useACJS';
-import { useProductClientService } from './useProductClientService';
+import { usePlatformBridge } from './usePlatformBridge';
 
 export const useUser = <T extends Jira.User|Confluence.User> (accountId: string, expiresInSeconds?: number): [ T|undefined, boolean, Error|null ] => {
-  const AP = useACJS<AP.JiraInstance|AP.ConfluenceInstance>();
-  const service = useProductClientService<JiraClientService<Modes>|ConfluenceClientService<Modes>>();
+  const bridge = usePlatformBridge();
 
-  const { data: user, isLoading, error } = useQuery<T, Error>({
-    queryKey: [ isOfType<AP.JiraInstance>(AP, 'jira') ? 'JiraClientService.getUser()' : 'ConfluenceClientService.getUser()', accountId ],
-    queryFn: async () => service.getUser(accountId) as Promise<T>,
+  const { data: user, isLoading, error } = useQuery<T|undefined, Error>({
+    queryKey: [ 'bridge.client.getUser()', accountId ],
+    queryFn: async () => isOfType(bridge.client, 'getUser') ? bridge.client.getUser(accountId) as Promise<T> : undefined,
     staleTime: expiresInSeconds ? expiresInSeconds * 1000 : undefined,
-    enabled: isOfType<AP.JiraInstance>(AP, 'jira') || isOfType<AP.ConfluenceInstance>(AP, 'confluence')
+    enabled: isOfType(bridge.client, 'getUser')
   });
 
   return [ user, isLoading, error ];
