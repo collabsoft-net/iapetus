@@ -2,8 +2,8 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Spinner from '@atlaskit/spinner';
 import { Applications } from '@collabsoft-net/enums';
 import React from 'react';
-import { usePlatformBridge } from 'src/Hooks';
 
+import { usePlatformBridge } from '../../Hooks';
 import * as ConfluenceProviders from '../../Providers/confluence';
 import * as JiraProviders from '../../Providers/jira';
 import { EntityWithAvatar, EntityWithAvatarProps } from '../EntityWithAvatar';
