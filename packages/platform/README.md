@@ -1,6 +1,6 @@
 # @collabsoft-net/forge
 
-Client-side helper functions for Atlassian Forge
+Bridge functions for interoperability between Atlassian platforms (Connect, Forge, P2)
 
 ## Disclaimer
 
@@ -35,7 +35,7 @@ Please make sure to add the following to your `.npmrc` file
 and run
 
 ```
-npm install @collabsoft-net/forge
+npm install @collabsoft-net/platform
 ```
 
 _When using Yarn_
@@ -51,7 +51,7 @@ npmScopes:
 and run
 
 ```
-yarn add @collabsoft-net/forge
+yarn add @collabsoft-net/platform
 ```
 
 ## Contributions
