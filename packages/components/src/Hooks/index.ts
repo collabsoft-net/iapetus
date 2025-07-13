@@ -16,4 +16,5 @@ export * from './useJiraProjectPermission';
 export * from './useJiraUser';
 export * from './usePermission';
 export * from './usePlatformBridge';
+export * from './useThemes';
 export * from './useUser';
