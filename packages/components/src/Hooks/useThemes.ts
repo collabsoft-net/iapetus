@@ -2,10 +2,10 @@ import { ensureThemes, Themes } from '@collabsoft-net/theme';
 import { useQuery } from '@tanstack/react-query';
 
 export const useThemes = (themes: Themes|Array<Themes>) => {
-  const { isLoading } = useQuery({
+  const { data: isReady, isLoading } = useQuery({
     queryKey: [ 'ensureTheme()' ],
     queryFn: () => ensureThemes(themes)
   });
 
-  return !isLoading;
+  return !isLoading && isReady;
 }
