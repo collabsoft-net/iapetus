@@ -1277,6 +1277,7 @@ __metadata:
     "@collabsoft-net/helpers": "workspace:*"
     "@collabsoft-net/platform": "workspace:*"
     "@collabsoft-net/services": "workspace:*"
+    "@collabsoft-net/theme": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.0"
@@ -1305,6 +1306,7 @@ __metadata:
     "@collabsoft-net/helpers": "*"
     "@collabsoft-net/platform": "*"
     "@collabsoft-net/services": "*"
+    "@collabsoft-net/theme": "*"
     "@collabsoft-net/types": "*"
     "@emotion/react": 11.14.0
     "@emotion/styled": 11.14.0
@@ -1799,7 +1801,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@collabsoft-net/theme@workspace:packages/theme":
+"@collabsoft-net/theme@workspace:*, @collabsoft-net/theme@workspace:packages/theme":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/theme@workspace:packages/theme"
   dependencies:
