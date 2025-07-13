@@ -10,3 +10,4 @@ export * from './RecommendedApp';
 export * from './RecommendedApps';
 export * from './SpaceWithAvatar';
 export * from './UserWithAvatar';
+export * from './WithThemes';
