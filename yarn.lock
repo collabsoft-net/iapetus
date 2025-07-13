@@ -435,6 +435,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/tokens@npm:5.4.1, @atlaskit/tokens@npm:^5.0.0":
+  version: 5.4.1
+  resolution: "@atlaskit/tokens@npm:5.4.1"
+  dependencies:
+    "@atlaskit/ds-lib": "npm:^4.0.0"
+    "@atlaskit/platform-feature-flags": "npm:^1.1.0"
+    "@babel/runtime": "npm:^7.0.0"
+    "@babel/traverse": "npm:^7.23.2"
+    "@babel/types": "npm:^7.20.0"
+    bind-event-listener: "npm:^3.0.0"
+  peerDependencies:
+    react: ^18.2.0
+  checksum: e183d60162b8fd2db6ab8f33527fce9293b5ea36a71cbdbae6c6e0235037a421929e7315d63e3e861addbe95cc92b1a620d9d151cf62a1f3b4f7a18bd66f5f85
+  languageName: node
+  linkType: hard
+
 "@atlaskit/tokens@npm:^1.58.0":
   version: 1.61.0
   resolution: "@atlaskit/tokens@npm:1.61.0"
@@ -448,22 +464,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: a55337ac320708f513d4ac210b5bf1e873de34e7816c41855a4a0d2b201b7ffb31b2a8a444fe1f57fac393f5676e1763d7066c7c154a7906a68de3b47115aa67
-  languageName: node
-  linkType: hard
-
-"@atlaskit/tokens@npm:^5.0.0":
-  version: 5.4.1
-  resolution: "@atlaskit/tokens@npm:5.4.1"
-  dependencies:
-    "@atlaskit/ds-lib": "npm:^4.0.0"
-    "@atlaskit/platform-feature-flags": "npm:^1.1.0"
-    "@babel/runtime": "npm:^7.0.0"
-    "@babel/traverse": "npm:^7.23.2"
-    "@babel/types": "npm:^7.20.0"
-    bind-event-listener: "npm:^3.0.0"
-  peerDependencies:
-    react: ^18.2.0
-  checksum: e183d60162b8fd2db6ab8f33527fce9293b5ea36a71cbdbae6c6e0235037a421929e7315d63e3e861addbe95cc92b1a620d9d151cf62a1f3b4f7a18bd66f5f85
   languageName: node
   linkType: hard
 
@@ -1796,6 +1796,22 @@ __metadata:
     passport-custom: ^1.1.0
     passport-http-bearer: ^1.0.0
     passport-jwt: ^4.0.0
+  languageName: unknown
+  linkType: soft
+
+"@collabsoft-net/theme@workspace:packages/theme":
+  version: 0.0.0-use.local
+  resolution: "@collabsoft-net/theme@workspace:packages/theme"
+  dependencies:
+    "@atlaskit/tokens": "npm:5.4.1"
+    "@types/node": "npm:<19.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:8.32.0"
+    "@typescript-eslint/parser": "npm:8.32.0"
+    eslint: "npm:9.26.0"
+    nodemon: "npm:3.1.10"
+    typescript: "npm:5.8.3"
+  peerDependencies:
+    "@atlaskit/tokens": 5.4.1
   languageName: unknown
   linkType: soft
 

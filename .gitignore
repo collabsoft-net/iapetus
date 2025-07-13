@@ -5,3 +5,4 @@ lerna-debug.log
 install-state.gz
 .yarn/cache
 packages/repositories/.yarn
+packages/theme/src/styles

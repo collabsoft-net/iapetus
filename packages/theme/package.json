@@ -1,0 +1,47 @@
+{
+  "name": "@collabsoft-net/theme",
+  "version": "1.1.2-alpha.178",
+  "description": "Helper functions to load Design System styles when not available",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "module": "./dist/es2020/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "clean": "rm -rf dist && rm -rf ./src/styles",
+    "lint": "yarn run eslint",
+    "build": "yarn clean && node fetchFallbackStyles.mjs && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:types",
+    "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
+    "build:types": "yarn run tsc --emitDeclarationOnly --outDir dist/types",
+    "start": "yarn run nodemon --watch src --ignore 'src/styles/*' -e '.ts' --exec 'yarn build'",
+    "prepack": "yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "devDependencies": {
+    "@atlaskit/tokens": "5.4.1",
+    "@types/node": "<19.0.0",
+    "@typescript-eslint/eslint-plugin": "8.32.0",
+    "@typescript-eslint/parser": "8.32.0",
+    "eslint": "9.26.0",
+    "nodemon": "3.1.10",
+    "typescript": "5.8.3"
+  },
+  "peerDependencies": {
+    "@atlaskit/tokens": "5.4.1"
+  }
+}
