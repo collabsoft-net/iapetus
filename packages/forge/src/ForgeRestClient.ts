@@ -2,7 +2,8 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { requestBitbucket,requestConfluence, requestJira } from '@forge/bridge';
-import { AxiosRequestConfig,AxiosResponse } from 'axios';
+import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
+import { isOfType } from '@collabsoft-net/helpers';
 
 export class ForgeRestClient implements RestClient {
 
@@ -94,23 +95,53 @@ export class ForgeRestClient implements RestClient {
 
     const body = (data || config?.data || null) as BodyInit|null;
 
-    const fetchFromRemote = async () => client(endpoint, {
-      method,
-      headers,
-      body
-    }).catch(response => response.json());
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => client(endpoint, { method, headers, body})
+      .then(response => this.toAxiosResponse<T>(response))
+      .catch(err => {
+        if (isOfType<Response>(err, 'status')) {
+          throw new AxiosError<T>(err.statusText, String(err.status), this.toInternalAxiosRequestConfig(config), this.toAxiosResponse<T>(err))
+        } else if (isOfType<Error>(err, 'message')) {
+          throw new AxiosError<T>(err.message);
+        } else {
+          throw new AxiosError<T>('An unknown error occurred');
+        }
+      });
 
     if (this.cacheService) {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
         const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
-        return result || fetchFromRemote();
+        return result || await fetchFromRemote();
       } catch (err) {
         return fetchFromRemote();
       }
     } else {
       return fetchFromRemote();
     }
+  }
+
+  private toAxiosResponse<T>(response: Response, config?: AxiosRequestConfig): AxiosResponse<T> {
+    const responseHeaders: RawAxiosResponseHeaders = {};
+    response.headers.forEach((value, key) => responseHeaders[key] = value);        
+
+    const result: AxiosResponse<T> = {
+      data: response.json() as T,
+      status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders,
+      config: this.toInternalAxiosRequestConfig(config)
+    };
+
+    return result;
+  }
+
+  private toInternalAxiosRequestConfig(config?: AxiosRequestConfig): InternalAxiosRequestConfig {
+    const requestHeaders = {} as Record<string, string>;
+    Object.entries(config?.headers || {}).forEach(([key, value]) => requestHeaders[key] = value);
+    return {
+      ...config,
+      headers: new AxiosHeaders(requestHeaders)
+    };
   }
 
 }
