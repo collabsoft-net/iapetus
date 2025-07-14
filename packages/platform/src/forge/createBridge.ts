@@ -2,6 +2,7 @@ import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { createPlaceholder, ForgeRestClient, getMacroDataProps } from '@collabsoft-net/forge';
 import { router, view } from '@forge/bridge';
+import { DocNode } from '@atlaskit/adf-schema';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
 
@@ -65,7 +66,9 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       }
     },
 
-    close: (payload?: unknown) => view.close(payload),
+    dialog: {
+      close: (payload?: unknown) => view.close(payload),
+    },
 
     router: {
       navigate: router.navigate,
@@ -132,7 +135,20 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     macro: {
       getProperties: getMacroDataProps,
-      setProperties: <T> (data: T) => view.submit(data)
+      setProperties: <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => view.submit({
+        config: data,
+        body: typeof body === 'string' ? JSON.parse(body) : body,
+        keepEditing
+      }),
+      close: async () => {
+        const config = context.extension?.config || {};
+        const body = context.extension?.macro?.body;
+        return view.submit({
+          config, 
+          body, 
+          keepEditing: false
+        });
+      }
     },
 
     client: (product === 'jira' 

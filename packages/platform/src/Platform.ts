@@ -6,6 +6,7 @@ import { Applications, Modes } from "@collabsoft-net/enums";
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from "@collabsoft-net/services";
 import { Props } from "@collabsoft-net/types";
 import { NavigationLocation } from "@forge/bridge/out/router/types";
+import { DocNode } from '@atlaskit/adf-schema';
 
 export {};
 
@@ -85,7 +86,9 @@ declare global {
         content: () => Promise<ContentContext<T>>; 
       };
 
-      close: (payload?: unknown) => void;
+      dialog: {
+        close: (payload?: unknown) => void;
+      },
 
       router: {
         navigate: {
@@ -114,8 +117,9 @@ declare global {
     
       macro: {
         getProperties: () => Promise<Props|undefined>;
-        setProperties: <T> (data: T) => Promise<void>;
-      };    
+        setProperties: <T> (data: T, body?: string|DocNode, keepEditing?: boolean) => Promise<void>;
+        close: () => void;
+      };
 
     }
 

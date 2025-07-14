@@ -3,6 +3,7 @@ import { Applications, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { waitForAP, getMacroDataProps, createPlaceholder } from '@collabsoft-net/connect';
+import { DocNode } from '@atlaskit/adf-schema';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
 
@@ -58,7 +59,9 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       }
     },
 
-    close: (payload?: unknown) => AP.dialog.close(payload),
+    dialog: {
+      close: (payload?: unknown) => AP.dialog.close(payload),
+    },
 
     router: {
       navigate: (urlOrLocation: string|Platform.RouterNavigationLocation) => {
@@ -116,9 +119,18 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     macro: {
       getProperties: getMacroDataProps,
-      setProperties: async <T> (data: T) => {
+      setProperties: async <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => {
         if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
-          AP.confluence.saveMacro(data);
+          const macroBody = typeof body === 'string' ? body : JSON.stringify(body);
+          AP.confluence.saveMacro(data, macroBody);
+          if (!keepEditing) {
+            AP.confluence.closeMacroEditor();
+          }
+        }
+      },
+      close: () => {
+        if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
+          AP.confluence.closeMacroEditor();
         }
       }
     },
