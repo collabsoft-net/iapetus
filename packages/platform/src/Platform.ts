@@ -79,11 +79,13 @@ declare global {
     
       user: {
         getCurrentUser: () => Promise<string|undefined>;
-      }
+      };
 
       context: {
         content: () => Promise<ContentContext<T>>; 
-      }
+      };
+
+      close: (payload?: unknown) => void;
 
       router: {
         navigate: {
@@ -91,7 +93,7 @@ declare global {
           (location: RouterNavigationLocation): void;
         };
         reload: () => void;
-      }
+      };
 
       history: {
         back: () => void;
@@ -106,7 +108,7 @@ declare global {
         replaceState: (url: string) => void;
         // Unfortunately, this is undocumented
         popState: (handler: (state: HistoryPopState) => void) => void;
-      }
+      };
 
       client: ClientService<T>;
     

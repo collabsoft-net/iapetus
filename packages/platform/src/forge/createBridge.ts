@@ -65,6 +65,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       }
     },
 
+    close: (payload?: unknown) => view.close(payload),
+
     router: {
       navigate: router.navigate,
       reload: router.reload

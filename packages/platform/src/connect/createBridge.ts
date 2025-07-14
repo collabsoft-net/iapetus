@@ -58,6 +58,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       }
     },
 
+    close: (payload?: unknown) => AP.dialog.close(payload),
+
     router: {
       navigate: (urlOrLocation: string|Platform.RouterNavigationLocation) => {
         if (isOfType(AP, 'navigator')) {
