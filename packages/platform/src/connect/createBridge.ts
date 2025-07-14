@@ -115,7 +115,12 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     macro: {
-      getProperties: getMacroDataProps
+      getProperties: getMacroDataProps,
+      setProperties: async <T> (data: T) => {
+        if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
+          AP.confluence.saveMacro(data);
+        }
+      }
     },
 
     client: (product === 'jira'

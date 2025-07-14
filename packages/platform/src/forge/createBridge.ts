@@ -131,7 +131,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     macro: {
-      getProperties: getMacroDataProps
+      getProperties: getMacroDataProps,
+      setProperties: <T> (data: T) => view.submit(data)
     },
 
     client: (product === 'jira' 

@@ -114,6 +114,7 @@ declare global {
     
       macro: {
         getProperties: () => Promise<Props|undefined>;
+        setProperties: <T> (data: T) => Promise<void>;
       };    
 
     }
