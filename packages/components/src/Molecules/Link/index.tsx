@@ -26,7 +26,11 @@ export const Link = ({ type, onError, ...props }: LinkProps) => {
         event.bubbles = false;
         event.preventDefault();
         event.stopPropagation();
-        bridge.router.navigate(props.href);
+        if (props.target === '_blank') {
+          bridge.router.open(props.href);
+        } else {
+          bridge.router.navigate(props.href);
+        }
       }} />
     } else {
       return <DSLink {...props} rel="noreferrer" target="_blank" />

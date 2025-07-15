@@ -72,6 +72,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     router: {
+      open: router.open,
       navigate: router.navigate,
       reload: router.reload
     },

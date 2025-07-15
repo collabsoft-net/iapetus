@@ -92,6 +92,10 @@ declare global {
       },
 
       router: {
+        open: {
+          (url: string): void;
+          (location: RouterNavigationLocation): void;
+        },
         navigate: {
           (url: string): void;
           (location: RouterNavigationLocation): void;

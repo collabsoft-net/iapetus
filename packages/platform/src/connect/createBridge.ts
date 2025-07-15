@@ -65,6 +65,18 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     router: {
+      open: (urlOrLocation: string|Platform.RouterNavigationLocation) => {
+        if (isOfType(AP, 'navigator')) {
+          if (typeof urlOrLocation === 'string') {
+            const anchor = document.createElement('a');
+            anchor.href = urlOrLocation;
+            anchor.target = '_blank';
+            anchor.click();
+          } else {
+            throw new Error('This method is not supported for in-product navigation');
+          }
+        }
+      },
       navigate: (urlOrLocation: string|Platform.RouterNavigationLocation) => {
         if (isOfType(AP, 'navigator')) {
           if (typeof urlOrLocation === 'string') {
