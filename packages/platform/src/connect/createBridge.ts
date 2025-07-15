@@ -12,6 +12,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
   return {
 
     product,
+    platform: Modes.CONNECT,
 
     init: {
       createPlaceholder: createPlaceholder

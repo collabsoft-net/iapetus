@@ -69,6 +69,7 @@ declare global {
     interface Bridge<T extends Applications> {
 
       product: T,
+      platform: Modes,
 
       init: {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
