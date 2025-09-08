@@ -2,8 +2,9 @@ import { APRestClient } from '@collabsoft-net/clients';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { waitForAP, getMacroDataProps, createPlaceholder } from '@collabsoft-net/connect';
+import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
+import { Props } from '@collabsoft-net/types';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
 
@@ -131,7 +132,12 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     macro: {
-      getProperties: getMacroDataProps,
+      getProperties: () => {
+        return new Promise<Props|undefined>(resolve =>
+          isOfType<AP.ConfluenceInstance>(AP, 'confluence')
+            ? AP.confluence.getMacroData(resolve)
+            : resolve({}))
+      },
       setProperties: async <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => {
         if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
           const macroBody = typeof body === 'string' ? body : JSON.stringify(body);
