@@ -62,6 +62,13 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
+      getButton: (name: 'cancel'|'submit'|string) => {
+        if (name === 'cancel' || name === 'submit') {
+          return AP.dialog.getButton(name)
+        } else {
+          throw new Error(`InvalidArgumentException: AP.dialog.getButton('${name}') is not supported`);
+        }
+      },
       close: (payload?: unknown) => AP.dialog.close(payload),
     },
 

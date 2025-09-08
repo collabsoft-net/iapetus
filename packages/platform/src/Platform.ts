@@ -64,6 +64,18 @@ declare global {
       title?: string;
     }
 
+    type DialogButton = {
+      enable: () => void;
+      disable: () => void;
+      isEnabled: (callback: (isEnabled: boolean) => void) => void;
+      toggle: () => void;
+      trigger: () => void;
+      isHidden: (callback: (isHidden: boolean) => void) => void;
+      hide: () => void;
+      show: () => void;
+      bind: (callback: () => void) => void;
+    }
+
     type RouterNavigationLocation = NavigationLocation;
 
     interface Bridge<T extends Applications> {
@@ -88,6 +100,7 @@ declare global {
       };
 
       dialog: {
+        getButton: (name: string) => DialogButton|null;
         close: (payload?: unknown) => void;
       },
 

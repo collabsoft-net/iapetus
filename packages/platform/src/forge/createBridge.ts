@@ -68,6 +68,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
+      // Forge does not support dialog buttons
+      getButton: () => null,
       close: (payload?: unknown) => view.close(payload),
     },
 
