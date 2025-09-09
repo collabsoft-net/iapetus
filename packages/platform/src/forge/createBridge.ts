@@ -138,6 +138,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     macro: {
+      disableCloseOnSubmit: () => {},
       getProperties: getMacroDataProps,
       setProperties: <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => view.submit({
         config: data,

@@ -139,6 +139,9 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     macro: {
+      disableCloseOnSubmit() {
+        AP.dialog.disableCloseOnSubmit();
+      },
       getProperties: () => {
         return new Promise<Props|undefined>(resolve =>
           isOfType<AP.ConfluenceInstance>(AP, 'confluence')
