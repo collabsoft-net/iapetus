@@ -45,19 +45,35 @@ const bind = async (entrypoint: EntryPoint<Props>|ExecutionPoint, rootElem: Elem
   }
 };
 
-export const render = async (modules: Array<EntryPoint<Props>|ExecutionPoint>, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>, callback?: () => void): Promise<void> => {
+export const render = async (modules: Array<EntryPoint<Props>|ExecutionPoint>, container?: React.ComponentClass<PropsWithChildren<unknown>>|React.FunctionComponent<PropsWithChildren<unknown>>, callback?: () => void, timeout: number = 2000): Promise<boolean> => {
+
   // Register application entrypoints for rendering
-  modules.forEach((entrypoint) => {
+  const pendingModules: Array<Promise<void>> = modules.map((entrypoint) => new Promise<void>((resolve) => {
     const selector = entrypoint.selector || `#${entrypoint.name}`;
 
     // Prevent a page load race condition by checking if the element already exists
     const rootElm = document.querySelector(selector);
     if (rootElm) {
-      bind(entrypoint, rootElm, callback, container);
+      bind(entrypoint, rootElm, () => {
+        if (callback) {
+          callback();
+        }
+        resolve();
+      }, container);
     } else {
       (document as ExtendedDocument).arrive(selector, async (rootElem: Element) => {
-        await bind(entrypoint, rootElem, callback, container);
+        await bind(entrypoint, rootElem, () => {
+          if (callback) {
+            callback();
+          }
+          resolve();
+        }, container);
       });
     }
-  });
+  }));
+
+  return Promise
+    .race([ ...pendingModules, new Promise<void>((_, reject) => setTimeout(reject, timeout)) ])
+    .then(() => true)
+    .catch(() => false);
 };
