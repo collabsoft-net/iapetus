@@ -7,6 +7,7 @@ import { BitbucketClientService, ConfluenceClientService, JiraClientService } fr
 import { Props } from "@collabsoft-net/types";
 import { NavigationLocation } from "@forge/bridge/out/router/types";
 import { DocNode } from '@atlaskit/adf-schema';
+import { Subscription } from "@forge/bridge/out/types";
 
 export {};
 
@@ -87,6 +88,11 @@ declare global {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
       };
     
+      events: {
+        on: (event: string, callback: (payload?: unknown) => Promise<unknown>) => Promise<Subscription>;
+        emit: (event: string, payload: unknown) => Promise<void>;
+      }
+
       theming: {
         enable: () => Promise<void>;
       };

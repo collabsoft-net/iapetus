@@ -19,6 +19,19 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       createPlaceholder: createPlaceholder
     },
 
+    events: {
+      on: async (event: string, callback: (payload?: unknown) => Promise<unknown>) => {
+        AP.events.on(event, callback);
+        return {
+          unsubscribe: () => AP.events.off(event, callback)
+        }
+      },
+      emit: async (event: string, payload: unknown) => {
+        const data = Array.isArray(payload) ? payload.map(item => String(item)) : [ String(payload) ];
+        AP.events.emit(event, data);
+      }
+    },
+
     theming: {
       enable: async () => AP.theming.initializeTheming()
     },

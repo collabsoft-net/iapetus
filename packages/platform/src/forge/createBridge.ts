@@ -1,7 +1,7 @@
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { createPlaceholder, ForgeRestClient, getMacroDataProps } from '@collabsoft-net/forge';
-import { router, view } from '@forge/bridge';
+import { events, router, view } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
@@ -16,6 +16,15 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     init: {
       createPlaceholder: createPlaceholder
+    },
+
+    events: {
+      on: (event: string, callback: (payload: unknown) => Promise<unknown>) => {
+        return events.on(event, callback);
+      },
+      emit: (event: string, payload: unknown) => {
+        return events.emit(event, payload);
+      }
     },
 
     theming: {
