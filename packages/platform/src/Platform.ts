@@ -37,6 +37,7 @@ declare global {
     type ConfluenceContentContext = {
       space?: { key?: string; id?: string; };
       content?: { id?: string; type?: string; subtype?: string; };
+      macro?: { outputType: string }
     }
 
     type BitbucketContentContext = {

@@ -61,6 +61,9 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
               id: context.extension?.content?.id,
               type: context.extension?.content?.type,
               subtype: context.extension?.content?.subtype
+            },
+            macro: {
+              outputType: context.extension?.macro?.outputType
             }
           } as Platform.ContentContext<T>;
         } else {
