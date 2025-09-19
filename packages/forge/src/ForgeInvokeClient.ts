@@ -79,7 +79,7 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => invoke(`${method}-${endpoint.substring(0, endpoint.indexOf('/'))}`, { endpoint, data, params })
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => invoke(method, { endpoint, data, params })
       .then(response => this.toAxiosResponse<T>(response as T))
       .catch(err => {
         if (isOfType<Error>(err, 'message')) {
