@@ -94,7 +94,11 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           customData: options.context,
           closeOnEscape: options.closeOnEscape,
           chrome: false
-        }).on('close', options.onClose);
+        }).on('close', (data?: X) => {
+          if (options.onClose) {
+            options.onClose(data);
+          };
+        });
       },
       getButton: (name: 'cancel'|'submit'|string) => {
         if (name === 'cancel' || name === 'submit') {

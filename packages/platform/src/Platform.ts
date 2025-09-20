@@ -68,12 +68,12 @@ declare global {
 
     type DialogOptions<T, X> = {
       key: string;
-      size: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
+      size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
       height?: string;
       width?: string;
       context?: T;
       closeOnEscape?: boolean;
-      onClose: (payload?: X) => void;
+      onClose?: (payload?: X) => void;
     }
 
     type DialogButton = {
