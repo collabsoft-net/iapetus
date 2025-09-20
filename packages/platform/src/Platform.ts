@@ -66,6 +66,16 @@ declare global {
       title?: string;
     }
 
+    type DialogOptions<T, X> = {
+      key: string;
+      size: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
+      height?: string;
+      width?: string;
+      context?: T;
+      closeOnEscape?: boolean;
+      onClose: (payload?: X) => void;
+    }
+
     type DialogButton = {
       enable: () => void;
       disable: () => void;
@@ -107,6 +117,7 @@ declare global {
       };
 
       dialog: {
+        open: <T, X> (options: DialogOptions<T, X>) => Promise<void>;
         getButton: (name: string) => DialogButton|null;
         close: (payload?: unknown) => void;
       },

@@ -1,7 +1,7 @@
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { createPlaceholder, ForgeRestClient, getMacroDataProps } from '@collabsoft-net/forge';
-import { events, router, view } from '@forge/bridge';
+import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
@@ -80,6 +80,17 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
+      open: <T, X> (options: Platform.DialogOptions<T, X>) => {
+        const modal = new Modal({
+          resource: options.key,
+          onClose: options.onClose,
+          size: options.size,
+          context: options.context,
+          closeOnEscape: options.closeOnEscape,
+          closeOnOverlayClick: true
+        });
+        return modal.open();
+      },
       // Forge does not support dialog buttons
       getButton: () => null,
       close: (payload?: unknown) => view.close(payload),

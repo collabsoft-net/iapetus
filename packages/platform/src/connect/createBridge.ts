@@ -78,6 +78,24 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
+      open: async <T, X> (options: Platform.DialogOptions<T, X>) => {
+        const dialogSize = 
+          options.size === 'xlarge'
+            ? 'x-large'
+            : options.size === 'max'
+              ? 'fullscreen'
+              : options.size;
+
+        AP.dialog.create({
+          key: options.key,
+          size: options.height || options.width ? undefined : dialogSize,
+          height: options.height,
+          width: options.width,
+          customData: options.context,
+          closeOnEscape: options.closeOnEscape,
+          chrome: false
+        }).on('close', options.onClose);
+      },
       getButton: (name: 'cancel'|'submit'|string) => {
         if (name === 'cancel' || name === 'submit') {
           return AP.dialog.getButton(name)
