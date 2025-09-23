@@ -83,7 +83,9 @@ export class ForgeRestClient implements RestClient {
     const client = this.product === 'jira' ? requestJira : this.product === 'confluence' ? requestConfluence : requestBitbucket;
 
     // Placeholder for the request headers
-    const headers = {} as Record<string, string>;
+    const headers = {
+      'Content-Type': 'application/json'
+    } as Record<string, string>;
 
     // Convert the Axios request config
     if (config?.headers) {
@@ -93,9 +95,14 @@ export class ForgeRestClient implements RestClient {
     // Add the experimental API header by default
     headers['X-ExperimentalApi'] = 'opt-in';
 
-    const body = (data || config?.data || null) as BodyInit|null;
+    // JSON stringify any data that is going to be sent in the body
+    // The body should be empty for GET and HEAD requests
+    const body = 
+      method === RestClientMethods.GET || method === RestClientMethods.HEAD
+        ? undefined
+        : data || config?.data ? JSON.stringify(data || config?.data) : null;
 
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => client(endpoint, { method, headers, body})
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => client(endpoint, { method, headers, body })
       .then(response => this.toAxiosResponse<T>(response))
       .catch(err => {
         if (isOfType<Response>(err, 'status')) {
@@ -120,12 +127,12 @@ export class ForgeRestClient implements RestClient {
     }
   }
 
-  private toAxiosResponse<T>(response: Response, config?: AxiosRequestConfig): AxiosResponse<T> {
+  private async toAxiosResponse<T>(response: Response, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const responseHeaders: RawAxiosResponseHeaders = {};
     response.headers.forEach((value, key) => responseHeaders[key] = value);        
 
     const result: AxiosResponse<T> = {
-      data: response.json() as T,
+      data: await response.json() as T,
       status: response.status,
       statusText: response.statusText,
       headers: responseHeaders,
