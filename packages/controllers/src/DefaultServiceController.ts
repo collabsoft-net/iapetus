@@ -6,7 +6,7 @@ import { results } from 'inversify-express-utils';
 import { AbstractServiceController } from '.';
 
 @injectable()
-export abstract class DefaultServiceController<T extends Entity, X extends EntityDTO<T>, Y extends Session> extends AbstractServiceController<T, X, Y> {
+export abstract class DefaultServiceController<T extends Entity, X extends EntityDTO<T>, Y extends Record<string, unknown>> extends AbstractServiceController<T, X, Y> {
 
   @httpPost('/')
   async create(@requestBody() item: X): Promise<X|results.StatusCodeResult> {

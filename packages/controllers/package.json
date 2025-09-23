@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@collabsoft-net/dto": "workspace:*",
-    "@collabsoft-net/functions": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
     "@sentry/minimal": "6.19.7",
@@ -57,7 +56,6 @@
   },
   "peerDependencies": {
     "@collabsoft-net/dto": "*",
-    "@collabsoft-net/functions": "*",
     "@collabsoft-net/services": "*",
     "@sentry/minimal": "^6.19.0",
     "@sentry/node": "^9.17.0",
