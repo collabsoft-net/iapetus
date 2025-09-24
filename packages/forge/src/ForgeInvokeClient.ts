@@ -9,12 +9,12 @@ export class ForgeInvokeClient implements RestClient {
 
   protected duration?: number;
 
-  constructor(protected product: 'jira'|'confluence'|'bitbucket', protected cacheService?: CachingService, cacheDuration?: number) {
+  constructor(protected product: 'jira'|'confluence'|'bitbucket', protected name: string, protected cacheService?: CachingService, cacheDuration?: number) {
     this.duration = cacheDuration;
   }
 
   cached(duration: number) {
-    return new ForgeInvokeClient(this.product, this.cacheService, duration);
+    return new ForgeInvokeClient(this.product, this.name, this.cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
@@ -79,7 +79,7 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => invoke(method, { endpoint, data, params })
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => invoke(this.name, { method, endpoint, data, params })
       .then(response => this.toAxiosResponse<T>(response as T))
       .catch(err => {
         if (isOfType<Error>(err, 'message')) {
