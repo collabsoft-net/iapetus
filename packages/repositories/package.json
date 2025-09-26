@@ -49,6 +49,11 @@
       "types": "./dist/types/server/FirebaseAdminStorageProvider.d.ts",
       "require": "./dist/cjs/server/FirebaseAdminStorageProvider.js",
       "import": "./dist/es2020/server/FirebaseAdminStorageProvider.js"
+    },
+    "./server/ForgeRepository": {
+      "types": "./dist/types/server/ForgeRepository.d.ts",
+      "require": "./dist/cjs/server/ForgeRepository.js",
+      "import": "./dist/es2020/server/ForgeRepository.js"
     }
   },
   "scripts": {
@@ -69,6 +74,7 @@
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/emitters": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
+    "@forge/kvs": "1.0.6",
     "@google-cloud/storage": "7.16.0",
     "@types/node": "<19.0.0",
     "@types/uniqid": "5.3.4",
@@ -84,6 +90,7 @@
   "peerDependencies": {
     "@collabsoft-net/dto": "*",
     "@collabsoft-net/emitters": "*",
+    "@forge/kvs": "*",
     "@google-cloud/storage": "^7.16.0",
     "firebase": "^11.7.0",
     "firebase-admin": "^13.3.0",
