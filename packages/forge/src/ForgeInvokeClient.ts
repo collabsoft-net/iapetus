@@ -103,7 +103,10 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   private toAxiosResponse<T>(response: T, config?: AxiosRequestConfig): AxiosResponse<T> {
-    return isOfType<AxiosResponse>(response, 'status') ? response : {
+    return isOfType<AxiosResponse>(response, 'status') ? { 
+      ...response, 
+      data: JSON.parse(response.data)
+    } : {
       data: response,
       status: 200,
       statusText: 'OK',
