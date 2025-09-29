@@ -13,7 +13,7 @@ export class ForgeRepository<T extends Entity> implements Repository<T> {
 
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(protected name: string, protected readOnly?: boolean) {
+  constructor(protected readOnly?: boolean) {
     this.readOnly = readOnly;
   }
 
