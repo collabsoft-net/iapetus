@@ -118,6 +118,7 @@ declare global {
 
       dialog: {
         open: <T, X> (options: DialogOptions<T, X>) => Promise<void>;
+        getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
         close: (payload?: unknown) => void;
       },

@@ -91,6 +91,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         });
         return modal.open();
       },
+      getProperties: () => context.extension.modal,
       // Forge does not support dialog buttons
       getButton: () => null,
       close: (payload?: unknown) => view.close(payload),

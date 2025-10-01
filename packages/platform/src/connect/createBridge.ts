@@ -2,7 +2,7 @@ import { APRestClient } from '@collabsoft-net/clients';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
+import { waitForAP, createPlaceholder, getDialogProps } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
 
@@ -100,6 +100,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           };
         });
       },
+      getProperties: getDialogProps,
       getButton: (name: 'cancel'|'submit'|string) => {
         if (name === 'cancel' || name === 'submit') {
           return AP.dialog.getButton(name)
