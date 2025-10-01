@@ -2,19 +2,19 @@
 import { RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { invoke } from '@forge/bridge';
+import { invoke, invokeRemote } from '@forge/bridge';
 import { isOfType } from '@collabsoft-net/helpers';
 
 export class ForgeInvokeClient implements RestClient {
 
   protected duration?: number;
 
-  constructor(protected name: string, protected cacheService?: CachingService, cacheDuration?: number) {
+  constructor(protected type: 'native'|'remote' = 'native', protected name: string, protected cacheService?: CachingService, cacheDuration?: number) {
     this.duration = cacheDuration;
   }
 
   cached(duration: number) {
-    return new ForgeInvokeClient(this.name, this.cacheService, duration);
+    return new ForgeInvokeClient(this.type, this.name, this.cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
@@ -79,15 +79,40 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean|undefined>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => invoke(this.name, { method, endpoint, data, params })
-      .then(response => this.toAxiosResponse<T>(response as T))
-      .catch(err => {
-        if (isOfType<Error>(err, 'message')) {
-          throw new AxiosError<T>(err.message);
-        } else {
-          throw new AxiosError<T>('An unknown error occurred');
-        }
-      });
+
+
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => {
+
+      // Turn the parameters into a proper querystring
+      const querystring: Record<string, string> = {};
+      Object.entries(params || {}).forEach(([ key, value ]) => querystring[key] = String(value));
+      const query = new URLSearchParams(querystring);
+
+      // Add the parameters to the endpoint as this is part of the request
+      const path = `${endpoint}?${query.toString()}`;
+
+      const headers: Record<string, string> = {};
+      Object.entries(config?.headers || {}).forEach(([ key, value ]) => headers[String(key)] = String(value));
+
+      const invocation = this.type === 'native' 
+        ? invoke(this.name, { method, path, data, params, headers }) 
+        : invokeRemote({
+          path,
+          method: (method === RestClientMethods.HEAD ? 'GET' : method) as 'GET'|'POST'|'PUT'|'PATCH'|'DELETE',
+          body: data,
+          headers
+        });
+
+      return invocation
+        .then(response => this.toAxiosResponse<T>(response as T))
+        .catch(err => {
+          if (isOfType<Error>(err, 'message')) {
+            throw new AxiosError<T>(err.message);
+          } else {
+            throw new AxiosError<T>('An unknown error occurred');
+          }
+        });
+    }
 
     if (this.cacheService) {
       try {
