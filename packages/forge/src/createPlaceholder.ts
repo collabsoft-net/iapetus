@@ -1,5 +1,6 @@
 import { Property } from 'csstype';
 import { view } from '@forge/bridge';
+import { isOfType } from '@collabsoft-net/helpers';
 
 type ModuleType = 'page'|'editor'|'dialog'|'legacy';
 
@@ -16,14 +17,25 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
 
   const context = await view.getContext();
 
-  const moduleId = defaultModuleId || context.moduleKey;
+  // When opening a modal, the moduleKey context is set to the parent module
+  // This is because modals do not have their own modules, they only have resources
+  // This is why Dialog options are required to provide the 'moduleKey' in the modal context
+  let moduleKey = context.moduleKey;
+  if (isOfType(context.extension.modal, 'moduleKey')) {
+    moduleKey = context.extension.modal.moduleKey
+  }
+
+  const moduleId = defaultModuleId || moduleKey;
   let moduleType = defaultModuleType;
 
   if (!moduleType) {
-    if (context.extension.type === 'macro' && (context.extension.macro.isConfiguring || context.extension.macro.isInserting)) {
-      moduleType = 'editor';
-    } else if (context.extension.type === 'modal') {
+    // Make sure to check for modal context data first
+    // Modals do not have a module type, only a resource
+    // The only way to know we are opening is modal is because of the modal context
+    if (context.extension.modal) {
       moduleType = 'dialog';
+    } else if (context.extension.type === 'macro' && (context.extension.macro.isConfiguring || context.extension.macro.isInserting)) {
+      moduleType = 'editor';
     } else {
       moduleType = 'page';
     }
