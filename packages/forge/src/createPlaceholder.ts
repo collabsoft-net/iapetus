@@ -32,7 +32,7 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
     // Make sure to check for modal context data first
     // Modals do not have a module type, only a resource
     // The only way to know we are opening is modal is because of the modal context
-    if (context.extension.modal) {
+    if (isOfType(context.extension.modal, 'moduleKey')) {
       moduleType = 'dialog';
     } else if (context.extension.type === 'macro' && (context.extension.macro.isConfiguring || context.extension.macro.isInserting)) {
       moduleType = 'editor';
