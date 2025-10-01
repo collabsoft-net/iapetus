@@ -5,7 +5,7 @@ import api, { APIResponse, route } from '@forge/api';
 import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
 import { isOfType } from '@collabsoft-net/helpers';
 
-export class ForgeAppRestClient implements RestClient {
+export class ForgeRestClient implements RestClient {
 
   protected duration?: number;
   protected _accountId?: string;
@@ -14,14 +14,14 @@ export class ForgeAppRestClient implements RestClient {
     this.duration = cacheDuration;
   }
 
-  as(accountId: string): ForgeAppRestClient {
-    const instance = new ForgeAppRestClient(this.product, this.cacheService, this.duration);
+  as(accountId: string): ForgeRestClient {
+    const instance = new ForgeRestClient(this.product, this.cacheService, this.duration);
     instance._accountId = accountId;
     return instance;
   }
 
   cached(duration: number) {
-    return new ForgeAppRestClient(this.product, this.cacheService, duration);
+    return new ForgeRestClient(this.product, this.cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;

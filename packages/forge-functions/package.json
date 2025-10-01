@@ -1,7 +1,7 @@
 {
-  "name": "@collabsoft-net/forge",
+  "name": "@collabsoft-net/forge-functions",
   "version": "1.1.2-alpha.206",
-  "description": "Client-side helper functions for Atlassian Forge",
+  "description": "Backend helper functions for Atlassian Forge",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
   "license": "Apache-2.0",
@@ -29,28 +29,10 @@
     "start": "yarn run nodemon --watch src -e '.ts' --exec 'yarn build'",
     "prepack": "yarn build"
   },
-  "exports": {
-    "./backend": {
-      "types": "./dist/types/backend/index.d.ts",
-      "require": "./dist/cjs/backend/index.js",
-      "import": "./dist/es2020/backend/index.js"
-    },
-    "./frontend": {
-      "types": "./dist/types/frontend/index.d.ts",
-      "require": "./dist/cjs/frontend/index.js",
-      "import": "./dist/es2020/frontend/index.js"
-    },
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/es2020/index.js"
-    }
-  },
   "bugs": {
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@forge/bridge": "4.4.1",
     "@types/node": "<19.0.0",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
@@ -59,7 +41,7 @@
     "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@forge/bridge": "4.4.1"
+    "@forge/api": "4.4.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

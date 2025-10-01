@@ -5,7 +5,7 @@ import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxi
 import { invokeRemote } from '@forge/api';
 import { isOfType } from '@collabsoft-net/helpers';
 
-export class ForgeAppInvokeClient implements RestClient {
+export class ForgeInvokeClient implements RestClient {
 
   protected duration?: number;
 
@@ -14,7 +14,7 @@ export class ForgeAppInvokeClient implements RestClient {
   }
 
   cached(duration: number) {
-    return new ForgeAppInvokeClient(this.name, this.cacheService, duration);
+    return new ForgeInvokeClient(this.name, this.cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
