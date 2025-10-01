@@ -1,6 +1,6 @@
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { createPlaceholder, ForgeRestClient, getMacroDataProps } from '@collabsoft-net/forge';
+import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 
@@ -163,7 +163,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     macro: {
       disableCloseOnSubmit: () => {},
-      getProperties: getMacroDataProps,
+      getProperties: async () => context.extension.type === 'macro' ? context.extension.config : {},
       setProperties: <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => view.submit({
         config: data,
         body: typeof body === 'string' ? JSON.parse(body) : body,
