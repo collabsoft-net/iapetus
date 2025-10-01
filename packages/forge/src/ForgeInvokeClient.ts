@@ -7,14 +7,22 @@ import { isOfType } from '@collabsoft-net/helpers';
 
 export class ForgeInvokeClient implements RestClient {
 
+  protected name?: string;
+  protected cacheService?: CachingService;
   protected duration?: number;
 
-  constructor(protected type: 'native'|'remote' = 'native', protected name: string, protected cacheService?: CachingService, cacheDuration?: number) {
-    this.duration = cacheDuration;
+  constructor(type: 'native', name: string, cacheService?: CachingService, cacheDuration?: number);
+  constructor(type: 'remote', cacheService?: CachingService, cacheDuration?: number);
+  constructor(protected type: 'native'|'remote', nameOrCacheService?: string|CachingService, cacheServiceOrDuration?: CachingService|number, cacheDuration?: number) {
+    this.name = typeof nameOrCacheService === 'string' ? nameOrCacheService : undefined;
+    this.cacheService = typeof nameOrCacheService !== 'string' ? nameOrCacheService : typeof cacheServiceOrDuration !== 'number' ? cacheServiceOrDuration : undefined;
+    this.duration = typeof cacheServiceOrDuration === 'number' ? cacheServiceOrDuration : cacheDuration;
   }
 
   cached(duration: number) {
-    return new ForgeInvokeClient(this.type, this.name, this.cacheService, duration);
+    return this.type === 'native' 
+      ? new ForgeInvokeClient(this.type, this.name as string, this.cacheService, duration)
+      : new ForgeInvokeClient(this.type, this.cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;
@@ -94,7 +102,7 @@ export class ForgeInvokeClient implements RestClient {
       const headers: Record<string, string> = {};
       Object.entries(config?.headers || {}).forEach(([ key, value ]) => headers[String(key)] = String(value));
 
-      const invocation = this.type === 'native' 
+      const invocation = typeof this.name === 'string'
         ? invoke(this.name, { method, path, data, params, headers }) 
         : invokeRemote({
           path,
