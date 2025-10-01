@@ -78,7 +78,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
-      open: async <T, X> (options: Platform.DialogOptions<T, X>) => {
+      open: async <T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>) => {
         const dialogSize = 
           options.size === 'xlarge'
             ? 'x-large'

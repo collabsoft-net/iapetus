@@ -66,7 +66,11 @@ declare global {
       title?: string;
     }
 
-    type DialogOptions<T, X> = {
+    interface DialogContext extends Record<string, unknown> {
+      moduleKey: string
+    }
+    
+    type DialogOptions<T extends DialogContext, X> = {
       key: string;
       size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
       height?: string;
@@ -117,7 +121,7 @@ declare global {
       };
 
       dialog: {
-        open: <T, X> (options: DialogOptions<T, X>) => Promise<void>;
+        open: <T extends DialogContext, X> (options: DialogOptions<T, X>) => Promise<void>;
         getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
         close: (payload?: unknown) => void;

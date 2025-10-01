@@ -80,7 +80,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
-      open: <T, X> (options: Platform.DialogOptions<T, X>) => {
+      open: <T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>) => {
         const modal = new Modal({
           resource: options.key,
           onClose: options.onClose,
