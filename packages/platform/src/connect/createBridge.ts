@@ -6,7 +6,7 @@ import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
 
-export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
+export const createBridge: Platform.CreateBridge<Applications, Platform.ConnectBridgeOptions<Applications>> = async <T extends Applications> ({ product }: Platform.ConnectBridgeOptions<T>) => {
 
   const AP = await waitForAP();
 
@@ -43,6 +43,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     context: {
+      getToken: async () => isOfType<AP.PlatformInstance>(AP, 'context') ? AP.context.getToken() : null,
       content: async () => {
         if (isOfType<AP.JiraInstance>(AP, 'jira')) {
           const context = await AP.context.getContext();

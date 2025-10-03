@@ -4,7 +4,7 @@ import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 
-export const createBridge: Platform.CreateBridge = async <T extends Applications> (product: T) => {
+export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBridgeOptions<Applications>> = async <T extends Applications> ({ product, service }: Platform.ForgeBridgeOptions<T>) => {
 
   const context = await view.getContext();
   const historyObj = await view.createHistory().catch(() => null);
@@ -36,6 +36,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     context: {
+      getToken: () => service.getToken().catch(() => null),
       content: async () => {
         if (product === Applications.JIRA) {
           return {

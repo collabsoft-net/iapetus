@@ -3,7 +3,7 @@
 // They are taken from the Forge / AP / Connect documentation and can be used once the method is implemented
 
 import { Applications, Modes } from "@collabsoft-net/enums";
-import { BitbucketClientService, ConfluenceClientService, JiraClientService } from "@collabsoft-net/services";
+import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from "@collabsoft-net/services";
 import { Props } from "@collabsoft-net/types";
 import { NavigationLocation } from "@forge/bridge/out/router/types";
 import { DocNode } from '@atlaskit/adf-schema';
@@ -15,7 +15,16 @@ declare global {
 
   namespace Platform {
 
-    type CreateBridge = <T extends Applications> (product: T) => Promise<Platform.Bridge<T>>;
+    type BridgeOptions<T extends Applications> = Record<string, unknown> & {
+      product: T;
+    }
+
+    type ConnectBridgeOptions<T extends Applications> = BridgeOptions<T>;
+    type ForgeBridgeOptions<T extends Applications> = BridgeOptions<T> & {
+      service: AbstractRestClientService;
+    }
+
+    type CreateBridge<T extends Applications, X extends BridgeOptions<T>> = (options: X) => Promise<Platform.Bridge<T>>;
 
     type ClientService<T extends Applications> = T extends Applications.JIRA
       ? JiraClientService<Modes>
@@ -117,6 +126,7 @@ declare global {
       };
 
       context: {
+        getToken: () => Promise<string|null>;
         content: () => Promise<ContentContext<T>>; 
       };
 
