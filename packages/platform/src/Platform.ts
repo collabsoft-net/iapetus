@@ -15,7 +15,7 @@ declare global {
 
   namespace Platform {
 
-    type CreateBridge = <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => Promise<Platform.Bridge<T>>;
+    type CreateBridge = <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => Promise<Platform.Bridge<T, X>>;
 
     type ClientService<T extends Applications> = T extends Applications.JIRA
       ? JiraClientService<Modes>
@@ -94,12 +94,12 @@ declare global {
 
     type RouterNavigationLocation = NavigationLocation;
 
-    interface Bridge<T extends Applications> {
+    interface Bridge<T extends Applications, X extends AbstractRestClientService> {
 
       product: T,
       platform: Modes,
       client: ClientService<T>;
-      service: AbstractRestClientService;
+      service: X;
 
       init: {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
