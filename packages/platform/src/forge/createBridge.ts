@@ -3,11 +3,13 @@ import { BitbucketClientService, ConfluenceClientService, JiraClientService } fr
 import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
+import { TokenExchangeDTO } from '@collabsoft-net/dto';
 
 export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBridgeOptions<Applications>> = async <T extends Applications> ({ product, service }: Platform.ForgeBridgeOptions<T>) => {
 
   const context = await view.getContext();
   const historyObj = await view.createHistory().catch(() => null);
+  let token: TokenExchangeDTO|null = null;
 
   return {
     
@@ -36,7 +38,12 @@ export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBri
     },
 
     context: {
-      getToken: () => service.getToken().catch(() => null),
+      getToken: async () => {
+        if (!token || token.expires <= new Date().getTime()) {
+          token = await service.getToken().catch(() => null);
+        }
+        return token ? token.token : null; 
+      },
       content: async () => {
         if (product === Applications.JIRA) {
           return {

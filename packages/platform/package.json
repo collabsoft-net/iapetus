@@ -35,7 +35,9 @@
   "devDependencies": {
     "@atlaskit/adf-schema": "49.0.5",
     "@collabsoft-net/connect": "workspace:*",
+    "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/enums": "workspace:*",
+    "@collabsoft-net/forge": "workspace:*",
     "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
@@ -48,8 +50,11 @@
   },
   "peerDependencies": {
     "@collabsoft-net/connect": "*",
+    "@collabsoft-net/dto": "*",
+    "@collabsoft-net/enums": "*",
     "@collabsoft-net/forge": "*",
-    "@collabsoft-net/helpers": "*"
+    "@collabsoft-net/helpers": "*",
+    "@collabsoft-net/services": "*"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

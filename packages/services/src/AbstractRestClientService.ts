@@ -10,9 +10,9 @@ export abstract class AbstractRestClientService {
 
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO|EntityDTO<Entity>>>) {}
 
-  async getToken(): Promise<string> {
+  async getToken(): Promise<TokenExchangeDTO> {
     const { data } = await this.client.get<TokenExchangeDTO>(RestClientEndpoints.TOKEN_EXCHANGE);
-    return data.token;
+    return data;
   }
 
   async count<T extends DTO|EntityDTO<Entity>>(type: Type<T>, params: Record<string, string|number|boolean|undefined> = {}): Promise<number|undefined> {
