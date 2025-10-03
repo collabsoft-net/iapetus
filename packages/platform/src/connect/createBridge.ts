@@ -1,12 +1,12 @@
 import { APRestClient } from '@collabsoft-net/clients';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
 
-export const createBridge: Platform.CreateBridge<Applications, Platform.BridgeOptions> = async <T extends Applications> ({ product, service }: Platform.BridgeOptions) => {
+export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => {
 
   const AP = await waitForAP();
 

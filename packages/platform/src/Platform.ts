@@ -15,12 +15,7 @@ declare global {
 
   namespace Platform {
 
-    type BridgeOptions = {
-      product: Applications;
-      service: AbstractRestClientService;
-    }
-
-    type CreateBridge<T extends Applications, X extends BridgeOptions> = (options: X) => Promise<Platform.Bridge<T>>;
+    type CreateBridge = <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => Promise<Platform.Bridge<T>>;
 
     type ClientService<T extends Applications> = T extends Applications.JIRA
       ? JiraClientService<Modes>

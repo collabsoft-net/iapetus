@@ -1,11 +1,11 @@
 import { Applications, Modes } from '@collabsoft-net/enums';
-import { BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
 
-export const createBridge: Platform.CreateBridge<Applications, Platform.BridgeOptions> = async <T extends Applications> ({ product, service }: Platform.BridgeOptions) => {
+export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => {
 
   const context = await view.getContext();
   const historyObj = await view.createHistory().catch(() => null);
