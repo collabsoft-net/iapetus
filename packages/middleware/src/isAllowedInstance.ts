@@ -9,7 +9,7 @@ const getBaseURL = (req: express.Request): string|null => {
   const { body, user } = req;
   if (body && body.baseUrl) {
     return body.baseUrl;
-  } else if (isOfType<Session>(user, 'instance')) {
+  } else if (isOfType<ConnectSession>(user, 'instance')) {
     return user.instance.baseUrl;
   }
   return null;

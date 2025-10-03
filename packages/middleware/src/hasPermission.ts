@@ -1,4 +1,5 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
+import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
 import { logger } from 'firebase-functions';
@@ -9,8 +10,8 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
       const { user } = req;
       let hasAllRequiredPermissions = false;
 
-      if (user) {
-        const { accountId, instance, mode } = user as Session;
+      if (user && isOfType<ConnectSession>(user, 'instance')) {
+        const { accountId, instance, mode } = user;
         if (instance.productType === 'jira') {
           const service = new JiraClientService(new JiraRestClient(instance), mode);
           hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
@@ -42,8 +43,8 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
       const { user, query, params } = req;
       let hasAllRequiredPermissions = false;
 
-      if (user) {
-        const { accountId, instance, mode } = user as Session;
+      if (user && isOfType<ConnectSession>(user, 'instance')) {
+        const { accountId, instance, mode } = user;
         const entityId = (user as Session)[paramName] || query[paramName] || params[paramName];
         if (entityId && typeof entityId === 'string') {
           if (instance.productType === 'jira') {

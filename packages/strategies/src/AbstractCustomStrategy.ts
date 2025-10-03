@@ -9,7 +9,7 @@ import { Strategy } from 'passport-custom';
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractCustomStrategy<T, X extends Session> extends AbstractStrategy<T, X> implements IStrategy {
+export abstract class AbstractCustomStrategy<T, X extends Record<string, unknown>> extends AbstractStrategy<T, X> implements IStrategy {
 
   get name(): string {
     return 'custom';

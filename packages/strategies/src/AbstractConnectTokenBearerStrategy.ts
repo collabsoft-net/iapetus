@@ -11,7 +11,7 @@ import { injectable } from 'inversify';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractBearerStrategy<string, Y> {
+export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Record<string, unknown>> extends AbstractBearerStrategy<Y> {
 
   protected abstract get service(): AbstractService<T, X>;
 

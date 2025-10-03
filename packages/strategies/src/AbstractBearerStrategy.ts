@@ -9,7 +9,7 @@ import { IStrategyOptions, Strategy, VerifyFunctions } from 'passport-http-beare
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractBearerStrategy<T, X extends Session> extends AbstractStrategy<T, X> implements IStrategy {
+export abstract class AbstractBearerStrategy<X extends Record<string, unknown>> extends AbstractStrategy<string, X> implements IStrategy {
 
   get name(): string {
     return 'bearer';
@@ -29,7 +29,7 @@ export abstract class AbstractBearerStrategy<T, X extends Session> extends Abstr
       name = _name;
     })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: X) => void) => {
       try {
-        const session = await this.process(request, token as T);
+        const session = await this.process(request, token);
         done(null, session);
       } catch (error) {
         done(error as Error);

@@ -12,7 +12,7 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
+export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Record<string, unknown>> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
 
   protected abstract get service(): AbstractService<T, X>;
 

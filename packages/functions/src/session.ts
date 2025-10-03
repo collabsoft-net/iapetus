@@ -6,8 +6,15 @@ export {};
 
 declare global {
 
+  type Session = Record<string, unknown>
 
-  interface Session extends Record<string, unknown> {
+  interface ForgeSession extends Session {
+    instance: Atlassian.FIT;
+    appToken?: string;
+    userToken?: string;
+  }
+
+  interface ConnectSession extends Session {
     accountId: string;
     instance: ACInstance;
     mode: Modes;
@@ -15,7 +22,8 @@ declare global {
 
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Express {
-  /* eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
+    /* eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type */
     interface User extends Session {}
   }
+
 }

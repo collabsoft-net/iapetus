@@ -8,13 +8,13 @@ import { createRemoteJWKSet, decodeJwt, jwtVerify } from 'jose';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractForgeTokenBearerStrategy<T, X extends Session> extends AbstractBearerStrategy<T, X> {
+export abstract class AbstractForgeTokenBearerStrategy<X extends Record<string, unknown>> extends AbstractBearerStrategy<X> {
 
   constructor(private allowAnonymousAccess = false) {
     super();
   }
 
-  protected async process(request: express.Request, token?: T): Promise<X> {
+  protected async process(request: express.Request, token?: string): Promise<X> {
     if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
 
     // Make sure to check if this is even a valid FIT

@@ -9,7 +9,7 @@ import { Strategy, StrategyOptions, StrategyOptionsWithRequest } from 'passport-
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractJWTStrategy<T, X extends Session> extends AbstractStrategy<T, X> implements IStrategy {
+export abstract class AbstractJWTStrategy<T, X extends Record<string, unknown>> extends AbstractStrategy<T, X> implements IStrategy {
 
   get name(): string {
     return 'jwt';
