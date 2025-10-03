@@ -9,10 +9,9 @@ import { injectable } from 'inversify';
 import { AbstractCustomStrategy } from './AbstractCustomStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractCustomStrategy<T, X, Y> {
+export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractCustomStrategy<string, Y> {
 
   protected abstract get service(): AbstractService<T, X>;
-
   protected abstract get clientIdentifierKey(): 'clientId'|'clientKey'|'tenantId';
 
   protected async process(request: express.Request): Promise<Y> {
@@ -40,5 +39,16 @@ export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X ex
       tenantId && typeof tenantId === 'string' ? tenantId : null
     );
   }
+
+  protected async updateLastActive(instance: T, { headers }: express.Request) {
+    if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
+      // Only update the lastActive if non-existant or less than 24 hours ago
+      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
+        instance.lastActive = new Date().getTime();
+        await this.service.save(instance);
+      }
+    }
+  }
+
 
 }

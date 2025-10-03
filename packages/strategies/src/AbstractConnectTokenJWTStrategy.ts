@@ -3,6 +3,7 @@ import '@collabsoft-net/functions';
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
+import { AbstractService } from '@collabsoft-net/services';
 import { decodeSymmetric, SymmetricAlgorithm } from 'atlassian-jwt';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -11,7 +12,9 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractJWTStrategy<T, X, Atlassian.JWT, Y> {
+export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
+
+  protected abstract get service(): AbstractService<T, X>;
 
   protected get strategyOptions(): StrategyOptions {
     return {
@@ -54,5 +57,14 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X 
 
   protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
 
+  protected async updateLastActive(instance: T, { headers }: express.Request) {
+    if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
+      // Only update the lastActive if non-existant or less than 24 hours ago
+      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
+        instance.lastActive = new Date().getTime();
+        await this.service.save(instance);
+      }
+    }
+  }
 
 }

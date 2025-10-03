@@ -11,7 +11,7 @@ import { injectable } from 'inversify';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractBearerStrategy<T, X, Y> {
+export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractBearerStrategy<string, Y> {
 
   protected abstract get service(): AbstractService<T, X>;
 
@@ -42,5 +42,15 @@ export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance,
   }
 
   protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
+
+  protected async updateLastActive(instance: T, { headers }: express.Request) {
+    if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
+      // Only update the lastActive if non-existant or less than 24 hours ago
+      if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
+        instance.lastActive = new Date().getTime();
+        await this.service.save(instance);
+      }
+    }
+  }
 
 }

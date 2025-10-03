@@ -1,8 +1,5 @@
 import '@collabsoft-net/functions';
 
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
-import { AbstractService } from '@collabsoft-net/services';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -12,7 +9,7 @@ import { IStrategyOptions, Strategy, VerifyFunctions } from 'passport-http-beare
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractStrategy<T, X, string, Y> implements IStrategy {
+export abstract class AbstractBearerStrategy<T, X extends Session> extends AbstractStrategy<T, X> implements IStrategy {
 
   get name(): string {
     return 'bearer';
@@ -22,18 +19,17 @@ export abstract class AbstractBearerStrategy<T extends ACInstance, X extends ACI
     return { session: false };
   }
 
-  protected abstract get service(): AbstractService<T, X>;
   protected abstract get strategyOptions(): IStrategyOptions;
 
   get strategy(): passport.Strategy {
     const _name = this.name;
     const _options = { ...this.strategyOptions, passReqToCallback: true };
 
-    return new (class BearerStrategy<Z extends VerifyFunctions> extends Strategy<Z> {
+    return new (class BearerStrategy<Y extends VerifyFunctions> extends Strategy<Y> {
       name = _name;
-    })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: Y) => void) => {
+    })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: X) => void) => {
       try {
-        const session = await this.process(request, token);
+        const session = await this.process(request, token as T);
         done(null, session);
       } catch (error) {
         done(error as Error);

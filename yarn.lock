@@ -1849,6 +1849,7 @@ __metadata:
     axios: "npm:1.9.0"
     eslint: "npm:9.26.0"
     express: "npm:5.1.0"
+    jose: "npm:6.1.0"
     nodemon: "npm:3.1.10"
     passport: "npm:0.7.0"
     passport-custom: "npm:1.1.1"
@@ -1863,6 +1864,7 @@ __metadata:
     "@collabsoft-net/services": "*"
     axios: ^1.9.0
     express: ^5.1.0
+    jose: "*"
     passport: ^0.7.0
     passport-custom: ^1.1.0
     passport-http-bearer: ^1.0.0
@@ -12279,6 +12281,13 @@ __metadata:
     graceful-fs: "npm:^4.2.9"
     picomatch: "npm:^2.2.3"
   checksum: 30d58af6967e7d42bd903ccc098f3b4d3859ed46238fbc88d4add6a3f10bea00c226b93660285f058bc7a65f6f9529cf4eb80f8d4707f79f9e3a23686b4ab8f3
+  languageName: node
+  linkType: hard
+
+"jose@npm:6.1.0":
+  version: 6.1.0
+  resolution: "jose@npm:6.1.0"
+  checksum: d111bc11fdb9566370992393615097d58618ba6ed29eee5d79b3bf4c460c93a6c0a9c5829d14b40342b376df16cde7d1bef79fda65c6bf09e1158875c17ae865
   languageName: node
   linkType: hard
 
