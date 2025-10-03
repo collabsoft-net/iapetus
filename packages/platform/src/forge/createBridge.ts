@@ -5,7 +5,7 @@ import { events, router, view, Modal } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
 
-export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBridgeOptions<Applications>> = async <T extends Applications> ({ product, service }: Platform.ForgeBridgeOptions<T>) => {
+export const createBridge: Platform.CreateBridge<Applications, Platform.BridgeOptions> = async <T extends Applications> ({ product, service }: Platform.BridgeOptions) => {
 
   const context = await view.getContext();
   const historyObj = await view.createHistory().catch(() => null);
@@ -15,6 +15,14 @@ export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBri
     
     product,
     platform: Modes.FORGE,
+    service,
+
+    client: (product === 'jira' 
+      ? new JiraClientService(new ForgeRestClient(product), Modes.FORGE)
+      : product === 'confluence'
+        ? new ConfluenceClientService(new ForgeRestClient(product), Modes.FORGE)
+        : new BitbucketClientService(new ForgeRestClient(product), Modes.FORGE)
+    ) as Platform.ClientService<T>,
 
     init: {
       createPlaceholder: createPlaceholder
@@ -186,14 +194,7 @@ export const createBridge: Platform.CreateBridge<Applications, Platform.ForgeBri
           keepEditing: false
         });
       }
-    },
-
-    client: (product === 'jira' 
-      ? new JiraClientService(new ForgeRestClient(product), Modes.FORGE)
-      : product === 'confluence'
-        ? new ConfluenceClientService(new ForgeRestClient(product), Modes.FORGE)
-        : new BitbucketClientService(new ForgeRestClient(product), Modes.FORGE)
-    ) as Platform.ClientService<T>
+    }
   }
 
 };

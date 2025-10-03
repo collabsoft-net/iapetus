@@ -15,16 +15,12 @@ declare global {
 
   namespace Platform {
 
-    type BridgeOptions<T extends Applications> = Record<string, unknown> & {
-      product: T;
-    }
-
-    type ConnectBridgeOptions<T extends Applications> = BridgeOptions<T>;
-    type ForgeBridgeOptions<T extends Applications> = BridgeOptions<T> & {
+    type BridgeOptions = {
+      product: Applications;
       service: AbstractRestClientService;
     }
 
-    type CreateBridge<T extends Applications, X extends BridgeOptions<T>> = (options: X) => Promise<Platform.Bridge<T>>;
+    type CreateBridge<T extends Applications, X extends BridgeOptions> = (options: X) => Promise<Platform.Bridge<T>>;
 
     type ClientService<T extends Applications> = T extends Applications.JIRA
       ? JiraClientService<Modes>
@@ -107,6 +103,8 @@ declare global {
 
       product: T,
       platform: Modes,
+      client: ClientService<T>;
+      service: AbstractRestClientService;
 
       init: {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
@@ -163,8 +161,6 @@ declare global {
         // Unfortunately, this is undocumented
         popState: (handler: (state: HistoryPopState) => void) => void;
       };
-
-      client: ClientService<T>;
     
       macro: {
         disableCloseOnSubmit: () => void;
@@ -172,7 +168,6 @@ declare global {
         setProperties: <T> (data: T, body?: string|DocNode, keepEditing?: boolean) => Promise<void>;
         close: () => void;
       };
-
     }
 
   }

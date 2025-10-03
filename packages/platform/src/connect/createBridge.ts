@@ -6,7 +6,7 @@ import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
 
-export const createBridge: Platform.CreateBridge<Applications, Platform.ConnectBridgeOptions<Applications>> = async <T extends Applications> ({ product }: Platform.ConnectBridgeOptions<T>) => {
+export const createBridge: Platform.CreateBridge<Applications, Platform.BridgeOptions> = async <T extends Applications> ({ product, service }: Platform.BridgeOptions) => {
 
   const AP = await waitForAP();
 
@@ -14,7 +14,15 @@ export const createBridge: Platform.CreateBridge<Applications, Platform.ConnectB
 
     product,
     platform: Modes.CONNECT,
+    service,
 
+    client: (product === 'jira'
+      ? new JiraClientService(new APRestClient(AP), Modes.CONNECT)
+      : product === 'confluence'
+        ? new ConfluenceClientService(new APRestClient(AP), Modes.FORGE)
+        : new BitbucketClientService(new APRestClient(AP), Modes.FORGE)
+    ) as Platform.ClientService<T>,
+    
     init: {
       createPlaceholder: createPlaceholder
     },
@@ -202,14 +210,7 @@ export const createBridge: Platform.CreateBridge<Applications, Platform.ConnectB
           AP.confluence.closeMacroEditor();
         }
       }
-    },
-
-    client: (product === 'jira'
-      ? new JiraClientService(new APRestClient(AP), Modes.CONNECT)
-      : product === 'confluence'
-        ? new ConfluenceClientService(new APRestClient(AP), Modes.FORGE)
-        : new BitbucketClientService(new APRestClient(AP), Modes.FORGE)
-    ) as Platform.ClientService<T>
+    }
 
   }
 };
