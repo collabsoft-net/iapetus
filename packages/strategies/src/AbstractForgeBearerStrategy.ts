@@ -30,7 +30,7 @@ export abstract class AbstractForgeTokenBearerStrategy<X extends Record<string, 
       issuer: 'forge/invocation-token',
     });
 
-    if (!this.allowAnonymousAccess && isNullOrEmpty(payload.sub)) {
+    if (!this.allowAnonymousAccess && isNullOrEmpty(payload.principal)) {
       throw new Error('Anonymous access is not allowed');
     }
 
