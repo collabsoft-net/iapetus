@@ -9,7 +9,7 @@ import { injectable } from 'inversify';
 import { AbstractCustomStrategy } from './AbstractCustomStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends Session> extends AbstractCustomStrategy<string, Y> {
+export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends ConnectSession> extends AbstractCustomStrategy<string, Y> {
 
   protected abstract get service(): AbstractService<T, X>;
   protected abstract get clientIdentifierKey(): 'clientId'|'clientKey'|'tenantId';
