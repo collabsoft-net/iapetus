@@ -97,7 +97,7 @@ export class ForgeInvokeClient implements RestClient {
       const query = new URLSearchParams(querystring);
 
       // Add the parameters to the endpoint as this is part of the request
-      const path = `${endpoint}?${query.toString()}`;
+      const path = Object.keys(querystring).length > 0 ? `${endpoint}?${query.toString()}` : endpoint;
 
       const headers: Record<string, string> = {};
       Object.entries(config?.headers || {}).forEach(([ key, value ]) => headers[String(key)] = String(value));
