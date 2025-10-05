@@ -93,7 +93,7 @@ export class ForgeInvokeClient implements RestClient {
       const headers: Record<string, string> = {};
       Object.entries(config?.headers || {}).forEach(([ key, value ]) => headers[String(key)] = String(value));
 
-      return invokeRemote(this.name, { path, method, body: data, headers })
+      return invokeRemote(this.name, { path, method: method.toUpperCase(), body: data, headers })
         .then(response => this.toAxiosResponse<T>(response as T))
         .catch(err => {
           if (isOfType<Error>(err, 'message')) {

@@ -106,7 +106,7 @@ export class ForgeInvokeClient implements RestClient {
         ? invoke(this.name, { method, path, data, params, headers }) 
         : invokeRemote({
           path,
-          method: (method === RestClientMethods.HEAD ? 'GET' : method) as 'GET'|'POST'|'PUT'|'PATCH'|'DELETE',
+          method: (method === RestClientMethods.HEAD ? 'GET' : method.toUpperCase()) as 'GET'|'POST'|'PUT'|'PATCH'|'DELETE',
           body: data,
           headers
         });
