@@ -1571,15 +1571,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/forge@workspace:packages/forge"
   dependencies:
+    "@collabsoft-net/dto": "workspace:*"
+    "@collabsoft-net/enums": "workspace:*"
+    "@collabsoft-net/types": "workspace:*"
     "@forge/bridge": "npm:4.4.1"
     "@types/node": "npm:<19.0.0"
     "@typescript-eslint/eslint-plugin": "npm:6.19.1"
     "@typescript-eslint/parser": "npm:6.19.1"
+    axios: "npm:1.9.0"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
     typescript: "npm:5.3.3"
   peerDependencies:
-    "@forge/bridge": 4.4.1
+    "@collabsoft-net/dto": "*"
+    "@collabsoft-net/enums": "*"
+    "@collabsoft-net/types": "*"
+    "@forge/bridge": "*"
+    axios: 1.9.0
   languageName: unknown
   linkType: soft
 
