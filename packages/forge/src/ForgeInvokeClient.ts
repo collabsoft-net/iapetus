@@ -136,23 +136,24 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   private toAxiosResponse<T>(response: T, config?: AxiosRequestConfig): AxiosResponse<T> {
-    if (isOfType<AxiosResponse>(response, 'status')) {
-      let data = response.data;
+    // We need to make sure we check multiple properties as the response object is not documented
+    let data = isOfType(response, 'data')
+      ? response.data
+      : (isOfType(response, 'body'))
+        ? response.body
+        : response;
 
-      try {
-        data = JSON.parse(data);
-      } catch {}
+    try {
+      data = typeof data === 'string' ? JSON.parse(data) : data;
+    } catch {}
 
-      return { ...response, data };
-    } else {
-      return {
-        data: response,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: this.toInternalAxiosRequestConfig(config)
-      };
-    }
+    return {
+      data,
+      status: isOfType(response, 'status') ? response.status : 200,
+      statusText: isOfType(response, 'statusText') ? response.statusText : 'OK',
+      headers: isOfType(response, 'headers') ? response.headers : {},
+      config: this.toInternalAxiosRequestConfig(config)
+    };
   }
 
   private toInternalAxiosRequestConfig(config?: AxiosRequestConfig): InternalAxiosRequestConfig {
