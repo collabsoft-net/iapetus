@@ -1,6 +1,6 @@
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
 import { RestClientEndpoints } from '@collabsoft-net/enums';
-import { isNullOrEmpty, isTypeOf } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isOfType, isTypeOf } from '@collabsoft-net/helpers';
 import { DTO, Entity, EntityDTO, Paginated, RestClient, Type } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
@@ -11,8 +11,12 @@ export abstract class AbstractRestClientService {
   constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO|EntityDTO<Entity>>>) {}
 
   async getToken(): Promise<TokenExchangeDTO> {
-    const { data } = await this.client.get<TokenExchangeDTO>(RestClientEndpoints.TOKEN_EXCHANGE);
-    return data;
+    if (isOfType(this.client, 'getToken') && typeof this.client.getToken === 'function') {
+      return this.client.getToken()
+    } else {
+      const { data } = await this.client.get<TokenExchangeDTO>(RestClientEndpoints.TOKEN_EXCHANGE);
+      return data;
+    }
   }
 
   async count<T extends DTO|EntityDTO<Entity>>(type: Type<T>, params: Record<string, string|number|boolean|undefined> = {}): Promise<number|undefined> {
