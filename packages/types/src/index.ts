@@ -5,6 +5,7 @@ export * from './CachingService';
 export * from './ConnectHelper';
 export * from './DefaultService';
 export * from './DTO';
+export * from './EncryptedFieldsEntity';
 export * from './Entity';
 export * from './Entrypoint';
 export * from './Events';
