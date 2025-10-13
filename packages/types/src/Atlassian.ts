@@ -53,10 +53,16 @@ declare global {
             name: string;
             apiBaseUrl: string;
           }
-        },
-        context?: Record<string, unknown>;
-        principal?: string;
+        }
       }
+      context?: Record<string, unknown>;
+      principal?: string;
+      aud?: string;
+      iss?: string;
+      iat?: string;
+      nbf?: string;
+      exp?: string;
+      jti?: string;
     }
 
     namespace Connect {
