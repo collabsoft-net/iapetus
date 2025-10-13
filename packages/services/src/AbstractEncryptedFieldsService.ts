@@ -107,7 +107,7 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
         (typeof value === 'string' && value.startsWith('aes256:'))
       ).forEach(([ key, value ]) => {
         const decipher = createDecipheriv('aes-256-cbc', cipherKey, nonce);
-        const decryptedValue = decipher.update(value, 'hex', 'utf8') + decipher.final('utf8');
+        const decryptedValue = decipher.update(value.substring(7), 'hex', 'utf8') + decipher.final('utf8');
         (decryptedEntity as unknown as Record<string, unknown>)[key] = decryptedValue;
       });
 
