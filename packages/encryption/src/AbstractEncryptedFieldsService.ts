@@ -1,6 +1,6 @@
 import { AbstractService } from '@collabsoft-net/services';
 import { EncryptedFieldsEntity, EncryptedFieldsEntityDTO, Paginated, QueryBuilder, QueryOptions, Repository } from '@collabsoft-net/types';
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
+import { createCipheriv, createDecipheriv, createHash, randomBytes, scryptSync } from 'crypto';
 
 import { EncryptionKeyManager } from './EncyptionKeyManager';
 
@@ -45,7 +45,7 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
     const result = await super.findAll();
     return {
       ...result,
-      values: result.values.map(this.decrypt)
+      values: result.values.map(this.decrypt.bind(this))
     }
   }
 
@@ -53,7 +53,7 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
     const result = await super.findAllByProperty(key, value);
     return {
       ...result,
-      values: result.values.map(this.decrypt)
+      values: result.values.map(this.decrypt.bind(this))
     }
   }
 
@@ -66,7 +66,7 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
 
     return {
       ...result,
-      values: result.values.map(this.decrypt)
+      values: result.values.map(this.decrypt.bind(this))
     }
   }
 
@@ -85,14 +85,16 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
     if (!encryptionKey) throw new Error(`Unable to find encryption key '${this.options.encryptionKeyName}'`);
 
     const nonce = randomBytes(16);
-    const cipherKey = scryptSync(encryptionKey, entity.salt, 32);
+    const pepper = createHash('sha256').update(entity.salt).digest('hex');
+    const cipherKey = scryptSync(`${encryptionKey}-${pepper}`, entity.salt, 32);
     const encryptedEntity = { ...entity, nonce: nonce.toString('hex') };
 
     Object.entries(entity)
       .filter(([ key ]) => key !== 'salt' && key !== 'nonce' && this.encryptedFields.includes(key as keyof T))
       .forEach(([ key, value ]) => {
         const cipher = createCipheriv('aes-256-cbc', cipherKey, nonce);
-        const encryptedValue = cipher.update(value, 'utf8', 'hex') + cipher.final('hex');
+        const payload = JSON.stringify(value);
+        const encryptedValue = cipher.update(payload, 'utf8', 'hex') + cipher.final('hex');
         (encryptedEntity as unknown as Record<string, unknown>)[key] = `${header};${encryptedValue}`;
       });
 
@@ -100,10 +102,8 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
   }
 
   private decrypt(entity: T): T {
-
     const isEncrypted = Object.entries(entity).some(([ _, value ]) => typeof value === 'string' && value.startsWith(`${this.options.headerPrefix}:`));
     if (!isEncrypted) return entity;
-
 
     const nonce = Buffer.from(entity.nonce, 'hex');
     const decryptedEntity = { ...entity };
@@ -115,15 +115,17 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
         this.encryptedFields.includes(key as keyof T) &&
         (typeof value === 'string' && value.startsWith('aes256:'))
       ).forEach(([ key, value ]) => {
-
         const [ header, encryptedValue ] = value.split(';');
         const encryptionKey = this.keyManager.fromHeader(header, this.options.headerPrefix, ':');
         if (!encryptionKey) throw new Error(`Unable to find encryption key '${this.options.encryptionKeyName}'`);
 
-        const cipherKey = scryptSync(encryptionKey, entity.salt, 32);
+        const pepper = createHash('sha256').update(entity.salt).digest('hex');
+        const cipherKey = scryptSync(`${encryptionKey}-${pepper}`, entity.salt, 32);
+
         const decipher = createDecipheriv('aes-256-cbc', cipherKey, nonce);
         const decryptedValue = decipher.update(encryptedValue, 'hex', 'utf8') + decipher.final('utf8');
-        (decryptedEntity as unknown as Record<string, unknown>)[key] = decryptedValue;
+        const payload = JSON.parse(decryptedValue);
+        (decryptedEntity as unknown as Record<string, unknown>)[key] = payload;
       });
 
     return decryptedEntity;
