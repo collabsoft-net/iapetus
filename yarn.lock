@@ -1516,6 +1516,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@collabsoft-net/encryption@workspace:packages/encryption":
+  version: 0.0.0-use.local
+  resolution: "@collabsoft-net/encryption@workspace:packages/encryption"
+  dependencies:
+    "@collabsoft-net/services": "workspace:*"
+    "@collabsoft-net/types": "workspace:*"
+    "@types/node": "npm:<19.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:8.32.0"
+    "@typescript-eslint/parser": "npm:8.32.0"
+    eslint: "npm:9.26.0"
+    nodemon: "npm:3.1.10"
+    reflect-metadata: "npm:0.2.2"
+    typescript: "npm:5.8.3"
+  peerDependencies:
+    "@collabsoft-net/services": "*"
+    reflect-metadata: 0.2.2
+  languageName: unknown
+  linkType: soft
+
 "@collabsoft-net/entities@workspace:*, @collabsoft-net/entities@workspace:packages/entities":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/entities@workspace:packages/entities"

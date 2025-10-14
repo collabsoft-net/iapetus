@@ -1,6 +1,5 @@
 
 export { AbstractAtlasClientService } from './AbstractAtlasClientService';
-export { AbstractEncryptedFieldsService, EncryptedFieldsQueryOptions } from './AbstractEncryptedFieldsService';
 export { AbstractRestClientService } from './AbstractRestClientService';
 export { AbstractService } from './AbstractService';
 export { JiraClientService } from './JiraClientService';

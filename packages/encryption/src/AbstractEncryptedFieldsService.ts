@@ -1,20 +1,25 @@
+import { AbstractService } from '@collabsoft-net/services';
 import { EncryptedFieldsEntity, EncryptedFieldsEntityDTO, Paginated, QueryBuilder, QueryOptions, Repository } from '@collabsoft-net/types';
 import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
 
-import { AbstractService } from './AbstractService';
+import { EncryptionKeyManager } from './EncyptionKeyManager';
 
 export interface EncryptedFieldsQueryOptions extends QueryOptions {
-  encryptionKey: string;
+  encryptionKeyName: string;
+  headerPrefix?: string;
 }
 
 export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEntity, X extends EncryptedFieldsEntityDTO<T>> extends AbstractService<T, X> {
 
   abstract get encryptedFields(): Array<keyof T>;
-  protected options: EncryptedFieldsQueryOptions;
+  protected options: EncryptedFieldsQueryOptions & { headerPrefix: string };
 
-  constructor(repository: Repository<T>, options: EncryptedFieldsQueryOptions) {
+  constructor(repository: Repository<T>, private keyManager: EncryptionKeyManager, options: EncryptedFieldsQueryOptions) {
     super(repository, options);
-    this.options = options;
+    this.options = {
+      ...options,
+      headerPrefix: options.headerPrefix || 'aes256'
+    };
   }
 
   async findById(id: string): Promise<T | null> {
@@ -72,11 +77,15 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
   }
 
   private encrypt(entity: T): T {
-    const isEncrypted = Object.entries(entity).some(([ _, value ]) => typeof value === 'string' && value.startsWith('aes256:'));
+    const isEncrypted = Object.entries(entity).some(([ _, value ]) => typeof value === 'string' && value.startsWith(`${this.options.headerPrefix}:`));
     if (isEncrypted) throw new Error(`Unable to encrypt entity ${entity.id}, some properties are already encrypted`);
 
+    const encryptionKey = this.keyManager.get(this.options.encryptionKeyName);
+    const header = this.keyManager.toHeader(this.options.headerPrefix, this.options.encryptionKeyName, ':');
+    if (!encryptionKey) throw new Error(`Unable to find encryption key '${this.options.encryptionKeyName}'`);
+
     const nonce = randomBytes(16);
-    const cipherKey = scryptSync(this.options.encryptionKey, entity.salt, 32);
+    const cipherKey = scryptSync(encryptionKey, entity.salt, 32);
     const encryptedEntity = { ...entity, nonce: nonce.toString('hex') };
 
     Object.entries(entity)
@@ -84,7 +93,7 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
       .forEach(([ key, value ]) => {
         const cipher = createCipheriv('aes-256-cbc', cipherKey, nonce);
         const encryptedValue = cipher.update(value, 'utf8', 'hex') + cipher.final('hex');
-        (encryptedEntity as unknown as Record<string, unknown>)[key] = `aes256:${encryptedValue}`;
+        (encryptedEntity as unknown as Record<string, unknown>)[key] = `${header};${encryptedValue}`;
       });
 
     return encryptedEntity;
@@ -92,11 +101,11 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
 
   private decrypt(entity: T): T {
 
-    const isEncrypted = Object.entries(entity).some(([ _, value ]) => typeof value === 'string' && value.startsWith('aes256:'));
+    const isEncrypted = Object.entries(entity).some(([ _, value ]) => typeof value === 'string' && value.startsWith(`${this.options.headerPrefix}:`));
     if (!isEncrypted) return entity;
 
+
     const nonce = Buffer.from(entity.nonce, 'hex');
-    const cipherKey = scryptSync(this.options.encryptionKey, entity.salt, 32);
     const decryptedEntity = { ...entity };
 
     Object.entries(entity)
@@ -106,8 +115,14 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
         this.encryptedFields.includes(key as keyof T) &&
         (typeof value === 'string' && value.startsWith('aes256:'))
       ).forEach(([ key, value ]) => {
+
+        const [ header, encryptedValue ] = value.split(';');
+        const encryptionKey = this.keyManager.fromHeader(header, this.options.headerPrefix, ':');
+        if (!encryptionKey) throw new Error(`Unable to find encryption key '${this.options.encryptionKeyName}'`);
+
+        const cipherKey = scryptSync(encryptionKey, entity.salt, 32);
         const decipher = createDecipheriv('aes-256-cbc', cipherKey, nonce);
-        const decryptedValue = decipher.update(value.substring(7), 'hex', 'utf8') + decipher.final('utf8');
+        const decryptedValue = decipher.update(encryptedValue, 'hex', 'utf8') + decipher.final('utf8');
         (decryptedEntity as unknown as Record<string, unknown>)[key] = decryptedValue;
       });
 
