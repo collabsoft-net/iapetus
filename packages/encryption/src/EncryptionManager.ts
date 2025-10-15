@@ -84,7 +84,7 @@ export class EncryptionManager {
     // Make sure that the provided input is not already encrypted
     if (typeof value === 'string') {
       const isEncrypted = this.isEncrypted(value);
-      if (!isEncrypted) {
+      if (isEncrypted) {
         throw new Error('Unable to encrypt: provided input is already encrypted');
       }
     }
