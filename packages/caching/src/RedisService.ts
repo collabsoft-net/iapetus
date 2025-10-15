@@ -14,7 +14,6 @@ interface RedisServiceOptions {
   verbose?: boolean;
   encryption?: {
     salt: string;
-    keys: Array<string>;
     options: EncryptionManagerOptions;
   }
 }
@@ -39,7 +38,6 @@ export class RedisService implements CachingService {
   private verbose: boolean;
 
   private salt?: string;
-  private keysToEncrypt: Array<string> = [];
   private encryptionManager?: EncryptionManager;
 
   constructor(options: RedisServiceOptions) {
@@ -55,7 +53,6 @@ export class RedisService implements CachingService {
 
     if (options.encryption) {
       this.salt = options.encryption.salt;
-      this.keysToEncrypt = options.encryption.keys;
       this.encryptionManager = new EncryptionManager(options.encryption.options);
     }
 
@@ -194,7 +191,7 @@ export class RedisService implements CachingService {
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds, encrypt: boolean = false): Promise<Error|null> {
     if (!this.primaryEndpoint.isReady) {
       if (this.verbose) {
         console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
@@ -209,7 +206,7 @@ export class RedisService implements CachingService {
       }
 
       // Check if we should be encrypting the data
-      if (this.encryptionManager && this.salt && this.keysToEncrypt.includes(key)) {
+      if (encrypt && this.encryptionManager && this.salt) {
 
         if (this.verbose) {
           console.info(`[REDIS] encrypting has been enabled for ${key}, encrypting data`);
