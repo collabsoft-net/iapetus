@@ -54,6 +54,8 @@
     }
   },
   "devDependencies": {
+    "@collabsoft-net/encryption": "workspace:*",
+    "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
     "@types/memcached": "2.2.10",
     "@types/node": "<19.0.0",
@@ -69,6 +71,8 @@
     "typescript": "5.8.3"
   },
   "peerDependencies": {
+    "@collabsoft-net/encryption": "*",
+    "@collabsoft-net/helpers": "*",
     "memcached": "2.2.2",
     "redis": "5.0.1",
     "serialize-error": "12.0.0",

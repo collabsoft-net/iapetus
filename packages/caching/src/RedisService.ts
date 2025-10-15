@@ -1,5 +1,7 @@
+import { EncryptionManager, EncryptionManagerOptions } from '@collabsoft-net/encryption';
+import { isOfType } from '@collabsoft-net/helpers';
 import { CachingExpirationPolicy, CachingService, Type } from '@collabsoft-net/types';
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import { createClient, RedisClientOptions, RedisClientType, RedisFunctions, RedisModules, RedisScripts, RespVersions, TypeMapping } from 'redis';
 
 const DEFAULT_TTL = 30 * 60;
@@ -10,7 +12,19 @@ interface RedisServiceOptions {
   expirationPolicy?: CachingExpirationPolicy;
   defaultExpirationInSeconds?: number;
   verbose?: boolean;
+  encryption?: {
+    salt: string;
+    keys: Array<string>;
+    options: EncryptionManagerOptions;
+  }
 }
+
+type EncryptedCacheItem = {
+  salt: string;
+  nonce: string;
+  value: string;
+  _type: 'EncryptedCacheItem'
+};
 
 export class RedisService implements CachingService {
 
@@ -24,6 +38,10 @@ export class RedisService implements CachingService {
   private defaultExpirationInSeconds: number;
   private verbose: boolean;
 
+  private salt?: string;
+  private keysToEncrypt: Array<string> = [];
+  private encryptionManager?: EncryptionManager;
+
   constructor(options: RedisServiceOptions) {
     this.primaryEndpoint = createClient(options.primaryEndpoint);
     this.writeTimeout = options.primaryEndpoint.socket?.connectTimeout || (30 * 1000);
@@ -35,10 +53,17 @@ export class RedisService implements CachingService {
     this.defaultExpirationInSeconds = options.defaultExpirationInSeconds || DEFAULT_TTL;
     this.verbose = options.verbose || false;
 
+    if (options.encryption) {
+      this.salt = options.encryption.salt;
+      this.keysToEncrypt = options.encryption.keys;
+      this.encryptionManager = new EncryptionManager(options.encryption.options);
+    }
+
     this.primaryEndpoint.connect();
     if (options.readEndpoint) {
       this.readEndpoint.connect();
     }
+
   }
 
   async has(key: string|Array<string>): Promise<boolean> {
@@ -107,7 +132,28 @@ export class RedisService implements CachingService {
       }
 
       try {
-        const result: T = JSON.parse(reply);
+        let result: T = JSON.parse(reply);
+
+        // Check if this is an encrypted cache item
+        if (isOfType<EncryptedCacheItem>(result, '_type') && result._type === 'EncryptedCacheItem') {
+
+          if (this.verbose) {
+            console.info(`[REDIS] cached data for key ${key} has been encrypted, trying to decrypt`);
+          }
+
+          // Make sure that we are able to decrypt the data
+          if (!this.encryptionManager || !this.encryptionManager.isEncrypted(result.value)) {
+            throw new Error('[REDIS] the retrieved data has been encrypted, but cannot be decrypted as this instance has not been initialized with caching or the retrieved data has been corrupted');
+          }
+
+          if (this.verbose) {
+            console.info(`[REDIS] decrypting cached data for key ${key}`);
+          }
+
+          // Decrypt the data and replace the result with the actual value of the cached item
+          result = this.encryptionManager.decrypt(result.value, result.salt, result.nonce);
+        }
+
         return type ? new type(result) : result;
       } catch (error) {
         if (this.verbose) {
@@ -157,10 +203,33 @@ export class RedisService implements CachingService {
     }
 
     try {
-      const payload = JSON.stringify(data);
+      let payload = JSON.stringify(data);
       if (this.verbose) {
         console.info(`[REDIS] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
       }
+
+      // Check if we should be encrypting the data
+      if (this.encryptionManager && this.salt && this.keysToEncrypt.includes(key)) {
+
+        if (this.verbose) {
+          console.info(`[REDIS] encrypting has been enabled for ${key}, encrypting data`);
+        }
+
+        // Generate the nonce specifically for this cache item
+        const nonce = randomBytes(16)
+
+        // We need to create a wrapper item to ensure we also store the salt & nonce
+        const encryptedCacheItem: EncryptedCacheItem = {
+          salt: this.salt,
+          nonce: nonce.toString('hex'),
+          value: this.encryptionManager.encrypt(payload, this.salt, nonce),
+          _type: 'EncryptedCacheItem'
+        };
+
+        // Update the payload to the new encrypted cache item
+        payload = JSON.stringify(encryptedCacheItem);
+      }
+
       await this.withTimeout(async () => this.primaryEndpoint.setEx(key, expiresInSeconds, payload), this.writeTimeout);
       return null;
     } catch (error) {
