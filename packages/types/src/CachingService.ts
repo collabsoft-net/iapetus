@@ -10,7 +10,7 @@ export interface CachingService {
   get<T>(type: Type<T>, key: string, loader: () => Promise<T | null>, forceRefresh?: boolean): Promise<T | null>;
   get<T>(type: Type<T>, key: string, loader: () => Promise<T | null>, expiresInSeconds?: number): Promise<T | null>;
   get<T>(type: Type<T>, key: string, loader: () => Promise<T | null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T | null>;
-  set<T>(key: string, data: T, expiresInSeconds: number): Promise<Error | null>;
+  set<T>(key: string, data: T, expiresInSeconds: number, encrypt?: boolean): Promise<Error | null>;
   flush(key: string | Array<string>): Promise<void>;
   flushAll(): Promise<void>;
   toCacheKey(...args: Array<string | number | boolean | undefined>): string;
