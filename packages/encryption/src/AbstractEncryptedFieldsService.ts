@@ -87,12 +87,8 @@ export abstract class AbstractEncryptedFieldsService<T extends EncryptedFieldsEn
     const decryptedEntity = { ...entity } as unknown as Record<string, unknown>;
 
     Object.entries(entity)
-      .filter(([ key, value ]) =>
-        key !== 'salt' &&
-        key !== 'nonce' &&
-        this.encryptedFields.includes(key as keyof T) &&
-        (typeof value === 'string' && value.startsWith('aes256:'))
-      ).forEach(([ key, value ]) => {
+      .filter(([ key ]) => key !== 'salt' && key !== 'nonce' && this.encryptedFields.includes(key as keyof T))
+      .forEach(([ key, value ]) => {
         const decryptedValue = this.encryptionManager.decrypt(value, entity.salt, entity.nonce);
         decryptedEntity[key] = decryptedValue;
       });
