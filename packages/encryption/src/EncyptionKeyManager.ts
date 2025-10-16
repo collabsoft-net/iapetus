@@ -57,11 +57,9 @@ export class EncryptionKeyManager {
     return key ? key.value : null;
   }
 
-  public fromHeader(header: string, delimiter?: string): string|null;
-  public fromHeader(header: string, prefix: string, delimiter?: string): string|null;
-  public fromHeader(header: string, prefixOrDelimiter?: string, delimiter?: string): string|null {
-    delimiter = typeof delimiter === 'string' ? delimiter : typeof prefixOrDelimiter === 'string' ? prefixOrDelimiter : ':';
-    const prefix = typeof delimiter === 'string' ? prefixOrDelimiter : undefined;
+  public fromHeader(header: string, options: { prefix?: string; delimiter?: string }): string|null {
+    const prefix = options.prefix;
+    const delimiter = options.delimiter || ':';
 
     const value = prefix ? header.replace(`${prefix}${delimiter}`, '') : header;
     const [ name, version ] = value.split(delimiter);
@@ -70,46 +68,17 @@ export class EncryptionKeyManager {
     return key ? key.value : null;
   }
 
-  public toHeader(name: string, delimiter?: string): string|null;
-  public toHeader(prefix: string, name: string, delimiter?: string): string|null;
-  public toHeader(prefix: string, name: string, version: number, delimiter?: string): string|null;
-  public toHeader(nameOrPrefix: string, nameOrDelimiter?: string, versionOrDelimiter?: number|string, delimiter?: string): string|null {
-    const options: {
-      name: string;
-      prefix?: string;
-      version?: number;
-      delimiter: string;
-    } = {} as {
-      name: string;
-      prefix?: string;
-      version?: number;
-      delimiter: string;
-    };
+  public toHeader(name: string, options: { prefix?: string, version?: number, delimiter?: string }): string|null {
+    const prefix = options.prefix;
+    const version = options.version;
+    const delimiter = options.delimiter || ':';
+    const key = this.getKey(name, version);
 
-    if (typeof nameOrPrefix === 'string' && typeof nameOrDelimiter === 'string' && typeof versionOrDelimiter === 'number') {
-      options.name = nameOrDelimiter;
-      options.prefix = nameOrPrefix;
-      options.version = versionOrDelimiter;
-      options.delimiter = delimiter || ':';
-    } else if (typeof nameOrPrefix === 'string' && typeof nameOrDelimiter === 'string' && typeof versionOrDelimiter !== 'number') {
-      options.name = nameOrDelimiter;
-      options.prefix = nameOrPrefix;
-      options.delimiter = versionOrDelimiter || ':';
-    } else if (typeof nameOrPrefix === 'string' && typeof nameOrDelimiter === 'string') {
-      options.name = nameOrDelimiter;
-      options.prefix = nameOrPrefix;
-      options.delimiter = ':';
-    } else if (typeof nameOrDelimiter === 'undefined') {
-      options.name = nameOrPrefix;
-      options.delimiter = ';';
-    }
-
-    const key = this.getKey(options.name, options.version);
-    if (key) {
-      return options.prefix ? `${options.prefix}${options.delimiter}${key.name}${options.delimiter}${key.version}` : `${key.name}${options.delimiter}${key.version}`;
-    }
-
-    return null;
+    return key
+      ? prefix
+        ? `${prefix}${delimiter}${key.name}${delimiter}${key.version}`
+        : `${key.name}${delimiter}${key.version}`
+      : null;
   }
 
   private getKey(name: string, version?: number): Key|null {
