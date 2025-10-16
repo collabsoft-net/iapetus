@@ -161,7 +161,7 @@ declare global {
         disableCloseOnSubmit: () => void;
         getProperties: () => Promise<Props|undefined>;
         setProperties: <T> (data: T, body?: string|DocNode, keepEditing?: boolean) => Promise<void>;
-        close: () => void;
+        close: <T> (payload: T) => void;
       };
     }
 

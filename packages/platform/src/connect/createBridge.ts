@@ -207,7 +207,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       },
       close: () => {
         if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {
-          AP.confluence.closeMacroEditor();
+          AP.confluence.closeMacroEditor()
         }
       }
     }

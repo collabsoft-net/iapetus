@@ -185,15 +185,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         body: typeof body === 'string' ? JSON.parse(body) : body,
         keepEditing
       }),
-      close: async () => {
-        const config = context.extension?.config || {};
-        const body = context.extension?.macro?.body;
-        return view.submit({
-          config, 
-          body, 
-          keepEditing: false
-        });
-      }
+      close: async <T> (payload: T) => view.close(payload)
     }
   }
 
