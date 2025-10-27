@@ -3,7 +3,6 @@ import { DefaultService, Entity, EntityDTO, Paginated, QueryBuilder } from '@col
 import { captureException } from '@sentry/minimal';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
-import { requestBody, requestParam } from 'inversify-express-utils';
 import { results } from 'inversify-express-utils';
 
 import { AbstractController } from './AbstractController';
@@ -13,7 +12,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
 
   protected abstract service: DefaultService<T, X>;
 
-  async headers(@requestParam('id') id?: string): Promise<results.StatusCodeResult> {
+  async headers(id?: string): Promise<results.StatusCodeResult> {
     if (id) {
       const result = await this.service.findById(id);
       return result ? this.statusCode(StatusCodes.OK) : this.statusCode(StatusCodes.NOT_FOUND);
@@ -40,7 +39,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  async create(@requestBody() item: X): Promise<X|results.StatusCodeResult> {
+  async create(item: X): Promise<X|results.StatusCodeResult> {
     try {
       if (item.id && item.id !== '-1' || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
@@ -51,7 +50,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  async read(@requestParam('id') id?: string): Promise<X|results.StatusCodeResult|Paginated<X>> {
+  async read(id?: string): Promise<X|results.StatusCodeResult|Paginated<X>> {
     if (id) {
       const result = await this.service.findById(id);
       return result ? this.service.toDTO(result) : this.statusCode(StatusCodes.NOT_FOUND);
@@ -78,7 +77,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  async update(@requestParam('id') id: string, @requestBody() item: X): Promise<X|results.StatusCodeResult> {
+  async update(id: string, item: X): Promise<X|results.StatusCodeResult> {
     try {
       if (!id || item.id !== id || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
@@ -89,7 +88,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  async remove(@requestParam('id') id: string): Promise<results.StatusCodeResult> {
+  async remove(id: string): Promise<results.StatusCodeResult> {
     try {
       if (!id) return this.statusCode(StatusCodes.BAD_REQUEST);
       await this.service.deleteById(id);
