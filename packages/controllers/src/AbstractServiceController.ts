@@ -3,7 +3,6 @@ import { DefaultService, Entity, EntityDTO, Paginated, QueryBuilder } from '@col
 import { captureException } from '@sentry/minimal';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
-import { results } from 'inversify-express-utils';
 
 import { AbstractController } from './AbstractController';
 
@@ -12,10 +11,10 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
 
   protected abstract service: DefaultService<T, X>;
 
-  async headers(id?: string): Promise<results.StatusCodeResult> {
+  protected async getHeaders(id?: string): Promise<StatusCodes> {
     if (id) {
       const result = await this.service.findById(id);
-      return result ? this.statusCode(StatusCodes.OK) : this.statusCode(StatusCodes.NOT_FOUND);
+      return result ? StatusCodes.OK : StatusCodes.NOT_FOUND;
     } else {
       const { query } = this.httpContext.request;
       if (query && Object.keys(query).length > 0) {
@@ -30,30 +29,30 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
           return queryBuilder;
         });
         this.httpContext.response.setHeader('X-Total-Count', result);
-        return this.statusCode(StatusCodes.OK);
+        return StatusCodes.OK;
       } else {
         const result = await this.service.count();
         this.httpContext.response.setHeader('X-Total-Count', result);
-        return this.statusCode(StatusCodes.OK);
+        return StatusCodes.OK;
       }
     }
   }
 
-  async create(item: X): Promise<X|results.StatusCodeResult> {
+  protected async doCreate(item: X): Promise<X|StatusCodes> {
     try {
       if (item.id && item.id !== '-1' || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
       return this.service.toDTO(result);
     } catch (error) {
       captureException(error);
-      return this.statusCode(StatusCodes.BAD_REQUEST);
+      return StatusCodes.BAD_REQUEST;
     }
   }
 
-  async read(id?: string): Promise<X|results.StatusCodeResult|Paginated<X>> {
+  protected async doRead(id?: string): Promise<X|StatusCodes|Paginated<X>> {
     if (id) {
       const result = await this.service.findById(id);
-      return result ? this.service.toDTO(result) : this.statusCode(StatusCodes.NOT_FOUND);
+      return result ? this.service.toDTO(result) : StatusCodes.NOT_FOUND;
     } else {
       const { query } = this.httpContext.request;
       if (query && Object.keys(query).length > 0) {
@@ -77,25 +76,25 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  async update(id: string, item: X): Promise<X|results.StatusCodeResult> {
+  protected async doUpdate(id: string, item: X): Promise<X|StatusCodes> {
     try {
       if (!id || item.id !== id || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
       return this.service.toDTO(result);
     } catch (error) {
       captureException(error);
-      return this.statusCode(StatusCodes.BAD_REQUEST);
+      return StatusCodes.BAD_REQUEST;
     }
   }
 
-  async remove(id: string): Promise<results.StatusCodeResult> {
+  protected async doRemove(id: string): Promise<StatusCodes> {
     try {
-      if (!id) return this.statusCode(StatusCodes.BAD_REQUEST);
+      if (!id) return StatusCodes.BAD_REQUEST;
       await this.service.deleteById(id);
-      return this.statusCode(StatusCodes.NO_CONTENT);
+      return StatusCodes.NO_CONTENT;
     } catch (error) {
       captureException(error);
-      return this.statusCode(StatusCodes.BAD_REQUEST);
+      return StatusCodes.BAD_REQUEST;
     }
   }
 
