@@ -28,6 +28,10 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       createPlaceholder: createPlaceholder
     },
 
+    frame: {
+      sizeToParent: () => {}
+    },
+
     events: {
       on: (event: string, callback: (payload: unknown) => Promise<unknown>) => {
         return events.on(event, callback);

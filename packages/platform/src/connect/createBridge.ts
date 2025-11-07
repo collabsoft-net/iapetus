@@ -27,6 +27,10 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       createPlaceholder: createPlaceholder
     },
 
+    frame: {
+      sizeToParent: (hideFooter?: boolean) => AP.sizeToParent(hideFooter)
+    },
+
     events: {
       on: async (event: string, callback: (payload?: unknown) => Promise<unknown>) => {
         AP.events.on(event, callback);

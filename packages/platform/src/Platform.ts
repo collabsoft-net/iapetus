@@ -105,6 +105,10 @@ declare global {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
       };
     
+      frame: {
+        sizeToParent(hideFooter?: boolean): void;
+      }
+
       events: {
         on: (event: string, callback: (payload?: unknown) => Promise<unknown>) => Promise<Subscription>;
         emit: (event: string, payload: unknown) => Promise<void>;
