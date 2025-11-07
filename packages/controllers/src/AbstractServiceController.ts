@@ -11,7 +11,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
 
   protected abstract service: DefaultService<T, X>;
 
-  protected async getHeaders(id?: string): Promise<StatusCodes> {
+  protected async $headers(id?: string): Promise<StatusCodes> {
     if (id) {
       const result = await this.service.findById(id);
       return result ? StatusCodes.OK : StatusCodes.NOT_FOUND;
@@ -38,7 +38,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  protected async doCreate(item: X): Promise<X|StatusCodes> {
+  protected async $create(item: X): Promise<X|StatusCodes> {
     try {
       if (item.id && item.id !== '-1' || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
@@ -49,7 +49,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  protected async doRead(id?: string): Promise<X|StatusCodes|Paginated<X>> {
+  protected async $read(id?: string): Promise<X|StatusCodes|Paginated<X>> {
     if (id) {
       const result = await this.service.findById(id);
       return result ? this.service.toDTO(result) : StatusCodes.NOT_FOUND;
@@ -76,7 +76,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  protected async doUpdate(id: string, item: X): Promise<X|StatusCodes> {
+  protected async $update(id: string, item: X): Promise<X|StatusCodes> {
     try {
       if (!id || item.id !== id || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
@@ -87,7 +87,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
     }
   }
 
-  protected async doRemove(id: string): Promise<StatusCodes> {
+  protected async $remove(id: string): Promise<StatusCodes> {
     try {
       if (!id) return StatusCodes.BAD_REQUEST;
       await this.service.deleteById(id);

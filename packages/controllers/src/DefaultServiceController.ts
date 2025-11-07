@@ -16,35 +16,35 @@ export abstract class DefaultServiceController<T extends Entity, X extends Entit
   @httpHead('/:id?')
   async headers(@requestParam('id') id?: string): Promise<results.StatusCodeResult> {
     const isAllowed = await this.isAllowed('headers', id);
-    const result = isAllowed ? await super.getHeaders(id) : StatusCodes.NOT_FOUND;
+    const result = isAllowed ? await super.$headers(id) : StatusCodes.NOT_FOUND;
     return this.statusCode(result);
   }
 
   @httpPost('/')
   async create(@requestBody() item: X): Promise<X|results.StatusCodeResult> {
     const isAllowed = await this.isAllowed('create', item);
-    const result = isAllowed ? await super.doCreate(item) : StatusCodes.NOT_FOUND;
+    const result = isAllowed ? await super.$create(item) : StatusCodes.NOT_FOUND;
     return typeof result === 'number' ? this.statusCode(result) : result;
   }
 
   @httpGet('/:id?')
   async read(@requestParam('id') id?: string): Promise<X|results.StatusCodeResult|Paginated<X>> {
     const isAllowed = await this.isAllowed('read', id);
-    const result = isAllowed ? await super.doRead(id) : StatusCodes.NOT_FOUND;
+    const result = isAllowed ? await super.$read(id) : StatusCodes.NOT_FOUND;
     return typeof result === 'number' ? this.statusCode(result) : result;
   }
 
   @httpPost('/:id')
   async update(@requestParam('id') id: string, @requestBody() item: X): Promise<X|results.StatusCodeResult> {
     const isAllowed = await this.isAllowed('update', item);
-    const result = isAllowed ? await super.doUpdate(id, item) : StatusCodes.NOT_FOUND;
+    const result = isAllowed ? await super.$update(id, item) : StatusCodes.NOT_FOUND;
     return typeof result === 'number' ? this.statusCode(result) : result;
   }
 
   @httpDelete('/:id')
   async remove(@requestParam('id') id: string): Promise<results.StatusCodeResult> {
     const isAllowed = await this.isAllowed('remove', id);
-    const result = isAllowed ? await super.doRemove(id) : StatusCodes.NOT_FOUND;
+    const result = isAllowed ? await super.$remove(id) : StatusCodes.NOT_FOUND;
     return this.statusCode(result);
   }
 }
