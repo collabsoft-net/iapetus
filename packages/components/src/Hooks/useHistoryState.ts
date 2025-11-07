@@ -3,6 +3,8 @@ import { QueryObserverResult, RefetchOptions, useMutation, UseMutationResult, us
 
 import { usePlatformBridge } from './usePlatformBridge';
 
+export const HistoryStateQueryKey = [ 'bridge.history.getState()' ]
+
 const getHistoryState = (state: string|Platform.HistoryState): Record<string, string> => {
   const result: Record<string, string> = {};
 
@@ -22,7 +24,7 @@ export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMu
   const queryClient = useQueryClient();
 
   const { data, refetch } = useQuery({
-    queryKey: [ 'ACJS.history.getState()' ],
+    queryKey: HistoryStateQueryKey,
     queryFn: () => new Promise<string|Platform.HistoryState>(resolve => bridge.history.getState('hash', resolve)),
     select: (state) => getHistoryState(state),
     initialData: '',
@@ -40,7 +42,7 @@ export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMu
       return Promise.resolve(query.toString() || '');
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([ 'bridge.history.getState()' ], () => data || '');
+      queryClient.setQueryData(HistoryStateQueryKey, () => data || '');
     }
   });
 
