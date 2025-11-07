@@ -110,7 +110,7 @@ declare global {
       }
 
       events: {
-        on: (event: string, callback: (payload?: unknown) => Promise<unknown>) => Promise<Subscription>;
+        on: (event: string, callback: <T> (payload?: T) => void) => Promise<Subscription>;
         emit: (event: string, payload: unknown) => Promise<void>;
       }
 
@@ -131,7 +131,7 @@ declare global {
         open: <T extends DialogContext, X> (options: DialogOptions<T, X>) => Promise<void>;
         getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
-        close: (payload?: unknown) => void;
+        close: <T> (payload?: T) => void;
       },
 
       router: {

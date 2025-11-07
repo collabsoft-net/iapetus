@@ -33,7 +33,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     events: {
-      on: (event: string, callback: (payload: unknown) => Promise<unknown>) => {
+      on: (event: string, callback: <T> (payload: T) => void) => {
         return events.on(event, callback);
       },
       emit: (event: string, payload: unknown) => {

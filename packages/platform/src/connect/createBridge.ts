@@ -32,7 +32,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     events: {
-      on: async (event: string, callback: (payload?: unknown) => Promise<unknown>) => {
+      on: async (event: string, callback: <T> (payload?: T) => void) => {
         AP.events.on(event, callback);
         return {
           unsubscribe: () => AP.events.off(event, callback)
@@ -121,7 +121,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           throw new Error(`InvalidArgumentException: AP.dialog.getButton('${name}') is not supported`);
         }
       },
-      close: (payload?: unknown) => AP.dialog.close(payload),
+      close: <T> (payload?: T) => AP.dialog.close(payload),
     },
 
     router: {
