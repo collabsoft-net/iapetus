@@ -19,8 +19,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     client: (product === 'jira'
       ? new JiraClientService(new APRestClient(AP), Modes.CONNECT)
       : product === 'confluence'
-        ? new ConfluenceClientService(new APRestClient(AP), Modes.FORGE)
-        : new BitbucketClientService(new APRestClient(AP), Modes.FORGE)
+        ? new ConfluenceClientService(new APRestClient(AP), Modes.CONNECT)
+        : new BitbucketClientService(new APRestClient(AP), Modes.CONNECT)
     ) as Platform.ClientService<T>,
     
     init: {
