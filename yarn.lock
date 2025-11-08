@@ -1787,6 +1787,7 @@ __metadata:
     "@collabsoft-net/forge": "*"
     "@collabsoft-net/helpers": "*"
     "@collabsoft-net/services": "*"
+    uniqid: 5.4.0
   languageName: unknown
   linkType: soft
 
