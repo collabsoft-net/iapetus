@@ -42,11 +42,13 @@
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
     "@types/node": "<19.0.0",
+    "@types/uniqid": "5.3.4",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
     "nodemon": "3.0.3",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "uniqid": "5.4.0"
   },
   "peerDependencies": {
     "@collabsoft-net/connect": "*",
@@ -54,7 +56,8 @@
     "@collabsoft-net/enums": "*",
     "@collabsoft-net/forge": "*",
     "@collabsoft-net/helpers": "*",
-    "@collabsoft-net/services": "*"
+    "@collabsoft-net/services": "*",
+    "uniqid": "5.4.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

@@ -70,6 +70,8 @@ declare global {
       moduleKey: string
     }
     
+    type DialogCallback<T> = (data?: T) => void;
+
     type DialogOptions<T extends DialogContext, X> = {
       key: string;
       size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
@@ -90,6 +92,28 @@ declare global {
       hide: () => void;
       show: () => void;
       bind: (callback: () => void) => void;
+    }
+
+    interface FlagInstance {
+      close: () => Promise<boolean | void>;
+    }
+
+    interface FlagOptions {
+      id: string;
+      title: string;
+      description?: string;
+      type?: FlagType;
+      appearance?: FlagAppearance;
+      actions?: FlagAction[];
+      isAutoDismiss?: boolean;
+    }
+
+    type FlagType = "info" | "success" | "warning" | "error"; 
+    type FlagAppearance = "info" | "success" | "warning" | "error";
+
+    interface FlagAction {
+      text: string;
+      onClick: () => void;
     }
 
     type RouterNavigationLocation = NavigationLocation;
@@ -128,10 +152,23 @@ declare global {
       };
 
       dialog: {
-        open: <T extends DialogContext, X> (options: DialogOptions<T, X>) => Promise<void>;
+        open<X>(key: string): Promise<X>;
+        open<X>(key: string, callback: DialogCallback<X>): Promise<X>;
+        open<T extends DialogContext, X>(key: string, context: T): Promise<X>;
+        open<T extends DialogContext, X>(key: string, context: T, callback: DialogCallback<X>): Promise<X>;
+        open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>): Promise<X>;
+        open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>, callback: DialogCallback<X>): Promise<X>;
+        open<T extends DialogContext, X> (options: DialogOptions<T, X>): Promise<void>;
         getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
         close: <T> (payload?: T) => void;
+      },
+
+      flag: {
+        show(title: string): FlagInstance;
+        show(title: string, type: FlagType): FlagInstance;
+        show(title: string, type: FlagType, description: string): FlagInstance;
+        show(options: FlagOptions): FlagInstance;
       },
 
       router: {

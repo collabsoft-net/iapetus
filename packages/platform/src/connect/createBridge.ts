@@ -5,10 +5,98 @@ import { AbstractRestClientService, BitbucketClientService, ConfluenceClientServ
 import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
+import uniqid from 'uniqid';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => {
 
   const AP = await waitForAP();
+
+  // We are defining bridge.dialog.open() here because it has a weird overload
+  // Unfortunately, typescript does not support overload declaration within an object
+  function open<X>(key: string): Promise<X|undefined>;
+  function open<X>(key: string, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X>(key: string, context: T): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X>(key: string, context: T, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
+  function open<T extends Platform.DialogContext, X> (keyOrOptions: string|Platform.DialogOptions<T, X>, contextOrCallbackOrOptions?: Platform.DialogCallback<X>|T|Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
+
+    const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
+    const context = !isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions !== 'function' ? contextOrCallbackOrOptions : undefined;
+    const cb = typeof callback === 'function' ? callback : (!isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions === 'function') ? contextOrCallbackOrOptions : undefined;
+    const options = typeof keyOrOptions !== 'string' ? keyOrOptions : isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') ? contextOrCallbackOrOptions : {
+      key,
+      context
+    };
+
+    const dialogSize = 
+      options.size === 'xlarge'
+        ? 'x-large'
+        : options.size === 'max'
+          ? 'fullscreen'
+          : options.size;
+
+    return new Promise<X|undefined>(resolve => {
+      AP.dialog.create({
+        key,
+        size: options.height || options.width ? undefined : dialogSize,
+        height: options.height,
+        width: options.width,
+        customData: options.context,
+        closeOnEscape: options.closeOnEscape,
+        chrome: false
+      }).on('close', (data?: X) => {
+        if (options.onClose) {
+          options.onClose(data);
+        };
+
+        if (cb) {
+          cb(data);
+        }
+
+        resolve(data);
+      });
+    });
+  }
+
+  // We are defining bridge.flag.show() here because it has a weird overload
+  // Unfortunately, typescript does not support overload declaration within an object
+  function show(title: string): Platform.FlagInstance;
+  function show(title: string, type: Platform.FlagType): Platform.FlagInstance;
+  function show(title: string, type: Platform.FlagType, description: string): Platform.FlagInstance;
+  function show(options: Platform.FlagOptions): Platform.FlagInstance;
+  function show(titleOrOptions: string|Platform.FlagOptions, type?: Platform.FlagType, description?: string): Platform.FlagInstance {
+
+    const title = typeof titleOrOptions === 'string' ? titleOrOptions : titleOrOptions.title;
+    const options = typeof titleOrOptions !== 'string' ? titleOrOptions : undefined;
+
+    const actions: Record<string, string> = {};
+    options?.actions?.forEach(action => {
+      const identifier = uniqid();
+      actions[identifier] = action.text;
+
+      AP.events.once('flag.action', (payload) => {
+        if (payload?.actionIdentifier === identifier) {
+          action.onClick();
+        }
+      });
+    });
+
+    const instance = AP.flag.create({
+      title,
+      body: description || options?.description,
+      type: type || options?.type || options?.appearance,
+      close: options?.isAutoDismiss ? 'auto' : 'manual',
+      actions
+    });
+
+    return {
+      close: async (): Promise<boolean|void> => {
+        return instance.close();
+      }
+    }
+  }
 
   return {
 
@@ -91,28 +179,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     dialog: {
-      open: async <T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>) => {
-        const dialogSize = 
-          options.size === 'xlarge'
-            ? 'x-large'
-            : options.size === 'max'
-              ? 'fullscreen'
-              : options.size;
-
-        AP.dialog.create({
-          key: options.key,
-          size: options.height || options.width ? undefined : dialogSize,
-          height: options.height,
-          width: options.width,
-          customData: options.context,
-          closeOnEscape: options.closeOnEscape,
-          chrome: false
-        }).on('close', (data?: X) => {
-          if (options.onClose) {
-            options.onClose(data);
-          };
-        });
-      },
+      open,
       getProperties: () => new Promise<Props|undefined>(resolve => AP.dialog.getCustomData<Props>(resolve)),
       getButton: (name: 'cancel'|'submit'|string) => {
         if (name === 'cancel' || name === 'submit') {
@@ -122,6 +189,10 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         }
       },
       close: <T> (payload?: T) => AP.dialog.close(payload),
+    },
+
+    flag: {
+      show
     },
 
     router: {

@@ -1773,11 +1773,13 @@ __metadata:
     "@collabsoft-net/services": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@types/node": "npm:<19.0.0"
+    "@types/uniqid": "npm:5.3.4"
     "@typescript-eslint/eslint-plugin": "npm:6.19.1"
     "@typescript-eslint/parser": "npm:6.19.1"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
     typescript: "npm:5.3.3"
+    uniqid: "npm:5.4.0"
   peerDependencies:
     "@collabsoft-net/connect": "*"
     "@collabsoft-net/dto": "*"
