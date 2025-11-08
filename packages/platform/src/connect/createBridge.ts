@@ -85,9 +85,9 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     const instance = AP.flag.create({
       title,
-      body: description || options?.description,
-      type: type || options?.type || options?.appearance,
-      close: options?.isAutoDismiss ? 'auto' : 'manual',
+      body: description || options?.description || '',
+      type: type || options?.type || options?.appearance || 'info',
+      close: typeof options?.isAutoDismiss === 'boolean' && options?.isAutoDismiss === false ? 'manual' : 'auto',
       actions
     });
 
