@@ -38,10 +38,10 @@ export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, icons, inline
   return (
     <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken', inline ? colors.N0 : colors.N400A) }>
       <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } icons={ icons } fixedOnTop={ !inline } />
-      <ScrollView fluid height='unset' margin={ margin }>
-        <Row>
-          <Grid stretched={ fullPage } margin={ fullPage ? undefined : '0 auto' } padding={ inline ? '16px 0' : '24px 0' }>
-            <Row>
+      <ScrollView fluid stretched height='unset' margin={ margin }>
+        <Row stretched>
+          <Grid fluid={ fullPage } stretched={ fullPage } margin={ fullPage ? undefined : '0 auto' } padding={ inline ? '16px 0' : '24px 0' }>
+            <Row stretched>
               {children}
             </Row>
           </Grid>
