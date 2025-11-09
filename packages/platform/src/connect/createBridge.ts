@@ -37,16 +37,35 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           ? 'fullscreen'
           : options.size;
 
+    // Atlassian Connect allows users to set default options in the descriptor
+    // These default options will be overwritten by the options provided in AP.dialog.create()
+    // If for some reason, height, width, size and/or closeOnEscape are 'undefined' in the
+    // options parameter, we should not add them to the object to avoid overwriting the defaults
+    // with 'undefined' as this will negate the default value provided in the descriptor
+    const dialogOptions: AP.DialogOptions<T> = {
+      key,
+      customData: options.context,
+      chrome: false
+    };
+
+    if (typeof options.width !== 'undefined') {
+      dialogOptions.width = options.width;
+    }
+
+    if (typeof options.height !== 'undefined') {
+      dialogOptions.height = options.height;
+    }
+
+    if (typeof dialogOptions.width === 'undefined' && typeof dialogOptions.height === 'undefined' && typeof dialogSize !== 'undefined') {
+      dialogOptions.size = dialogSize;
+    }
+
+    if (typeof options.closeOnEscape !== 'undefined') {
+      dialogOptions.closeOnEscape = options.closeOnEscape;
+    }
+
     return new Promise<X|undefined>(resolve => {
-      AP.dialog.create({
-        key,
-        size: options.height || options.width ? undefined : dialogSize,
-        height: options.height,
-        width: options.width,
-        customData: options.context,
-        closeOnEscape: options.closeOnEscape,
-        chrome: false
-      }).on('close', (data?: X) => {
+      AP.dialog.create(dialogOptions).on('close', (data?: X) => {
         if (options.onClose) {
           options.onClose(data);
         };
