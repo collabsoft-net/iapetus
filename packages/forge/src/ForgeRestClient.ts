@@ -1,5 +1,5 @@
 
-import { RestClientMethods } from '@collabsoft-net/enums';
+import { Applications, RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { requestBitbucket,requestConfluence, requestJira } from '@forge/bridge';
 import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
@@ -9,7 +9,11 @@ export class ForgeRestClient implements RestClient {
 
   protected duration?: number;
 
-  constructor(protected product: 'jira'|'confluence'|'bitbucket', protected cacheService?: CachingService, cacheDuration?: number) {
+  constructor(protected product: Applications, protected cacheService?: CachingService, cacheDuration?: number) {
+    if (product === Applications.BAMBOO) {
+      throw new Error('Atlassian Bamboo is not supported by Atlassian Forge');
+    }
+
     this.duration = cacheDuration;
   }
 

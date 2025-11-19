@@ -1,4 +1,4 @@
-import { RestClientEndpoints, RestClientMethods } from '@collabsoft-net/enums';
+import { Applications, RestClientEndpoints, RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient as IRestClient } from '@collabsoft-net/types';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
@@ -18,7 +18,7 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
 
   constructor(private forgeInvokeClient: ForgeInvokeClient, private baseURL: string, private config: AxiosRequestConfig = {}, cacheService?: CachingService, cacheDuration?: number) {
     // The product is irrelevant because we will be overriding the request method
-    super('jira', cacheService, cacheDuration);
+    super(Applications.JIRA, cacheService, cacheDuration);
 
     this.client = axios.create(Object.assign({}, config, {
       baseURL: baseURL,

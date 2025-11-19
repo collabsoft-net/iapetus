@@ -1,7 +1,9 @@
+import { Applications } from '@collabsoft-net/enums';
+
 import { AbstractAtlasRestClient } from '.';
 
 
-export class BitbucketRestClient extends AbstractAtlasRestClient {
+export class BitbucketRestClient extends AbstractAtlasRestClient<Applications.BITBUCKET> {
 
   cached(duration: number) {
     const instance = new BitbucketRestClient(this.instance, this.config, this.cacheService, duration);

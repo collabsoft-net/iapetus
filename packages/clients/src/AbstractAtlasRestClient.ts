@@ -1,15 +1,19 @@
 import { ACInstance } from '@collabsoft-net/entities';
-import { RestClientMethods } from '@collabsoft-net/enums';
+import { Applications, RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { AbstractRestClient } from './AbstractRestClient';
+import { ClientError } from './ClientError';
 
 const IMPERSONATION_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 const AUTH_SERVER = 'https://oauth-2-authorization-server.services.atlassian.com';
 
-export abstract class AbstractAtlasRestClient extends AbstractRestClient implements RestClient {
+export abstract class AbstractAtlasRestClient<
+  TApplication extends Applications,
+  TResponseError = TApplication extends Applications.JIRA ? Jira.ResponseError : TApplication extends Applications.CONFLUENCE ? Confluence.ResponseError : unknown
+> extends AbstractRestClient implements RestClient {
 
   protected _accountId?: string;
 
@@ -21,9 +25,9 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
     return this._accountId;
   }
 
-  abstract cached(duration: number): AbstractAtlasRestClient;
+  abstract cached(duration: number): AbstractAtlasRestClient<TApplication, TResponseError>;
 
-  abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient;
+  abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient<TApplication, TResponseError>;
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     const options: AxiosRequestConfig = {
@@ -50,12 +54,12 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(options));
         const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
-        return result || fetchFromRemote();
+        return result || fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); });
       } catch (_ignored) {
-        return fetchFromRemote();
+        return fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); })
       }
     } else {
-      return fetchFromRemote();
+      return fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); });
     }
 
 
@@ -107,4 +111,5 @@ export abstract class AbstractAtlasRestClient extends AbstractRestClient impleme
 
     return access_token;
   }
+
 }

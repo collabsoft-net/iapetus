@@ -1,7 +1,9 @@
+import { Applications } from '@collabsoft-net/enums';
+
 import { AbstractAtlasRestClient } from '.';
 
 
-export class JiraRestClient extends AbstractAtlasRestClient {
+export class JiraRestClient extends AbstractAtlasRestClient<Applications.JIRA> {
 
   cached(duration: number) {
     const instance = new JiraRestClient(this.instance, this.config, this.cacheService, duration);

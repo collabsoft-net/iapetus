@@ -92,6 +92,24 @@ declare global {
 
     type EntityType = 'app'|'user'|'space'|'content';
 
+    interface ResponseError {
+      statusCode: number,
+      data: {
+        authorized: boolean,
+        valid: boolean,
+        errors: [
+          {
+            message: {
+              translation: string;
+              args: Array<unknown>;
+            }
+          }
+        ],
+        successful: boolean;
+      },
+      message: string;
+    }
+
     interface User {
       type: 'known'|'unknown'|'anonymous'|'user';
       username: string;
@@ -948,6 +966,12 @@ declare global {
   namespace Jira {
 
     type EntityType = 'app'|'user'|'project'|'issue'|'comment';
+
+    interface ResponseError {
+      status: number;
+      errorMessages: Array<string>;
+      errors: Record<string, string>;
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface User extends ApplicationUser {}

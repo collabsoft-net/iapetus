@@ -74,6 +74,11 @@ function show(titleOrOptions: string|Platform.FlagOptions, type?: Platform.FlagT
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => {
 
+  // What was this person thinking... creating a bridge for Bamboo 🤦🏻
+  if (product === Applications.BAMBOO) {
+    throw new Error('Atlassian Bamboo is not supported by Atlassian Forge');
+  }
+
   const context = await view.getContext();
   const historyObj = await view.createHistory().catch(() => null);
   let token: TokenExchangeDTO|null = null;

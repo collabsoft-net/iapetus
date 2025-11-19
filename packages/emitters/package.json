@@ -40,7 +40,7 @@
     "@types/uniqid": "5.3.4",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
-    "axios": "1.9.0",
+    "axios": "1.13.2",
     "eslint": "9.26.0",
     "firebase": "11.7.1",
     "nodemon": "3.1.10",
@@ -48,7 +48,7 @@
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
-    "axios": "^1.9.0",
+    "axios": "^1.13.0",
     "uniqid": "^5.4.0"
   },
   "optionalDependencies": {

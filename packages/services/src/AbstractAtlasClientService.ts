@@ -1,5 +1,5 @@
 import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
-import { ConfluenceCloudEndpoints, ConfluenceServerEndpoints,JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
+import { Applications, ConfluenceCloudEndpoints, ConfluenceServerEndpoints,JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
 import { RestClient } from '@collabsoft-net/types';
 import { StatusCodes } from 'http-status-codes';
@@ -21,7 +21,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
   abstract cached(duration: number): AbstractAtlasClientService<Mode>;
 
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService<Mode> {
-    if (isOfType<AbstractAtlasRestClient>(this.client, 'as')) {
+    if (isOfType<AbstractAtlasRestClient<Applications>>(this.client, 'as')) {
       const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
       return this.getInstance(impersonatedClient, this.mode);
     } else {

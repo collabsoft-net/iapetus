@@ -1,7 +1,9 @@
+import { Applications } from '@collabsoft-net/enums';
+
 import { AbstractAtlasRestClient } from '.';
 
 
-export class ConfluenceRestClient extends AbstractAtlasRestClient {
+export class ConfluenceRestClient extends AbstractAtlasRestClient<Applications.CONFLUENCE> {
 
   cached(duration: number): ConfluenceRestClient {
     const instance = new ConfluenceRestClient(this.instance, this.config, this.cacheService, duration);
