@@ -21,22 +21,33 @@ export class ClientError<T> extends AxiosError {
 
   public isClientError = true;
   public type: ClientErrors;
+  public cause: AxiosError;
   public body?: T;
 
-  constructor(cause: AxiosError) {
+  constructor(message: string);
+  constructor(error: AxiosError);
+  constructor(messageOrError: string|AxiosError) {
     super();
-    Object.assign(this, cause);
+
+    if (typeof messageOrError === 'string') {
+      this.message = messageOrError;
+      this.cause = new AxiosError();
+    } else {
+      Object.assign(this, messageOrError);
+      this.cause = messageOrError;
+    }
+
     this.enhanceNetworkError();
 
     this.type = this.getType();
-    this.status = cause.status || cause.response?.status;
+    this.status = this.cause.status || this.cause.response?.status;
 
-    if (isOfType(cause.response?.data, 'status') && typeof cause.response.data.status === 'number') {
-      this.status = this.status || cause.response.data.status;
+    if (isOfType(this.cause.response?.data, 'status') && typeof this.cause.response.data.status === 'number') {
+      this.status = this.status || this.cause.response.data.status;
     }
 
-    if (typeof cause.response?.data !== 'undefined' && cause.response?.data !== null) {
-      this.body = cause.response.data as T;
+    if (typeof this.cause.response?.data !== 'undefined' && this.cause.response?.data !== null) {
+      this.body = this.cause.response.data as T;
     }
   }
 
@@ -120,12 +131,14 @@ export class ClientError<T> extends AxiosError {
     return isOfType<ClientError<unknown>>(error, 'isClientError');
   }
 
-  public static fromError<T>(error: unknown): ClientError<T>|Error {
-    return isAxiosError(error)
-      ? new ClientError<T>(error)
-      : error instanceof Error || (isOfType<Error>(error, 'name') && isOfType<Error>(error, 'message'))
-          ? error as Error
-          : new Error(String(error));
+  public static fromError<T>(error: unknown): ClientError<T> {
+    if (isAxiosError(error)) {
+      return new ClientError<T>(error);
+    } else {
+      const result = isOfType<Error>(error, 'message') ? new AxiosError(error.message) : new AxiosError();
+      result.cause = error;
+      return new ClientError<T>(result);
+    }
   }
 
 }
