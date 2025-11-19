@@ -23,7 +23,7 @@ executors:
 
   nodejs:
     docker:
-      - image: cimg/node:18.16
+      - image: cimg/node:22.15-browsers
     working_directory: ~/iapetus
 
 commands:
