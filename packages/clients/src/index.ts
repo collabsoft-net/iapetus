@@ -5,6 +5,7 @@ export * from './APProxyRestClient';
 export * from './APRestClient';
 export * from './BambooRestClient';
 export * from './BitbucketRestClient';
+export * from './ClientError';
 export * from './ConfluenceRestClient';
 export * from './FirebaseRestClient';
 export * from './JiraRestClient';
