@@ -1317,7 +1317,7 @@ __metadata:
     "@collabsoft-net/enums": "*"
     "@collabsoft-net/helpers": "*"
     atlassian-jwt: 2.0.3
-    axios: 1.9.0
+    axios: 1.13.0
   languageName: unknown
   linkType: soft
 
@@ -1510,7 +1510,7 @@ __metadata:
     typescript: "npm:5.8.3"
     uniqid: "npm:5.4.0"
   peerDependencies:
-    axios: ^1.9.0
+    axios: ^1.13.0
     uniqid: ^5.4.0
   dependenciesMeta:
     "@google-cloud/pubsub":
@@ -1610,7 +1610,7 @@ __metadata:
     "@collabsoft-net/enums": "*"
     "@collabsoft-net/types": "*"
     "@forge/bridge": "*"
-    axios: 1.9.0
+    axios: 1.13.0
   languageName: unknown
   linkType: soft
 
@@ -1752,7 +1752,7 @@ __metadata:
     "@collabsoft-net/helpers": "*"
     "@collabsoft-net/services": "*"
     atlassian-jwt: ^2.0.3
-    axios: ^1.9.0
+    axios: ^1.13.0
     cron: ^4.3.0
     express: ^5.1.0
     passport: ^0.7.0
@@ -1901,7 +1901,7 @@ __metadata:
     "@collabsoft-net/entities": "*"
     "@collabsoft-net/functions": "*"
     "@collabsoft-net/services": "*"
-    axios: ^1.9.0
+    axios: ^1.13.0
     express: ^5.1.0
     jose: "*"
     passport: ^0.7.0
