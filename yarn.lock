@@ -1680,13 +1680,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/helpers@workspace:packages/helpers"
   dependencies:
+    "@collabsoft-net/enums": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
     "@types/node": "npm:<19.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.32.0"
     "@typescript-eslint/parser": "npm:8.32.0"
+    axios: "npm:1.13.0"
     eslint: "npm:9.26.0"
     nodemon: "npm:3.1.10"
     typescript: "npm:5.8.3"
+  dependenciesMeta:
+    axios:
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -7744,6 +7749,17 @@ __metadata:
     jsuri: "npm:^1.3.1"
     lodash: "npm:^4.17.21"
   checksum: 629725b6c4b5f7eb6aeebe6b86a08e7853dac2ece92f714be9fb9997b5b46577be8c9fa9842af0f5c9c70f3e118c7105082916d644304c2e24233b19c261cb87
+  languageName: node
+  linkType: hard
+
+"axios@npm:1.13.0":
+  version: 1.13.0
+  resolution: "axios@npm:1.13.0"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.4"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: b06319dda4dc5a9520a47e47f99b0335fcd82a573596fef7ff0dd745d2e4907d440c1a1060fdb12906d355b6cd1c45b69005ecb01af1431901b90946c8379e7e
   languageName: node
   linkType: hard
 
