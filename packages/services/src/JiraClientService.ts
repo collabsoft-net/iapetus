@@ -268,6 +268,11 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     return data;
   }
 
+  async getVersionByName(projectIdOrKey: string|number, name: string, expand?: Array<'operations'|'issuesstatus'>): Promise<Jira.Version|undefined> {
+    const result = await this.getVersionsPaginatedFor(projectIdOrKey, 0, 1, name, undefined, undefined, expand);
+    return result.values.find(item => item.name === name)
+  }
+
   async getVersions(projectIdOrKey: string|number, expand?: boolean): Promise<Array<Jira.Version>> {
     const { data } = await this.client.get<Array<Jira.Version>>(this.getEndpointFor(this.endpoints.LIST_VERSIONS, { projectIdOrKey: `${projectIdOrKey}` }), { expand: expand ? 'operations' : undefined });
     return data;
@@ -330,6 +335,16 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     }
   }
 
+  async getComponent(id: string|number): Promise<Jira.Component> {
+    const { data } = await this.client.get<Jira.Component>(this.getEndpointFor(this.endpoints.READ_COMPONENT, { id: `${id}` }));
+    return data;
+  }
+
+  async getComponentByName(projectIdOrKey: string|number, name: string): Promise<Jira.Component|undefined> {
+    const result = await this.getComponentsPaginated(projectIdOrKey, 0, 1, name);
+    return result.values.find(item => item.name === name)
+  }
+
   async getComponents(projectIdOrKey: string|number): Promise<Array<Jira.Component>> {
     const { data } = await this.client.get<Array<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS, { projectIdOrKey: `${projectIdOrKey}` }));
     return data;
@@ -343,11 +358,6 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
       const { data } = await this.client.get<Jira.PagedResponse2<Jira.Component>>(this.getEndpointFor(this.endpoints.LIST_COMPONENTS_PAGINATED), { startAt, maxResults, projectIds: projectIdOrKey, query });
       return data;
     }
-  }
-
-  async getComponent(id: string|number): Promise<Jira.Component> {
-    const { data } = await this.client.get<Jira.Component>(this.getEndpointFor(this.endpoints.READ_COMPONENT, { id: `${id}` }));
-    return data;
   }
 
   async createComponent(component: Jira.CreateComponentRequest): Promise<Jira.Component> {
