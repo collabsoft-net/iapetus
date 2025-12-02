@@ -1,11 +1,11 @@
 import { ACInstance } from '@collabsoft-net/entities';
 import { Applications, RestClientMethods } from '@collabsoft-net/enums';
+import { ClientError } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { AbstractRestClient } from './AbstractRestClient';
-import { ClientError } from './ClientError';
 
 const IMPERSONATION_GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 const AUTH_SERVER = 'https://oauth-2-authorization-server.services.atlassian.com';

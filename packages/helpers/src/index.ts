@@ -1,6 +1,6 @@
-
 export * from './camelCase';
 export * from './capitalizeFirstLetter';
+export * from './ClientError';
 export * from './isLicensingEnabled';
 export * from './isNullOrEmpty';
 export * from './isProduction';

@@ -1,9 +1,8 @@
 
 import { RestClientMethods } from '@collabsoft-net/enums';
+import { ClientError } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
-
-import { ClientError } from './ClientError';
 
 export abstract class AbstractRestClient<TResponseError = unknown> implements RestClient {
 

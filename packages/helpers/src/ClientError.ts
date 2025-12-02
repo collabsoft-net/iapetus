@@ -1,5 +1,6 @@
-import { isOfType } from '@collabsoft-net/helpers';
 import { AxiosError, HttpStatusCode, isAxiosError } from 'axios';
+
+import { isOfType } from './typeGuard';
 
 export enum ClientErrors {
   // Errors related to Client configuration & connectivity
