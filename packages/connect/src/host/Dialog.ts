@@ -22,7 +22,6 @@ const getSize = (options: AP.DialogOptions<never>) => {
 
 export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never>>, AC: Host) => {
     const { originId, data: instanceOptions } = message;
-    const { baseUrl } = AC.options;
     if (!instanceOptions) throw new BadRequestError();
 
     // We need to make sure AJS.dialog2() is available
@@ -30,30 +29,32 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
       throw new Error('AJS.dialog2() is not available. Please make sure to add `com.atlassian.auiplugin:dialog2` as a dependency if you want to be able to use AP.dialog.')
     }
 
-    // Check if the instance has been defined on the host options
-    const instance = AC.options.dialogs ? AC.options.dialogs[instanceOptions.key] : null;
-    if (!instance) throw new BadRequestError();
+    const app = AC.apps.find(app => Object.keys(app.dialogs || {}).includes(instanceOptions.key));
+    if (app) {
+      // Check if the instance has been defined on the host options
+      const instance = app.dialogs ? app.dialogs[instanceOptions.key] : null;
+      if (!instance) throw new BadRequestError();
 
-    const options = { ...instance.options, ...instanceOptions };
+      const options = { ...instance.options, ...instanceOptions };
 
-    const urlPrefix = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-    let url = instance.url.startsWith('/') ? `${urlPrefix}${instance.url}` : instance.url;
+      const urlPrefix = app.servletPath.endsWith('/') ? app.servletPath.slice(0, -1) : app.servletPath;
+      let url = instance.url.startsWith('/') ? `${urlPrefix}${instance.url}` : instance.url;
 
-    const defaultQueryString = `xdm_e=${AC.options.xdm_e}&cp=${AC.options.contextPath}&lic=${AC.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
-    url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
+      const defaultQueryString = `xdm_e=${AC.options.xdm_e}&cp=${AC.options.contextPath}&lic=${app.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
+      url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
-    const size = getSize(options);
-    const sizeClass = typeof size !== 'boolean' ? size : '';
-    let dialogStyle = typeof size === 'boolean'
-      ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
-      : '';
+      const size = getSize(options);
+      const sizeClass = typeof size !== 'boolean' ? size : '';
+      let dialogStyle = typeof size === 'boolean'
+        ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
+        : '';
 
-    // Override `top` position of modal in case of full screen
-    if (options.height && (options.height === '100%' || options.height === '100vh')) {
-      dialogStyle += 'top:0px;'
-    }
+      // Override `top` position of modal in case of full screen
+      if (options.height && (options.height === '100%' || options.height === '100vh')) {
+        dialogStyle += 'top:0px;'
+      }
 
-    const template = `
+      const template = `
 <section id="ap-dialog-${originId}" role="dialog" ${options.closeOnEscape === false ? 'data-aui-modal="true"' : ''} class="aui-layer aui-dialog2 ap-aui-dialog2 ${sizeClass}" aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style=${dialogStyle}>
     ${options.chrome ? `
       <header class="aui-dialog2-header">
@@ -62,7 +63,7 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
       </header>
     ` : ''}
     <div class="aui-dialog2-content" style="padding:0;font-size:0;max-height:unset;">
-      <iframe id="ap-dialog-${originId}-frame" data-ap-origin=${originId} data-ap-appkey="${AC.options.appKey}" src="${url}" style="height:100%;width:100%;border:none;" name="${encodeURIComponent(JSON.stringify(options))}"></iframe>
+      <iframe id="ap-dialog-${originId}-frame" data-ap-origin=${originId} data-ap-appkey="${app.appKey}" src="${url}" style="height:100%;width:100%;border:none;" name="${encodeURIComponent(JSON.stringify(options))}"></iframe>
     </div>
     ${options.chrome ? `
       <footer class="aui-dialog2-footer">
@@ -103,6 +104,7 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
         };
       }
     })
+  }
 }
 
 /*

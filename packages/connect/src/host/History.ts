@@ -16,7 +16,6 @@ export const HistoryGetStateEventHandler = (event: MessageEvent<unknown>, AC: Ho
   const state = {
     hash: window.location.hash.replace('#!', ''),
     href: window.location.href,
-    key: AC.options.appKey,
     title: document.title
   }
 

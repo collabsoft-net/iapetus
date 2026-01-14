@@ -1,5 +1,5 @@
 import { MacroEditorOptions, WindowWithMacroEditor } from '../client/Types';
-import { Host, HostOptions } from '../Host';
+import { App, Host } from '../Host';
 
 const windowWithMacroEditor = window as WindowWithMacroEditor;
 
@@ -7,25 +7,23 @@ export class MacroEditor {
 
   public eventHandlers = new Map<string, () => void>();
 
-  private options: HostOptions;
   private macroBody = new Map<string, string>();
   private macroData = new Map<string, Record<string, string>>();
   private active: boolean = false;
   private closeOnSubmitDisabled: boolean = false;
 
   constructor(private AC: Host) {
-    this.options = AC.options;
   }
 
   public get isOpen() {
     return this.active;
   }
 
-  public async init() {
-    if (this.options.editors) {
-      const macroBrowserAvailable = await this.waitForMacroBrowser();
-      if (macroBrowserAvailable) {
-        Object.entries(this.options.editors).forEach(([ key, options ]) => {
+  public async register(app: App) {
+    const macroBrowserAvailable = await this.waitForMacroBrowser();
+    if (macroBrowserAvailable) {
+      if (app.editors) {
+        Object.entries(app.editors).forEach(([ key, options ]) => {
           windowWithMacroEditor.AJS.MacroBrowser.setMacroJsOverride(key, {
             opener: (macroData: { name: string, schemaVersion: number, body: string, params: Record<string, string> }) => {
               const body = macroData.body || '';
@@ -33,7 +31,7 @@ export class MacroEditor {
               const name = Object.keys(params).length <= 0 ? options.insertTitle : options.editTitle || macroData.name;
               this.macroBody.set(key, body);
               this.macroData.set(key, params);
-              this.open(key, name || key, params, options);
+              this.open(app, key, name || key, params, options);
             }
           });
         });
@@ -77,7 +75,7 @@ export class MacroEditor {
     }
   }
 
-  private open = (key: string, name: string, params: Record<string, string>, options: MacroEditorOptions) => {
+  private open = (app: App, key: string, name: string, params: Record<string, string>, options: MacroEditorOptions) => {
 
     // We need to make sure AJS.dialog2() is available
     if (!windowWithMacroEditor.AJS.dialog2) {
@@ -87,10 +85,10 @@ export class MacroEditor {
     const isEditing = Object.keys(params).length > 0;
     const style = `width:${options.width || '50%'};height:${options.height || '50%'};z-index: 3000`;
 
-    const urlPrefix = this.options.baseUrl.endsWith('/') ? this.options.baseUrl.slice(0, -1) : this.options.baseUrl;
+    const urlPrefix = app.servletPath.endsWith('/') ? app.servletPath.slice(0, -1) : app.servletPath;
     let url = options.url.startsWith('/') ? `${urlPrefix}${options.url}` : options.url;
 
-    const defaultQueryString = `xdm_e=${this.options.xdm_e}&cp=${this.options.contextPath}&lic=${this.options.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
+    const defaultQueryString = `xdm_e=${this.AC.options.xdm_e}&cp=${this.AC.options.contextPath}&lic=${app.license}&xdm_c=DO_NOT_USE&cv=DO_NOT_USE`;
     url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
     const template = `
@@ -99,7 +97,7 @@ export class MacroEditor {
           <h2 class="aui-dialog2-header-main" id="static-dialog--heading">${name}</h2>
         </header>
         <div class="aui-dialog2-content">
-          <iframe id="ap-macroeditor-${key}-frame" data-ap-appkey="${this.options.appKey}" src="${url}" style="width:100%;height:100%;border:none;" name="${key}"></iframe>
+          <iframe id="ap-macroeditor-${key}-frame" data-ap-appkey="${app.appKey}" src="${url}" style="width:100%;height:100%;border:none;" name="${key}"></iframe>
         </div>
         <footer class="aui-dialog2-footer">
           <div class="aui-dialog2-footer-actions">

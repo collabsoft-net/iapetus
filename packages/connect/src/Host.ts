@@ -17,20 +17,20 @@ import { MacroEditor } from './host/MacroEditor';
 import { NavigatorGoEventHandler, NavigatorLocationEventHandler } from './host/Navigator';
 import { UserCurrentUserEventHandler } from './host/User';
 
-export interface HostOptions {
-    appKey: string;
-    baseUrl: string;
-    contextPath: string;
-    xdm_e: string;
-    license: 'active'|'none';
-    product: 'jira'|'confluence'|'bamboo'|'bitbucket';
-    verbose?: boolean;
 
-    navigator?: {
-        go?: {
-            addonModule?: Record<string, string>
-        }
-    };
+export interface HostOptions {
+  product: 'jira'|'confluence'|'bamboo'|'bitbucket';
+  contextPath: string;
+  xdm_e: string;
+  verbose?: boolean;
+}
+
+export interface App {
+    appKey: string;
+    servletPath: string;
+    license: 'active'|'none';
+
+    modules?: Array<string>;
 
     dialogs?: Record<string, {
       url: string;
@@ -50,247 +50,52 @@ export class NotImplementedError extends Error {
 
 export class Host {
 
+  public apps: Array<App> = [];
   public editor: MacroEditor;
   public currentUrl: string;
+  private themeMutationObserver: ThemeMutationObserver|null = null;
 
   // -------------------------------------------------------------------------- Constructor
 
   constructor(public options: HostOptions) {
-    this.info('[AC] Initializing Atlassian Connect polyfill');
     this.editor = new MacroEditor(this);
 
     // Store the current hash (for use in popstate)
     this.currentUrl = window.location.hash.replace('#!', '');
+
+    // Start the event listeners
+    this.init();
   }
 
   // -------------------------------------------------------------------------- Public methods
 
-  public async init() {
-    window.addEventListener('message', (event: MessageEvent<unknown>) => {
-      try {
-        const message = this.toMessage(event);
-        const name = message.name as Events;
-        this.info(`[AC] Received event ${name} (${message.originId})`, event, message);
+  public async register(app: App) {
+    this.info(`[AC] Registering Atlassian Connect for ${app.appKey}`);
+    this.apps.push(app);
 
-        switch (name) {
-          case Events.HANDSHAKE:
-            this.handshakeEventHandler(event);
-            break;
-
-          case Events.AP_CONTEXT_GETTOKEN:
-          case Events.AP_CONTEXT_GETCONTEXT:
-            this.contextEventHandler(name, event);
-            break;
-
-          case Events.AP_COOKIE_SAVE:
-          case Events.AP_COOKIE_READ:
-          case Events.AP_COOKIE_ERASE:
-            this.cookieEventHandler(name, event);
-            break;
-
-          case Events.AP_CUSTOMCONTENT_INTERCEPT:
-          case Events.AP_CUSTOMCONTENT_SUBMITCALLBACK:
-          case Events.AP_CUSTOMCONTENT_SUBMITSUCCESSCALLBACK:
-          case Events.AP_CUSTOMCONTENT_SUBMITERRORCALLBACK:
-          case Events.AP_CUSTOMCONTENT_CANCELCALLBACK:
-            this.customContentEventHandler(name, event);
-            break;
-
-          case Events.AP_DIALOG_CREATE:
-          case Events.AP_DIALOG_CLOSE:
-          case Events.AP_DIALOG_GETCUSTOMDATA:
-          case Events.AP_DIALOG_GETBUTTON:
-          case Events.AP_DIALOG_DISABLECLOSEONSUBMIT:
-          case Events.AP_DIALOG_CREATEBUTTON:
-          case Events.AP_DIALOG_ISCLOSEONESCAPE:
-          case Events.AP_DIALOG_ON:
-            this.dialogEventHandler(name, event);
-            break;
-
-          case Events.AP_EVENTS_ON:
-          case Events.AP_EVENTS_ONPUBLIC:
-          case Events.AP_EVENTS_ONCE:
-          case Events.AP_EVENTS_ONCEPUBLIC:
-          case Events.AP_EVENTS_ONANY:
-          case Events.AP_EVENTS_ONANYPUBLIC:
-          case Events.AP_EVENTS_OFF:
-          case Events.AP_EVENTS_OFFPUBLIC:
-          case Events.AP_EVENTS_OFFALL:
-          case Events.AP_EVENTS_OFFALLPUBLIC:
-          case Events.AP_EVENTS_OFFANY:
-          case Events.AP_EVENTS_OFFANYPUBLIC:
-          case Events.AP_EVENTS_EMIT:
-          case Events.AP_EVENTS_EMITPUBLIC:
-            this.eventsEventHandler(name, event);
-            break;
-
-          case Events.AP_FLAG_CREATE:
-          case Events.AP_FLAG_CLOSE:
-            this.flagEventHandler(name, event);
-            break;
-
-          case Events.AP_HISTORY_BACK:
-          case Events.AP_HISTORY_FORWARD:
-          case Events.AP_HISTORY_GO:
-          case Events.AP_HISTORY_GETSTATE:
-          case Events.AP_HISTORY_PUSHSTATE:
-          case Events.AP_HISTORY_REPLACESTATE:
-          case Events.AP_HISTORY_POPSTATE:
-            this.historyEventHandler(name, event);
-            break;
-
-          case Events.AP_IFRAME_GETLOCATION:
-          case Events.AP_IFRAME_RESIZE:
-          case Events.AP_IFRAME_SIZETOPARENT:
-            this.iframeEventHandler(name, event);
-            break;
-
-          case Events.AP_REQUEST:
-            this.requestEventHandler(name, event);
-            break;
-
-          case Events.AP_INLINEDIALOG_HIDE:
-            this.inlineDialogEventHandler(name, event);
-            break;
-
-          case Events.AP_NAVIGATOR_RELOAD:
-          case Events.AP_NAVIGATOR_GETLOCATION:
-          case Events.AP_NAVIGATOR_GO:
-            this.navigatorEventHandler(name, event);
-            break;
-
-          case Events.AP_PAGE_SETTITLE:
-            this.pageEventHandler(name, event);
-            break;
-
-          case Events.AP_SCROLLPOSITION_GETPOSITION:
-          case Events.AP_SCROLLPOSITION_SETVERTICALPOSITION:
-            this.scrollPositionEventHandler(name, event);
-            break;
-
-          case Events.AP_USER_GETCURRENTUSER:
-          case Events.AP_USER_GETTIMEZONE:
-          case Events.AP_USER_GETLOCALE:
-            this.userEventHandler(name, event);
-            break;
-
-          case Events.AP_JIRA_REFRESHISSUEPAGE:
-          case Events.AP_JIRA_GETWORKFLOWCONFIGURATION:
-          case Events.AP_JIRA_ISDASHBOARDITEMEDITABLE:
-          case Events.AP_JIRA_OPENCREATEISSUEDIALOG:
-          case Events.AP_JIRA_OPENISSUEDIALOG:
-          case Events.AP_JIRA_SETDASHBOARDITEMTITLE:
-          case Events.AP_JIRA_OPENDATEPICKER:
-          case Events.AP_JIRA_INITJQLEDITOR:
-          case Events.AP_JIRA_SHOWJQLEDITOR:
-          case Events.AP_JIRA_ISNATIVEAPP:
-            this.jiraEventHandler(name, event);
-            break;
-
-          case Events.AP_CONFLUENCE_SAVEMACRO:
-          case Events.AP_CONFLUENCE_CLOSEMACROEDITOR:
-          case Events.AP_CONFLUENCE_GETMACRODATA:
-          case Events.AP_CONFLUENCE_GETMACROBODY:
-          case Events.AP_CONFLUENCE_ONMACROPROPERTYPANELEVENT:
-          case Events.AP_CONFLUENCE_CLOSEMACROPROPERTYPANEL:
-          case Events.AP_CONFLUENCE_GETCONTENTPROPERTY:
-          case Events.AP_CONFLUENCE_SETCONTENTPROPERTY:
-          case Events.AP_CONFLUENCE_SYNCPROPERTYFROMSERVER:
-            this.confluenceEventHandler(name, event);
-            break;
-        }
-      } catch (err) {
-        if (err instanceof InvalidMessageError) {
-          // Ignore this message.
-          // We only process 'message' events that are explicitly designed for Atlassian Connect polyfill
-        } else if (err instanceof BadRequestError) {
-          this.badRequest(event);
-        } else if (err instanceof NotImplementedError) {
-          this.unsupportedEvent(err.message as Events);
-        } else {
-          this.error(err, event);
-        }
-      }
-    });
-
-    // Add a mutation observer for theming
-    new ThemeMutationObserver((theme) => {
-      // Emit the theme updated event to all frames
-      const frames = this.getFrames(this.options.appKey);
-      frames.forEach(frame => {
-        const addonKey = frame.getAttribute('data-ap-appkey');
-        const key = frame.getAttribute('data-ap-key');
-        const originId = frame.getAttribute('data-ap-origin');
-
-        this.info(`[AC] User theme changed to ${theme.colorMode}, notifying all instances`);
-        frame.contentWindow?.postMessage({
-          name: Events.AP_THEMING_UPDATED,
-          addonKey,
-          originId,
-          key,
-          data: { theme }
-        }, '*')
-      });
-    }).observe();
-
-    // Add an event listener for History PopState
-    // This is sent to all frames to accomodate the undocumented AP.history.popState()
-    addEventListener('popstate', (event: PopStateEvent) => {
-      // Get the old & the new URL and update the placeholder property
-      const newURL = (event.target as Window).location.hash.replace('#!', '');
-      const oldURL = `${this.currentUrl}`;
-      this.currentUrl = newURL;
-
-      // Construct the history popstate data object
-      const data: AP.HistoryPopState = {
-        hash: window.location.hash,
-        href: window.location.href,
-        key: this.options.appKey,
-        newURL,
-        oldURL,
-        query: window.location.search,
-        state: event.state,
-        title: document.title
-      }
-
-      // Emit the popstate event to all frames
-      const frames = this.getFrames(this.options.appKey);
-      frames.forEach(frame => {
-        const addonKey = frame.getAttribute('data-ap-appkey');
-        const key = frame.getAttribute('data-ap-key');
-        const originId = frame.getAttribute('data-ap-origin');
-
-        frame.contentWindow?.postMessage({
-          name: Events.AP_HISTORY_POPSTATE,
-          addonKey,
-          originId,
-          key,
-          data
-        }, '*')
-      });
-    });
-
-    // Initialize custom Macro editor in Confluence
-    // NOTE: this should run last as it is based on interval polling
-    await this.editor.init();
-
+    // If the app has macro editors, register them!
+    if (app.editors) {
+      await this.editor.register(app);
+    }
   }
 
   public emit(originId: string, name: string): void;
   public emit<T>(originId: string, name: string, data: T): void;
   public emit<T>(originId: string, name: string, data?: T) {
-    const frames = this.getFrames(this.options.appKey);
-    frames.forEach(frame => {
-      const addonKey = frame.getAttribute('data-ap-appkey');
-      const key = frame.getAttribute('data-ap-key');
+    this.apps.forEach(app => {
+      const frames = this.getFrames(app.appKey);
+      frames.forEach(frame => {
+        const addonKey = frame.getAttribute('data-ap-appkey');
+        const key = frame.getAttribute('data-ap-key');
 
-      frame.contentWindow?.postMessage({
-        name: name as Events,
-        originId,
-        addonKey,
-        key,
-        data
-      }, '*')
+        frame.contentWindow?.postMessage({
+          name: name as Events,
+          originId,
+          addonKey,
+          key,
+          data
+        }, '*')
+      });
     });
   }
 
@@ -373,6 +178,230 @@ export class Host {
   }
 
   // -------------------------------------------------------------------------- Private methods
+
+  private async init() {
+    this.info('[AC] Initializing Atlassian Connect polyfill');
+
+    window.removeEventListener('message', this.onMessage.bind(this));
+    window.addEventListener('message', this.onMessage.bind(this));
+
+    // Add a mutation observer for theming if it does not exist
+    if (!this.themeMutationObserver) {
+      this.themeMutationObserver = new ThemeMutationObserver((theme) => {
+        this.apps.forEach(app => {
+          // Emit the theme updated event to all frames
+          const frames = this.getFrames(app.appKey);
+          frames.forEach(frame => {
+            const addonKey = frame.getAttribute('data-ap-appkey');
+            const key = frame.getAttribute('data-ap-key');
+            const originId = frame.getAttribute('data-ap-origin');
+
+            this.info(`[AC] User theme changed to ${theme.colorMode}, notifying all instances`);
+            frame.contentWindow?.postMessage({
+              name: Events.AP_THEMING_UPDATED,
+              addonKey,
+              originId,
+              key,
+              data: { theme }
+            }, '*')
+          });
+        });
+      });
+    }
+
+    // Restart the mutation observer every time init() is called
+    this.themeMutationObserver.disconnect();
+    this.themeMutationObserver.observe();
+
+    // Add an event listener for History PopState
+    // This is sent to all frames to accomodate the undocumented AP.history.popState()
+    window.removeEventListener('popstate', this.onPopState.bind(this));
+    window.addEventListener('popstate', this.onPopState.bind(this));
+  }
+
+  private onMessage(event: MessageEvent<unknown>) {
+    try {
+      const message = this.toMessage(event);
+      const name = message.name as Events;
+      this.info(`[AC] Received event ${name} (${message.originId})`, event, message);
+
+      switch (name) {
+        case Events.HANDSHAKE:
+          this.handshakeEventHandler(event);
+          break;
+
+        case Events.AP_CONTEXT_GETTOKEN:
+        case Events.AP_CONTEXT_GETCONTEXT:
+          this.contextEventHandler(name, event);
+          break;
+
+        case Events.AP_COOKIE_SAVE:
+        case Events.AP_COOKIE_READ:
+        case Events.AP_COOKIE_ERASE:
+          this.cookieEventHandler(name, event);
+          break;
+
+        case Events.AP_CUSTOMCONTENT_INTERCEPT:
+        case Events.AP_CUSTOMCONTENT_SUBMITCALLBACK:
+        case Events.AP_CUSTOMCONTENT_SUBMITSUCCESSCALLBACK:
+        case Events.AP_CUSTOMCONTENT_SUBMITERRORCALLBACK:
+        case Events.AP_CUSTOMCONTENT_CANCELCALLBACK:
+          this.customContentEventHandler(name, event);
+          break;
+
+        case Events.AP_DIALOG_CREATE:
+        case Events.AP_DIALOG_CLOSE:
+        case Events.AP_DIALOG_GETCUSTOMDATA:
+        case Events.AP_DIALOG_GETBUTTON:
+        case Events.AP_DIALOG_DISABLECLOSEONSUBMIT:
+        case Events.AP_DIALOG_CREATEBUTTON:
+        case Events.AP_DIALOG_ISCLOSEONESCAPE:
+        case Events.AP_DIALOG_ON:
+          this.dialogEventHandler(name, event);
+          break;
+
+        case Events.AP_EVENTS_ON:
+        case Events.AP_EVENTS_ONPUBLIC:
+        case Events.AP_EVENTS_ONCE:
+        case Events.AP_EVENTS_ONCEPUBLIC:
+        case Events.AP_EVENTS_ONANY:
+        case Events.AP_EVENTS_ONANYPUBLIC:
+        case Events.AP_EVENTS_OFF:
+        case Events.AP_EVENTS_OFFPUBLIC:
+        case Events.AP_EVENTS_OFFALL:
+        case Events.AP_EVENTS_OFFALLPUBLIC:
+        case Events.AP_EVENTS_OFFANY:
+        case Events.AP_EVENTS_OFFANYPUBLIC:
+        case Events.AP_EVENTS_EMIT:
+        case Events.AP_EVENTS_EMITPUBLIC:
+          this.eventsEventHandler(name, event);
+          break;
+
+        case Events.AP_FLAG_CREATE:
+        case Events.AP_FLAG_CLOSE:
+          this.flagEventHandler(name, event);
+          break;
+
+        case Events.AP_HISTORY_BACK:
+        case Events.AP_HISTORY_FORWARD:
+        case Events.AP_HISTORY_GO:
+        case Events.AP_HISTORY_GETSTATE:
+        case Events.AP_HISTORY_PUSHSTATE:
+        case Events.AP_HISTORY_REPLACESTATE:
+        case Events.AP_HISTORY_POPSTATE:
+          this.historyEventHandler(name, event);
+          break;
+
+        case Events.AP_IFRAME_GETLOCATION:
+        case Events.AP_IFRAME_RESIZE:
+        case Events.AP_IFRAME_SIZETOPARENT:
+          this.iframeEventHandler(name, event);
+          break;
+
+        case Events.AP_REQUEST:
+          this.requestEventHandler(name, event);
+          break;
+
+        case Events.AP_INLINEDIALOG_HIDE:
+          this.inlineDialogEventHandler(name, event);
+          break;
+
+        case Events.AP_NAVIGATOR_RELOAD:
+        case Events.AP_NAVIGATOR_GETLOCATION:
+        case Events.AP_NAVIGATOR_GO:
+          this.navigatorEventHandler(name, event);
+          break;
+
+        case Events.AP_PAGE_SETTITLE:
+          this.pageEventHandler(name, event);
+          break;
+
+        case Events.AP_SCROLLPOSITION_GETPOSITION:
+        case Events.AP_SCROLLPOSITION_SETVERTICALPOSITION:
+          this.scrollPositionEventHandler(name, event);
+          break;
+
+        case Events.AP_USER_GETCURRENTUSER:
+        case Events.AP_USER_GETTIMEZONE:
+        case Events.AP_USER_GETLOCALE:
+          this.userEventHandler(name, event);
+          break;
+
+        case Events.AP_JIRA_REFRESHISSUEPAGE:
+        case Events.AP_JIRA_GETWORKFLOWCONFIGURATION:
+        case Events.AP_JIRA_ISDASHBOARDITEMEDITABLE:
+        case Events.AP_JIRA_OPENCREATEISSUEDIALOG:
+        case Events.AP_JIRA_OPENISSUEDIALOG:
+        case Events.AP_JIRA_SETDASHBOARDITEMTITLE:
+        case Events.AP_JIRA_OPENDATEPICKER:
+        case Events.AP_JIRA_INITJQLEDITOR:
+        case Events.AP_JIRA_SHOWJQLEDITOR:
+        case Events.AP_JIRA_ISNATIVEAPP:
+          this.jiraEventHandler(name, event);
+          break;
+
+        case Events.AP_CONFLUENCE_SAVEMACRO:
+        case Events.AP_CONFLUENCE_CLOSEMACROEDITOR:
+        case Events.AP_CONFLUENCE_GETMACRODATA:
+        case Events.AP_CONFLUENCE_GETMACROBODY:
+        case Events.AP_CONFLUENCE_ONMACROPROPERTYPANELEVENT:
+        case Events.AP_CONFLUENCE_CLOSEMACROPROPERTYPANEL:
+        case Events.AP_CONFLUENCE_GETCONTENTPROPERTY:
+        case Events.AP_CONFLUENCE_SETCONTENTPROPERTY:
+        case Events.AP_CONFLUENCE_SYNCPROPERTYFROMSERVER:
+          this.confluenceEventHandler(name, event);
+          break;
+      }
+    } catch (err) {
+      if (err instanceof InvalidMessageError) {
+        // Ignore this message.
+        // We only process 'message' events that are explicitly designed for Atlassian Connect polyfill
+      } else if (err instanceof BadRequestError) {
+        this.badRequest(event);
+      } else if (err instanceof NotImplementedError) {
+        this.unsupportedEvent(err.message as Events);
+      } else {
+        this.error(err, event);
+      }
+    }
+  }
+
+  private onPopState(event: PopStateEvent) {
+    // Get the old & the new URL and update the placeholder property
+    const newURL = (event.target as Window).location.hash.replace('#!', '');
+    const oldURL = `${this.currentUrl}`;
+    this.currentUrl = newURL;
+
+    this.apps.forEach(app => {
+      // Construct the history popstate data object
+      const data: AP.HistoryPopState = {
+        hash: window.location.hash,
+        href: window.location.href,
+        key: app.appKey,
+        newURL,
+        oldURL,
+        query: window.location.search,
+        state: event.state,
+        title: document.title
+      }
+
+      // Emit the popstate event to all frames
+      const frames = this.getFrames(app.appKey);
+      frames.forEach(frame => {
+        const addonKey = frame.getAttribute('data-ap-appkey');
+        const key = frame.getAttribute('data-ap-key');
+        const originId = frame.getAttribute('data-ap-origin');
+
+        frame.contentWindow?.postMessage({
+          name: Events.AP_HISTORY_POPSTATE,
+          addonKey,
+          originId,
+          key,
+          data
+        }, '*')
+      });
+    });
+  }
 
   private handshakeEventHandler(event: MessageEvent<unknown>) {
     const frame = this.findSource(event);

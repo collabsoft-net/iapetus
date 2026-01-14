@@ -31,7 +31,13 @@ export const NavigatorGoEventHandler = (event: MessageEvent<unknown>, AC: Host):
     switch (target as AP.NavigatorTargetJira|AP.NavigatorTargetConfluence) {
       case 'addonModule':
         if (context?.moduleKey) {
-          window.location.href = getUrl(getLocation(`/plugins/servlet/atlassian-connect/${AC.options.appKey}/${context.moduleKey}`, context.customData || {}));
+          const moduleKey = context.moduleKey;
+          if (moduleKey) {
+            const app = AC.apps.find(app => app.modules?.includes(moduleKey));
+            if (app) {
+              window.location.href = getUrl(getLocation(`/plugins/servlet/atlassian-connect/${app.appKey}/${moduleKey}`, context.customData || {}));
+            }
+          }
         } else {
           throw new BadRequestError();
         }
