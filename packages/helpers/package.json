@@ -38,13 +38,13 @@
     "@types/node": "<19.0.0",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
-    "axios": "1.13.0",
+    "axios": "1.13.2",
     "eslint": "9.26.0",
     "nodemon": "3.1.10",
     "typescript": "5.8.3"
   },
   "optionalDependencies": {
-    "axios": "1.13.0"
+    "axios": "^1.13.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
