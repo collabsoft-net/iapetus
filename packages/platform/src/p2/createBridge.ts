@@ -8,6 +8,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     ...createConnectBridge(product, service),
     platform: Modes.P2,
+    isCloud: false,
 
     client: (product === 'jira'
       ? new JiraClientService(new ServerRestClient(getAppUrl('/', true), { headers: { 'X-Atlassian-Token': 'no-check' } }), Modes.P2)

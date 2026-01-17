@@ -121,6 +121,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     product,
     platform: Modes.CONNECT,
+    isCloud: true,
     service,
 
     client: (product === 'jira'
