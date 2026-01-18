@@ -4,43 +4,30 @@ import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { events, router, view, Modal, showFlag } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
-import { isOfType } from '@collabsoft-net/helpers';
 import uniqid from 'uniqid';
 
 // We are defining bridge.dialog.open() here because it has a weird overload
 // Unfortunately, typescript does not support overload declaration within an object
-function open<X>(key: string): Promise<X|undefined>;
-function open<X>(key: string, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X>(key: string, context: T): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X>(key: string, context: T, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
-function open<T extends Platform.DialogContext, X> (keyOrOptions: string|Platform.DialogOptions<T, X>, contextOrCallbackOrOptions?: Platform.DialogCallback<X>|T|Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
-
-  const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
-  const context = !isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions !== 'function' ? contextOrCallbackOrOptions : undefined;
-  const cb = typeof callback === 'function' ? callback : (!isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions === 'function') ? contextOrCallbackOrOptions : undefined;
-  const options = typeof keyOrOptions !== 'string' ? keyOrOptions : isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') ? contextOrCallbackOrOptions : {
-    key,
-    context
-  };
-
+function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>): Promise<X|undefined>;
+function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
   return new Promise<X|undefined>(resolve => {
     const onClose = (payload?: X) => {
       if (options.onClose) {
         options.onClose(payload);
       }
 
-      if (cb) {
-        cb(payload);
+      if (callback) {
+        callback(payload);
       }
 
       resolve(payload);
     }
 
     const modal = new Modal({
-      resource: options.key,
+      resource: options.identifiers.forgeResource,
       onClose,
       size: options.size,
       context: options.context,

@@ -73,7 +73,10 @@ declare global {
     type DialogCallback<T> = (data?: T) => void;
 
     type DialogOptions<T extends DialogContext, X> = {
-      key: string;
+      identifiers: {
+        connectKey: string;
+        forgeResource: string;
+      },
       size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
       height?: string;
       width?: string;
@@ -154,13 +157,10 @@ declare global {
       };
 
       dialog: {
-        open<X>(key: string): Promise<X>;
-        open<X>(key: string, callback: DialogCallback<X>): Promise<X>;
-        open<T extends DialogContext, X>(key: string, context: T): Promise<X>;
-        open<T extends DialogContext, X>(key: string, context: T, callback: DialogCallback<X>): Promise<X>;
-        open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>): Promise<X>;
-        open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>, callback: DialogCallback<X>): Promise<X>;
-        open<T extends DialogContext, X> (options: DialogOptions<T, X>): Promise<X>;
+        open<X> (options: DialogOptions<DialogContext, X>): Promise<X|undefined>;
+        open<X> (options: DialogOptions<DialogContext, X>, callback: DialogCallback<X>): Promise<X|undefined>;
+        open<X, T extends DialogContext> (options: DialogOptions<T, X>): Promise<X|undefined>;
+        open<X, T extends DialogContext> (options: DialogOptions<T, X>, callback: DialogCallback<X>): Promise<X|undefined>;
         getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
         close: <T> (payload?: T) => void;

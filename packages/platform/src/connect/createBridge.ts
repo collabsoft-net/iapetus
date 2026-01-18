@@ -13,22 +13,11 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
   // We are defining bridge.dialog.open() here because it has a weird overload
   // Unfortunately, typescript does not support overload declaration within an object
-  function open<X>(key: string): Promise<X|undefined>;
-  function open<X>(key: string, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X>(key: string, context: T): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X>(key: string, context: T, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X>(key: string, options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
-  function open<T extends Platform.DialogContext, X> (keyOrOptions: string|Platform.DialogOptions<T, X>, contextOrCallbackOrOptions?: Platform.DialogCallback<X>|T|Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
-
-    const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
-    const context = !isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions !== 'function' ? contextOrCallbackOrOptions : undefined;
-    const cb = typeof callback === 'function' ? callback : (!isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') && typeof contextOrCallbackOrOptions === 'function') ? contextOrCallbackOrOptions : undefined;
-    const options = typeof keyOrOptions !== 'string' ? keyOrOptions : isOfType<Platform.DialogOptions<T, X>>(contextOrCallbackOrOptions, 'key') ? contextOrCallbackOrOptions : {
-      key,
-      context
-    };
+function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>): Promise<X|undefined>;
+function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
 
     const dialogSize = 
       options.size === 'xlarge'
@@ -43,7 +32,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     // options parameter, we should not add them to the object to avoid overwriting the defaults
     // with 'undefined' as this will negate the default value provided in the descriptor
     const dialogOptions: AP.DialogOptions<T> = {
-      key,
+      key: options.identifiers.connectKey,
       customData: options.context,
       chrome: false
     };
@@ -70,8 +59,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           options.onClose(data);
         };
 
-        if (cb) {
-          cb(data);
+        if (callback) {
+          callback(data);
         }
 
         resolve(data);
