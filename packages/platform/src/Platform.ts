@@ -159,7 +159,7 @@ declare global {
         open<T extends DialogContext, X>(key: string, context: T, callback: DialogCallback<X>): Promise<X>;
         open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>): Promise<X>;
         open<T extends DialogContext, X>(key: string, options: DialogOptions<T, X>, callback: DialogCallback<X>): Promise<X>;
-        open<T extends DialogContext, X> (options: DialogOptions<T, X>): Promise<void>;
+        open<T extends DialogContext, X> (options: DialogOptions<T, X>): Promise<X>;
         getProperties: () => Promise<Props|undefined>;
         getButton: (name: string) => DialogButton|null;
         close: <T> (payload?: T) => void;
