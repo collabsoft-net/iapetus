@@ -131,6 +131,7 @@ declare global {
       };
     
       frame: {
+        resize(width: string, height: string): void;
         sizeToParent(hideFooter?: boolean): void;
       }
 

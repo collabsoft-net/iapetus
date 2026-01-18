@@ -102,6 +102,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     frame: {
+      resize: () => {},
       sizeToParent: () => {}
     },
 

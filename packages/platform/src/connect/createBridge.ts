@@ -136,6 +136,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     frame: {
+      resize: (width: string, height: string) => AP.resize(width, height),
       sizeToParent: (hideFooter?: boolean) => AP.sizeToParent(hideFooter)
     },
 
