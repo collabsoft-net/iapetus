@@ -1,5 +1,5 @@
 
-export const toAPDialogOptions = (options?: Omit<Platform.DialogOptions<never, unknown>, 'key'>): Omit<AP.DialogOptions<unknown>, 'key'>|undefined => {
+export const toAPDialogOptions = (options?: Omit<Platform.DialogOptions<Platform.DialogContext, unknown>, 'key'>): Omit<AP.DialogOptions<unknown>, 'key'>|undefined => {
   if (options) {
     const dialogSize =
       options.size === 'xlarge'
