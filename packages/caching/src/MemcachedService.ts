@@ -38,12 +38,12 @@ export class MemcachedService implements CachingService {
   }
 
   async get<T>(key: string): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T>;
+  async get<T>(key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T>;
   async get<T>(type: Type<T>, key: string): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T|null>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T|null>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T>;
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T>;
+  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
 
     const { type, key, loader, expiresInSeconds, forceRefresh } = {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
@@ -156,7 +156,7 @@ export class MemcachedService implements CachingService {
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds): Promise<void> {
     try {
       const payload = JSON.stringify(data);
 
@@ -181,12 +181,11 @@ export class MemcachedService implements CachingService {
         }
         resolve();
       }));
-      return null;
     } catch (error) {
       if (this.verbose) {
         this.logger.error(`[Memcached] An unexpected error occurred while storing data for key ${key}`, error, data);
       }
-      return error as Error;
+      throw error;
     }
   }
 

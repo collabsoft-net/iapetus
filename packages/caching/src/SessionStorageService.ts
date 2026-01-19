@@ -21,12 +21,12 @@ export class SessionStorageService implements CachingService {
   }
 
   async get<T>(key: string): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
   async get<T>(type: Type<T>, key: string): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T|null>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T|null>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
     const { type, key, loader, expiresInSeconds, forceRefresh } = {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
       key: typeof typeOrKey === 'string' ? typeOrKey : typeof keyOrLoader === 'string' ? keyOrLoader : null,
@@ -76,7 +76,7 @@ export class SessionStorageService implements CachingService {
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds?: number): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds?: number): Promise<void> {
     console.log(`[CACHE] caching data for key ${key} (expires in ${expiresInSeconds} seconds)`);
     try {
       const payload = JSON.stringify(data);
@@ -85,10 +85,9 @@ export class SessionStorageService implements CachingService {
       } else if (!this.isTimeBased) {
         store.set(key, payload);
       }
-      return null;
     } catch (error) {
       console.error(`[CACHE] An unexpected error occurred while storing data for key ${key}`, error, data);
-      return error as Error;
+      throw error;
     }
   }
 

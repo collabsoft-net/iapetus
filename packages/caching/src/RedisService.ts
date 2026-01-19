@@ -76,12 +76,12 @@ export class RedisService implements CachingService {
   }
 
   async get<T>(key: string): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
+  async get<T>(key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T>;
+  async get<T>(key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T>;
   async get<T>(type: Type<T>, key: string): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(type: Type<T>, key: string, loader: () => Promise<T|null>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T|null>;
-  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T|null>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T|null>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, forceRefresh?: boolean): Promise<T>;
+  async get<T>(type: Type<T>, key: string, loader: () => Promise<T>, expiresInSeconds?: number, forceRefresh?: boolean): Promise<T>;
+  async get<T>(typeOrKey: Type<T>|string, keyOrLoader?: string|(() => Promise<T>), loaderOrDurationOrForceRefresh?: number|boolean|(() => Promise<T>), durationOrForceRefresh?: number|boolean, forced?: boolean): Promise<T|null> {
 
     const { type, key, loader, expiresInSeconds, forceRefresh } = {
       type: typeof typeOrKey === 'string' ? null : typeOrKey,
@@ -191,12 +191,12 @@ export class RedisService implements CachingService {
     return null;
   }
 
-  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds, encrypt: boolean = false): Promise<Error|null> {
+  async set<T>(key: string, data: T, expiresInSeconds: number = this.defaultExpirationInSeconds, encrypt: boolean = false): Promise<void> {
     if (!this.primaryEndpoint.isReady) {
       if (this.verbose) {
         console.error(`[REDIS] cannot store data for key ${key}, server is not ready`);
       }
-      return new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
+      throw new Error(`[REDIS] cannot store data for key ${key}, server is not ready`);
     }
 
     try {
@@ -228,12 +228,11 @@ export class RedisService implements CachingService {
       }
 
       await this.withTimeout(async () => this.primaryEndpoint.setEx(key, expiresInSeconds, payload), this.writeTimeout);
-      return null;
     } catch (error) {
       if (this.verbose) {
         console.error(`[REDIS] An unexpected error occurred while storing data for key ${key}`, error, data);
       }
-      return error as Error;
+      throw error;
     }
   }
 
