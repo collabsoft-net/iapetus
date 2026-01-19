@@ -43,7 +43,7 @@ export class CachedFirebaseAdminRepository<T extends Entity> extends FirebaseAdm
   }
 
   async findById(id: string, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T|null> {
-    return !isNullOrEmpty(id) ? this.cacheService.get<T>(this.cacheService.toCacheKey(this.name, options.path, id), () => super.findById(id, options)) : null;
+    return !isNullOrEmpty(id) ? this.cacheService.get<T|null>(this.cacheService.toCacheKey(this.name, options.path, id), () => super.findById(id, options)) : null;
   }
 
   async save(entity: T, options: FirebaseAdminQueryOptionsWithCache = { path: '/', expiresInSeconds: DEFAULT_CACHE_TIMEOUT_IN_SECONDS }): Promise<T> {
