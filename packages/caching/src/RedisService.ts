@@ -181,7 +181,7 @@ export class RedisService implements CachingService {
         if (this.verbose) {
           console.error(`[REDIS] An unexpected error occurred while retrieving data for key ${key}`, error);
         }
-        return null;
+        throw error;
       }
     }
 

@@ -146,7 +146,7 @@ export class MemcachedService implements CachingService {
         if (this.verbose) {
           this.logger.error(`[Memcached] An unexpected error occurred while retrieving data for key ${key}`, serializeError(error));
         }
-        return null;
+        throw error;
       }
     }
 

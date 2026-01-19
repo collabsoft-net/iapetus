@@ -69,7 +69,7 @@ export class SessionStorageService implements CachingService {
         return null;
       } catch (error) {
         console.log(`[CACHE] An unexpected error occurred while retrieving data for key ${key}`, error);
-        return null;
+        throw error;
       }
     }
 
