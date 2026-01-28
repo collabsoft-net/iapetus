@@ -39,6 +39,7 @@ export default (async () => {
   const { data: DARK_THEME_STYLING } = await axios('https://connect-cdn.atl-paas.net/themes/atlaskit-tokens_dark.css');
   const { data: LIGHT_THEME_STYLING } = await axios('https://connect-cdn.atl-paas.net/themes/atlaskit-tokens_light.css');
   const { data: SPACING_STYLING } = await axios('https://connect-cdn.atl-paas.net/themes/atlaskit-tokens_spacing.css');
+  const { data: TYPOGRAPHY_STYLING } = await axios('https://connect-cdn.atl-paas.net/themes/atlaskit-tokens_typography.css');
 
   return [
     {
@@ -50,7 +51,8 @@ export default (async () => {
       ...common({
         'process.env.LIGHT_THEME_STYLING': JSON.stringify(LIGHT_THEME_STYLING),
         'process.env.DARK_THEME_STYLING': JSON.stringify(DARK_THEME_STYLING),
-        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
+        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING),
+        'process.env.TYPOGRAPHY_STYLING': JSON.stringify(TYPOGRAPHY_STYLING),
       })
     },
     {
@@ -62,7 +64,8 @@ export default (async () => {
       ...common({
         'process.env.LIGHT_THEME_STYLING': JSON.stringify(LIGHT_THEME_STYLING),
         'process.env.DARK_THEME_STYLING': JSON.stringify(DARK_THEME_STYLING),
-        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
+        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING),
+        'process.env.TYPOGRAPHY_STYLING': JSON.stringify(TYPOGRAPHY_STYLING),
       })
     },
     {
@@ -74,7 +77,8 @@ export default (async () => {
       ...common({
         'process.env.LIGHT_THEME_STYLING': JSON.stringify(LIGHT_THEME_STYLING),
         'process.env.DARK_THEME_STYLING': JSON.stringify(DARK_THEME_STYLING),
-        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
+        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING),
+        'process.env.TYPOGRAPHY_STYLING': JSON.stringify(TYPOGRAPHY_STYLING),
       })
     },
     {
@@ -86,7 +90,8 @@ export default (async () => {
       ...common({
         'process.env.LIGHT_THEME_STYLING': JSON.stringify(LIGHT_THEME_STYLING),
         'process.env.DARK_THEME_STYLING': JSON.stringify(DARK_THEME_STYLING),
-        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING)
+        'process.env.SPACING_STYLING': JSON.stringify(SPACING_STYLING),
+        'process.env.TYPOGRAPHY_STYLING': JSON.stringify(TYPOGRAPHY_STYLING),
       })
     },    
   ]
