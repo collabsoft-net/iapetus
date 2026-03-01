@@ -13,11 +13,11 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
   // We are defining bridge.dialog.open() here because it has a weird overload
   // Unfortunately, typescript does not support overload declaration within an object
-function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>): Promise<X|undefined>;
-function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
-function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
-function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
+  function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>): Promise<X|undefined>;
+  function open<X> (options: Platform.DialogOptions<Platform.DialogContext, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+  function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>): Promise<X|undefined>;
+  function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
+  function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
 
     const dialogSize = 
       options.size === 'xlarge'

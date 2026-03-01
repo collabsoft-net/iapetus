@@ -6,7 +6,7 @@ import { getUrl } from '@collabsoft-net/connect';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => ({
 
-    ...createConnectBridge(product, service),
+    ...await createConnectBridge(product, service),
     platform: Modes.P2,
     isCloud: false,
 
