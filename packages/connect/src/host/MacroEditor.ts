@@ -85,6 +85,10 @@ export class MacroEditor {
     const isEditing = Object.keys(params).length > 0;
     const style = `width:${options.width || '50%'};height:${options.height || '50%'};z-index: 3000`;
 
+    // This is a weird quirk
+    // If width and height are set to 100%, we open the modal without header / footer
+    const chromeless = options.width === '100%' && options.height === '100%';
+
     const urlPrefix = app.servletPath.endsWith('/') ? app.servletPath.slice(0, -1) : app.servletPath;
     let url = options.url.startsWith('/') ? `${urlPrefix}${options.url}` : options.url;
 
@@ -93,18 +97,23 @@ export class MacroEditor {
 
     const template = `
       <section id="ap-macroeditor-${key}" role="dialog" class="aui-layer aui-dialog2 ap-aui-dialog2 " aria-hidden="false" tabindex="-1" aria-labelledby="static-dialog--heading" style="${style}">
-        <header class="aui-dialog2-header">
-          <h2 class="aui-dialog2-header-main" id="static-dialog--heading">${name}</h2>
-        </header>
+        ${ !chromeless ? `
+          <header class="aui-dialog2-header">
+            <h2 class="aui-dialog2-header-main" id="static-dialog--heading">${name}</h2>
+          </header>
+        ` : ``}
         <div class="aui-dialog2-content">
           <iframe id="ap-macroeditor-${key}-frame" data-ap-appkey="${app.appKey}" src="${url}" style="width:100%;height:100%;border:none;" name="${key}"></iframe>
         </div>
-        <footer class="aui-dialog2-footer">
-          <div class="aui-dialog2-footer-actions">
-            <button id="ap-macroeditor-${key}-submit-button" class="aui-button aui-button-primary">${ isEditing ? 'Submit' : 'Insert' }</button>
-            <button id="ap-macroeditor-${key}-cancel-button" class="aui-button aui-button-link">Cancel</button>
-          </div>
-        </footer>
+        ${ !chromeless ? `
+          <footer class="aui-dialog2-footer">
+            <div class="aui-dialog2-footer-actions">
+              <button id="ap-macroeditor-${key}-submit-button" class="aui-button aui-button-primary">${ isEditing ? 'Submit' : 'Insert' }</button>
+              <button id="ap-macroeditor-${key}-cancel-button" class="aui-button aui-button-link">Cancel</button>
+            </div>
+          </footer>
+        ` : ``}
+        )}
       </section>    
     `;
 
