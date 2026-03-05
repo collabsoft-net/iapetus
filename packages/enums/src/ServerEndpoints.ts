@@ -47,6 +47,7 @@ export enum ConfluenceServerEndpoints {
   USER = '/rest/api/user',
   CURRENTUSER = '/rest/api/user/current',
   USER_PROPERTY_BY_KEY = '/rest/api/user/properties/:propertyKey',
+  GLOBAL_PERMISSIONS = '/rest/api/permissions/:type/:identifier',
 
   CONTENT_PERMISSIONS = '/rest/api/content/:id/restriction/byOperation/:operationKey',
   SPACE = '/rest/api/space',

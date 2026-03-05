@@ -126,6 +126,11 @@ declare global {
       operations?: Array<OperationCheckResult>|null;
     }
 
+    interface GlobalPermission {
+      operation: GlobalOperation;
+      subject: PermissionSubjectUser|PermissionSubjectGroup;
+    }
+
     interface PaginatedResponse<T> {
       results: Array<T>;
       start?: number;
@@ -533,6 +538,11 @@ declare global {
       targetType: string;
     }
 
+    interface GlobalOperation {
+      operationKey: string;
+      targetType: string;
+    }
+
     interface Icon {
       path: string;
       width: number;
@@ -628,6 +638,16 @@ declare global {
     interface OperationCheckResult {
       operation: ContentOperation;
       targetType: 'application'|'page'|'blogpost'|'comment'|'attachment'|'space';
+    }
+
+    interface PermissionSubjectUser {
+      type: 'user';
+      userKey: string;
+    }
+
+    interface PermissionSubjectGroup {
+      type: 'group';
+      name: string;
     }
 
     interface PermissionSubjectWithGroupId {

@@ -35,6 +35,11 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     return data;
   }
 
+  async getUserGroups(accountId: string): Promise<Array<Confluence.Group>> {
+   const { data } = await this.client.get<Confluence.GroupArray>(this.getEndpointFor(this.endpoints.MEMBEROF), { accountId });
+   return data.results;
+  }
+
   async getAttachments(options?: Confluence.AttachmentsRequestOptions, fetchAll?: boolean): Promise<Array<Confluence.AttachmentSingle>> {
     try {
       const { data } = await this.client.get<Confluence.MultiEntityResult<Confluence.AttachmentSingle>>(this.endpoints.ATTACHMENTS, {
@@ -486,12 +491,41 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async hasApplicationPermission(accountId: string, operation: Confluence.ContentOperation): Promise<boolean> {
-    const user = await this.getUser(accountId, [ 'operations' ]);
-    return user && user.operations
-      ? user.operations
-        .filter(({ targetType }) => targetType === 'application')
-        .some(permission => permission.operation.toLowerCase() === operation.toLowerCase())
-      : false;
+    if (this.mode !== Modes.P2) {
+      const user = await this.getUser(accountId, [ 'operations' ]);
+      return user && user.operations
+        ? user.operations
+          .filter(({ targetType }) => targetType === 'application')
+          .some(permission => permission.operation.toLowerCase() === operation.toLowerCase())
+        : false;
+    } else {
+
+      // Get the global permissions for the user
+      const globalPermissions = await this.getPermissionsFor('user', accountId);
+      if (globalPermissions.some(permission => permission.operation.targetType === 'application' && permission.operation.operationKey === operation)) {
+        return true;
+      }
+
+      // Get thge global permissions for all the groups the user is in
+      const userGroups = await this.getUserGroups(accountId);
+      for await(const group of userGroups) {
+        const globalPermissionsForGroup = await this.getPermissionsFor('group', group.name);
+        globalPermissions.push(...globalPermissionsForGroup);
+      }
+
+      return globalPermissions.some(permission => permission.operation.targetType === 'application' && permission.operation.operationKey === operation);
+    }
+  }
+
+  async getPermissionsFor(type: 'user', userKey: string): Promise<Array<Confluence.GlobalPermission>>;
+  async getPermissionsFor(type: 'group', groupName: string): Promise<Array<Confluence.GlobalPermission>>;
+  async getPermissionsFor(type: 'user'|'group', identifier: string): Promise<Array<Confluence.GlobalPermission>> {
+    if (this.mode === Modes.P2) {
+      const { data } = await this.client.get<Array<Confluence.GlobalPermission>>(this.getEndpointFor(this.endpoints.GLOBAL_PERMISSIONS, { type, identifier }));
+      return data;
+    } else {
+      throw new Error('The getPermissionsFor() method is not supported for Confluence Cloud')
+    }
   }
 
   async memberOf(groupName: string): Promise<boolean>;
@@ -502,8 +536,8 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     if (!accountId) throw new Error('Required parameter accountId is missing, please either run this method using impersonation or provide accountId');
     const name = groupName !== undefined ? groupName : accountIdOrGroupname;
 
-    const { data } = await this.client.get<Confluence.GroupArray>(this.getEndpointFor(this.endpoints.MEMBEROF), { accountId });
-    return data.results.some(group => group.name === name);
+    const groups = await this.getUserGroups(accountId);
+    return groups.some(group => group.name === name);
   }
 
   async listDynamicModules(): Promise<Record<string, unknown>> {
