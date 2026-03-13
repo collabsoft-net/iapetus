@@ -84,9 +84,13 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     const html = document.createRange().createContextualFragment(template);
     document.body.appendChild(html);
 
-    // Emit 'dialog.close' event when the dialog is hidden
+    // Create the dialog
     const dialog = windowWithAJS.AJS.dialog2(`#ap-dialog-${originId}`);
-    dialog.show();
+
+    // Emit 'dialog.close' event when the dialog is hidden
+    const closeEventHandler = () => AC.emit(originId, 'dialog.close');
+    dialog.off('hide', closeEventHandler);
+    dialog.on('hide', closeEventHandler);
 
     // Register event handlers for all buttons & trigger them when clicked
     [ 'submit', 'cancel', ...options.buttons?.map(item => item.identifier) || [] ].forEach(identifier => {
@@ -103,7 +107,10 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
           }
         };
       }
-    })
+    });
+
+    // Now we can show the dialog
+    dialog.show();
   }
 }
 
