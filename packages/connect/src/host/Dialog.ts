@@ -88,7 +88,17 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
     const dialog = windowWithAJS.AJS.dialog2(`#ap-dialog-${originId}`);
 
     // Emit 'dialog.close' event when the dialog is hidden
-    const closeEventHandler = () => AC.emit(originId, 'dialog.close');
+    // Ignore this if the dialog is already being closed by a AP.dialog.close() event
+    const closeEventHandler = (event: { currentTarget: HTMLElement }) => {
+      const elm = event.currentTarget;
+      if (elm) {
+        const isLocked = elm.getAttribute('data-ap-locked');
+        if (!isLocked || isLocked !== 'true') {
+          AC.emit(originId, 'dialog.close');
+        }
+      }
+    }
+
     dialog.off('hide', closeEventHandler);
     dialog.on('hide', closeEventHandler);
 
@@ -161,6 +171,7 @@ export const DialogCloseEventHandler = (event: MessageEvent<unknown>, AC: Host) 
 
     // We should remove the dialog itself and all siblings
     [ dialog, ...siblings ].forEach(item => {
+      item.setAttribute('data-ap-locked', 'true');
       const instance = windowWithAJS.AJS.dialog2(item);
       if (instance) {
         instance.remove();
@@ -175,10 +186,12 @@ export const DialogCloseEventHandler = (event: MessageEvent<unknown>, AC: Host) 
     const dialogs = document.querySelectorAll('.ap-aui-dialog2');
     const dialog = dialogs.item(dialogs.length);
     if (dialog) {
+      dialog.setAttribute('data-ap-locked', 'true');
       const instance = windowWithAJS.AJS.dialog2(dialog);
       if (instance) {
         instance.remove();
       }
+      // Now emit the event to all app iframes
       AC.emit(originId, 'dialog.close', message.data);
     }
   }
