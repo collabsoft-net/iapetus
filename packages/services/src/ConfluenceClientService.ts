@@ -36,7 +36,14 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
   }
 
   async getUserGroups(accountId: string): Promise<Array<Confluence.Group>> {
-   const { data } = await this.client.get<Confluence.GroupArray>(this.getEndpointFor(this.endpoints.MEMBEROF), { accountId });
+    const params: Record<string, string> = {};
+    if (this.mode !== Modes.P2) {
+      params.accountId = accountId
+    } else {
+      params.key = accountId
+    }
+
+   const { data } = await this.client.get<Confluence.GroupArray>(this.getEndpointFor(this.endpoints.MEMBEROF), params);
    return data.results;
   }
 
