@@ -237,6 +237,23 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       }
     },
 
+    localStorage: {
+      get: async (key: string): Promise<string|null> => {
+        try {
+          return window.localStorage.getItem(key)
+        } catch (_ignored) {
+          return null;
+        }
+      },
+      set: async (key: string, value: string) => {
+        try {
+          window.localStorage.setItem(key, value)
+        } catch (_ignored) {
+          // Do nothing
+        }
+      }
+    },
+
     macro: {
       disableCloseOnSubmit: () => {},
       getProperties: async () => context.extension.type === 'macro' ? context.extension.config : {},

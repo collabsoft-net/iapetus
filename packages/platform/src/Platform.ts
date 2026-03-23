@@ -205,6 +205,11 @@ declare global {
         popState: (handler: (state: HistoryPopState) => void) => void;
       };
     
+      localStorage: {
+        get: (key: string) => Promise<string|null>;
+        set: (key: string, value: string) => Promise<void>;
+      };
+
       macro: {
         disableCloseOnSubmit: () => void;
         getProperties: () => Promise<Props|undefined>;

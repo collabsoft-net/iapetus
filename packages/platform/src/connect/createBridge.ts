@@ -272,6 +272,31 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       popState: AP.history.popState
     },
 
+    localStorage: {
+      get: async (key: string): Promise<string|null> => {
+        if (isOfType(AP, 'cookie')) {
+          return new Promise<string|null>(resolve => AP.cookie.read(key, (value) => resolve(value || null)));
+        } else {
+          try {
+            return window.localStorage.getItem(key);
+          } catch (_ignored) {
+            return null;
+          }
+        }
+      },
+      set: async (key: string, value: string) => {
+        if (isOfType(AP, 'cookie')) {
+          AP.cookie.save(key, value, 365);
+        } else {
+          try {
+            window.localStorage.setItem(key, value);
+          } catch (_ignored) {
+            // DO NOTHING
+          }
+        }
+      }
+    },
+
     macro: {
       disableCloseOnSubmit() {
         AP.dialog.disableCloseOnSubmit();
