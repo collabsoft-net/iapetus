@@ -97,7 +97,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       on: (event: string, callback: <T> (payload: T) => void) => {
         return events.on(event, callback);
       },
-      emit: (event: string, payload: unknown) => {
+      emit: (event: string, payload?: string|number|boolean|Blob|null|Array<string|number|boolean|Blob|null>) => {
         return events.emit(event, payload);
       }
     },

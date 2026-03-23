@@ -136,7 +136,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           unsubscribe: () => AP.events.off(event, callback)
         }
       },
-      emit: async (event: string, payload: unknown) => {
+      emit: async (event: string, payload?: string|number|boolean|Blob|null|Array<string|number|boolean|Blob|null>) => {
         const data = Array.isArray(payload) ? payload.map(item => String(item)) : [ String(payload) ];
         AP.events.emit(event, data);
       }

@@ -144,7 +144,7 @@ declare global {
 
       events: {
         on: (event: string, callback: <T> (payload?: T) => void) => Promise<Subscription>;
-        emit: (event: string, payload: unknown) => Promise<void>;
+        emit: (event: string, payload?: string|number|boolean|Blob|null|Array<string|number|boolean|Blob|null>) => Promise<void>;
       }
 
       theming: {
