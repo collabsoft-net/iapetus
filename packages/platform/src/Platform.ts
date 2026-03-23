@@ -45,6 +45,10 @@ declare global {
       repository?: { uuid?: string; };
     }
 
+    type LocationContext = {
+      siteUrl: string;
+    }
+
     type HistoryState = {
       hash: string;
       href: string;
@@ -153,7 +157,8 @@ declare global {
 
       context: {
         getToken: () => Promise<string|null>;
-        content: () => Promise<ContentContext<T>>; 
+        content: () => Promise<ContentContext<T>>;
+        location: () => Promise<LocationContext>;
       };
 
       dialog: {

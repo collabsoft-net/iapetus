@@ -157,7 +157,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
             }
           } as Platform.ContentContext<T>;
         }
-      }
+      },
+      location: async () => ({ siteUrl: context.siteUrl })
     },
 
     dialog: {

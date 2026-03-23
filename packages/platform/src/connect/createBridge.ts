@@ -185,7 +185,8 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         } else {
           return {} as Platform.ContentContext<T>;
         }
-      }
+      },
+      location: () => new Promise<Platform.LocationContext>(resolve => AP.getLocation((siteUrl) => resolve({ siteUrl })))
     },
 
     dialog: {
