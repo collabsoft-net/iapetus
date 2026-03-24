@@ -72,7 +72,7 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
   }
 
   static getIdentifier(): symbol {
-    return Symbol.for('FirebaseRestClient');
+    return Symbol.for('NativeRemoteRestClient');
   }
 
 }
