@@ -1,8 +1,8 @@
-import EditorMediaCollapseIcon from '@atlaskit/icon/glyph/editor/collapse';
-import EditorMediaExpandIcon from '@atlaskit/icon/glyph/editor/expand';
-import EditorMediaCenterIcon from '@atlaskit/icon/glyph/editor/media-center';
-import EditorMediaFullWidthIcon from '@atlaskit/icon/glyph/editor/media-full-width';
-import EditorMediaWideIcon from '@atlaskit/icon/glyph/editor/media-wide';
+import EditorMediaCenterIcon from '@atlaskit/icon/core/content-width-narrow';
+import EditorMediaWideIcon from '@atlaskit/icon/core/content-width-wide';
+import EditorMediaFullWidthIcon from '@atlaskit/icon/core/expand-horizontal';
+import EditorMediaExpandIcon from '@atlaskit/icon/core/grow-horizontal';
+import EditorMediaCollapseIcon from '@atlaskit/icon/core/shrink-horizontal';
 import Skeleton from '@atlaskit/skeleton';
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
@@ -201,12 +201,12 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
           <Grid fluid vertical gap='8px' padding='4px 8px' borderRadius='4px' border={ `${token('border.width', '1px')} solid ${token('color.border', colors.N300A)}`} background={ token('elevation.surface.raised', colors.N0) }>
             <Column onClick={ () => setPageSize('full-width') } background={ pageSize === 'full-width' ? token('color.background.information', colors.B50) : undefined } borderRadius='2px' cursor='pointer' style={{ fontSize: '24px', lineHeight: '24px' }}>
               <Tooltip content='Make page full-width'>
-                <EditorMediaExpandIcon label='Full width' primaryColor={ pageSize === 'full-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
+                <EditorMediaExpandIcon label='Full width' color={ pageSize === 'full-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
               </Tooltip>
             </Column>
             <Column onClick={ () => setPageSize('fixed-width') } background={ pageSize === 'fixed-width' ? token('color.background.information', colors.B50) : undefined } borderRadius='2px' cursor='pointer' style={{ fontSize: '24px', lineHeight: '24px' }}>
               <Tooltip content='Make page fixed-width'>
-                <EditorMediaCollapseIcon label='Fixed width' primaryColor={ pageSize === 'fixed-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
+                <EditorMediaCollapseIcon label='Fixed width' color={ pageSize === 'fixed-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
               </Tooltip>
             </Column>
             { pageSize === 'fixed-width' && (
@@ -214,17 +214,17 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
                 <Column align='center'><Divider /></Column>
                 <Column onClick={ () => setMacroSize('center') } background={ macroSize === 'center' ? token('color.background.information', colors.B50) : undefined } borderRadius='2px' cursor='pointer' style={{ fontSize: '24px', lineHeight: '24px' }}>
                   <Tooltip content='Back to center'>
-                    <EditorMediaCenterIcon label='Back to center' primaryColor={ macroSize === 'center' ? token('color.icon.information', colors.B400) : token('color.icon') } />
+                    <EditorMediaCenterIcon label='Back to center' color={ macroSize === 'center' ? token('color.icon.information', colors.B400) : token('color.icon') } />
                   </Tooltip>
                 </Column>
                 <Column onClick={ () => setMacroSize('wide') } background={ macroSize === 'wide' ? token('color.background.information', colors.B50) : undefined } borderRadius='2px' cursor='pointer' style={{ fontSize: '24px', lineHeight: '24px' }}>
                   <Tooltip content='Go wide'>
-                    <EditorMediaWideIcon label='Go wide' primaryColor={ macroSize === 'wide' ? token('color.icon.information', colors.B400) : token('color.icon') } />
+                    <EditorMediaWideIcon label='Go wide' color={ macroSize === 'wide' ? token('color.icon.information', colors.B400) : token('color.icon') } />
                   </Tooltip>
                 </Column>
                 <Column onClick={ () => setMacroSize('full-width') } background={ macroSize === 'full-width' ? token('color.background.information', colors.B50) : undefined } borderRadius='2px' cursor='pointer' style={{ fontSize: '24px', lineHeight: '24px' }}>
                   <Tooltip content='Go full width'>
-                    <EditorMediaFullWidthIcon label='Go full width' primaryColor={ macroSize === 'full-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
+                    <EditorMediaFullWidthIcon label='Go full width' color={ macroSize === 'full-width' ? token('color.icon.information', colors.B400) : token('color.icon') } />
                   </Tooltip>
                 </Column>
               </>

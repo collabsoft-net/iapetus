@@ -1,5 +1,5 @@
 import Avatar, { SizeType } from '@atlaskit/avatar';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
+import WarningIcon from '@atlaskit/icon/core/warning';
 import Link from '@atlaskit/link';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';

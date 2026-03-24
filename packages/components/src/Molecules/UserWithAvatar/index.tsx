@@ -1,4 +1,4 @@
-import WarningIcon from '@atlaskit/icon/glyph/warning';
+import WarningIcon from '@atlaskit/icon/core/warning';
 import Spinner from '@atlaskit/spinner';
 import { Applications } from '@collabsoft-net/enums';
 import React from 'react';

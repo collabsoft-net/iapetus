@@ -1,4 +1,4 @@
-import ChevronRight from '@atlaskit/icon/glyph/chevron-right';
+import ChevronRight from '@atlaskit/icon/core/chevron-right';
 import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import { isOfType } from '@collabsoft-net/helpers';
