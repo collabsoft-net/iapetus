@@ -75,6 +75,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     product,
     platform: Modes.FORGE,
     isCloud: true,
+    isLicensed: context.license?.active || false,
     service,
 
     client: (product === 'jira' 

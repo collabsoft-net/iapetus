@@ -1,6 +1,6 @@
 import { APRestClient } from '@collabsoft-net/clients';
 import { Applications, Modes } from '@collabsoft-net/enums';
-import { isOfType } from '@collabsoft-net/helpers';
+import { isOfType, isValidLicense } from '@collabsoft-net/helpers';
 import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
 import { DocNode } from '@atlaskit/adf-schema';
@@ -111,6 +111,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     product,
     platform: Modes.CONNECT,
     isCloud: true,
+    isLicensed: isValidLicense(),
     service,
 
     client: (product === 'jira'

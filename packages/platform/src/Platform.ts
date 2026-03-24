@@ -130,6 +130,7 @@ declare global {
       product: T,
       platform: Modes,
       isCloud: boolean,
+      isLicensed: boolean,
       client: ClientService<T>;
       service: X;
 
