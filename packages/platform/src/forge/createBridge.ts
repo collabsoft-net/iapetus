@@ -5,6 +5,7 @@ import { events, router, view, Modal, showFlag } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
 import uniqid from 'uniqid';
+import { isOfType } from '@collabsoft-net/helpers';
 
 // We are defining bridge.dialog.open() here because it has a weird overload
 // Unfortunately, typescript does not support overload declaration within an object
@@ -216,8 +217,16 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       },
       pushState: (newState: string, _?: string, url?: string) => {
         if (!historyObj) throw new Error('History API is not available within this module.');
-        url = url || historyObj.createHref(historyObj.location);
-        historyObj.push(url, newState);
+        const href = historyObj.createHref({ ...historyObj.location, pathname: url || historyObj.location.pathname, hash: `!${newState}` });
+        // This is a precaution: the createHref() typings suggest that it returns a string, but in the past it has also returned a promise
+        if (isOfType<Promise<string>>(href, 'then')) {
+          href.then(url => historyObj.push(url, newState))
+        // If it is not a promise, let's make sure that it is a string
+        } else if (typeof href === 'string') {
+          historyObj.push(href, newState);
+        } else {
+          throw new Error('History API is not available within this module.');
+        }
       },
       replaceState: (url: string) => () => {
         if (!historyObj) throw new Error('History API is not available within this module.');

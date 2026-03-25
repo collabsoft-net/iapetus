@@ -6,8 +6,11 @@ import { usePlatformBridge } from './usePlatformBridge';
 export const HistoryStateQueryKey = [ 'bridge.history.getState()' ]
 
 const getHistoryState = (state: string|Platform.HistoryState): Record<string, string> => {
-  const result: Record<string, string> = {};
+  // Make sure that we have the URL hash without the '#!' prefix
+  state = typeof state === 'string' ? state : state.hash;
+  state = state.startsWith('#!') ? state.replace('#!', '') : state.startsWith('#') ? state.replace('#', '') : state.startsWith('!') ? state.replace('!', '') : state;
 
+  const result: Record<string, string> = {};
   const query = new URLSearchParams(state);
   query.forEach((value, key) => {
     const values = result[key]?.split(',') || [];
