@@ -69,14 +69,14 @@ export class ForgeRestClient implements RestClient {
     return this.request<T>(RestClientMethods.HEAD, endpoint, undefined, params, config, duration);
   }
 
-  protected normalizeQuery(params: Record<string, string|number|boolean|undefined>): Record<string, string|number|boolean|undefined> {
-    const query: Record<string, string|number|boolean|undefined> = {};
+  protected normalizeQuery(params: Record<string, string|number|boolean|undefined>): Record<string, string> {
+    const query: Record<string, string> = {};
     if (params) {
       Object.entries(params).forEach(([ key, value ]) => {
         if (typeof value === 'undefined' || value === undefined || value === null) return;
         if (Array.isArray(value) && value.length === 0) return;
         if (typeof value === 'string' && value === '') return;
-        query[key] = value;
+        query[key] = String(value);
       });
     }
     return query;
@@ -106,7 +106,11 @@ export class ForgeRestClient implements RestClient {
         ? undefined
         : data || config?.data ? JSON.stringify(data || config?.data) : null;
 
-    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => client(endpoint, { method, headers, body })
+    // We need to add query parameters to the URL, as fetch RequestInit does not have a separate property for it
+    const query = params ? new URLSearchParams(this.normalizeQuery(params)) : null;
+    const url = query ? `${endpoint}?${query.toString()}` : endpoint;
+
+    const fetchFromRemote = async (): Promise<AxiosResponse<T>> => client(url, { method, headers, body })
       .then(response => this.toAxiosResponse<T>(response))
       .catch(err => {
         if (isOfType<Response>(err, 'status')) {
