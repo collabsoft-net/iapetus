@@ -1,6 +1,6 @@
-import { ACInstance } from '@collabsoft-net/entities';
+import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Applications, RestClientMethods } from '@collabsoft-net/enums';
-import { ClientError } from '@collabsoft-net/helpers';
+import { ClientError, isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -17,8 +17,8 @@ export abstract class AbstractAtlasRestClient<
 
   protected _accountId?: string;
 
-  constructor(protected instance: ACInstance, protected config: AxiosRequestConfig = {}, protected cacheService?: CachingService, cacheDuration?: number) {
-    super(instance.baseUrl, config, cacheService, cacheDuration);
+  constructor(protected instance: ACInstance|ForgeInstance, protected config: AxiosRequestConfig = {}, protected cacheService?: CachingService, cacheDuration?: number) {
+    super(isOfType<ForgeInstance>(instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl, config, cacheService, cacheDuration);
   }
 
   get accountId(): string|undefined {
@@ -27,6 +27,7 @@ export abstract class AbstractAtlasRestClient<
 
   abstract cached(duration: number): AbstractAtlasRestClient<TApplication, TResponseError>;
 
+  abstract as(userToken: string): AbstractAtlasRestClient<TApplication, TResponseError>;
   abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient<TApplication, TResponseError>;
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
@@ -39,9 +40,16 @@ export abstract class AbstractAtlasRestClient<
     };
     options.headers = options.headers || {};
     options.headers['X-ExperimentalApi'] = 'opt-in';
-    options.headers['Authorization'] = this.accountId
-      ? `Bearer ${await this.getAccessToken()}`
-      : `JWT ${this.getSignedJWT(options)}`;
+
+    if (isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')) {
+      const header = this.accountId ? 'x-forge-oauth-user' : 'x-forge-oauth-system';
+      const token = this.accountId ? this.instance.userToken : this.instance.appToken;
+      options.headers[header] = token;
+    } else {
+      options.headers['Authorization'] = this.accountId
+        ? `Bearer ${await this.getAccessToken(this.instance.oauthClientId, this.instance.sharedSecret)}`
+        : `JWT ${this.getSignedJWT(options, this.instance.sharedSecret)}`;
+    }
 
     const hasContentType = Object.keys(options.headers).some(key => key.toLowerCase() === 'content-type');
     if (!hasContentType) {
@@ -61,12 +69,10 @@ export abstract class AbstractAtlasRestClient<
     } else {
       return fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); });
     }
-
-
   }
 
-  private getSignedJWT(options: AxiosRequestConfig) {
-    return encodeSymmetric(this.createJwtPayload(options), this.instance.sharedSecret, SymmetricAlgorithm.HS256);
+  private getSignedJWT(options: AxiosRequestConfig, sharedSecret: string) {
+    return encodeSymmetric(this.createJwtPayload(options), sharedSecret, SymmetricAlgorithm.HS256);
   }
 
   private createJwtPayload(options: AxiosRequestConfig) {
@@ -86,9 +92,8 @@ export abstract class AbstractAtlasRestClient<
     };
   }
 
-  protected async getAccessToken(): Promise<string> {
+  protected async getAccessToken(oauthClientId: string, sharedSecret: string): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
-    const { oauthClientId, sharedSecret } = this.instance;
 
     const params = new URLSearchParams({
       grant_type: IMPERSONATION_GRANT_TYPE,
