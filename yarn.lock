@@ -1533,6 +1533,7 @@ __metadata:
   resolution: "@collabsoft-net/dto@workspace:packages/dto"
   dependencies:
     "@collabsoft-net/entities": "workspace:*"
+    "@collabsoft-net/helpers": "workspace:*"
     "@types/node": "npm:<19.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.32.0"
     "@typescript-eslint/parser": "npm:8.32.0"
@@ -1541,6 +1542,7 @@ __metadata:
     typescript: "npm:5.8.3"
   peerDependencies:
     "@collabsoft-net/entities": "*"
+    "@collabsoft-net/helpers": "*"
   languageName: unknown
   linkType: soft
 

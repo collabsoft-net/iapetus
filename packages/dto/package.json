@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@collabsoft-net/entities": "workspace:*",
+    "@collabsoft-net/helpers": "workspace:*",
     "@types/node": "<19.0.0",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
@@ -43,7 +44,8 @@
     "typescript": "5.8.3"
   },
   "peerDependencies": {
-    "@collabsoft-net/entities": "*"
+    "@collabsoft-net/entities": "*",
+    "@collabsoft-net/helpers": "*"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
