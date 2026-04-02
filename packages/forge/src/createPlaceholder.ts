@@ -1,6 +1,7 @@
 import { Property } from 'csstype';
-import { view } from '@forge/bridge';
+import { view, router } from '@forge/bridge';
 import { isOfType } from '@collabsoft-net/helpers';
+import { FullContext } from '@forge/bridge/out/types';
 
 type ModuleType = 'page'|'editor'|'dialog'|'legacy';
 
@@ -12,11 +13,8 @@ interface CreatePlaceholderOptions {
   appendPlaceholder?: boolean;
 }
 
-export const createPlaceholder = async (options?: CreatePlaceholderOptions): Promise<HTMLDivElement|null> => {
-  const { defaultModuleId, defaultModuleType, defaultHeight, isApplicationRoot = false, appendPlaceholder = true } = options || {};
-
-  const context = await view.getContext();
-
+const getModuleKey = async (context?: FullContext) => {
+  context = context || await view.getContext();
   let moduleKey = context.moduleKey;
 
   // When opening a modal, the moduleKey context is set to the parent module
@@ -39,6 +37,15 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
     }
   }
 
+  return moduleKey;
+}
+
+export const createPlaceholder = async (options?: CreatePlaceholderOptions): Promise<HTMLDivElement|null> => {
+  const { defaultModuleId, defaultModuleType, defaultHeight, isApplicationRoot = false, appendPlaceholder = true } = options || {};
+
+  const context = await view.getContext();
+
+  const moduleKey = await getModuleKey(context);
   const moduleId = defaultModuleId || moduleKey;
   let moduleType = defaultModuleType;
 
@@ -71,9 +78,22 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
 
     // Append the placeholder to the document body
     if (appendPlaceholder) {
+
+      // If we are appending the placeholder, we are also taking on the responsibility to act as router
+      // https://developer.atlassian.com/platform/forge/add-routing-to-a-full-page-app/
+      const history = await view.createHistory();
+      history.listen(async () => {
+        const currentModuleKey = await getModuleKey();
+        if (moduleKey !== currentModuleKey) {
+          router.reload();
+        }
+      });
+
+      // Add the placeholder to the document
       document.body.prepend(placeholder);
     }
 
+    // Return the placeholder either way
     return placeholder;
   }
 
