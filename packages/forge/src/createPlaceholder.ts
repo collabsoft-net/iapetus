@@ -17,12 +17,26 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
 
   const context = await view.getContext();
 
+  let moduleKey = context.moduleKey;
+
   // When opening a modal, the moduleKey context is set to the parent module
   // This is because modals do not have their own modules, they only have resources
   // This is why Dialog options are required to provide the 'moduleKey' in the modal context
-  let moduleKey = context.moduleKey;
   if (isOfType(context.extension.modal, 'moduleKey')) {
     moduleKey = context.extension.modal.moduleKey
+
+  // When opening an jira:adminPage module subpage, the moduleKey context is set to the parent
+  // The `route` property is added to the end of the URL, so we will use this as moduleKey
+  } else if (isOfType(context.extension, 'type') && context.extension.type === 'jira:adminPage') {
+    if (isOfType(context.extension, 'location')) {
+      try {
+        const location = new URL(context.extension.location);
+        const route = location.pathname.split('/').pop();
+        if (route) {
+          moduleKey = route;
+        }
+      } catch (_ignored) {}
+    }
   }
 
   const moduleId = defaultModuleId || moduleKey;
