@@ -81,13 +81,15 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
 
       // If we are appending the placeholder, we are also taking on the responsibility to act as router
       // https://developer.atlassian.com/platform/forge/add-routing-to-a-full-page-app/
-      const history = await view.createHistory();
-      history.listen(async () => {
-        const currentModuleKey = await getModuleKey();
-        if (moduleKey !== currentModuleKey) {
-          router.reload();
-        }
-      });
+      const history = await view.createHistory().catch(() => null);
+      if (history) {
+        history.listen(async () => {
+          const currentModuleKey = await getModuleKey();
+          if (moduleKey !== currentModuleKey) {
+            router.reload();
+          }
+        });
+      }
 
       // Add the placeholder to the document
       document.body.prepend(placeholder);
