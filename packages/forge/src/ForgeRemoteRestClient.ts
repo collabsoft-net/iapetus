@@ -3,6 +3,7 @@ import { CachingService, RestClient as IRestClient } from '@collabsoft-net/types
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 
 import { ForgeRestClient } from './ForgeRestClient';
+import { ForgeInstance } from '@collabsoft-net/entities';
 
 export class ForgeRemoteRestClient extends ForgeRestClient implements IRestClient {
 
@@ -14,24 +15,24 @@ export class ForgeRemoteRestClient extends ForgeRestClient implements IRestClien
     return this.signal;
   }
 
-  constructor(private invocationToken: Atlassian.FIT, private appSystemToken: string, private config: AxiosRequestConfig = {}, cacheService?: CachingService, cacheDuration?: number) {
+  constructor(private instance: ForgeInstance, private config: AxiosRequestConfig = {}, cacheService?: CachingService, cacheDuration?: number) {
     // The product is irrelevant because we will be overriding the request method
     super(Applications.JIRA, cacheService, cacheDuration);
 
     this.client = axios.create(Object.assign({}, config, {
-      baseURL: invocationToken.app.apiBaseUrl,
+      baseURL: instance.apiBaseUrl,
       cancelToken: this.signal.token,
     }));
   }
 
   as(appUserToken: string) {
-    const instance = new ForgeRemoteRestClient(this.invocationToken, this.appSystemToken, this.config, this.cacheService, this.duration);
+    const instance = new ForgeRemoteRestClient(this.instance, this.config, this.cacheService, this.duration);
     instance._appUserToken = appUserToken;
     return instance;
   }
 
   cached(duration: number) {
-    return new ForgeRemoteRestClient(this.invocationToken, this.appSystemToken, this.config, this.cacheService, duration);
+    return new ForgeRemoteRestClient(this.instance, this.config, this.cacheService, duration);
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
@@ -40,7 +41,7 @@ export class ForgeRemoteRestClient extends ForgeRestClient implements IRestClien
       ...config,
       headers: {
         ...config?.headers,
-        Authorization: `Bearer ${this._appUserToken ? this._appUserToken : this.appSystemToken}`
+        ...this._appUserToken || this.instance.appToken ? { Authorization: `Bearer ${this._appUserToken ? this._appUserToken : this.instance.appToken}` } : {}
       }
     };
 
