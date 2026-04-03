@@ -20,12 +20,28 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
 
   abstract cached(duration: number): AbstractAtlasClientService<Mode>;
 
-  as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService<Mode> {
+  as(appUserToken: string): AbstractAtlasClientService<Mode>;
+  as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService<Mode>;
+  as(appUserTokenOrAccountId: string, oauthClientId?: string, sharedSecret?: string): AbstractAtlasClientService<Mode> {
     if (isOfType<AbstractAtlasRestClient<Applications>>(this.client, 'as')) {
-      const impersonatedClient = this.client.as(accountId, oauthClientId, sharedSecret);
-      return this.getInstance(impersonatedClient, this.mode);
+      if (appUserTokenOrAccountId && oauthClientId && sharedSecret) {
+        const impersonatedClient = this.client.as(appUserTokenOrAccountId, oauthClientId, sharedSecret);
+        return this.getInstance(impersonatedClient, this.mode);
+      } else if (appUserTokenOrAccountId) {
+        const impersonatedClient = this.client.as(appUserTokenOrAccountId);
+        return this.getInstance(impersonatedClient, this.mode);
+      }
+    }
+
+    throw new Error('The provided REST client implementation does not support impersonation');
+  }
+
+  async getConnectClientKey(key: string): Promise<string|null> {
+    if (this.mode === Modes.FORGE) {
+      const { data } = await this.client.get<{ key: string, value: string; }>(`/rest/atlassian-connect/1/addons/${key}/properties/connect_client_key_019cdff3-8bfb-71fe-9628-875b700aebb8`).catch(() => ({ data: null }));
+      return data?.value || null;
     } else {
-      throw new Error('The provided REST client implementation does not support impersonation');
+      return null;
     }
   }
 
