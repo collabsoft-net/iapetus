@@ -18,13 +18,15 @@ import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 @injectable()
 export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSession> extends AbstractBearerStrategy<T> {
 
-  protected abstract get connectKey(): string|undefined;
   protected abstract get service(): AbstractService<ForgeInstance, ForgeInstanceDTO>;
   protected abstract get cacheService(): CachingService;
 
   constructor(private allowAnonymousAccess = false) {
     super();
   }
+
+  protected abstract getConnectKey(token: Atlassian.FIT): string|undefined;
+  protected abstract toSession(token: Atlassian.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected async process(request: express.Request, token?: string): Promise<T> {
     if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
@@ -91,12 +93,13 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       // and we failed to match the installation based on installation ID and cloud ID
       // we can use this endpoint to retrieve the clientKey
       // see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
-      if (!instance && appSystemToken && this.connectKey) {
+      const connectKey = this.getConnectKey(payload);
+      if (!instance && appSystemToken && connectKey) {
 
         const service = new JiraClientService(new JiraRestClient({
           apiBaseUrl: payload.app.apiBaseUrl
         } as ForgeInstance, appSystemToken), Modes.FORGE);
-        const clientKey = await service.getConnectClientKey(this.connectKey);
+        const clientKey = await service.getConnectClientKey(connectKey);
         if (clientKey) {
           instance = await this.service.findByProperty('clientKey', clientKey);
         }
@@ -158,8 +161,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
 
     return this.toSession(payload, instance, appSystemToken, appUserToken);
   }
-
-  protected abstract toSession(payload: Atlassian.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected updateLastActive(instance: ForgeInstance, { headers }: express.Request): ForgeInstance {
     if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
