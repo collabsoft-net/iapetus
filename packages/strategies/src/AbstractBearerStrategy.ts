@@ -9,7 +9,7 @@ import { IStrategyOptions, Strategy, VerifyFunctions } from 'passport-http-beare
 import { AbstractStrategy } from './AbstractStrategy';
 
 @injectable()
-export abstract class AbstractBearerStrategy<X extends Record<string, unknown>> extends AbstractStrategy<string, X> implements IStrategy {
+export abstract class AbstractBearerStrategy<X extends Session> extends AbstractStrategy<string, X> implements IStrategy {
 
   get name(): string {
     return 'bearer';

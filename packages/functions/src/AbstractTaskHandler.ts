@@ -1,5 +1,5 @@
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ACInstanceDTO, ForgeInstanceDTO } from '@collabsoft-net/dto';
+import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, TaskHandler, TenantAwareEvent } from '@collabsoft-net/types';
 import { captureException, captureMessage } from '@sentry/minimal';
@@ -8,7 +8,7 @@ import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends Session, Y extends ACInstance, Z extends ACInstanceDTO> implements TaskHandler<T> {
+export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends Session, Y extends ACInstance|ForgeInstance, Z extends ACInstanceDTO|ForgeInstanceDTO> implements TaskHandler<T> {
 
   abstract name: string;
   requireActiveInstance = true;

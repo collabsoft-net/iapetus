@@ -1,13 +1,13 @@
-import { ACInstance } from '@collabsoft-net/entities';
+import { ACInstanceDTO, ForgeInstanceDTO } from '@collabsoft-net/dto';
+import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { logger } from 'firebase-functions';
 import { injectable } from 'inversify';
 
-import { ACInstanceDTO } from '../../dto/dist/types';
 import { AbstractScheduledPubSubHandler } from './AbstractScheduledPubSubHandler';
 
 @injectable()
-export abstract class AbstractScheduledTenantIteratorPubSubHandler<T extends ACInstance, X extends ACInstanceDTO> extends AbstractScheduledPubSubHandler {
+export abstract class AbstractScheduledTenantIteratorPubSubHandler<T extends ACInstance|ForgeInstance, X extends ACInstanceDTO|ForgeInstanceDTO> extends AbstractScheduledPubSubHandler {
 
   constructor(
     protected instanceService: AbstractService<T, X>
@@ -24,6 +24,6 @@ export abstract class AbstractScheduledTenantIteratorPubSubHandler<T extends ACI
     }
   }
 
-  protected abstract startTaskFor(instance: ACInstance): Promise<void>;
+  protected abstract startTaskFor(instance: ACInstance|ForgeInstance): Promise<void>;
 
 }
