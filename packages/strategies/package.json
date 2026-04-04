@@ -34,9 +34,11 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
+    "@collabsoft-net/clients": "workspace:*",
     "@collabsoft-net/controllers": "workspace:*",
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/entities": "workspace:*",
+    "@collabsoft-net/forge-functions": "workspace:*",
     "@collabsoft-net/functions": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
@@ -58,9 +60,11 @@
     "typescript": "5.8.3"
   },
   "peerDependencies": {
+    "@collabsoft-net/clients": "*",
     "@collabsoft-net/controllers": "*",
     "@collabsoft-net/dto": "*",
     "@collabsoft-net/entities": "*",
+    "@collabsoft-net/forge-functions": "*",
     "@collabsoft-net/functions": "*",
     "@collabsoft-net/services": "*",
     "axios": "^1.13.0",

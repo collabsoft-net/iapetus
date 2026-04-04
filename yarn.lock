@@ -1651,7 +1651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@collabsoft-net/forge-functions@workspace:packages/forge-functions":
+"@collabsoft-net/forge-functions@workspace:*, @collabsoft-net/forge-functions@workspace:packages/forge-functions":
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/forge-functions@workspace:packages/forge-functions"
   dependencies:
@@ -1934,6 +1934,7 @@ __metadata:
     form-data: "npm:4.0.2"
     http-status-codes: "npm:2.3.0"
     inversify: "npm:7.5.1"
+    jwt-simple: "npm:0.5.6"
     nodemon: "npm:3.1.10"
     path-to-regexp: "npm:8.2.0"
     reflect-metadata: "npm:0.2.2"
@@ -1945,6 +1946,7 @@ __metadata:
     form-data: ^4.0.0
     http-status-codes: ^2.3.0
     inversify: ^7.5.0
+    jwt-simple: "*"
     path-to-regexp: ^8.2.0
     reflect-metadata: 0.2.2
   languageName: unknown
@@ -1954,9 +1956,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/strategies@workspace:packages/strategies"
   dependencies:
+    "@collabsoft-net/clients": "workspace:*"
     "@collabsoft-net/controllers": "workspace:*"
     "@collabsoft-net/dto": "workspace:*"
     "@collabsoft-net/entities": "workspace:*"
+    "@collabsoft-net/forge-functions": "workspace:*"
     "@collabsoft-net/functions": "workspace:*"
     "@collabsoft-net/services": "workspace:*"
     "@collabsoft-net/types": "workspace:*"
@@ -1977,9 +1981,11 @@ __metadata:
     passport-jwt: "npm:4.0.1"
     typescript: "npm:5.8.3"
   peerDependencies:
+    "@collabsoft-net/clients": "*"
     "@collabsoft-net/controllers": "*"
     "@collabsoft-net/dto": "*"
     "@collabsoft-net/entities": "*"
+    "@collabsoft-net/forge-functions": "*"
     "@collabsoft-net/functions": "*"
     "@collabsoft-net/services": "*"
     axios: ^1.13.0
@@ -12755,6 +12761,13 @@ __metadata:
     jwa: "npm:^2.0.0"
     safe-buffer: "npm:^5.0.1"
   checksum: 1d15f4cdea376c6bd6a81002bd2cb0bf3d51d83da8f0727947b5ba3e10cf366721b8c0d099bf8c1eb99eb036e2c55e5fd5efd378ccff75a2b4e0bd10002348b9
+  languageName: node
+  linkType: hard
+
+"jwt-simple@npm:0.5.6":
+  version: 0.5.6
+  resolution: "jwt-simple@npm:0.5.6"
+  checksum: fa10ffd655d558c4063d426e7624397db51eddb0aae8c16fbbd4eb9e4e179f38feb0bbb854283f0d0051054f69835eba4d70844c8f528b89736370571999655d
   languageName: node
   linkType: hard
 

@@ -6,3 +6,4 @@ export { JiraClientService } from './JiraClientService';
 export { ConfluenceClientService } from './ConfluenceClientService';
 export { BambooClientService } from './BambooClientService';
 export { BitbucketClientService } from './BitbucketClientService';
+export { ForgeRemoteTokenService } from './ForgeRemoteTokenService';

@@ -1,5 +1,5 @@
 
-import { ACInstance } from '@collabsoft-net/entities';
+import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Modes } from '@collabsoft-net/enums';
 
 export {};
@@ -9,9 +9,9 @@ declare global {
   type Session = Record<string, unknown>
 
   interface ForgeSession extends Session {
-    instance: Atlassian.FIT;
-    appToken?: string;
-    userToken?: string;
+    instance: ForgeInstance;
+    appSystemToken?: string;
+    appUserToken?: string;
   }
 
   interface ConnectSession extends Session {
