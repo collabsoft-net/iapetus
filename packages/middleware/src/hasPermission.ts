@@ -1,5 +1,5 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
@@ -12,16 +12,15 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
       let hasAllRequiredPermissions = false;
 
       if (user && isOfType<AtlasSession>(user, 'instance')) {
-        const { accountId, instance, mode } = user;
+        const { accountId, instance, appSystemToken, mode } = user;
         if (instance.productType === 'jira') {
-          // This is a bit weird, but we need to tell Typescript which type it is
-          const service = isOfType<ACInstance>(instance, 'key')
-            ? new JiraClientService(new JiraRestClient(instance), mode)
+          const service = isOfType<ForgeInstance>(instance, 'installationId')
+            ? new JiraClientService(new JiraRestClient(instance, appSystemToken), mode)
             : new JiraClientService(new JiraRestClient(instance), mode);
           hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
         } else if (instance.productType === 'confluence') {
-          const service = isOfType<ACInstance>(instance, 'key')
-            ? new ConfluenceClientService(new ConfluenceRestClient(instance), mode)
+          const service = isOfType<ForgeInstance>(instance, 'installationId')
+            ? new ConfluenceClientService(new ConfluenceRestClient(instance, appSystemToken), mode)
             : new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
           hasAllRequiredPermissions = await permissions.reduce(async (previous, permission) => {
             const hasPermission = await previous;
