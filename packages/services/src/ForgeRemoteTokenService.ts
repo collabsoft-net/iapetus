@@ -6,7 +6,7 @@ import jwt from 'jwt-simple';
 
 export class ForgeRemoteTokenService {
 
-  static generate(token: Atlassian.FIT, instance: ForgeInstance) {
+  static generate(instance: ForgeInstance, accountId?: string) {
     try {
       const ttl = 15 * 60;
       const expires = new Date().getTime() + (ttl * 1000);
@@ -14,7 +14,7 @@ export class ForgeRemoteTokenService {
 
       const payload: ForgeRemoteToken = {
         iss: instance.id,
-        sub: token.principal || token.context?.accountId as string,
+        sub: accountId,
         iat: new Date().getTime(),
         exp: expires,
         appSystemTokenKey: instance.appSystemTokenKey,
