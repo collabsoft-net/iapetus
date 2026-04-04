@@ -38,7 +38,7 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
       ...config,
       headers: {
         ...config?.headers,
-        ...token ? { Authorization: `Bearer ${token.token}` } : {}
+        ...token ? { Authorization: `JWT ${token.token}` } : {}
       }
     };
 
