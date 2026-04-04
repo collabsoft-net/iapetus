@@ -16,9 +16,19 @@ export abstract class AbstractAtlasRestClient<
 > extends AbstractRestClient implements RestClient {
 
   protected _accountId?: string;
+  protected appSystemToken: string|undefined;
 
-  constructor(protected instance: ACInstance|ForgeInstance, protected config: AxiosRequestConfig = {}, protected cacheService?: CachingService, cacheDuration?: number) {
-    super(isOfType<ForgeInstance>(instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl, config, cacheService, cacheDuration);
+  constructor(instance: ACInstance, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
+  constructor(instance: ForgeInstance, appSystemToken: string, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
+  constructor(protected instance: ACInstance|ForgeInstance, appSystemTokenOrConfig?: string|AxiosRequestConfig, configOrCacheService?: AxiosRequestConfig|CachingService, cacheServiceOrCacheDuration?: CachingService|number, cacheDuration?: number) {
+    super(isOfType<ForgeInstance>(
+      instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl,
+      typeof appSystemTokenOrConfig !== 'string' ? appSystemTokenOrConfig : !isOfType<CachingService>(configOrCacheService, 'toCacheKey') ? configOrCacheService : {},
+      isOfType<CachingService>(configOrCacheService, 'toCacheKey') ? configOrCacheService : typeof cacheServiceOrCacheDuration !== 'number' ? cacheServiceOrCacheDuration : undefined,
+      typeof cacheServiceOrCacheDuration === 'number' ? cacheServiceOrCacheDuration : cacheDuration
+    );
+
+    this.appSystemToken = typeof appSystemTokenOrConfig === 'string' ? appSystemTokenOrConfig : undefined;
   }
 
   get accountId(): string|undefined {
@@ -42,13 +52,14 @@ export abstract class AbstractAtlasRestClient<
     options.headers['X-ExperimentalApi'] = 'opt-in';
 
     if (isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')) {
-      const header = this.accountId ? 'x-forge-oauth-user' : 'x-forge-oauth-system';
-      const token = this.accountId ? this.instance.userToken : this.instance.appToken;
-      options.headers[header] = token;
+      const token = this.accountId ? await this.getForgeToken() : this.appSystemToken;
+      if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+      }
     } else {
       options.headers['Authorization'] = this.accountId
-        ? `Bearer ${await this.getAccessToken(this.instance.oauthClientId, this.instance.sharedSecret)}`
-        : `JWT ${this.getSignedJWT(options, this.instance.sharedSecret)}`;
+        ? `Bearer ${await this.getConnectToken(this.instance.oauthClientId, this.instance.sharedSecret)}`
+        : `JWT ${this.getSignedConnectJWT(options, this.instance.sharedSecret)}`;
     }
 
     const hasContentType = Object.keys(options.headers).some(key => key.toLowerCase() === 'content-type');
@@ -71,11 +82,11 @@ export abstract class AbstractAtlasRestClient<
     }
   }
 
-  private getSignedJWT(options: AxiosRequestConfig, sharedSecret: string) {
-    return encodeSymmetric(this.createJwtPayload(options), sharedSecret, SymmetricAlgorithm.HS256);
+  private getSignedConnectJWT(options: AxiosRequestConfig, sharedSecret: string) {
+    return encodeSymmetric(this.createConnectJwtPayload(options), sharedSecret, SymmetricAlgorithm.HS256);
   }
 
-  private createJwtPayload(options: AxiosRequestConfig) {
+  private createConnectJwtPayload(options: AxiosRequestConfig) {
     const now = new Date().getTime();
     const { key, clientKey } = this.instance;
 
@@ -92,7 +103,7 @@ export abstract class AbstractAtlasRestClient<
     };
   }
 
-  protected async getAccessToken(oauthClientId: string, sharedSecret: string): Promise<string> {
+  protected async getConnectToken(oauthClientId: string, sharedSecret: string): Promise<string> {
     const now = Math.floor(Date.now() / 1000);
 
     const params = new URLSearchParams({
@@ -117,4 +128,38 @@ export abstract class AbstractAtlasRestClient<
     return access_token;
   }
 
+  protected async getForgeToken(): Promise<string|undefined> {
+    if (isOfType<ForgeInstance>(this.instance, 'cloudId')) {
+      const { data } = await this.client({
+        method: RestClientMethods.POST,
+        url: 'https://api.atlassian.com/graphql',
+        data: {
+          query: `mutation forge_remote_offlineUserAuthToken($input: OfflineUserAuthTokenInput!) {
+    offlineUserAuthToken(input: $input) {
+      success
+      errors {
+        message
+      }
+      authToken {
+        token
+        ttl
+      }
+    }
+  }`,
+          variables: {
+            input: {
+              contextIds: [ `ari:cloud:confluence::site/${this.instance.cloudId}` ],
+              userId: this.accountId,
+            },
+          },
+        },
+        headers: {
+          'authorization': `Bearer ${this.appSystemToken}`,
+        }
+
+      }).catch(() => ({ data: null }));
+
+      return data?.offlineUserAuthToken.authToken
+    }
+  }
 }

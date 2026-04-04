@@ -7,8 +7,8 @@ export interface ForgeInstance extends Partial<ACInstance> {
   installationId: string;
   cloudId?: string;
   apiBaseUrl: string;
-  appToken?: string|null;
-  userToken?: string|null;
+  appSystemTokenKey?: string;
+  appUserTokenKey?: string;
   product: 'jira'|'confluence'|'bitbucket'|'compass';
   isForge?: boolean;
 }
