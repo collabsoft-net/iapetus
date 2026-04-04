@@ -1,4 +1,5 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
+import { ACInstance } from '@collabsoft-net/entities';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
@@ -10,13 +11,18 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
       const { user } = req;
       let hasAllRequiredPermissions = false;
 
-      if (user && isOfType<ConnectSession>(user, 'instance')) {
+      if (user && isOfType<AtlasSession>(user, 'instance')) {
         const { accountId, instance, mode } = user;
         if (instance.productType === 'jira') {
-          const service = new JiraClientService(new JiraRestClient(instance), mode);
+          // This is a bit weird, but we need to tell Typescript which type it is
+          const service = isOfType<ACInstance>(instance, 'key')
+            ? new JiraClientService(new JiraRestClient(instance), mode)
+            : new JiraClientService(new JiraRestClient(instance), mode);
           hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
         } else if (instance.productType === 'confluence') {
-          const service = new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
+          const service = isOfType<ACInstance>(instance, 'key')
+            ? new ConfluenceClientService(new ConfluenceRestClient(instance), mode)
+            : new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
           hasAllRequiredPermissions = await permissions.reduce(async (previous, permission) => {
             const hasPermission = await previous;
             if (!hasPermission) return hasPermission;
@@ -43,12 +49,15 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
       const { user, query, params } = req;
       let hasAllRequiredPermissions = false;
 
-      if (user && isOfType<ConnectSession>(user, 'instance')) {
+      if (user && isOfType<AtlasSession>(user, 'instance')) {
         const { accountId, instance, mode } = user;
         const entityId = (user as Session)[paramName] || query[paramName] || params[paramName];
         if (entityId && typeof entityId === 'string') {
           if (instance.productType === 'jira') {
-            const service = new JiraClientService(new JiraRestClient(instance), mode);
+            // This is a bit weird, but we need to tell Typescript which type it is
+            const service = isOfType<ACInstance>(instance, 'key')
+              ? new JiraClientService(new JiraRestClient(instance), mode)
+              : new JiraClientService(new JiraRestClient(instance), mode);
             const permissions: Jira.BulkProjectPermissions = {
               projects: entityType === 'project' ? [ Number(entityId) ] : undefined,
               issues: entityType === 'issue' ? [ Number(entityId) ] : undefined,
@@ -56,7 +65,10 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
             };
             hasAllRequiredPermissions = await service.hasPermissions(accountId, [ permissions ]);
           } else if (instance.productType === 'confluence' && !Array.isArray(permission)) {
-            const service = new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
+            // This is a bit weird, but we need to tell Typescript which type it is
+            const service = isOfType<ACInstance>(instance, 'key')
+              ? new ConfluenceClientService(new ConfluenceRestClient(instance), mode)
+              : new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
             if (entityType === 'content') {
               hasAllRequiredPermissions = await service.hasContentPermission(entityId, {
                 type: 'user',

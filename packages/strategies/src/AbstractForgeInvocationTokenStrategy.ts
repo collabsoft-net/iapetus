@@ -16,7 +16,7 @@ import uniqid from 'uniqid';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractForgeInvocationTokenStrategy<T extends ForgeSession> extends AbstractBearerStrategy<T> {
+export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSession> extends AbstractBearerStrategy<T> {
 
   protected abstract get connectKey(): string|undefined;
   protected abstract get service(): AbstractService<ForgeInstance, ForgeInstanceDTO>;

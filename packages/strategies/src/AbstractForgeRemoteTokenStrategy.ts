@@ -13,7 +13,7 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractForgeRemoteTokenStrategy<T extends ForgeSession> extends AbstractJWTStrategy<ForgeRemoteToken, T> {
+export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> extends AbstractJWTStrategy<ForgeRemoteToken, T> {
 
   protected abstract get service(): AbstractService<ForgeInstance, ForgeInstanceDTO>;
   protected abstract get cacheService(): CachingService;

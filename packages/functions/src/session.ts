@@ -8,15 +8,11 @@ declare global {
 
   type Session = Record<string, unknown>
 
-  interface ForgeSession extends Session {
-    instance: ForgeInstance;
+  interface AtlasSession extends Session {
+    accountId: string;
+    instance: ACInstance|ForgeInstance;
     appSystemToken?: string;
     appUserToken?: string;
-  }
-
-  interface ConnectSession extends Session {
-    accountId: string;
-    instance: ACInstance;
     mode: Modes;
   }
 
