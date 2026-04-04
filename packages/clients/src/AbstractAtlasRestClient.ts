@@ -19,7 +19,7 @@ export abstract class AbstractAtlasRestClient<
   protected appSystemToken: string|undefined;
 
   constructor(instance: ACInstance, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
-  constructor(instance: ForgeInstance, appSystemToken: string, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
+  constructor(instance: ForgeInstance, appSystemToken?: string, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
   constructor(protected instance: ACInstance|ForgeInstance, appSystemTokenOrConfig?: string|AxiosRequestConfig, configOrCacheService?: AxiosRequestConfig|CachingService, cacheServiceOrCacheDuration?: CachingService|number, cacheDuration?: number) {
     super(isOfType<ForgeInstance>(
       instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl,
