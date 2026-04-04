@@ -9,8 +9,8 @@ export class APRestClient implements RestClient {
 
   constructor(protected AP: AP.JiraInstance|AP.ConfluenceInstance|AP.BambooInstance|AP.BitbucketInstance, private cacheService?: CachingService) {}
 
-  cached(duration: number): APRestClient {
-    const instance = new APRestClient(this.AP, this.cacheService);
+  cached(cacheService: CachingService, duration: number): APRestClient {
+    const instance = new APRestClient(this.AP, cacheService);
     instance.#duration = duration;
     return instance;
   }

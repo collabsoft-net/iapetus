@@ -26,8 +26,8 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
     }));
   }
 
-  cached(duration: number) {
-    return new NativeRemoteRestClient(this.forgeInvokeClient, this.baseURL, this.config, this.cacheService, duration);
+  cached(cacheService: CachingService, duration: number) {
+    return new NativeRemoteRestClient(this.forgeInvokeClient, this.baseURL, this.config, cacheService, duration);
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {

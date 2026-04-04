@@ -11,8 +11,8 @@ export class FirebaseRestClient extends AbstractRestClient implements IRestClien
     super(baseURL, config, cacheService, cacheDuration);
   }
 
-  cached(duration: number) {
-    return new FirebaseRestClient(this.AP, this.baseURL, this.config, this.cacheService, duration);
+  cached(cacheService: CachingService, duration: number) {
+    return new FirebaseRestClient(this.AP, this.baseURL, this.config, cacheService, duration);
   }
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {

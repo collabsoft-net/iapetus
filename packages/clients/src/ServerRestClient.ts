@@ -9,8 +9,8 @@ export class ServerRestClient extends AbstractRestClient implements IRestClient 
     super(baseURL, config, cacheService, cacheDuration);
   }
 
-  cached(duration: number) {
-    return new ServerRestClient(this.baseURL, this.config, this.cacheService, duration);
+  cached(cacheService: CachingService, duration: number) {
+    return new ServerRestClient(this.baseURL, this.config, cacheService, duration);
   }
 
   static getIdentifier(): symbol {

@@ -17,8 +17,8 @@ export class ForgeRestClient implements RestClient {
     this.duration = cacheDuration;
   }
 
-  cached(duration: number) {
-    return new ForgeRestClient(this.product, this.cacheService, duration);
+  cached(cacheService: CachingService, duration: number) {
+    return new ForgeRestClient(this.product, cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;

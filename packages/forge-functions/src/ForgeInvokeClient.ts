@@ -13,8 +13,8 @@ export class ForgeInvokeClient implements RestClient {
     this.duration = cacheDuration;
   }
 
-  cached(duration: number) {
-    return new ForgeInvokeClient(this.name, this.cacheService, duration);
+  cached(cacheService: CachingService, duration: number) {
+    return new ForgeInvokeClient(this.name, cacheService, duration);
   }
 
   async get<T>(endpoint: string, params?: Record<string, string|number|boolean>, cacheDuration?: number): Promise<AxiosResponse<T>>;

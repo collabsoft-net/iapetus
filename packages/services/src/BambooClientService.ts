@@ -1,5 +1,5 @@
 import { BambooServerEndpoints, Modes } from '@collabsoft-net/enums';
-import { RestClient } from '@collabsoft-net/types';
+import { CachingService, RestClient } from '@collabsoft-net/types';
 import { injectable } from 'inversify';
 
 import { AbstractAtlasClientService } from '.';
@@ -12,8 +12,8 @@ export class BambooClientService extends AbstractAtlasClientService<Modes.P2> {
     this.endpoints = BambooServerEndpoints;
   }
 
-  cached(duration: number) {
-    return this.getInstance(this.client.cached(duration));
+  cached(cacheService: CachingService, duration: number) {
+    return this.getInstance(this.client.cached(cacheService, duration));
   }
 
   async getPlans(projectKey?: string): Promise<Array<Bamboo.Plan>> {

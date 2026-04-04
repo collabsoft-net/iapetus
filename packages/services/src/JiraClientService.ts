@@ -1,6 +1,6 @@
 import { JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
-import { RestClient } from '@collabsoft-net/types';
+import { CachingService, RestClient } from '@collabsoft-net/types';
 import FormData from 'form-data';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
@@ -15,8 +15,8 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
     this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? JiraCloudEndpoints : JiraServerEndpoints;
   }
 
-  cached(duration: number) {
-    return this.getInstance(this.client.cached(duration), this.mode);
+  cached(cacheService: CachingService, duration: number) {
+    return this.getInstance(this.client.cached(cacheService, duration), this.mode);
   }
 
   async paginate<T>(nextPage: string): Promise<Jira.PagedResponse2<T>> {

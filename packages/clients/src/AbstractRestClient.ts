@@ -111,5 +111,5 @@ export abstract class AbstractRestClient<TResponseError = unknown> implements Re
     }
   }
 
-  abstract cached(duration: number): AbstractRestClient;
+  abstract cached(cacheService: CachingService, duration: number): AbstractRestClient;
 }

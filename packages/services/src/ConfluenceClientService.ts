@@ -1,7 +1,7 @@
 import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { Applications, ConfluenceCloudEndpoints, ConfluenceServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { RestClient } from '@collabsoft-net/types';
+import { CachingService, RestClient } from '@collabsoft-net/types';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
@@ -19,8 +19,8 @@ export class ConfluenceClientService<Mode extends Modes> extends AbstractAtlasCl
     this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? ConfluenceCloudEndpoints : ConfluenceServerEndpoints;
   }
 
-  cached(duration: number) {
-    return this.getInstance(this.client.cached(duration), this.mode);
+  cached(cacheService: CachingService, duration: number) {
+    return this.getInstance(this.client.cached(cacheService, duration), this.mode);
   }
 
   async currentUser(expand?: Array<string>): Promise<Confluence.User> {

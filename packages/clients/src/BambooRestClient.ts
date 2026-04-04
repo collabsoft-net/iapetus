@@ -1,17 +1,23 @@
+import { ForgeInstance } from '@collabsoft-net/entities';
 import { Applications } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
+import { CachingService } from '@collabsoft-net/types';
 
-import { AbstractAtlasRestClient } from '.';
+import { AbstractAtlasRestClient } from './AbstractAtlasRestClient';
 
 export class BambooRestClient extends AbstractAtlasRestClient<Applications.BAMBOO> {
 
-  cached(duration: number) {
-    const instance = new BambooRestClient(this.instance, this.config, this.cacheService, duration);
-    instance._accountId = this.accountId;
+  cached(cacheService: CachingService, duration: number) {
+    const instance = isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')
+      ? new BambooRestClient(this.instance, String(this.appSystemToken), this.config, cacheService, duration)
+      : new BambooRestClient(this.instance, this.config, cacheService, duration)
     return instance;
   }
 
   as(accountId: string): BambooRestClient {
-    const instance = new BambooRestClient(this.instance, this.config, this.cacheService, this.duration);
+    const instance = isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')
+      ? new BambooRestClient(this.instance, String(this.appSystemToken), this.config, this.cacheService, this.duration)
+      : new BambooRestClient(this.instance, this.config, this.cacheService, this.duration)
     instance._accountId = accountId;
     return instance;
   }

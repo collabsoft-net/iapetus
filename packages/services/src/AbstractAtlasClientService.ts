@@ -1,7 +1,7 @@
 import { AbstractAtlasRestClient } from '@collabsoft-net/clients';
 import { Applications, ConfluenceCloudEndpoints, ConfluenceServerEndpoints,JiraCloudEndpoints, JiraServerEndpoints, Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
-import { RestClient } from '@collabsoft-net/types';
+import { CachingService, RestClient } from '@collabsoft-net/types';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 import { compile } from 'path-to-regexp';
@@ -18,7 +18,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
     this.endpoints = (mode === Modes.CONNECT || mode === Modes.FORGE) ? {...ConfluenceCloudEndpoints, ...JiraCloudEndpoints} : {...ConfluenceServerEndpoints, ...JiraServerEndpoints};
   }
 
-  abstract cached(duration: number): AbstractAtlasClientService<Mode>;
+  abstract cached(cacheService: CachingService, duration: number): AbstractAtlasClientService<Mode>;
 
   as(appUserToken: string): AbstractAtlasClientService<Mode>;
   as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasClientService<Mode>;

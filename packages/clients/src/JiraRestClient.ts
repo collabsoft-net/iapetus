@@ -1,18 +1,23 @@
+import { ForgeInstance } from '@collabsoft-net/entities';
 import { Applications } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
+import { CachingService } from '@collabsoft-net/types';
 
 import { AbstractAtlasRestClient } from '.';
 
-
 export class JiraRestClient extends AbstractAtlasRestClient<Applications.JIRA> {
 
-  cached(duration: number) {
-    const instance = new JiraRestClient(this.instance, this.config, this.cacheService, duration);
-    instance._accountId = this.accountId;
+  cached(cacheService: CachingService, duration: number) {
+    const instance = isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')
+      ? new JiraRestClient(this.instance, String(this.appSystemToken), this.config, cacheService, duration)
+      : new JiraRestClient(this.instance, this.config, cacheService, duration)
     return instance;
   }
 
   as(accountId: string): JiraRestClient {
-    const instance = new JiraRestClient(this.instance, this.config, this.cacheService, this.duration);
+    const instance = isOfType<ForgeInstance>(this.instance, 'apiBaseUrl')
+      ? new JiraRestClient(this.instance, String(this.appSystemToken), this.config, this.cacheService, this.duration)
+      : new JiraRestClient(this.instance, this.config, this.cacheService, this.duration)
     instance._accountId = accountId;
     return instance;
   }

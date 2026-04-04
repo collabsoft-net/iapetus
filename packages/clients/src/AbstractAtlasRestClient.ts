@@ -25,9 +25,9 @@ export abstract class AbstractAtlasRestClient<
     return this._accountId;
   }
 
-  abstract cached(duration: number): AbstractAtlasRestClient<TApplication, TResponseError>;
+  abstract cached(cacheService: CachingService, duration: number): AbstractAtlasRestClient<TApplication, TResponseError>;
 
-  abstract as(userToken: string): AbstractAtlasRestClient<TApplication, TResponseError>;
+  abstract as(accountId: string): AbstractAtlasRestClient<TApplication, TResponseError>;
   abstract as(accountId: string, oauthClientId: string, sharedSecret: string): AbstractAtlasRestClient<TApplication, TResponseError>;
 
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
