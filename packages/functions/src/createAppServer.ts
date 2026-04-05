@@ -22,6 +22,8 @@ type AppServerOptions = {
 
 export const createAppServer = (options: AppServerOptions, configure?: (app: Application) => void): void|Record<string, HttpsFunction> => {
   const { name, container, functionOptions, baseUrl } = options;
+
+  const urlPrefix = baseUrl.endsWith('/') ? baseUrl : '/';
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
@@ -43,7 +45,7 @@ export const createAppServer = (options: AppServerOptions, configure?: (app: App
       });
 
       // Add global healtcheck endpoint to all apps
-      app.get(`${baseUrl}/healthcheck`, (_req, res) => {
+      app.get(`${urlPrefix}healthcheck`, (_req, res) => {
         res.sendStatus(StatusCodes.OK);
       });
 
@@ -54,13 +56,13 @@ export const createAppServer = (options: AppServerOptions, configure?: (app: App
         if (!isProduction()) {
           logger.info(`Registering strategy [${instance.name}]`);
         }
-        app.get(`${baseUrl}/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
+        app.get(`${urlPrefix}${instance.name.toLowerCase()}/auth`, (req, res, next) => {
           const options = instance.options;
           options.state = req.query ? Buffer.from(JSON.stringify(req.query)).toString('base64') : undefined;
           const authenticator = passport.authenticate(instance.name.toLowerCase(), options);
           authenticator(req, res, next);
         });
-        app.get(`/${baseUrl}/${instance.name.toLowerCase()}/callback`, passport.authenticate(instance.name.toLowerCase(), { session: false, failureRedirect: '/' }), (req, res, next) => {
+        app.get(`${urlPrefix}${instance.name.toLowerCase()}/callback`, passport.authenticate(instance.name.toLowerCase(), { session: false, failureRedirect: '/' }), (req, res, next) => {
           instance.next(req, res, next);
         });
       });
