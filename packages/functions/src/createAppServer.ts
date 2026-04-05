@@ -13,7 +13,15 @@ import passport from 'passport';
 
 export const Strategy = Symbol.for('Strategies');
 
-export const createAppServer = (name: string, container: inversify.Container | (() => inversify.Container), options: HttpsOptions = {}, configure?: (app: Application) => void): void|Record<string, HttpsFunction> => {
+type AppServerOptions = {
+  name: string;
+  container: inversify.Container | (() => inversify.Container)
+  functionOptions?: HttpsOptions;
+  baseUrl: string;
+}
+
+export const createAppServer = (options: AppServerOptions, configure?: (app: Application) => void): void|Record<string, HttpsFunction> => {
+  const { name, container, functionOptions, baseUrl } = options;
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
@@ -35,7 +43,7 @@ export const createAppServer = (name: string, container: inversify.Container | (
       });
 
       // Add global healtcheck endpoint to all apps
-      app.get('/healthcheck', (_req, res) => {
+      app.get(`${baseUrl}/healthcheck`, (_req, res) => {
         res.sendStatus(StatusCodes.OK);
       });
 
@@ -46,13 +54,13 @@ export const createAppServer = (name: string, container: inversify.Container | (
         if (!isProduction()) {
           logger.info(`Registering strategy [${instance.name}]`);
         }
-        app.get(`/api/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
+        app.get(`${baseUrl}/${instance.name.toLowerCase()}/auth`, (req, res, next) => {
           const options = instance.options;
           options.state = req.query ? Buffer.from(JSON.stringify(req.query)).toString('base64') : undefined;
           const authenticator = passport.authenticate(instance.name.toLowerCase(), options);
           authenticator(req, res, next);
         });
-        app.get(`/api/${instance.name.toLowerCase()}/callback`, passport.authenticate(instance.name.toLowerCase(), { session: false, failureRedirect: '/' }), (req, res, next) => {
+        app.get(`/${baseUrl}/${instance.name.toLowerCase()}/callback`, passport.authenticate(instance.name.toLowerCase(), { session: false, failureRedirect: '/' }), (req, res, next) => {
           instance.next(req, res, next);
         });
       });
@@ -65,6 +73,6 @@ export const createAppServer = (name: string, container: inversify.Container | (
   }).build();
 
   return {
-    [name]: onRequest(options, instance)
+    [name]: onRequest(functionOptions || {}, instance)
   }
 }
