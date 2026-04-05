@@ -81,11 +81,12 @@ declare global {
         connectKey: string;
         forgeResource: string;
       },
-      size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max';
+      size?: 'small' | 'medium' | 'large' | 'xlarge' | 'max' | 'fullscreen';
       height?: string;
       width?: string;
       context?: T;
       closeOnEscape?: boolean;
+      closeOnOverlayClick?: boolean;
       onClose?: (payload?: X) => void;
     }
 
