@@ -13,12 +13,14 @@ export const hasGlobalPermissions = (...permissions: Array<string|Confluence.Con
 
       if (user && isOfType<AtlasSession>(user, 'instance')) {
         const { accountId, instance, appSystemToken, mode } = user;
-        if (instance.productType === 'jira') {
+        const product = isOfType<ForgeInstance>(instance, 'installationId') ? instance.product : instance.productType;
+
+        if (product === 'jira') {
           const service = isOfType<ForgeInstance>(instance, 'installationId')
             ? new JiraClientService(new JiraRestClient(instance, appSystemToken), mode)
             : new JiraClientService(new JiraRestClient(instance), mode);
           hasAllRequiredPermissions = await service.hasPermissions(accountId, undefined, permissions);
-        } else if (instance.productType === 'confluence') {
+        } else if (product === 'confluence') {
           const service = isOfType<ForgeInstance>(instance, 'installationId')
             ? new ConfluenceClientService(new ConfluenceRestClient(instance, appSystemToken), mode)
             : new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
@@ -52,7 +54,8 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
         const { accountId, instance, mode } = user;
         const entityId = (user as Session)[paramName] || query[paramName] || params[paramName];
         if (entityId && typeof entityId === 'string') {
-          if (instance.productType === 'jira') {
+          const product = isOfType<ForgeInstance>(instance, 'installationId') ? instance.product : instance.productType;
+          if (product === 'jira') {
             // This is a bit weird, but we need to tell Typescript which type it is
             const service = isOfType<ACInstance>(instance, 'key')
               ? new JiraClientService(new JiraRestClient(instance), mode)
@@ -63,7 +66,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
               permissions: Array.isArray(permission) ? permission : []
             };
             hasAllRequiredPermissions = await service.hasPermissions(accountId, [ permissions ]);
-          } else if (instance.productType === 'confluence' && !Array.isArray(permission)) {
+          } else if (product === 'confluence' && !Array.isArray(permission)) {
             // This is a bit weird, but we need to tell Typescript which type it is
             const service = isOfType<ACInstance>(instance, 'key')
               ? new ConfluenceClientService(new ConfluenceRestClient(instance), mode)
