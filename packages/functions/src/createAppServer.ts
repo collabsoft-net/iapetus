@@ -23,7 +23,7 @@ type AppServerOptions = {
 export const createAppServer = (options: AppServerOptions, configure?: (app: Application) => void): void|Record<string, HttpsFunction> => {
   const { name, container, functionOptions, baseUrl } = options;
 
-  const urlPrefix = baseUrl.endsWith('/') ? baseUrl : '/';
+  const urlPrefix = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   const appContainer = typeof container === 'function' ? container() : container;
   const strategies = appContainer.isBound(Strategy) ? appContainer.getAll<IStrategy>(Strategy) : [];
 
