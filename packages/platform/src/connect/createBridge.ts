@@ -302,11 +302,11 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       disableCloseOnSubmit() {
         AP.dialog.disableCloseOnSubmit();
       },
-      getProperties: () => {
-        return new Promise<Props|undefined>(resolve =>
+      getProperties: <T> () => {
+        return new Promise<T>(resolve =>
           isOfType<AP.ConfluenceInstance>(AP, 'confluence')
             ? AP.confluence.getMacroData(resolve)
-            : resolve({}))
+            : resolve({} as T))
       },
       setProperties: async <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => {
         if (isOfType<AP.ConfluenceInstance>(AP, 'confluence')) {

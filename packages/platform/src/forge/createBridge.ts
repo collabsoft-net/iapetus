@@ -266,7 +266,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
 
     macro: {
       disableCloseOnSubmit: () => {},
-      getProperties: async () => context.extension.type === 'macro' ? context.extension.config : {},
+      getProperties: async <T> () => context.extension.type === 'macro' ? context.extension.config as T : {} as T,
       setProperties: <T> (data: T, body?: string|DocNode, keepEditing: boolean = false) => view.submit({
         config: data,
         body: typeof body === 'string' ? JSON.parse(body) : body,

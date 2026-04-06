@@ -214,7 +214,7 @@ declare global {
 
       macro: {
         disableCloseOnSubmit: () => void;
-        getProperties: () => Promise<Props|undefined>;
+        getProperties: <T> () => Promise<T>;
         setProperties: <T> (data: T, body?: string|DocNode, keepEditing?: boolean) => Promise<void>;
         close: <T> (payload?: T) => void;
       };
