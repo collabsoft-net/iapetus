@@ -44,13 +44,13 @@ export const DialogCreateEventHandler = (message: Message<AP.DialogOptions<never
       url += url.includes('?') ? `&${defaultQueryString}` : `?${defaultQueryString}`;
 
       const size = getSize(options);
-      const sizeClass = typeof size !== 'boolean' ? size : '';
-      let dialogStyle = typeof size === 'boolean'
-        ? size ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
-        : '';
+      const fullscreen = typeof size === 'boolean' && size === true;
+
+      const sizeClass = !fullscreen ? size : '';
+      let dialogStyle = fullscreen ? 'width:100%;height:100%;' : `width:${options.width};height:${options.height};`
 
       // Override `top` position of modal in case of full screen
-      if (options.height && (options.height === '100%' || options.height === '100vh')) {
+      if (fullscreen || (options.height && (options.height === '100%' || options.height === '100vh'))) {
         dialogStyle += 'top:0px;'
       }
 
