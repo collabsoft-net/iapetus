@@ -55,7 +55,7 @@ export const createPlaceholder = async (options?: CreatePlaceholderOptions): Pro
     // The only way to know we are opening is modal is because of the modal context
     if (isOfType(context.extension.modal, 'moduleKey')) {
       moduleType = 'dialog';
-    } else if (context.extension.type === 'macro' && (context.extension.macro.isConfiguring || context.extension.macro.isInserting)) {
+    } else if (context.extension.type === 'macro' && (context.extension.macro?.isConfiguring || context.extension.macro?.isInserting)) {
       moduleType = 'editor';
     } else {
       moduleType = 'page';
