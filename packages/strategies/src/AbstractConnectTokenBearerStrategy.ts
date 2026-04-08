@@ -1,10 +1,10 @@
 import '@collabsoft-net/functions';
 
+import { decodeSymmetric, SymmetricAlgorithm } from '@atlassian/atlassian-jwt';
 import { ACInstanceDTO } from '@collabsoft-net/dto';
 import { ACInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { AbstractService } from '@collabsoft-net/services';
-import { decodeSymmetric, SymmetricAlgorithm } from '@atlassian/atlassian-jwt';
 import * as express from 'express';
 import { injectable } from 'inversify';
 
