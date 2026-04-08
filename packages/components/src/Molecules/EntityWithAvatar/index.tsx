@@ -55,9 +55,9 @@ const getAvatarSource = (entity: Jira.Project|Jira.User|Confluence.Space|Conflue
   if (isOfType<Jira.User|Jira.Project>(entity, 'avatarUrls')) {
     return entity.avatarUrls['32x32'];
   } else if (isOfType<Confluence.User>(entity, 'profilePicture')) {
-    const pictureUrl = isOfType(entity.profilePicture, 'path') ? entity.profilePicture.path : entity.profilePicture;
     const baseUrl = isOfType(entity, '_links') ? entity._links.base : '';
-    return `${baseUrl.replace('/wiki', '')}${pictureUrl}`;
+    const pictureUrl = isOfType(entity.profilePicture, 'path') ? entity.profilePicture.path : entity.profilePicture;
+    return pictureUrl.startsWith('/') ? `${baseUrl.replace('/wiki', '')}${pictureUrl}` : pictureUrl;
   } else if (isOfType<Confluence.Space|Confluence.SpaceV2>(entity, 'icon')) {
     const baseUrl = isOfType<Confluence.SpaceV2>(entity, '_links') ? entity._links.base : '';
     return `${baseUrl.replace('/wiki', '')}${entity.icon?.path}`;
