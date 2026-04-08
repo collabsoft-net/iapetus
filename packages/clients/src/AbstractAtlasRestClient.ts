@@ -2,7 +2,7 @@ import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Applications, RestClientMethods } from '@collabsoft-net/enums';
 import { ClientError, isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
-import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from 'atlassian-jwt';
+import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from '@atlassian/atlassian-jwt';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { AbstractRestClient } from './AbstractRestClient';

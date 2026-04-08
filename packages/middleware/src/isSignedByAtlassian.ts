@@ -1,4 +1,4 @@
-import { AsymmetricAlgorithm, decodeAsymmetric, getKeyId } from 'atlassian-jwt';
+import { AsymmetricAlgorithm, decodeAsymmetric, getKeyId } from '@atlassian/atlassian-jwt';
 import axios from 'axios';
 import * as express from 'express';
 import { logger } from 'firebase-functions';
