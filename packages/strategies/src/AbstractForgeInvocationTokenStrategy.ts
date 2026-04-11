@@ -73,6 +73,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     if (!instance || !instance.isForge) {
 
       // Preserve the Cloud ID for migration purposes
+      // The cloud ID seems to be shared between environments, so this cannot be used to locate the instance
       const cloudId = isOfType(instance, 'cloudId')
         ? instance.cloudId
         : isOfType(payload.app, 'context')
@@ -80,13 +81,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
             ? String(payload.app.context.cloudId)
             : undefined
           : undefined;
-
-      // We are going to see if we can find the customer using the cloud ID
-      // This is important because installation ID may change upon re-installation of the app
-      // The cloud ID should be persistent between installations
-      if (cloudId) {
-        instance = await this.service.findByProperty('cloudId', cloudId);
-      }
 
       // We use Connect lifecycle events to match the clientKey with the installation ID
       // If for some reason the Connect lifecycle event did not fire yet (i.e. because of a delay)
