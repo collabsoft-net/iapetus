@@ -13,44 +13,49 @@ import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 @injectable()
 export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends AtlasSession> extends AbstractBearerStrategy<Y> {
 
-  protected abstract get service(): AbstractService<T, X>;
-
   constructor(private allowAnonymousAccess = false) {
     super();
   }
 
-  protected async process(request: express.Request, token?: string): Promise<Y> {
-    if (!token) throw new Error('Invalid Bearer token');
+  protected abstract toConnectInstanceService(token: Atlassian.JWT): Promise<AbstractService<T, X>>;
 
-    const { iss, exp } = decodeSymmetric(token, '', SymmetricAlgorithm.HS256, true);
+  protected async process(request: express.Request, payload?: string): Promise<Y> {
+    if (!payload) throw new Error('Invalid Bearer token');
+
+    const unverifiedToken = decodeSymmetric(payload, '', SymmetricAlgorithm.HS256, true) as Atlassian.JWT;
+
+    const { iss, exp } = unverifiedToken;
+    if (!iss) throw new Error('Invalid Bearer token');
+
     const now = Math.round(new Date().getTime() / 1000);
-    if (exp < now) throw new Error('Session expired');
+    if (typeof exp === 'number' && exp < now) throw new Error('Session expired');
 
-    const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
+    if (!this.allowAnonymousAccess && isNullOrEmpty(unverifiedToken.sub)) {
+      throw new Error('Anonymous access is not allowed');
+    }
+
+    const service = await this.toConnectInstanceService(unverifiedToken);
+    let instance = await service.findById(iss) || await service.findByProperty('clientKey', iss);
     if (instance) {
-      await this.updateLastActive(instance, request);
-      const payload = decodeSymmetric(token, instance.sharedSecret, SymmetricAlgorithm.HS256) as Atlassian.JWT;
-
-      if (!this.allowAnonymousAccess && isNullOrEmpty(payload.sub)) {
-        throw new Error('Anonymous access is not allowed');
-      }
-
-      return this.toSession(payload, instance);
+      const verifiedToken = decodeSymmetric(payload, instance.sharedSecret, SymmetricAlgorithm.HS256) as Atlassian.JWT;
+      instance = this.updateLastActive(instance, request);
+      instance = await service.save(instance);
+      return this.toSession(verifiedToken, instance);
     } else {
-      throw new Error('Customer instance not found');
+      throw new Error('Customer instance not found, unable to verify token');
     }
   }
 
   protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
 
-  protected async updateLastActive(instance: T, { headers }: express.Request) {
+  protected updateLastActive(instance: T, { headers }: express.Request): T {
     if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
       // Only update the lastActive if non-existant or less than 24 hours ago
       if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
         instance.lastActive = new Date().getTime();
-        await this.service.save(instance);
       }
     }
+    return instance;
   }
 
 }

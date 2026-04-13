@@ -15,9 +15,6 @@ import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 @injectable()
 export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> extends AbstractJWTStrategy<ForgeRemoteToken, T> {
 
-  protected abstract get service(): AbstractService<ForgeInstance, ForgeInstanceDTO>;
-  protected abstract get cacheService(): CachingService;
-
   constructor(private allowAnonymousAccess = false) {
     super();
   }
@@ -26,12 +23,13 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
     return {
       secretOrKeyProvider: async (_: Express.Request, rawJwtToken: string, done: (err: Error|null, payload?: string) => void) => {
         try {
-          const { iss, exp, sub } = jwt.decode(rawJwtToken, '', true) as ForgeRemoteToken;
-          if (isNullOrEmpty(iss)) throw new Error('Invalid JWT token');
-          if (isNullOrEmpty(exp) || (exp < new Date().getTime())) throw new Error('Session expired');
-          if (isNullOrEmpty(sub) && !this.allowAnonymousAccess) throw new Error('Anonymous access is not allowed');
+          const token = jwt.decode(rawJwtToken, '', true) as ForgeRemoteToken;
+          if (isNullOrEmpty(token.iss)) throw new Error('Invalid JWT token');
+          if (isNullOrEmpty(token.exp) || (token.exp < new Date().getTime())) throw new Error('Session expired');
+          if (isNullOrEmpty(token.sub) && !this.allowAnonymousAccess) throw new Error('Anonymous access is not allowed');
 
-          const instance = await this.service.findById(iss);
+          const service = await this.toForgeInstanceService(token);
+          const instance = await service.findById(token.iss);
           if (!instance) throw new Error('Could not find customer instance, unauthorized access not allowed');
 
           const hash = ForgeRemoteTokenService.getHash(instance);
@@ -46,20 +44,24 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
     };
   }
 
-  protected abstract toSession(payload: ForgeRemoteToken, instance: ForgeInstance, appSystemToken?: string, appUserToken?: string): Promise<T>;
+  protected abstract toCacheService(token: ForgeRemoteToken): Promise<CachingService>;
+  protected abstract toForgeInstanceService(token: ForgeRemoteToken): Promise<AbstractService<ForgeInstance, ForgeInstanceDTO>>;
+  protected abstract toSession(token: ForgeRemoteToken, instance: ForgeInstance, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
-  protected async process(_request: express.Request, payload?: ForgeRemoteToken): Promise<T> {
-    if (!payload) throw new Error('Invalid JWT token');
-    const { iss, exp, sub, appSystemTokenKey, appUserTokenKey } = payload;
+  protected async process(_request: express.Request, token?: ForgeRemoteToken): Promise<T> {
+    if (!token) throw new Error('Invalid JWT token');
+    const { iss, exp, sub, appSystemTokenKey, appUserTokenKey } = token;
     if (isNullOrEmpty(iss)) throw new Error('Invalid JWT token');
     if (isNullOrEmpty(exp) || (exp < new Date().getTime())) throw new Error('Session expired');
     if (isNullOrEmpty(sub)) throw new Error('Anonymous access is not allowed');
 
-    const instance = await this.service.findById(iss);
+    const service = await this.toForgeInstanceService(token);
+    const instance = await service.findById(iss);
     if (instance) {
-      const appSystemToken = appSystemTokenKey && await this.cacheService.get<string>(appSystemTokenKey) || undefined;
-      const appUserToken = appUserTokenKey && await this.cacheService.get<string>(appUserTokenKey) || undefined;
-      return this.toSession(payload, instance, appSystemToken, appUserToken);
+      const cacheService = await this.toCacheService(token);
+      const appSystemToken = appSystemTokenKey && await cacheService.get<string>(appSystemTokenKey) || undefined;
+      const appUserToken = appUserTokenKey && await cacheService.get<string>(appUserTokenKey) || undefined;
+      return this.toSession(token, instance, appSystemToken, appUserToken);
     } else {
       throw new Error('Customer instance not found');
     }

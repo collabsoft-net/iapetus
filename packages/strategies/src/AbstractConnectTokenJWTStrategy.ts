@@ -14,14 +14,19 @@ import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 @injectable()
 export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends AtlasSession> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
 
-  protected abstract get service(): AbstractService<T, X>;
+  constructor(private allowAnonymousAccess = false) {
+    super();
+  }
+
+  protected abstract toConnectInstanceService(token: Atlassian.JWT): Promise<AbstractService<T, X>>;
 
   protected get strategyOptions(): StrategyOptions {
     return {
       secretOrKeyProvider: async (_: Express.Request, rawJwtToken: string, done: (err: Error|null, payload?: string) => void) => {
         try {
-          const payload = decodeSymmetric(rawJwtToken, '', SymmetricAlgorithm.HS256, true);
-          const instance = await this.service.findById(payload.iss) || await this.service.findByProperty('clientKey', payload.iss);
+          const payload = decodeSymmetric(rawJwtToken, '', SymmetricAlgorithm.HS256, true) as Atlassian.JWT;
+          const service = await this.toConnectInstanceService(payload);
+          const instance = await service.findById(payload.iss) || await service.findByProperty('clientKey', payload.iss);
           if (!instance) throw new Error('Could not find customer instance, unauthorized access not allowed');
           done(null, instance.sharedSecret);
         } catch (error) {
@@ -34,10 +39,6 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X 
     };
   }
 
-  constructor(private allowAnonymousAccess = false) {
-    super();
-  }
-
   protected async process(request: express.Request, payload?: Atlassian.JWT): Promise<Y> {
     if (!payload) throw new Error('Invalid Atlassian JWT token');
     const { iss, sub } = payload;
@@ -46,9 +47,11 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X 
       throw new Error('Anonymous access is not allowed');
     }
 
-    const instance = await this.service.findById(iss) || await this.service.findByProperty('clientKey', iss);
+    const service = await this.toConnectInstanceService(payload);
+    let instance = await service.findById(iss) || await service.findByProperty('clientKey', iss);
     if (instance) {
-      await this.updateLastActive(instance, request);
+      instance = this.updateLastActive(instance, request);
+      instance = await service.save(instance);
       return this.toSession(payload, instance);
     } else {
       throw new Error('Customer instance not found');
@@ -57,14 +60,14 @@ export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X 
 
   protected abstract toSession(payload: Atlassian.JWT, instance: T): Promise<Y>;
 
-  protected async updateLastActive(instance: T, { headers }: express.Request) {
+  protected updateLastActive(instance: T, { headers }: express.Request): T {
     if (headers && typeof headers['X-Collabsoft-UpdateLastActive'] === 'string' && headers['X-Collabsoft-UpdateLastActive'] === 'true') {
       // Only update the lastActive if non-existant or less than 24 hours ago
       if (!instance.lastActive || instance.lastActive < (new Date().getTime() - (24 * 60 * 60 * 1000))) {
         instance.lastActive = new Date().getTime();
-        await this.service.save(instance);
       }
     }
+    return instance;
   }
 
 }
