@@ -1,11 +1,11 @@
 import '@collabsoft-net/functions';
 
-import { JiraRestClient } from '@collabsoft-net/clients';
+import { BitbucketRestClient, ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
 import { ForgeInstanceDTO } from '@collabsoft-net/dto';
 import { ForgeInstance } from '@collabsoft-net/entities';
-import { Modes } from '@collabsoft-net/enums';
+import { Applications, Modes } from '@collabsoft-net/enums';
 import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
-import { AbstractService, JiraClientService } from '@collabsoft-net/services';
+import { AbstractService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { CachingService } from '@collabsoft-net/types';
 import { randomBytes, scryptSync } from 'crypto';
 import * as express from 'express';
@@ -18,14 +18,13 @@ import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 @injectable()
 export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSession> extends AbstractBearerStrategy<T> {
 
-  protected abstract get service(): AbstractService<ForgeInstance, ForgeInstanceDTO>;
-  protected abstract get cacheService(): CachingService;
-
   constructor(private allowAnonymousAccess = false) {
     super();
   }
 
-  protected abstract getConnectKey(token: Atlassian.FIT): string|undefined;
+  protected abstract toConnectKey(token: Atlassian.FIT): Promise<string|undefined>;
+  protected abstract toCacheService(token: Atlassian.FIT): Promise<CachingService>;
+  protected abstract toForgeInstanceService(token: Atlassian.FIT): Promise<AbstractService<ForgeInstance, ForgeInstanceDTO>>;
   protected abstract toSession(token: Atlassian.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected async process(request: express.Request, token?: string): Promise<T> {
@@ -62,9 +61,12 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     const appSystemToken = request.header('x-forge-oauth-system');
     const appUserToken = request.header('x-forge-oauth-user');
 
+    // Get the instance service associated with this FIT
+    const service = await this.toForgeInstanceService(payload);
+
     // Ok, we are ready to see if we can find a customer instance
     // First, we try to find the instance based on the Forge installation ID
-    let instance = await this.service.findByProperty('installationId', payload.app.installationId);
+    let instance = await service.findByProperty('installationId', payload.app.installationId);
 
     // Check if this is an initial installation or if the instance is migrated from Connect
     // Connect apps migrated to forge receive a lifecycle installation event with the installation ID
@@ -87,21 +89,26 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       // and we failed to match the installation based on installation ID and cloud ID
       // we can use this endpoint to retrieve the clientKey
       // see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
-      const connectKey = this.getConnectKey(payload);
+      const connectKey = await this.toConnectKey(payload);
       if (!instance && appSystemToken && connectKey) {
 
-        const service = new JiraClientService(new JiraRestClient({
-          apiBaseUrl: payload.app.apiBaseUrl
-        } as ForgeInstance, appSystemToken), Modes.FORGE);
-        const clientKey = await service.getConnectClientKey(connectKey);
+        const clientService = product === Applications.JIRA
+          ? new JiraClientService(new JiraRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+          : product === Applications.CONFLUENCE
+            ? new ConfluenceClientService(new ConfluenceRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+            : product === Applications.BITBUCKET
+              ? new BitbucketClientService(new BitbucketRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+              : undefined;
+
+        const clientKey = clientService && await clientService.getConnectClientKey(connectKey);
         if (clientKey) {
-          instance = await this.service.findByProperty('clientKey', clientKey);
+          instance = await service.findByProperty('clientKey', clientKey);
         }
       }
 
       // Update the instance to migrate it to forge
       // Preserve the existing property values and only set them if missing
-      instance = await this.service.save({
+      instance = await service.save({
         ...instance || {},
         id: instance?.id || uniqid(),
         salt: instance?.salt || randomBytes(32).toString('hex'),
@@ -138,20 +145,23 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     const appTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
     const userTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
-    if (this.cacheService) {
+    // Get the cache service
+    const cacheService = await this.toCacheService(payload);
+
+    if (cacheService) {
       const ttl = 15 * 60;
       if (appSystemToken) {
-        await this.cacheService.set(appTokenCacheKey, appSystemToken, ttl, true);
+        await cacheService.set(appTokenCacheKey, appSystemToken, ttl, true);
         instance.appSystemTokenKey = appTokenCacheKey;
       }
       if (appUserToken) {
-        await this.cacheService.set(userTokenCacheKey, appUserToken, ttl, true);
+        await cacheService.set(userTokenCacheKey, appUserToken, ttl, true);
         instance.appUserTokenKey = appTokenCacheKey;
       }
     }
 
     instance = this.updateLastActive(instance, request);
-    instance = await this.service.save(instance);
+    instance = await service.save(instance);
 
     return this.toSession(payload, instance, appSystemToken, appUserToken);
   }
