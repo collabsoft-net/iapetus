@@ -1,16 +1,15 @@
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { CachingService, Entity, Paginated, QueryOptions } from '@collabsoft-net/types';
-import { AppOptions } from 'firebase-admin';
 
 import { QueryBuilder } from '../QueryBuilder';
-import { FirebaseAdminRepository } from './FirebaseAdminRepository';
+import { FirebaseAdminRepository, FirebaseAdminRepositoryOptions } from './FirebaseAdminRepository';
 
 const DEFAULT_CACHE_TIMEOUT_IN_SECONDS = 300;
 
 export class CachedFirebaseAdminRepository<T extends Entity> extends FirebaseAdminRepository<T> {
 
-  constructor(name: string, private cacheService: CachingService, options?: AppOptions, readOnly?: boolean) {
-    super(name, options, readOnly);
+  constructor(options: FirebaseAdminRepositoryOptions, private cacheService: CachingService) {
+    super(options);
   }
 
   // ==========================================================================

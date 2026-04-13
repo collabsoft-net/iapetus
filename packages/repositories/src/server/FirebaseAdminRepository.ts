@@ -5,11 +5,19 @@ import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
 import { app, AppOptions, auth, firestore } from 'firebase-admin';
 import firebase from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import { getFunctions,TaskOptions } from 'firebase-admin/functions';
 import uniqid from 'uniqid';
 
 import { QueryBuilder as QB } from '../QueryBuilder';
 import { FirebaseAdminStorageProvider } from './FirebaseAdminStorageProvider';
+
+export interface FirebaseAdminRepositoryOptions {
+  name: string;
+  options?: AppOptions;
+  databaseId?: string;
+  readOnly?: boolean;
+}
 
 type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Timestamp;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -19,15 +27,19 @@ interface FirestoreArray extends Array<FirestorePrimitive|FirestoreObject|Firest
 
 export class FirebaseAdminRepository<T extends Entity> implements Repository<T> {
 
+  protected name: string;
+  protected readOnly?: boolean;
+
   private fb: app.App;
   private firestore: firestore.Firestore;
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
-  constructor(protected name: string, options?: AppOptions, protected readOnly?: boolean) {
+  constructor({ name, options, databaseId, readOnly }: FirebaseAdminRepositoryOptions) {
+    this.name = name;
     this.fb = firebase.initializeApp(options, name);
 
-    this.firestore = this.fb.firestore();
+    this.firestore = typeof databaseId === 'string' ? getFirestore(this.fb, databaseId) : getFirestore(this.fb);
     this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
     this.readOnly = readOnly;
   }
