@@ -1,8 +1,8 @@
 import '@collabsoft-net/functions';
 
 import { decodeSymmetric, SymmetricAlgorithm } from '@atlassian/atlassian-jwt';
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstanceDTO } from '@collabsoft-net/dto';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { AbstractService } from '@collabsoft-net/services';
 import * as express from 'express';
@@ -12,7 +12,7 @@ import { ExtractJwt, StrategyOptions } from 'passport-jwt';
 import { AbstractJWTStrategy } from './AbstractJWTStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenJWTStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends AtlasSession> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
+export abstract class AbstractAtlassianTokenJWTStrategy<T extends ConnectInstance, X extends ConnectInstanceDTO, Y extends AtlasSession> extends AbstractJWTStrategy<Atlassian.JWT, Y> {
 
   constructor(private allowAnonymousAccess = false) {
     super();

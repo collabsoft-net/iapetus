@@ -1,10 +1,10 @@
 
-import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { isOfType } from '@collabsoft-net/helpers';
 
-import { ACInstanceDTO } from './ACInstanceDTO';
+import { ConnectInstanceDTO } from './ConnectInstanceDTO';
 
-export class ForgeInstanceDTO extends ACInstanceDTO implements Omit<ForgeInstance, 'id'> {
+export class ForgeInstanceDTO extends ConnectInstanceDTO implements Omit<ForgeInstance, 'id'> {
 
   salt: string;
   oauthClientId: string;
@@ -16,7 +16,7 @@ export class ForgeInstanceDTO extends ACInstanceDTO implements Omit<ForgeInstanc
   product: 'jira'|'confluence'|'bitbucket'|'compass';
 
   constructor(data: ForgeInstance|ForgeInstanceDTO) {
-    super(data as ACInstance);
+    super(data as ConnectInstance);
     this.salt = data.salt;
     this.oauthClientId = data.oauthClientId;
     this.installationId = data.installationId;

@@ -1,7 +1,7 @@
 
 import { Entity } from '@collabsoft-net/types';
 
-export interface ACInstance extends Entity {
+export interface ConnectInstance extends Entity {
   key: string;
   clientId?: string;
   tenantId?: string;

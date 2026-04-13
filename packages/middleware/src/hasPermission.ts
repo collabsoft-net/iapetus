@@ -1,5 +1,5 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
-import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';
@@ -57,7 +57,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
           const product = isOfType<ForgeInstance>(instance, 'installationId') ? instance.product : instance.productType;
           if (product === 'jira') {
             // This is a bit weird, but we need to tell Typescript which type it is
-            const service = isOfType<ACInstance>(instance, 'key')
+            const service = isOfType<ConnectInstance>(instance, 'key')
               ? new JiraClientService(new JiraRestClient(instance), mode)
               : new JiraClientService(new JiraRestClient(instance), mode);
             const permissions: Jira.BulkProjectPermissions = {
@@ -68,7 +68,7 @@ export const hasEntityPermission = (entityType: 'project'|'issue'|'content'|'spa
             hasAllRequiredPermissions = await service.hasPermissions(accountId, [ permissions ]);
           } else if (product === 'confluence' && !Array.isArray(permission)) {
             // This is a bit weird, but we need to tell Typescript which type it is
-            const service = isOfType<ACInstance>(instance, 'key')
+            const service = isOfType<ConnectInstance>(instance, 'key')
               ? new ConfluenceClientService(new ConfluenceRestClient(instance), mode)
               : new ConfluenceClientService(new ConfluenceRestClient(instance), mode);
             if (entityType === 'content') {

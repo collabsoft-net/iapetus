@@ -1,8 +1,8 @@
 
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { EntityDTO } from '@collabsoft-net/types';
 
-export class ACInstanceDTO extends EntityDTO<ACInstance> {
+export class ConnectInstanceDTO extends EntityDTO<ConnectInstance> {
 
   key: string;
   clientId?: string;
@@ -20,7 +20,7 @@ export class ACInstanceDTO extends EntityDTO<ACInstance> {
   active: boolean;
   lastActive: number;
 
-  constructor(data: ACInstance|ACInstanceDTO) {
+  constructor(data: ConnectInstance|ConnectInstanceDTO) {
     super(data.id);
     this.key = data.key;
     this.clientId = data.clientId;

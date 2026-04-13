@@ -1,5 +1,5 @@
 
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty, isOfType, isProduction } from '@collabsoft-net/helpers';
 import * as express from 'express';
 import { logger } from 'firebase-functions';
@@ -10,7 +10,7 @@ const getBaseURL = (req: express.Request): string|null => {
   const { body, user } = req;
   if (body && body.baseUrl) {
     return body.baseUrl;
-  } else if (isOfType<AtlasSession>(user, 'instance') && isOfType<ACInstance>(user.instance, 'key')) {
+  } else if (isOfType<AtlasSession>(user, 'instance') && isOfType<ConnectInstance>(user.instance, 'key')) {
     return user.instance.baseUrl;
   }
   return null;

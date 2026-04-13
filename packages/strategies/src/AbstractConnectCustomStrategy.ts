@@ -1,7 +1,7 @@
 import '@collabsoft-net/functions';
 
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstanceDTO } from '@collabsoft-net/dto';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -9,7 +9,7 @@ import { injectable } from 'inversify';
 import { AbstractCustomStrategy } from './AbstractCustomStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianCustomStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends AtlasSession> extends AbstractCustomStrategy<string, Y> {
+export abstract class AbstractAtlassianCustomStrategy<T extends ConnectInstance, X extends ConnectInstanceDTO, Y extends AtlasSession> extends AbstractCustomStrategy<string, Y> {
 
   protected async process(request: express.Request): Promise<Y> {
     const identifier = this.findIdentifier(request);

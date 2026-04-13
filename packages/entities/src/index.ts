@@ -1,3 +1,3 @@
 
-export * from './ACInstance';
+export * from './ConnectInstance';
 export * from './ForgeInstance';

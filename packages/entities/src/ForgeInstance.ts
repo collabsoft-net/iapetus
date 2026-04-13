@@ -1,6 +1,6 @@
-import { ACInstance } from './ACInstance';
+import { ConnectInstance } from './ConnectInstance';
 
-export interface ForgeInstance extends Partial<ACInstance> {
+export interface ForgeInstance extends Partial<ConnectInstance> {
   id: string;
   salt: string;
   oauthClientId: string;

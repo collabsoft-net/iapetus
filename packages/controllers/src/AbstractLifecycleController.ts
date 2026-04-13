@@ -1,5 +1,5 @@
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstanceDTO } from '@collabsoft-net/dto';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
@@ -9,7 +9,7 @@ import { results } from 'inversify-express-utils';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export abstract class AbstractLifecycleController<T extends ACInstance, X extends ACInstanceDTO, Y extends Record<string, unknown>> extends AbstractController<Y> {
+export abstract class AbstractLifecycleController<T extends ConnectInstance, X extends ConnectInstanceDTO, Y extends Record<string, unknown>> extends AbstractController<Y> {
 
   protected abstract get service(): AbstractService<T, X>;
 

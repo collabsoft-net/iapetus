@@ -1,5 +1,5 @@
 import { createQueryStringHash, encodeSymmetric, SymmetricAlgorithm} from '@atlassian/atlassian-jwt';
-import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Applications, RestClientMethods } from '@collabsoft-net/enums';
 import { ClientError, isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
@@ -18,9 +18,9 @@ export abstract class AbstractAtlasRestClient<
   protected _accountId?: string;
   protected appSystemToken: string|undefined;
 
-  constructor(instance: ACInstance, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
+  constructor(instance: ConnectInstance, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
   constructor(instance: ForgeInstance, appSystemToken?: string, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
-  constructor(protected instance: ACInstance|ForgeInstance, appSystemTokenOrConfig?: string|AxiosRequestConfig, configOrCacheService?: AxiosRequestConfig|CachingService, cacheServiceOrCacheDuration?: CachingService|number, cacheDuration?: number) {
+  constructor(protected instance: ConnectInstance|ForgeInstance, appSystemTokenOrConfig?: string|AxiosRequestConfig, configOrCacheService?: AxiosRequestConfig|CachingService, cacheServiceOrCacheDuration?: CachingService|number, cacheDuration?: number) {
     super(isOfType<ForgeInstance>(
       instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl,
       typeof appSystemTokenOrConfig !== 'string' ? appSystemTokenOrConfig : !isOfType<CachingService>(configOrCacheService, 'toCacheKey') ? configOrCacheService : {},

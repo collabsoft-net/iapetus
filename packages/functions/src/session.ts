@@ -1,5 +1,5 @@
 
-import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Modes } from '@collabsoft-net/enums';
 
 export {};
@@ -10,7 +10,7 @@ declare global {
 
   interface AtlasSession extends Session {
     accountId: string;
-    instance: ACInstance|ForgeInstance;
+    instance: ConnectInstance|ForgeInstance;
     appSystemToken?: string;
     appUserToken?: string;
     mode: Modes;

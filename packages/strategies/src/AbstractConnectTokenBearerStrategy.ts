@@ -1,8 +1,8 @@
 import '@collabsoft-net/functions';
 
 import { decodeSymmetric, SymmetricAlgorithm } from '@atlassian/atlassian-jwt';
-import { ACInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance } from '@collabsoft-net/entities';
+import { ConnectInstanceDTO } from '@collabsoft-net/dto';
+import { ConnectInstance } from '@collabsoft-net/entities';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { AbstractService } from '@collabsoft-net/services';
 import * as express from 'express';
@@ -11,7 +11,7 @@ import { injectable } from 'inversify';
 import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 
 @injectable()
-export abstract class AbstractAtlassianTokenBearerStrategy<T extends ACInstance, X extends ACInstanceDTO, Y extends AtlasSession> extends AbstractBearerStrategy<Y> {
+export abstract class AbstractAtlassianTokenBearerStrategy<T extends ConnectInstance, X extends ConnectInstanceDTO, Y extends AtlasSession> extends AbstractBearerStrategy<Y> {
 
   constructor(private allowAnonymousAccess = false) {
     super();

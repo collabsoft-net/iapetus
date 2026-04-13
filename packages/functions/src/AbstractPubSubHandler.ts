@@ -1,5 +1,5 @@
-import { ACInstanceDTO, ForgeInstanceDTO } from '@collabsoft-net/dto';
-import { ACInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { ConnectInstanceDTO, ForgeInstanceDTO } from '@collabsoft-net/dto';
+import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, PubSubHandler, TenantAwareEvent } from '@collabsoft-net/types';
 import { logger } from 'firebase-functions';
@@ -8,7 +8,7 @@ import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
 import { injectable } from 'inversify';
 
 @injectable()
-export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session, Y extends ACInstance|ForgeInstance, Z extends ACInstanceDTO|ForgeInstanceDTO> implements PubSubHandler<T> {
+export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session, Y extends ConnectInstance|ForgeInstance, Z extends ConnectInstanceDTO|ForgeInstanceDTO> implements PubSubHandler<T> {
 
   abstract name: string;
   abstract topic: string;
