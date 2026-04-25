@@ -6,6 +6,7 @@ import { ConnectInstanceDTO } from './ConnectInstanceDTO';
 
 export class ForgeInstanceDTO extends ConnectInstanceDTO implements Omit<ForgeInstance, 'id'> {
 
+  appId: string;
   salt: string;
   oauthClientId: string;
   installationId: string;
@@ -17,6 +18,7 @@ export class ForgeInstanceDTO extends ConnectInstanceDTO implements Omit<ForgeIn
 
   constructor(data: ForgeInstance|ForgeInstanceDTO) {
     super(data as ConnectInstance);
+    this.appId = data.appId;
     this.salt = data.salt;
     this.oauthClientId = data.oauthClientId;
     this.installationId = data.installationId;

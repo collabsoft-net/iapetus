@@ -111,6 +111,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       instance = await service.save({
         ...instance || {},
         id: instance?.id || uniqid(),
+        appId: instance?.appId || payload.app.id,
         salt: instance?.salt || randomBytes(32).toString('hex'),
         oauthClientId: instance?.oauthClientId || uniqid(),
         installationId: instance?.installationId || payload.app.installation.id,
@@ -129,6 +130,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     if (!instance) {
       instance = {
         id: uniqid(),
+        appId: payload.app.id,
         salt: randomBytes(32).toString('hex'),
         oauthClientId: uniqid(),
         installationId: payload.app.installation.id,

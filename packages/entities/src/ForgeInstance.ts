@@ -2,6 +2,7 @@ import { ConnectInstance } from './ConnectInstance';
 
 export interface ForgeInstance extends Partial<ConnectInstance> {
   id: string;
+  appId: string;
   salt: string;
   oauthClientId: string;
   installationId: string;
