@@ -35,17 +35,17 @@ export const registerPubSubHandlers = (container: inversify.Container | (() => i
   scheduledPubSubHandlers.forEach(handler => {
     const { name, schedule } = handler;
     if (!isProduction()) {
-      logger.log(`[${name}] PubSub subscription for schedule ${schedule} will not be registered as scheduled function emulation is currently not supported`);
+      logger.log(`[${name}] Registering function ${name}. To run it locally, please use firebase functions:shell as scheduled function emulation is currently not supported`);
     } else {
       logger.log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Google Cloud Scheduler)`);
-      handler.timeoutSeconds = handler.timeoutSeconds || (typeof options.timeoutSeconds === 'number' ? options.timeoutSeconds : undefined)
-      result[name] = onSchedule({
-        ...options,
-        schedule,
-        timeZone: handler.timeZone,
-        timeoutSeconds: handler.timeoutSeconds
-      }, () => handler.process());
     }
+    handler.timeoutSeconds = handler.timeoutSeconds || (typeof options.timeoutSeconds === 'number' ? options.timeoutSeconds : undefined)
+    result[name] = onSchedule({
+      ...options,
+      schedule,
+      timeZone: handler.timeZone,
+      timeoutSeconds: handler.timeoutSeconds
+    }, () => handler.process());
   });
 
   return result;
