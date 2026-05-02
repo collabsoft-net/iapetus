@@ -47,7 +47,6 @@
     "@typescript-eslint/parser": "8.32.0",
     "axios": "1.13.2",
     "core-js": "3.42.0",
-    "cron": "4.3.0",
     "eslint": "9.26.0",
     "express": "5.1.0",
     "nodemon": "3.1.10",
@@ -63,7 +62,6 @@
     "@collabsoft-net/helpers": "*",
     "@collabsoft-net/services": "*",
     "axios": "^1.13.0",
-    "cron": "^4.3.0",
     "express": "^5.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"

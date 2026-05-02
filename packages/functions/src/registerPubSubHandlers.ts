@@ -1,7 +1,6 @@
 
 import { isProduction } from '@collabsoft-net/helpers';
 import { CustomEvent, PubSubHandler, ScheduledPubSubHandler, TenantAwareEvent } from '@collabsoft-net/types';
-import { CronJob } from 'cron';
 import { logger } from 'firebase-functions';
 import { CloudEvent, CloudFunction } from 'firebase-functions/v2';
 import { MessagePublishedData, onMessagePublished,PubSubOptions } from 'firebase-functions/v2/pubsub';
@@ -9,8 +8,6 @@ import { onSchedule,ScheduleFunction,ScheduleOptions } from 'firebase-functions/
 import * as inversify from 'inversify';
 
 type PubSubHandlers = Record<string, CloudFunction<CloudEvent<MessagePublishedData<CustomEvent<TenantAwareEvent>>>>|ScheduleFunction>;
-
-const scheduledPubSubEmulatorJobs: Record<string, CronJob> = {};
 
 export const PubSubHandlers = Symbol.for('PubSubHandlers');
 export const ScheduledPubSubHandlers = Symbol.for('ScheduledPubSubHandlers');
@@ -38,12 +35,7 @@ export const registerPubSubHandlers = (container: inversify.Container | (() => i
   scheduledPubSubHandlers.forEach(handler => {
     const { name, schedule } = handler;
     if (!isProduction()) {
-      logger.log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Cron)`);
-      if (!scheduledPubSubEmulatorJobs[name]) {
-        const job = new CronJob(schedule, () => handler.process());
-        scheduledPubSubEmulatorJobs[name] = job;
-        job.start();
-      }
+      logger.log(`[${name}] PubSub subscription for schedule ${schedule} will not be registered as scheduled function emulation is currently not supported`);
     } else {
       logger.log(`[${name}] Registering scheduled PubSub subscription for schedule ${schedule} (using Google Cloud Scheduler)`);
       handler.timeoutSeconds = handler.timeoutSeconds || (typeof options.timeoutSeconds === 'number' ? options.timeoutSeconds : undefined)
