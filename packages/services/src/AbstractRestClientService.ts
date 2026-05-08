@@ -8,7 +8,7 @@ import { compile } from 'path-to-regexp';
 @injectable()
 export abstract class AbstractRestClientService {
 
-  constructor(protected client: RestClient, private typeMappings: Map<string, Type<DTO|EntityDTO<Entity>>>) {}
+  constructor(protected client: RestClient, private typeMappings: Map<Type<DTO|EntityDTO<Entity>>, string>) {}
 
   async getToken(): Promise<TokenExchangeDTO> {
     if (isOfType(this.client, 'getToken') && typeof this.client.getToken === 'function') {
@@ -77,7 +77,7 @@ export abstract class AbstractRestClientService {
     const mappings = this.typeMappings ? Array.from(this.typeMappings) : [];
     return mappings.reduce((name: string|undefined, [ key, mapping ]) => {
       if (name) return name;
-      return isTypeOf(type, mapping) ? key : undefined;
+      return isTypeOf(type, key) ? mapping : undefined;
     }, undefined);
   }
 
