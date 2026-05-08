@@ -17,11 +17,7 @@ export const ensureThemes = (themes: Themes|Array<Themes>): boolean => {
           dark: theme === Themes.DARK ? 'dark' : undefined,
           light: theme === Themes.LIGHT ? 'light' : undefined,
           spacing: theme === Themes.SPACING ? 'spacing' : undefined,
-          typography: theme === Themes.TYPOGRAPHY
-            ? 'typography-adg3'
-            : theme === Themes.TYPOGRAPHY_REFRESHED
-              ? 'typography-refreshed'
-              : undefined
+          typography: theme === Themes.TYPOGRAPHY ? 'typography' : undefined
         });
 
         // Check if we were able to load it from the official design system package

@@ -24,11 +24,6 @@ export const isThemeAvailable = (theme: Themes): boolean => {
 
     case Themes.TYPOGRAPHY: {
       const property = styles.getPropertyValue('--ds-font-family-body');
-      return !property.includes('Atlassian Sans')
-    }
-
-    case Themes.TYPOGRAPHY_REFRESHED: {
-      const property = styles.getPropertyValue('--ds-font-family-body');
       return property.includes('Atlassian Sans')
     }
 
