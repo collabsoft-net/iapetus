@@ -1,5 +1,4 @@
 import ChevronRight from '@atlaskit/icon/core/chevron-right';
-import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import { isOfType } from '@collabsoft-net/helpers';
 import styled from '@emotion/styled';
@@ -29,7 +28,7 @@ const Topbar = styled(Grid)<{ fixedOnTop?: boolean }>`
 `;
 
 export const TopBar = ({ title, Icon, Banner, breadCrumbs, icons, fixedOnTop }: TopBarProps) => (
-  <Topbar fixedOnTop={ fixedOnTop } borderBottom={ fixedOnTop ? `1px solid ${token('color.border', colors.N20)}` : undefined } background={ token('elevation.surface', colors.N0) } fluid={ fixedOnTop }>
+  <Topbar fixedOnTop={ fixedOnTop } borderBottom={ fixedOnTop ? `1px solid ${token('color.border')}` : undefined } background={ token('elevation.surface') } fluid={ fixedOnTop }>
     { Banner && (
       <Row>
         { Banner }

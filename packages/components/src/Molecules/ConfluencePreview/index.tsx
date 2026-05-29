@@ -5,7 +5,6 @@ import EditorMediaFullWidthIcon from '@atlaskit/icon/core/expand-horizontal';
 import EditorMediaExpandIcon from '@atlaskit/icon/core/grow-horizontal';
 import EditorMediaCollapseIcon from '@atlaskit/icon/core/shrink-horizontal';
 import Skeleton from '@atlaskit/skeleton';
-import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import { Modes } from '@collabsoft-net/enums';
 import { isOfType } from '@collabsoft-net/helpers';
@@ -56,7 +55,7 @@ const PreviewWidth = styled.div`
 const Divider = styled.div`
   height: 16px;
   width: 1px;
-  background-color: ${token('color.border', colors.N40)};
+  background-color: ${token('color.border')};
 `;
 
 const OptionalNavColumn = styled(Column)`
@@ -92,7 +91,7 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
 
   return (
     <Wrapper>
-      <Grid fluid stretched border={ `1px solid ${token('color.border', colors.N40)}` } borderRadius='4px' background={ token('elevation.surface', colors.N0) }>
+      <Grid fluid stretched border={ `1px solid ${token('color.border')}` } borderRadius='4px' background={ token('elevation.surface') }>
         <Row>
           <Grid fluid vertical padding='8px' boxShadow={ `0px 1px 1px 0px ${token('color.border', 'rgba(0, 0, 0, 0.10)')}` }>
             <Column style={{ fontSize: '16px', lineHeight: '16px' }}>
@@ -114,40 +113,40 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
             </Column>
             <OptionalNavColumn style={{ fontSize: '16px', lineHeight: '16px' }} marginLeft="24px">
               <svg width="122" height="16" viewBox="0 0 122 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="40" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="76" y="5" width="6" height="6" rx="3" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="90" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton', colors.N30) } />
+                <rect x="0" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton') } />
+                <rect x="40" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton') } />
+                <rect x="76" y="5" width="6" height="6" rx="3" fill={ token('color.skeleton') } />
+                <rect x="90" y="5" width="32" height="6" rx="3" fill={ token('color.skeleton') } />
               </svg>
             </OptionalNavColumn>
             <Column stretched></Column>
             <Column style={{ fontSize: '16px', lineHeight: '16px' }}>
               <svg width="148" height="16" viewBox="0 0 148 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0.5" y="0.5" width="63" height="15" rx="1.5" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="72" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="92" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="112" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton', colors.N30) } />
-                <rect x="132" width="16" height="16" rx="8" fill={ token('color.skeleton', colors.N30) } />
+                <rect x="0.5" y="0.5" width="63" height="15" rx="1.5" fill={ token('color.skeleton') }/>
+                <rect x="72" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton') } />
+                <rect x="92" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton') } />
+                <rect x="112" y="2" width="12" height="12" rx="6" fill={ token('color.skeleton') } />
+                <rect x="132" width="16" height="16" rx="8" fill={ token('color.skeleton') } />
               </svg>
             </Column>
           </Grid>
         </Row>
         <Row stretched>
           <Grid fluid vertical>
-            <SidebarSmall background={ token('elevation.surface', colors.N20) } width='20px' boxShadow={ `-1px 1px 0px 0px ${token('color.border', 'rgba(0, 0, 0, 0.10)')} inset` }>
+            <SidebarSmall background={ token('elevation.surface') } width='20px' boxShadow={ `-1px 1px 0px 0px ${token('color.border', 'rgba(0, 0, 0, 0.10)')} inset` }>
             </SidebarSmall>
-            <SidebarLarge background={ token('elevation.surface', colors.N20) } padding='8px 16px 8px 8px' boxShadow={ `-1px 1px 0px 0px ${token('color.border', 'rgba(0, 0, 0, 0.10)')} inset` }>
+            <SidebarLarge background={ token('elevation.surface') } padding='8px 16px 8px 8px' boxShadow={ `-1px 1px 0px 0px ${token('color.border', 'rgba(0, 0, 0, 0.10)')} inset` }>
               <svg width="96" height="79" viewBox="0 0 96 79" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="16" height="16" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="24" y="4" width="72" height="8" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="4" y="23" width="8" height="8" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="20" y="25" width="72" height="4" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="4" y="39" width="8" height="8" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="20" y="41" width="72" height="4" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="4" y="55" width="8" height="8" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="20" y="57" width="72" height="4" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="4" y="71" width="8" height="8" rx="2" fill={ token('color.skeleton', colors.N30) }/>
-                <rect x="20" y="73" width="72" height="4" rx="2" fill={ token('color.skeleton', colors.N30) }/>
+                <rect width="16" height="16" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="24" y="4" width="72" height="8" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="4" y="23" width="8" height="8" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="20" y="25" width="72" height="4" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="4" y="39" width="8" height="8" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="20" y="41" width="72" height="4" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="4" y="55" width="8" height="8" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="20" y="57" width="72" height="4" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="4" y="71" width="8" height="8" rx="2" fill={ token('color.skeleton') }/>
+                <rect x="20" y="73" width="72" height="4" rx="2" fill={ token('color.skeleton') }/>
               </svg>
             </SidebarLarge>
             <Column stretched>
@@ -164,8 +163,8 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
                             <Skeleton width='100%' height='100%' borderRadius='4px' isShimmering />
                           )}
                         </Row>
-                        <Row marginTop='8px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
+                        <Row marginTop='8px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
                       </Grid>
                     </Row>
 
@@ -175,18 +174,18 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
 
                     <Row width={ pageSize === 'full-width' ? '100%' : '70%' }>
                       <Grid fluid width='100%'>
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
-                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton', colors.N30) } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
+                        <Row marginTop='12px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />
                       </Grid>
                     </Row>
                   </Grid>
@@ -198,7 +197,7 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
       </Grid>
       { (showDisplayToolbar !== false) && (
         <PreviewWidth>
-          <Grid fluid vertical gap='8px' padding='4px 8px' borderRadius='4px' border={ `${token('border.width', '1px')} solid ${token('color.border', colors.N300A)}`} background={ token('elevation.surface.raised', colors.N0) }>
+          <Grid fluid vertical gap='8px' padding='4px 8px' borderRadius='4px' border={ `${token('border.width', '1px')} solid ${token('color.border')}`} background={ token('elevation.surface.raised') }>
             <Column onClick={ () => setPageSize('full-width') }>
               <IconButton appearance='subtle' spacing='compact' icon={ EditorMediaExpandIcon } isSelected={ pageSize === 'full-width' } label='Full width' isTooltipDisabled={ false } tooltip={{ content: 'Make page full-width' }} />
             </Column>

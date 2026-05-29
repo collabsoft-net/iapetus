@@ -1,4 +1,3 @@
-import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import styled from '@emotion/styled';
 import React, { PropsWithChildren } from 'react';
@@ -11,13 +10,13 @@ interface CardProps {
 }
 
 const Container = styled(Grid)`
-  background: ${token('elevation.surface', colors.N0)};
-  border: 1px solid ${token('color.border', colors.N20A)};
+  background: ${token('elevation.surface')};
+  border: 1px solid ${token('color.border')};
   border-radius: 8px;
 `;
 
 const CardHeader = styled(Row)`
-  box-shadow: 0px 1px 0px ${token('color.border', colors.N20A)};
+  box-shadow: 0px 1px 0px ${token('color.border')};
 `
 
 export const Card = ({ header, padding, children, ...props }: PropsWithChildren<CardProps & GridProps>) => (

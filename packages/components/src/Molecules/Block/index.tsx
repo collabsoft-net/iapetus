@@ -1,4 +1,3 @@
-import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import React, { PropsWithChildren } from 'react';
 
@@ -13,7 +12,7 @@ interface BlockProps {
 
 export const Block = ({ header, title, description, children }: PropsWithChildren<BlockProps>): JSX.Element => {
   return (
-    <Grid fluid padding='24px' borderRadius={ token('radius.large') } background={token('elevation.surface.sunken', colors.N600)}>
+    <Grid fluid padding='24px' borderRadius={ token('radius.large') } background={token('elevation.surface.sunken')}>
       <Row margin={ header ? '0 0 8px' : '0' }>
         { header && (<Header weight='h600'>{ header }</Header>)}
         { title && (<Header weight='h300'>{ title }</Header>)}

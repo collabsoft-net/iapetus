@@ -1,4 +1,3 @@
-import { colors } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
 import styled from '@emotion/styled';
 import React, { PropsWithChildren } from 'react';
@@ -36,7 +35,7 @@ export const PageWithTopBar = ({ title, Icon, Banner, breadCrumbs, icons, inline
       : '112px 0 0';
 
   return (
-    <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken', inline ? colors.N0 : colors.N400A) }>
+    <FullPage height={ !inline ? '100%' : undefined } background={ token(inline ? 'elevation.surface' : 'elevation.surface.sunken') }>
       <TopBar title={ title } Icon={ Icon } Banner={ Banner } breadCrumbs={ breadCrumbs } icons={ icons } fixedOnTop={ !inline } />
       <ScrollView fluid stretched height='unset' margin={ margin }>
         <Row stretched>
