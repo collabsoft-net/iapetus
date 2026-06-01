@@ -1,6 +1,6 @@
-import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
+import type { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 
-import { CustomEvent, TenantAwareEvent } from './Events';
+import type { CustomEvent, TenantAwareEvent } from './Events';
 
 export interface TaskHandler<T extends TenantAwareEvent> {
   name: string;

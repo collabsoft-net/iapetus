@@ -1,8 +1,8 @@
-import { BaseService } from './BaseService';
-import { EntityDTO } from './DTO';
-import { Entity, EntityArray, ObjectArray } from './Entity';
-import { Paginated } from './Paginated';
-import { QueryBuilder } from './QueryBuilder';
+import type { BaseService } from './BaseService';
+import type { EntityDTO } from './DTO';
+import type { Entity, EntityArray, ObjectArray } from './Entity';
+import type { Paginated } from './Paginated';
+import type { QueryBuilder } from './QueryBuilder';
 
 export interface DefaultService<T extends Entity, X extends EntityDTO<T>> extends BaseService<T, X> {
   count(): Promise<number>;

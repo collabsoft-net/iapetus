@@ -1,5 +1,5 @@
-import { CloudEvent } from 'firebase-functions/v2';
-import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
+import type { CloudEvent } from 'firebase-functions/v2';
+import type { MessagePublishedData } from 'firebase-functions/v2/pubsub';
 
 import { CustomEvent, TenantAwareEvent } from './Events';
 

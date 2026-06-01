@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
+import type { WebTriggerResponse } from '@forge/api';
 
 export interface Atlassian {
   HOSTNAME: 'confluence'|'jira'|'bitbucket';
@@ -22,6 +23,12 @@ declare global {
     }
 
     namespace Forge {
+
+      interface ScheduledTriggerHandler {
+        moduleKey: string;
+        remoteKey?: string;
+        process: () => Promise<WebTriggerResponse>;
+      }
 
       interface ScheduledTriggerHandlerParams {
         context: {

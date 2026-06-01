@@ -1,7 +1,7 @@
-import { EntityDTO } from './DTO';
-import { Entity } from './Entity';
-import { Paginated } from './Paginated';
-import { QueryBuilder } from './QueryBuilder';
+import type { EntityDTO } from './DTO';
+import type { Entity } from './Entity';
+import type { Paginated } from './Paginated';
+import type { QueryBuilder } from './QueryBuilder';
 
 export interface BaseService<T extends Entity, X extends EntityDTO<T>> {
   findAll(): Promise<Paginated<T>>;

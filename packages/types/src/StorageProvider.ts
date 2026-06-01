@@ -1,6 +1,6 @@
 
-import { File } from './File';
-import { QueryOptions } from './Repositories';
+import type { File } from './File';
+import type { QueryOptions } from './Repositories';
 
 export interface StorageProvider {
   touch(name: string, options?: QueryOptions): Promise<File>;

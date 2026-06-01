@@ -1,7 +1,7 @@
 
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { CachingService } from './CachingService';
+import type { CachingService } from './CachingService';
 
 export interface RestClient {
   cached(cacheService: CachingService, duration: number): RestClient;

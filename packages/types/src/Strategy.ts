@@ -1,6 +1,6 @@
 
-import * as express from 'express';
-import * as passport from 'passport';
+import type * as express from 'express';
+import type * as passport from 'passport';
 
 export interface Strategy {
   name: string;

@@ -1,9 +1,9 @@
-import { Entity } from './Entity';
-import { EventEmitter } from './Events';
-import { Paginated } from './Paginated';
-import { QueryBuilder } from './QueryBuilder';
-import { StorageProvider } from './StorageProvider';
-import { User } from './User';
+import type { Entity } from './Entity';
+import type { EventEmitter } from './Events';
+import type { Paginated } from './Paginated';
+import type { QueryBuilder } from './QueryBuilder';
+import type { StorageProvider } from './StorageProvider';
+import type { User } from './User';
 
 export interface Repository<T extends Entity> extends EventEmitter {
   close(): Promise<void>;

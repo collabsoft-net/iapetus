@@ -1,5 +1,5 @@
-import { FileMetadata } from '@google-cloud/storage';
-import { Readable, Writable } from 'stream';
+import type { FileMetadata } from '@google-cloud/storage';
+import type { Readable, Writable } from 'stream';
 
 export interface File {
   name: string;

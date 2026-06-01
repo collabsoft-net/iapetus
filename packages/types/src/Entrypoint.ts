@@ -1,6 +1,6 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { Props } from './Props';
+import type { Props } from './Props';
 
 export interface EntryPoint<T extends Props> {
   name: string;

@@ -1,5 +1,5 @@
-import { EncryptedFieldsEntity } from './EncryptedFieldsEntity';
-import { Entity } from './Entity';
+import type { EncryptedFieldsEntity } from './EncryptedFieldsEntity';
+import type { Entity } from './Entity';
 
 export class DTO implements Record<string, unknown> {
 
