@@ -22,16 +22,16 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     super();
   }
 
-  protected abstract toConnectKey(token: Atlassian.FIT): Promise<string|undefined>;
-  protected abstract toCacheService(token: Atlassian.FIT): Promise<CachingService>;
-  protected abstract toForgeInstanceService(token: Atlassian.FIT): Promise<AbstractService<ForgeInstance, ForgeInstanceDTO>>;
-  protected abstract toSession(token: Atlassian.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
+  protected abstract toConnectKey(token: Atlassian.Forge.FIT): Promise<string|undefined>;
+  protected abstract toCacheService(token: Atlassian.Forge.FIT): Promise<CachingService>;
+  protected abstract toForgeInstanceService(token: Atlassian.Forge.FIT): Promise<AbstractService<ForgeInstance, ForgeInstanceDTO>>;
+  protected abstract toSession(token: Atlassian.Forge.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected async process(request: express.Request, token?: string): Promise<T> {
     if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
 
     // Make sure to check if this is even a valid FIT
-    const unverifiedPayload: Atlassian.FIT = decodeJwt(token);
+    const unverifiedPayload: Atlassian.Forge.FIT = decodeJwt(token);
     if (!unverifiedPayload.app?.id) {
       throw new Error('Invalid Bearer token');
     }
@@ -52,7 +52,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
 
     // Verify the token using the Atlassian public key
     const JWKS = createRemoteJWKSet(new URL('https://forge.cdn.prod.atlassian-dev.net/.well-known/jwks.json'));
-    const { payload } = await jwtVerify<Atlassian.FIT>(token, JWKS, {
+    const { payload } = await jwtVerify<Atlassian.Forge.FIT>(token, JWKS, {
       audience: unverifiedPayload.app.id,
       issuer: 'forge/invocation-token',
     });

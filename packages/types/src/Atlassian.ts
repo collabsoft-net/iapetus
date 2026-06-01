@@ -21,48 +21,63 @@ declare global {
       iat: number;
     }
 
-    interface FIT {
-      app: {
-        id: string;
-        version: string;
-        apiBaseUrl: string;
-        appVersion: string;
-        installationId: string;
-        environment: {
-          id: string;
-          type: string;
-        }
-        module: {
-          key: string;
-          type: string;
-        }
-        license?: {
-          isActive?: boolean;
-          billingPeriod?: string;
-          ccpEntitlementId?: string;
-          ccpEntitlementSlug?: string;
-          isEvaluation?: boolean;
-          subscriptionEndDate?: string;
-          supportEntitlementNumber?: string;
-          trialEndDate?: string;
-          type?: string;
+    namespace Forge {
+
+      interface ScheduledTriggerHandlerParams {
+        context: {
+          cloudId: string;
+          moduleKey: string;
+          userAccess: {
+            enabled: boolean;
+          }
         },
-        installation: {
+        contextToken: string;
+      }
+
+      interface FIT {
+        app: {
           id: string;
-          contexts: {
-            name: string;
-            apiBaseUrl: string;
+          version: string;
+          apiBaseUrl: string;
+          appVersion: string;
+          installationId: string;
+          environment: {
+            id: string;
+            type: string;
+          }
+          module: {
+            key: string;
+            type: string;
+          }
+          license?: {
+            isActive?: boolean;
+            billingPeriod?: string;
+            ccpEntitlementId?: string;
+            ccpEntitlementSlug?: string;
+            isEvaluation?: boolean;
+            subscriptionEndDate?: string;
+            supportEntitlementNumber?: string;
+            trialEndDate?: string;
+            type?: string;
+          },
+          installation: {
+            id: string;
+            contexts: {
+              name: string;
+              apiBaseUrl: string;
+            }
           }
         }
+        context?: Record<string, unknown>;
+        principal?: string;
+        aud?: string;
+        iss?: string;
+        iat?: string;
+        nbf?: string;
+        exp?: string;
+        jti?: string;
       }
-      context?: Record<string, unknown>;
-      principal?: string;
-      aud?: string;
-      iss?: string;
-      iat?: string;
-      nbf?: string;
-      exp?: string;
-      jti?: string;
+
     }
 
     namespace Connect {
