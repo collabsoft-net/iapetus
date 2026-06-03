@@ -18,8 +18,6 @@ export class ForgeRemoteTokenService {
         iat: new Date().getTime(),
         exp: expires,
         ...claims || {},
-        appSystemTokenKey: instance.appSystemTokenKey,
-        appUserTokenKey: instance.appUserTokenKey
       };
 
       const result = jwt.encode(payload, hash);

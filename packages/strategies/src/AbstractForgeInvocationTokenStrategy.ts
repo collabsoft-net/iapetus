@@ -143,9 +143,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
 
     // Store the appToken and userToken in cache (encrypted)
     instance.appSystemTokenKey = undefined;
-    instance.appUserTokenKey = undefined;
     const appTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
-    const userTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
     // Get the cache service
     const cacheService = await this.toCacheService(payload);
@@ -155,10 +153,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       if (appSystemToken) {
         await cacheService.set(appTokenCacheKey, appSystemToken, ttl, true);
         instance.appSystemTokenKey = appTokenCacheKey;
-      }
-      if (appUserToken) {
-        await cacheService.set(userTokenCacheKey, appUserToken, ttl, true);
-        instance.appUserTokenKey = appTokenCacheKey;
       }
     }
 
