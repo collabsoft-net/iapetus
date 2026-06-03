@@ -68,6 +68,28 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     // First, we try to find the instance based on the Forge installation ID
     let instance = await service.findByProperty('installationId', payload.app.installationId);
 
+    // If we can't find the instance on installation ID, we need to check the Cloud ID
+    // Upon re-installation of an app, the installation ID might change.
+    // However, this does not mean that the app has not already been installed
+    // To prevent data loss on re-install, we need to make sure that we match on cloud ID
+    if (!instance) {
+
+      const cloudId = isOfType(payload.app, 'context')
+          ? isOfType(payload.app.context, 'cloudId')
+            ? String(payload.app.context.cloudId)
+            : undefined
+          : undefined;
+
+      if (cloudId) {
+        // IMPORTANT: the cloud ID is the ID of the Atlassian instance, and is not app specific
+        // We need to make query for all instances with this cloud ID and then match the product
+        // This is to allow for multi-product installations in the same data store
+        const instancesByCloudId = await service.findAllByProperty('cloudId', cloudId);
+        instance = instancesByCloudId.values.find(item => item.product === product) || null;
+      }
+
+    }
+
     // Check if this is an initial installation or if the instance is migrated from Connect
     // Connect apps migrated to forge receive a lifecycle installation event with the installation ID
     // However, they will not yet have the required Forge specific properties so we should update them
