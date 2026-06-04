@@ -2024,6 +2024,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@collabsoft-net/types@workspace:packages/types"
   dependencies:
+    "@forge/api": "npm:7.2.1"
     "@types/node": "npm:<19.0.0"
     "@types/passport": "npm:1.0.17"
     "@typescript-eslint/eslint-plugin": "npm:8.32.0"
@@ -3220,6 +3221,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@forge/api@npm:7.2.1":
+  version: 7.2.1
+  resolution: "@forge/api@npm:7.2.1"
+  dependencies:
+    "@forge/auth": "npm:0.0.9"
+    "@forge/egress": "npm:2.3.2"
+    "@forge/i18n": "npm:0.0.7"
+    "@forge/manifest": "npm:^12.8.0"
+    "@forge/storage": "npm:2.0.3"
+    headers-utils: "npm:^3.0.2"
+  checksum: ca697576233b426e50ef9aa5892a8aea061345eb5c63db6e362d62b75844ec32e1d3c4499e01df221d409085439c82022356e1781ca53c589c965a98981ee1e1
+  languageName: node
+  linkType: hard
+
 "@forge/api@npm:^6.1.2":
   version: 6.1.2
   resolution: "@forge/api@npm:6.1.2"
@@ -3244,6 +3259,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@forge/auth@npm:0.0.9":
+  version: 0.0.9
+  resolution: "@forge/auth@npm:0.0.9"
+  dependencies:
+    tslib: "npm:^2.6.2"
+  checksum: da4bd591c73d5e4c5aade0bd646d16296e6a6e4527f373abf2bd614a87eb436d3164c10f21ed7af44afe915d58cfd2af2c0323706fca28fef03be757172a1cb7
+  languageName: node
+  linkType: hard
+
 "@forge/bridge@npm:4.4.1":
   version: 4.4.1
   resolution: "@forge/bridge@npm:4.4.1"
@@ -3261,6 +3285,13 @@ __metadata:
   dependencies:
     minimatch: "npm:^9.0.5"
   checksum: 4ec8aadb06f80f4b4d1a93ea71583c0ae3b03930af207db17ecfe5f8f30f6a5a7e03b48bf0315d9c776c8a3ae5d2fa92892ac9af0e5bb9899e36a0a89e1982f7
+  languageName: node
+  linkType: hard
+
+"@forge/egress@npm:2.3.2":
+  version: 2.3.2
+  resolution: "@forge/egress@npm:2.3.2"
+  checksum: 35430e97585cda425bda19906dac0fec3df3e7afd8094e305fe00dc16888fa38083f5dbd325c0a47c02126fd1ac7c1405ef361939ef576c48debdf20769c9349
   languageName: node
   linkType: hard
 
@@ -3308,10 +3339,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@forge/manifest@npm:^12.8.0":
+  version: 12.8.0
+  resolution: "@forge/manifest@npm:12.8.0"
+  dependencies:
+    "@forge/i18n": "npm:0.0.7"
+    "@sentry/node": "npm:7.106.0"
+    ajv: "npm:^8.18.0"
+    ajv-formats: "npm:2.1.1"
+    cheerio: "npm:^1.1.0"
+    glob: "npm:^13.0.0"
+    lodash: "npm:^4.17.21"
+    mime-types: "npm:^2.1.35"
+    yaml: "npm:^2.3.4"
+  checksum: be11167a4f1aafcfe0821a1506e907570105bfe564293310f91544160839bb2d862bebaf70a8f4bf5162c7c6a793cf055bc7f16d01765d5fba8bcdccb2d8cd3e
+  languageName: node
+  linkType: hard
+
 "@forge/storage@npm:2.0.2":
   version: 2.0.2
   resolution: "@forge/storage@npm:2.0.2"
   checksum: 752a1ef065416df2aeea5c15de83c5b8cb854e8bfa0b1ec0a53c1aac1e35897ecae1f77bf41226dd7ddc7326c2ef743402c75c7399e5ab80b7e4243d324bc7e8
+  languageName: node
+  linkType: hard
+
+"@forge/storage@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@forge/storage@npm:2.0.3"
+  checksum: a202a0473031480a0506092824acf18511bfe25426c6c8b54ce0993ce04213e267ed253ec78c3bb850ebea9f87bd4a43f7d9606b1b00cece48beb2bb8fc411d2
   languageName: node
   linkType: hard
 
@@ -7583,6 +7638,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ajv@npm:^8.18.0":
+  version: 8.20.0
+  resolution: "ajv@npm:8.20.0"
+  dependencies:
+    fast-deep-equal: "npm:^3.1.3"
+    fast-uri: "npm:^3.0.1"
+    json-schema-traverse: "npm:^1.0.0"
+    require-from-string: "npm:^2.0.2"
+  checksum: 5ce59c0537f4c2aca9a758b412659ec70acb4d5dde971c10ecf21d2e3d799f99acdb4a08e1f5fb2e067c8542930398aae793bb996bb07d3feb81dae22fe2ada9
+  languageName: node
+  linkType: hard
+
 "ansi-colors@npm:^4.1.1":
   version: 4.1.3
   resolution: "ansi-colors@npm:4.1.3"
@@ -7881,6 +7948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"balanced-match@npm:^4.0.2":
+  version: 4.0.4
+  resolution: "balanced-match@npm:4.0.4"
+  checksum: fb07bb66a0959c2843fc055838047e2a95ccebb837c519614afb067ebfdf2fa967ca8d712c35ced07f2cd26fc6f07964230b094891315ad74f11eba3d53178a0
+  languageName: node
+  linkType: hard
+
 "bare-events@npm:^2.2.0, bare-events@npm:^2.5.4":
   version: 2.5.4
   resolution: "bare-events@npm:2.5.4"
@@ -8096,6 +8170,15 @@ __metadata:
   dependencies:
     balanced-match: "npm:^1.0.0"
   checksum: a61e7cd2e8a8505e9f0036b3b6108ba5e926b4b55089eeb5550cd04a471fe216c96d4fe7e4c7f995c728c554ae20ddfc4244cad10aef255e72b62930afd233d1
+  languageName: node
+  linkType: hard
+
+"brace-expansion@npm:^5.0.5":
+  version: 5.0.6
+  resolution: "brace-expansion@npm:5.0.6"
+  dependencies:
+    balanced-match: "npm:^4.0.2"
+  checksum: a7acf120fefa79e9d7c9c92898114f57c07596a3920197f3c5917e6a628b04220a5f7f9618c30bdd973a6576a32113b99f9c3f1c8245ccc399dd2a9a718d81d8
   languageName: node
   linkType: hard
 
@@ -11266,6 +11349,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:^13.0.0":
+  version: 13.0.6
+  resolution: "glob@npm:13.0.6"
+  dependencies:
+    minimatch: "npm:^10.2.2"
+    minipass: "npm:^7.1.3"
+    path-scurry: "npm:^2.0.2"
+  checksum: 201ad69e5f0aa74e1d8c00a481581f8b8c804b6a4fbfabeeb8541f5d756932800331daeba99b58fb9e4cd67e12ba5a7eba5b82fb476691588418060b84353214
+  languageName: node
+  linkType: hard
+
 "glob@npm:^7.1.3, glob@npm:^7.1.4":
   version: 7.1.7
   resolution: "glob@npm:7.1.7"
@@ -13286,6 +13380,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^11.0.0":
+  version: 11.5.1
+  resolution: "lru-cache@npm:11.5.1"
+  checksum: 02c4f73967d91fb101f4accf8ebac9e0541e08e16d987bdb9e9737f13e5f2c4bc33c593b98ec30e4486bf899bc97edb36fbd133684b36087336559e41edafdea
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^6.0.0":
   version: 6.0.0
   resolution: "lru-cache@npm:6.0.0"
@@ -13675,6 +13776,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^10.2.2":
+  version: 10.2.5
+  resolution: "minimatch@npm:10.2.5"
+  dependencies:
+    brace-expansion: "npm:^5.0.5"
+  checksum: 19e87a931aff60ee7b9d80f39f817b8bfc54f61f8356ee3549fbf636dbccacacfec8d803eac73293955c4527cd085247dfc064bce4a5e349f8f3b85e2bf5da0f
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4":
   version: 3.0.4
   resolution: "minimatch@npm:3.0.4"
@@ -13887,6 +13997,13 @@ __metadata:
   version: 7.1.2
   resolution: "minipass@npm:7.1.2"
   checksum: c25f0ee8196d8e6036661104bacd743785b2599a21de5c516b32b3fa2b83113ac89a2358465bc04956baab37ffb956ae43be679b2262bf7be15fce467ccd7950
+  languageName: node
+  linkType: hard
+
+"minipass@npm:^7.1.3":
+  version: 7.1.3
+  resolution: "minipass@npm:7.1.3"
+  checksum: 175e4d5e20980c3cd316ae82d2c031c42f6c746467d8b1905b51060a0ba4461441a0c25bb67c025fd9617f9a3873e152c7b543c6b5ac83a1846be8ade80dffd6
   languageName: node
   linkType: hard
 
@@ -15125,6 +15242,16 @@ __metadata:
     lru-cache: "npm:^10.2.0"
     minipass: "npm:^5.0.0 || ^6.0.2 || ^7.0.0"
   checksum: 5e8845c159261adda6f09814d7725683257fcc85a18f329880ab4d7cc1d12830967eae5d5894e453f341710d5484b8fdbbd4d75181b4d6e1eb2f4dc7aeadc434
+  languageName: node
+  linkType: hard
+
+"path-scurry@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "path-scurry@npm:2.0.2"
+  dependencies:
+    lru-cache: "npm:^11.0.0"
+    minipass: "npm:^7.1.2"
+  checksum: 2b4257422bcb870a4c2d205b3acdbb213a72f5e2250f61c80f79c9d014d010f82bdf8584441612c8e1fa4eb098678f5704a66fa8377d72646bad4be38e57a2c3
   languageName: node
   linkType: hard
 
