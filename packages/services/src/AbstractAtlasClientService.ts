@@ -36,9 +36,11 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
     throw new Error('The provided REST client implementation does not support impersonation');
   }
 
-  async getConnectClientKey(key: string): Promise<string|null> {
+  async getConnectClientKey(addonKey: string): Promise<string|null> {
     if (this.mode === Modes.FORGE) {
-      const { data } = await this.client.get<{ key: string, value: string; }>(`/rest/atlassian-connect/1/addons/${key}/properties/connect_client_key_019cdff3-8bfb-71fe-9628-875b700aebb8`).catch(() => ({ data: null }));
+      // This is a reserved key, see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
+      const propertyKey = 'connect_client_key_019cdff3-8bfb-71fe-9628-875b700aebb8';
+      const { data } = await this.client.get<Atlassian.Connect.EntityProperty<string>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
       return data?.value || null;
     } else {
       return null;
