@@ -171,8 +171,11 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     const cacheService = await this.toCacheService(payload);
 
     if (cacheService) {
-      const ttl = 15 * 60;
       if (appSystemToken) {
+        // The token usually expires after 4 hours
+        // We are setting the TTL to 2 hours, just to be safe
+        // For offline usage, make sure to implement an hourly scheduled task to update the token
+        const ttl = 2 * 60 * 60
         await cacheService.set(appTokenCacheKey, appSystemToken, ttl, true);
         instance.appSystemTokenKey = appTokenCacheKey;
       }
