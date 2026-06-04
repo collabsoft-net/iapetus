@@ -50,7 +50,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
 
   protected async process(_request: express.Request, token?: ForgeRemoteToken): Promise<T> {
     if (!token) throw new Error('Invalid JWT token');
-    const { iss, exp, sub, appSystemTokenKey } = token;
+    const { iss, exp, sub } = token;
     if (isNullOrEmpty(iss)) throw new Error('Invalid JWT token');
     if (isNullOrEmpty(exp) || (exp < new Date().getTime())) throw new Error('Session expired');
     if (isNullOrEmpty(sub)) throw new Error('Anonymous access is not allowed');
@@ -59,7 +59,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
     const instance = await service.findById(iss);
     if (instance) {
       const cacheService = await this.toCacheService(token);
-      const appSystemToken = appSystemTokenKey && await cacheService.get<string>(appSystemTokenKey) || undefined;
+      const appSystemToken = instance.appSystemTokenKey && await cacheService.get<string>(instance.appSystemTokenKey) || undefined;
       return this.toSession(token, instance, appSystemToken);
     } else {
       throw new Error('Customer instance not found');
