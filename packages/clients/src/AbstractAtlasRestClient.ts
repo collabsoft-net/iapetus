@@ -21,11 +21,29 @@ export abstract class AbstractAtlasRestClient<
   constructor(instance: ConnectInstance, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
   constructor(instance: ForgeInstance, appSystemToken?: string, config?: AxiosRequestConfig, cacheService?: CachingService, cacheDuration?: number);
   constructor(protected instance: ConnectInstance|ForgeInstance, appSystemTokenOrConfig?: string|AxiosRequestConfig, configOrCacheService?: AxiosRequestConfig|CachingService, cacheServiceOrCacheDuration?: CachingService|number, cacheDuration?: number) {
-    super(isOfType<ForgeInstance>(
-      instance, 'apiBaseUrl') ? instance.apiBaseUrl : instance.baseUrl,
-      typeof appSystemTokenOrConfig !== 'string' ? appSystemTokenOrConfig : !isOfType<CachingService>(configOrCacheService, 'toCacheKey') ? configOrCacheService : {},
-      isOfType<CachingService>(configOrCacheService, 'toCacheKey') ? configOrCacheService : typeof cacheServiceOrCacheDuration !== 'number' ? cacheServiceOrCacheDuration : undefined,
-      typeof cacheServiceOrCacheDuration === 'number' ? cacheServiceOrCacheDuration : cacheDuration
+    super(
+      // protected baseURL: string
+      isOfType<ForgeInstance>(instance, 'apiBaseUrl')
+        ? instance.product === 'confluence'
+          ? `${instance.apiBaseUrl}/wiki`
+          : instance.apiBaseUrl
+        : instance.baseUrl,
+      // protected config: AxiosRequestConfig = {}
+      typeof appSystemTokenOrConfig !== 'string'
+        ? appSystemTokenOrConfig
+        : !isOfType<CachingService>(configOrCacheService, 'toCacheKey')
+          ? configOrCacheService
+          : {},
+      // protected cacheService?: CachingService
+      isOfType<CachingService>(configOrCacheService, 'toCacheKey')
+        ? configOrCacheService
+        : typeof cacheServiceOrCacheDuration !== 'number'
+          ? cacheServiceOrCacheDuration
+          : undefined,
+      // cacheDuration?: number
+      typeof cacheServiceOrCacheDuration === 'number'
+        ? cacheServiceOrCacheDuration
+        : cacheDuration
     );
 
     this.appSystemToken = typeof appSystemTokenOrConfig === 'string' ? appSystemTokenOrConfig : undefined;
