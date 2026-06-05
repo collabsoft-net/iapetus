@@ -454,7 +454,7 @@ export class JiraClientService<Mode extends Modes> extends AbstractAtlasClientSe
 
   async getAppProperty<T>(addonKey: string, propertyKey: string): Promise<Atlassian.Connect.EntityProperty<T>|null> {
     try {
-      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
+      const { data, status } = await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.CONNECT_APP_PROPERTY_BY_KEY, { addonKey, propertyKey }));
       return status === StatusCodes.OK ? data : null;
     } catch (_ignored) {
       return null;

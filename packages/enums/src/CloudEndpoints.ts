@@ -12,7 +12,8 @@ export enum JiraCloudEndpoints {
   PERMISSIONS_CHECK = '/rest/api/3/permissions/check',
 
   APP = '/rest/atlassian-connect/1/addons/:appKey',
-  APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
+  CONNECT_APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
+  FORGE_APP_PROPERTY_BY_KEY = '/rest/forge/1/app/properties/:propertyKey',
 
   USER_PROPERTY_BY_KEY = '/rest/api/3/user/properties/:propertyKey',
   PROJECT_PROPERTY_BY_KEY = '/rest/api/3/project/:projectIdOrKey/properties/:propertyKey',
@@ -113,7 +114,8 @@ export enum ConfluenceCloudEndpoints {
 
   CONTENTBODY_CONVERT_ASYNC = '/rest/api/contentbody/convert/async/:idOrTo',
 
-  APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
+  CONNECT_APP_PROPERTY_BY_KEY = '/rest/atlassian-connect/1/addons/:addonKey/properties/:propertyKey',
+  FORGE_APP_PROPERTY_BY_KEY = '/api/v2/app/properties/:propertyKey',
   USER_PROPERTY_BY_KEY = '/rest/api/user/:userId/property/:propertyKey',
   SPACE_PROPERTY_BY_KEY = '/rest/api/space/:spaceIdOrKey/property/:propertyKey',
   CONTENT_PROPERTY_BY_KEY = '/rest/api/content/:contentId/property/:propertyKey',

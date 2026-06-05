@@ -40,7 +40,7 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
     if (this.mode === Modes.FORGE) {
       // This is a reserved key, see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
       const propertyKey = 'connect_client_key_019cdff3-8bfb-71fe-9628-875b700aebb8';
-      const { data } = await this.client.get<Atlassian.Connect.EntityProperty<string>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
+      const { data } = await this.client.get<Atlassian.Connect.EntityProperty<string>>(this.getEndpointFor(this.endpoints.CONNECT_APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
       return data?.value || null;
     } else {
       return null;
@@ -78,8 +78,8 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
     try {
       if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
         const { data, status } = this.mode === Modes.CONNECT
-          ? await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
-          : await this.client.get<T>(`/wiki/api/v2/app/properties/${propertyKey}`);
+          ? await this.client.get<Atlassian.Connect.EntityProperty<T>>(this.getEndpointFor(this.endpoints.CONNECT_APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
+          : await this.client.get<T>(this.getEndpointFor(this.endpoints.FORGE_APP_PROPERTY_BY_KEY, { propertyKey}));
         const result = isOfType<Atlassian.Connect.EntityProperty<T>>(data, 'key') ? data : { key: propertyKey, value: data };
         return status === StatusCodes.OK ? result : null;
       }
@@ -127,8 +127,8 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
       const config = { headers: { 'Content-Type': 'application/json' } };
 
       const { status, statusText } = this.mode === Modes.CONNECT
-        ? await this.client.put(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value, undefined, config)
-        : await this.client.put(`/wiki/api/v2/app/properties/${property.key}`, property.value, undefined, config);
+        ? await this.client.put(this.getEndpointFor(this.endpoints.CONNECT_APP_PROPERTY_BY_KEY, { addonKey, propertyKey: property.key }), property.value, undefined, config)
+        : await this.client.put(this.getEndpointFor(this.endpoints.FORGE_APP_PROPERTY_BY_KEY, { propertyKey: property.key }), property.value, undefined, config);
 
       if (status !== StatusCodes.OK && status !== StatusCodes.CREATED) {
         throw new Error(statusText);
@@ -153,8 +153,8 @@ export abstract class AbstractAtlasClientService<Mode extends Modes> {
   async deleteAppProperty(addonKey: string, propertyKey: string): Promise<void> {
     if (this.mode === Modes.CONNECT || this.mode === Modes.FORGE) {
       const { status, statusText } = this.mode === Modes.CONNECT
-        ? await this.client.delete(this.getEndpointFor(this.endpoints.APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
-        : await this.client.delete(`/wiki/api/v2/app/properties/${propertyKey}`);
+        ? await this.client.delete(this.getEndpointFor(this.endpoints.CONNECT_APP_PROPERTY_BY_KEY, { addonKey, propertyKey }))
+        : await this.client.delete(this.getEndpointFor(this.endpoints.FORGE_APP_PROPERTY_BY_KEY, { propertyKey }));
 
       if (status !== StatusCodes.NO_CONTENT) {
         throw new Error(statusText);
