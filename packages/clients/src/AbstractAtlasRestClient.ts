@@ -24,7 +24,7 @@ export abstract class AbstractAtlasRestClient<
     super(
       // protected baseURL: string
       isOfType<ForgeInstance>(instance, 'apiBaseUrl')
-        ? instance.product === 'confluence'
+        ? (instance.product === 'confluence' || instance.productType === 'confluence')
           ? `${instance.apiBaseUrl}/wiki`
           : instance.apiBaseUrl
         : instance.baseUrl,
