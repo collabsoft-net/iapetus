@@ -115,11 +115,11 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       if (!instance && appSystemToken && connectKey) {
 
         const clientService = product === Applications.JIRA
-          ? new JiraClientService(new JiraRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+          ? new JiraClientService(new JiraRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'jira' } as ForgeInstance, appSystemToken), Modes.FORGE)
           : product === Applications.CONFLUENCE
-            ? new ConfluenceClientService(new ConfluenceRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+            ? new ConfluenceClientService(new ConfluenceRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'confluence' } as ForgeInstance, appSystemToken), Modes.FORGE)
             : product === Applications.BITBUCKET
-              ? new BitbucketClientService(new BitbucketRestClient({ apiBaseUrl: payload.app.apiBaseUrl } as ForgeInstance, appSystemToken), Modes.FORGE)
+              ? new BitbucketClientService(new BitbucketRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'bitbucket' } as ForgeInstance, appSystemToken), Modes.FORGE)
               : undefined;
 
         const clientKey = clientService && await clientService.getConnectClientKey(connectKey);
