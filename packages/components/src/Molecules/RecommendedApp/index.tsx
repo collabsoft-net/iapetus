@@ -1,8 +1,6 @@
-import Avatar from '@atlaskit/avatar';
-import styled from '@emotion/styled';
 import React from 'react';
 
-import { Column, Grid } from '../../Atoms/Grid';
+import { IconWithLabel } from '../IconWithLabel';
 import { Link } from '../Link';
 
 interface RecommendedAppProps {
@@ -11,17 +9,10 @@ interface RecommendedAppProps {
   url: string;
 }
 
-const ImageWrapper = styled(Column)`font-size: 0;`;
-
 export const RecommendedApp = ({ logo, name, url }: RecommendedAppProps): JSX.Element => {
   return (
-    <Grid fluid vertical>
-      <ImageWrapper margin='0 8px 0 0'>
-        <Avatar size='medium' appearance='square' src={ logo } />
-      </ImageWrapper>
-      <Column stretched align='center'>
-        <Link type="external" href={url}>{ name }</Link>
-      </Column>
-    </Grid>
+    <IconWithLabel src={ logo } size='medium' margin='0 8px 0 0' appearance='square' align='center'>
+      <Link type="external" href={url} target='_blank'>{ name }</Link>
+    </IconWithLabel>
   );
 }
