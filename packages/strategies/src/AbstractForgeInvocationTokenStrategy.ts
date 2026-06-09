@@ -42,7 +42,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     }
 
     // Extract the host product from the FIT
-    const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\/(.*)\//.exec(unverifiedPayload.app.apiBaseUrl);
+    const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\/(.*)/.exec(unverifiedPayload.app.apiBaseUrl);
     const product: 'jira'|'confluence'|undefined = baseUrlProductMatch ? baseUrlProductMatch[1] as 'jira'|'confluence' : undefined;
     if (!product || (product !== 'jira' && product !== 'confluence')) throw new Error('Unable to determine host product, which is required for exchanging tokens');
 
