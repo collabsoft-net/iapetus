@@ -42,7 +42,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     }
 
     // Extract the host product from the FIT
-    const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\//.exec(unverifiedPayload.app.apiBaseUrl);
+    const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\/(.*)\//.exec(unverifiedPayload.app.apiBaseUrl);
     const product: 'jira'|'confluence'|undefined = baseUrlProductMatch ? baseUrlProductMatch[1] as 'jira'|'confluence' : undefined;
     if (!product || (product !== 'jira' && product !== 'confluence')) throw new Error('Unable to determine host product, which is required for exchanging tokens');
 
@@ -56,6 +56,16 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       audience: unverifiedPayload.app.id,
       issuer: 'forge/invocation-token',
     });
+
+    // Try to find the Cloud ID
+    const cloudId =
+      (isOfType(payload, 'context') && isOfType(payload.context, 'cloudId'))
+        ? String(payload.context.cloudId)
+        : (isOfType(payload.app, 'context') && isOfType(payload.app.context, 'cloudId'))
+          ? String(payload.app.context.cloudId)
+          : baseUrlProductMatch && !isNullOrEmpty(baseUrlProductMatch[2])
+            ? String(baseUrlProductMatch[2])
+            : undefined;
 
     // Get the Forge OAuth tokens from the headers
     const appSystemToken = request.header('x-forge-oauth-system');
@@ -74,12 +84,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     // To prevent data loss on re-install, we need to make sure that we match on cloud ID
     if (!instance) {
 
-      const cloudId = isOfType(payload.app, 'context')
-          ? isOfType(payload.app.context, 'cloudId')
-            ? String(payload.app.context.cloudId)
-            : undefined
-          : undefined;
-
       if (cloudId) {
         // IMPORTANT: the cloud ID is the ID of the Atlassian instance, and is not app specific
         // We need to make query for all instances with this cloud ID and then match the product
@@ -95,16 +99,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     // However, they will not yet have the required Forge specific properties so we should update them
     // We use the 'isForge' property to determine if an instance has been migrated succesfully
     if (!instance || !instance.isForge) {
-
-      // Preserve the Cloud ID for migration purposes
-      // The cloud ID seems to be shared between environments, so this cannot be used to locate the instance
-      const cloudId = isOfType(instance, 'cloudId')
-        ? instance.cloudId
-        : isOfType(payload.app, 'context')
-          ? isOfType(payload.app.context, 'cloudId')
-            ? String(payload.app.context.cloudId)
-            : undefined
-          : undefined;
 
       // We use Connect lifecycle events to match the clientKey with the installation ID
       // If for some reason the Connect lifecycle event did not fire yet (i.e. because of a delay)
@@ -156,7 +150,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
         salt: randomBytes(32).toString('hex'),
         oauthClientId: uniqid(),
         installationId: payload.app.installation.id,
-        cloudId: isOfType(payload.app, 'context') && isOfType(payload.app.context, 'cloudId') && String(payload.app.context.cloudId) || undefined,
+        cloudId,
         apiBaseUrl: payload.app.apiBaseUrl,
         product,
         isForge: true
