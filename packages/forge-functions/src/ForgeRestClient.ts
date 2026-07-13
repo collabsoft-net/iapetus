@@ -125,7 +125,10 @@ export class ForgeRestClient implements RestClient {
     if (this.cacheService) {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
-        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
+        const result = await this.cacheService.get(cacheKey, {
+          loader: fetchFromRemote, 
+          expiresInSeconds: cacheDuration || this.duration
+        });
         return result || await fetchFromRemote();
       } catch (err) {
         return fetchFromRemote();

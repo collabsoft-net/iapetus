@@ -77,7 +77,10 @@ export class APRestClient implements RestClient {
   protected async request<T>(type: string, url: string, data: unknown, params?: Record<string, string>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
     if (this.cacheService) {
       const cacheKey = this.cacheService.toCacheKey(type, url, JSON.stringify(data), JSON.stringify(params));
-      const result = await this.cacheService.get(cacheKey, () => this.fetchFromRemote<T>(type, url, data, params, config), cacheDuration || this.#duration);
+      const result = await this.cacheService.get(cacheKey, {
+        loader: () => this.fetchFromRemote<T>(type, url, data, params, config),
+        expiresInSeconds: cacheDuration || this.#duration
+      });
       return result || this.fetchFromRemote<T>(type, url, data, params, config);
     } else {
       return this.fetchFromRemote<T>(type, url, data, params, config);

@@ -90,7 +90,12 @@ export abstract class AbstractAtlasRestClient<
     if (this.cacheService) {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(options));
-        const result = await this.cacheService.get(cacheKey, fetchFromRemote, cacheDuration || this.duration);
+
+        const result = await this.cacheService.get(cacheKey, {
+          loader: fetchFromRemote,
+          expiresInSeconds: cacheDuration || this.duration
+        });
+
         return result || fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); });
       } catch (_ignored) {
         return fetchFromRemote().catch(error => { throw ClientError.fromError<TResponseError>(error); })
