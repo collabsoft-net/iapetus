@@ -142,7 +142,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     // At this point we can assume that this is a valid request from a customer
     // We can also assume that this is not a migration from Connect to Forge
     // If we can't find an instance, this means that there is a race condition
-    // The customer is making requests before lifecycle events hvae been proceessed
+    // The customer is making requests before lifecycle events have been proceessed
     if (!instance) {
       instance = {
         id: uniqid(),
@@ -157,20 +157,31 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       }
     }
 
-    // Store the appToken and userToken in cache (encrypted)
+    // Reset the app system token cache key as it is either going to be replaced or no longer valid
     instance.appSystemTokenKey = undefined;
-    const appTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
     // Get the cache service
     const cacheService = await this.toCacheService(payload);
-
     if (cacheService) {
+
+      // Check if we have something to cache
       if (appSystemToken) {
+        // Generate a unique cache key for this token
+        const appTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
+
         // The token usually expires after 4 hours
         // We are setting the TTL to 2 hours, just to be safe
         // For offline usage, make sure to implement an hourly scheduled task to update the token
-        const ttl = 2 * 60 * 60
-        await cacheService.set(appTokenCacheKey, appSystemToken, ttl, true);
+        const ttl = 2 * 60 * 60;
+
+        // Store the appToken in cache (encrypted)
+        await cacheService.set(appTokenCacheKey, appSystemToken, {
+          expiresInSeconds: ttl,
+          expirationPolicy: 'expireAfterWrite',
+          encrypt: true
+        });
+
+        // Update the instance to have the correct cache key
         instance.appSystemTokenKey = appTokenCacheKey;
       }
     }
