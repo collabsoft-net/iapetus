@@ -157,8 +157,10 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       }
     }
 
-    // Reset the app system token cache key as it is either going to be replaced or no longer valid
-    instance.appSystemTokenKey = undefined;
+    // We need to specify the cache key for the app token
+    // We are re-using the key to avoid race conditions, as this code is executed in a multi-user, multi-threaded environment
+    // For security reasons, it is recommended to recycle the cache key in an hourly scheduled task to update the token
+    instance.appSystemTokenKey = instance.appSystemTokenKey || scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
     // Get the cache service
     const cacheService = await this.toCacheService(payload);
@@ -166,8 +168,6 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
 
       // Check if we have something to cache
       if (appSystemToken) {
-        // Generate a unique cache key for this token
-        const appTokenCacheKey = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
         // The token usually expires after 4 hours
         // We are setting the TTL to 2 hours, just to be safe
@@ -175,14 +175,12 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
         const ttl = 2 * 60 * 60;
 
         // Store the appToken in cache (encrypted)
-        await cacheService.set(appTokenCacheKey, appSystemToken, {
+        await cacheService.set(instance.appSystemTokenKey, appSystemToken, {
           expiresInSeconds: ttl,
           expirationPolicy: 'expireAfterWrite',
           encrypt: true
         });
 
-        // Update the instance to have the correct cache key
-        instance.appSystemTokenKey = appTokenCacheKey;
       }
     }
 
