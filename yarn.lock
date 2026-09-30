@@ -1752,7 +1752,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:6.19.1"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
-    typescript: "npm:5.3.3"
+    typescript: "npm:5.8.3"
   peerDependencies:
     "@forge/api": 4.4.1
   languageName: unknown
@@ -1772,7 +1772,7 @@ __metadata:
     axios: "npm:1.13.2"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
-    typescript: "npm:5.3.3"
+    typescript: "npm:5.8.3"
   peerDependencies:
     "@collabsoft-net/dto": "*"
     "@collabsoft-net/enums": "*"
@@ -1946,7 +1946,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:6.19.1"
     eslint: "npm:8.56.0"
     nodemon: "npm:3.0.3"
-    typescript: "npm:5.3.3"
+    typescript: "npm:5.8.3"
     uniqid: "npm:5.4.0"
   peerDependencies:
     "@collabsoft-net/connect": "*"
@@ -18538,16 +18538,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.3.3, typescript@npm:>=3 < 6":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 6e4e6a14a50c222b3d14d4ea2f729e79f972fa536ac1522b91202a9a65af3605c2928c4a790a4a50aa13694d461c479ba92cedaeb1e7b190aadaa4e4b96b8e18
-  languageName: node
-  linkType: hard
-
 "typescript@npm:5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
@@ -18558,13 +18548,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A>=3 < 6#optional!builtin<compat/typescript>":
+"typescript@npm:>=3 < 6":
   version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+  resolution: "typescript@npm:5.3.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c93786fcc9a70718ba1e3819bab56064ead5817004d1b8186f8ca66165f3a2d0100fee91fa64c840dcd45f994ca5d615d8e1f566d39a7470fc1e014dbb4cf15d
+  checksum: 6e4e6a14a50c222b3d14d4ea2f729e79f972fa536ac1522b91202a9a65af3605c2928c4a790a4a50aa13694d461c479ba92cedaeb1e7b190aadaa4e4b96b8e18
   languageName: node
   linkType: hard
 
@@ -18575,6 +18565,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 98470634034ec37fd9ea61cc82dcf9a27950d0117a4646146b767d085a2ec14b137aae9642a83d1c62732d7fdcdac19bb6288b0bb468a72f7a06ae4e1d2c72c9
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A>=3 < 6#optional!builtin<compat/typescript>":
+  version: 5.3.3
+  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: c93786fcc9a70718ba1e3819bab56064ead5817004d1b8186f8ca66165f3a2d0100fee91fa64c840dcd45f994ca5d615d8e1f566d39a7470fc1e014dbb4cf15d
   languageName: node
   linkType: hard
 

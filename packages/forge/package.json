@@ -43,7 +43,7 @@
     "axios": "1.13.2",
     "eslint": "8.56.0",
     "nodemon": "3.0.3",
-    "typescript": "5.3.3"
+    "typescript": "5.8.3"
   },
   "peerDependencies": {
     "@collabsoft-net/dto": "*",

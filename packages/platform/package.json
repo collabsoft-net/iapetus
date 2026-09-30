@@ -47,7 +47,7 @@
     "@typescript-eslint/parser": "6.19.1",
     "eslint": "8.56.0",
     "nodemon": "3.0.3",
-    "typescript": "5.3.3",
+    "typescript": "5.8.3",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
