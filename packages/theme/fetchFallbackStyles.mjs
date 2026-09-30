@@ -3,7 +3,7 @@ import { join } from 'path';
 import { cwd } from 'process';
 
 const baseDir = join(cwd(), 'src/styles');
-const styles = [ 'light', 'dark', 'spacing', 'typography', 'typography-refreshed' ];
+const styles = [ 'light', 'dark', 'spacing', 'typography' ];
 
 const saveToFile = (name, content) => {
   writeFileSync(join(cwd(), 'src/styles', `${name}.ts`), `

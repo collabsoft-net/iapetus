@@ -1,4 +1,4 @@
-import { ActiveThemeState } from '@atlaskit/tokens';
+import type { ActiveThemeState } from '@atlaskit/tokens/dist/types/theme-config';
 
 import { Events } from './Events';
 import { eventListeners } from './Listeners';

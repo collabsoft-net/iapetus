@@ -1,4 +1,4 @@
-import { setGlobalTheme } from '@atlaskit/tokens';
+import { setGlobalTheme } from '@atlaskit/tokens/dist/es2019/set-global-theme';
 
 import { ensureDataTheme } from './ensureDataTheme';
 import { isThemeAvailable } from './isThemeAvailable';
