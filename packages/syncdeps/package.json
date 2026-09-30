@@ -1,0 +1,55 @@
+{
+  "name": "@collabsoft-net/syncdeps",
+  "version": "1.1.2-alpha.323",
+  "description": "Synchronise dependencies in Yarn workspace projects",
+  "author": "CollabSoft <info@collabsoft.net>",
+  "homepage": "https://github.com/collabsoft-net/iapetus#readme",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "type": "module",
+  "module": "./dist/es2020/index.js",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/types/index.d.ts",
+  "bin": "./lib/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collabsoft-net/iapetus.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "clean": "rm -rf dist && rm -rf lib",
+    "lint": "yarn run eslint",
+    "build": "yarn clean && yarn lint && yarn build:cjs && yarn build:es2020 && yarn build:exec && yarn build:types",
+    "build:cjs": "yarn run tsc --module commonjs --outDir dist/cjs",
+    "build:es2020": "yarn run tsc --module es2020 --outDir dist/es2020",
+    "build:types": "yarn run tsc --emitDeclarationOnly --outDir dist/types",
+    "build:exec": "yarn run build:es2020 && yarn run rollup -c rollup.config.js",
+    "start": "yarn run nodemon --watch src -e '.ts' --exec 'yarn build'",
+    "prepack": "yarn build",
+    "preinstall": "echo Installing dependencies for @collabsoft-net/strategies"
+  },
+  "bugs": {
+    "url": "https://github.com/collabsoft-net/iapetus/issues"
+  },
+  "gitHead": "90588ca94d4036648c49a76557e532e385259578",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "29.0.3",
+    "@rollup/plugin-json": "6.1.0",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@types/node": "18.0.0",
+    "@types/semver": "^7",
+    "eslint": "9.26.0",
+    "nodemon": "3.1.14",
+    "rollup": "4.63.1",
+    "rollup-plugin-executable": "1.6.3",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "semver": "7.8.5"
+  }
+}
