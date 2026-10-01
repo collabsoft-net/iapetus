@@ -12,6 +12,7 @@ export * from './Events';
 export * from './User';
 export * from './File';
 export * from './ForgeRemoteToken';
+export * from './ForgeUserSession';
 export * from './Paginated';
 export * from './Props';
 export * from './PubSub';

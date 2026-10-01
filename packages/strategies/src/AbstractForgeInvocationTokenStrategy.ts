@@ -6,7 +6,7 @@ import { ForgeInstance } from '@collabsoft-net/entities';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { AbstractService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { CachingService } from '@collabsoft-net/types';
+import { CachingService, ForgeUserSession } from '@collabsoft-net/types';
 import { randomBytes, scryptSync } from 'crypto';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -164,8 +164,8 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
     const cacheService = await this.toCacheService(payload);
     if (cacheService) {
 
-      // Store the short-lived user-session object in cache (encrypted)
-      await cacheService.set(sessionId, {
+      // Create the user-session object
+      const userSession: ForgeUserSession = {
         id: sessionId,
         instanceId: instance.id,
         appId: instance.appId,
@@ -173,7 +173,10 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
         cloudId: instance.cloudId,
         appSystemToken,
         appUserToken
-      }, {
+      }
+
+      // Store the short-lived user-session object in cache (encrypted)
+      await cacheService.set(sessionId, userSession, {
         expiresInSeconds: this.userSessionTTL,
         expirationPolicy: 'expireAfterWrite',
         encrypt: true
