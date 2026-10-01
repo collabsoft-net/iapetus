@@ -26,7 +26,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
         try {
           const token = jwt.decode(rawJwtToken, '', true) as ForgeRemoteToken;
           if (isNullOrEmpty(token.iss)) throw new Error('Invalid JWT token');
-          if (isNullOrEmpty(token.exp) || (token.exp < new Date().getTime())) throw new Error('Session expired');
+          if (isNullOrEmpty(token.exp) || (Date.now() >= (token.exp * 1000))) throw new Error('Session expired');
           if (isNullOrEmpty(token.sub) && !this.allowAnonymousAccess) throw new Error('Anonymous access is not allowed');
 
           const service = await this.toForgeInstanceService(token);
@@ -83,7 +83,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
     if (offlineInstanceAppSystemToken) {
       try {
         const payload = await jwt.decode(offlineInstanceAppSystemToken, '', true) as JWTPayload;
-        if (!isNullOrEmpty(payload.exp) && payload.exp > new Date().getTime()) {
+        if (!isNullOrEmpty(payload.exp) && (Date.now() < (payload.exp * 1000))) {
           result.appSystemToken = offlineInstanceAppSystemToken;
         }
       } catch {
@@ -109,7 +109,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
         if (appSystemToken) {
           try {
             const payload = await jwt.decode(appSystemToken, '', true) as JWTPayload;
-            if (!isNullOrEmpty(payload.exp) && payload.exp > new Date().getTime()) {
+            if (!isNullOrEmpty(payload.exp) && (Date.now() < payload.exp * 1000)) {
               result.appSystemToken = appSystemToken;
             }
           } catch {
@@ -122,7 +122,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
         if (appUserToken) {
           try {
             const payload = await jwt.decode(appUserToken, '', true) as JWTPayload;
-            if (!isNullOrEmpty(payload.exp) && payload.exp > new Date().getTime()) {
+            if (!isNullOrEmpty(payload.exp) && (Date.now() < payload.exp * 1000)) {
               result.appUserToken = appUserToken;
             }
           } catch {
