@@ -38,7 +38,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@atlaskit/tokens": "^20.1.0",
+    "@atlaskit/tokens": "20.1.0",
     "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/inversify": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
@@ -66,7 +66,7 @@
     "typescript": "5.8.3"
   },
   "peerDependencies": {
-    "@atlaskit/tokens": "^4.8.0",
+    "@atlaskit/tokens": "^20.1.0",
     "@collabsoft-net/helpers": "*",
     "@collabsoft-net/inversify": "*",
     "axios": "^1.13.0",

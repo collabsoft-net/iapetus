@@ -33,7 +33,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@atlaskit/tokens": "^20.1.0",
+    "@atlaskit/tokens": "20.1.0",
     "@types/node": "<19.0.0",
     "@typescript-eslint/eslint-plugin": "8.32.0",
     "@typescript-eslint/parser": "8.32.0",
@@ -42,6 +42,6 @@
     "typescript": "5.8.3"
   },
   "peerDependencies": {
-    "@atlaskit/tokens": "5.4.1"
+    "@atlaskit/tokens": "^20.1.0"
   }
 }

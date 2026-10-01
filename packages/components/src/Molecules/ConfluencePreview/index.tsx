@@ -160,7 +160,7 @@ export const ConfluencePreview = ({ showDisplayToolbar, defaultPageSize, childre
                           { pageName ? (
                             <Header weight='h200'>{ pageName }</Header>
                           ) : (
-                            <Skeleton width='100%' height='100%' borderRadius='4px' isShimmering />
+                            <Skeleton width='100%' height='100%' borderRadius={ token('radius.small')} isShimmering />
                           )}
                         </Row>
                         <Row marginTop='8px' height='8px' borderRadius='2px' background={ token('color.skeleton') } />

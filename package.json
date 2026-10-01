@@ -10,7 +10,8 @@
     "reinstall": "yarn clean && yarn && yarn run lerna exec yarn --concurrency 1",
     "start": "yarn run nodemon --watch ./**/src -e '.ts' --exec 'yarn run lerna run build'",
     "prerelease": "yarn run lerna publish prerelease -y",
-    "upgrade-all": "yarn up -E \"@*/*\" && yarn up -E \"*\""
+    "upgrade:all": "yarn up -E \"@*/*\" && yarn up -E \"*\"",
+    "upgrade:atlaskit": "yarn up -E \"@atlaskit/*\""
   },
   "devDependencies": {
     "@types/node": "<19.0.0",

@@ -33,7 +33,7 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@atlaskit/adf-schema": "52.9.3",
+    "@atlaskit/adf-schema": "57.6.19",
     "@collabsoft-net/connect": "workspace:*",
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/enums": "workspace:*",
