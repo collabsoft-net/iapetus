@@ -8,7 +8,10 @@ export class ForgeRemoteTokenService {
 
   static generate(instance: ForgeInstance, sessionId: string, accountId?: string, claims?: Record<string, unknown>) {
     try {
-      const ttl = 15 * 60;
+      // We are storing this for 10 minutes
+      // The long-lived user-session is stored in cache for 15 minutes
+      // See also: ../packages/strategies/src/AbstractForgeInvocationTokenStrategy.ts
+      const ttl = 10 * 60;
       const expires = new Date().getTime() + (ttl * 1000);
       const hash = this.getHash(instance);
 
