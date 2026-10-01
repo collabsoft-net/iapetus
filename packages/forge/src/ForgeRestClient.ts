@@ -155,7 +155,7 @@ export class ForgeRestClient implements RestClient {
     return result;
   }
 
-  private toInternalAxiosRequestConfig(config?: AxiosRequestConfig): InternalAxiosRequestConfig {
+  protected toInternalAxiosRequestConfig(config?: AxiosRequestConfig): InternalAxiosRequestConfig {
     const requestHeaders = {} as Record<string, string>;
     Object.entries(config?.headers || {}).forEach(([key, value]) => requestHeaders[key] = value);
     return {

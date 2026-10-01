@@ -1,6 +1,6 @@
 import { Applications, RestClientEndpoints, RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient as IRestClient } from '@collabsoft-net/types';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource, HttpStatusCode } from 'axios';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
 
 import { ForgeRestClient } from './ForgeRestClient';
@@ -33,6 +33,15 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
   protected async request<T>(method: RestClientMethods, endpoint: string, data?: unknown, params?: Record<string, string|number|boolean>, config?: AxiosRequestConfig, cacheDuration?: number): Promise<AxiosResponse<T>> {
 
     const token = await this.getToken();
+    if (!token) {
+      throw new AxiosError('Unable to acquire user credentials', String(HttpStatusCode.Unauthorized), this.toInternalAxiosRequestConfig(config), null, {
+        status: HttpStatusCode.Unauthorized,
+        data: undefined,
+        statusText: 'Unable to acquire user credentials',
+        headers: config?.headers || {},
+        config: this.toInternalAxiosRequestConfig(config)
+      });
+    }
 
     const configuration: AxiosRequestConfig = {
       ...config,
