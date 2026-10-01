@@ -18,14 +18,14 @@ import { AbstractBearerStrategy } from './AbstractBearerStrategy';
 @injectable()
 export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSession> extends AbstractBearerStrategy<T> {
 
-  constructor(private allowAnonymousAccess = false) {
+  constructor(private allowAnonymousAccess = false, private userSessionTTL = 15 * 60) {
     super();
   }
 
   protected abstract toConnectKey(token: Atlassian.Forge.FIT): Promise<string|undefined>;
   protected abstract toCacheService(token: Atlassian.Forge.FIT): Promise<CachingService>;
   protected abstract toForgeInstanceService(token: Atlassian.Forge.FIT): Promise<AbstractService<ForgeInstance, ForgeInstanceDTO>>;
-  protected abstract toSession(token: Atlassian.Forge.FIT, instance?: ForgeInstance|null, appSystemToken?: string, appUserToken?: string): Promise<T>;
+  protected abstract toSession(token: Atlassian.Forge.FIT, instance: ForgeInstance|null, sessionId: string, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected async process(request: express.Request, token?: string): Promise<T> {
     if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
@@ -157,37 +157,34 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
       }
     }
 
-    // We need to specify the cache key for the app token
-    // We are re-using the key to avoid race conditions, as this code is executed in a multi-user, multi-threaded environment
-    // For security reasons, it is recommended to recycle the cache key in an hourly scheduled task to update the token
-    instance.appSystemTokenKey = instance.appSystemTokenKey || scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
+    // Store the appSystemToken and appUserToken in a short-lived user-session object
+    const sessionId = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
     // Get the cache service
     const cacheService = await this.toCacheService(payload);
     if (cacheService) {
 
-      // Check if we have something to cache
-      if (appSystemToken) {
+      // Store the short-lived user-session object in cache (encrypted)
+      await cacheService.set(sessionId, {
+        id: sessionId,
+        instanceId: instance.id,
+        appId: instance.appId,
+        installationId: instance.installationId,
+        cloudId: instance.cloudId,
+        appSystemToken,
+        appUserToken
+      }, {
+        expiresInSeconds: this.userSessionTTL,
+        expirationPolicy: 'expireAfterWrite',
+        encrypt: true
+      });
 
-        // The token usually expires after 4 hours
-        // We are setting the TTL to 2 hours, just to be safe
-        // For offline usage, make sure to implement an hourly scheduled task to update the token
-        const ttl = 2 * 60 * 60;
-
-        // Store the appToken in cache (encrypted)
-        await cacheService.set(instance.appSystemTokenKey, appSystemToken, {
-          expiresInSeconds: ttl,
-          expirationPolicy: 'expireAfterWrite',
-          encrypt: true
-        });
-
-      }
     }
 
     instance = this.updateLastActive(instance, request);
     instance = await service.save(instance);
 
-    return this.toSession(payload, instance, appSystemToken, appUserToken);
+    return this.toSession(payload, instance, sessionId, appSystemToken, appUserToken);
   }
 
   protected updateLastActive(instance: ForgeInstance, { headers }: express.Request): ForgeInstance {

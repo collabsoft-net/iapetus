@@ -6,7 +6,7 @@ import jwt from 'jwt-simple';
 
 export class ForgeRemoteTokenService {
 
-  static generate(instance: ForgeInstance, accountId?: string, claims?: Record<string, unknown>) {
+  static generate(instance: ForgeInstance, sessionId: string, accountId?: string, claims?: Record<string, unknown>) {
     try {
       const ttl = 15 * 60;
       const expires = new Date().getTime() + (ttl * 1000);
@@ -17,6 +17,7 @@ export class ForgeRemoteTokenService {
         sub: accountId,
         iat: new Date().getTime(),
         exp: expires,
+        sessionId,
         ...claims || {},
       };
 
