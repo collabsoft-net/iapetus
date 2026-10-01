@@ -6,7 +6,7 @@ import jwt from 'jwt-simple';
 
 export class ForgeRemoteTokenService {
 
-  static generate(instance: ForgeInstance, sessionId: string, accountId?: string, claims?: Record<string, unknown>): ForgeRemoteToken|null {
+  static generate(instance: ForgeInstance, sessionId: string, accountId?: string, claims?: Record<string, unknown>): TokenExchangeDTO|null {
     try {
       // We are storing this for 10 minutes
       // The long-lived user-session is stored in cache for 15 minutes
