@@ -40,7 +40,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
     this.fb = firebase.initializeApp(options, name);
 
     this.firestore = typeof databaseId === 'string' ? getFirestore(this.fb, databaseId) : getFirestore(this.fb);
-    this.storageProvider = new FirebaseAdminStorageProvider();
+    this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
     this.readOnly = readOnly;
   }
 
@@ -75,11 +75,11 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
   }
 
   async verifyIdToken(token: string): Promise<DecodedIdToken> {
-    return getAuth().verifyIdToken(token);
+    return getAuth(this.fb).verifyIdToken(token);
   }
 
   async createCustomToken(uid: string): Promise<string> {
-    return getAuth().createCustomToken(uid);
+    return getAuth(this.fb).createCustomToken(uid);
 
   }
   async signOut(): Promise<void> {
