@@ -1,6 +1,6 @@
 import { token } from '@atlaskit/tokens';
 import styled from '@emotion/styled';
-import React, { PropsWithChildren } from 'react';
+import React, { JSX, PropsWithChildren } from 'react';
 
 import { Grid, GridProps, Row } from '../Grid';
 import { Header } from '../Typography';

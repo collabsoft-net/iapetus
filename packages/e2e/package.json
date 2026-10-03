@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -35,21 +35,22 @@
   },
   "devDependencies": {
     "@collabsoft-net/envify-nconf": "1.0.0",
-    "@types/chai": "5.2.2",
+    "@eslint/js": "10.0.1",
+    "@types/chai": "5.2.3",
     "@types/chai-string": "1.4.5",
-    "@types/node": "<19.0.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "@wdio/cli": "9.12.7",
-    "chai": "5.2.0",
+    "@types/node": "^22",
+    "@typescript-eslint/parser": "8.71.0",
+    "@wdio/cli": "9.32.0",
+    "chai": "6.3.0",
     "chai-string": "1.6.0",
-    "eslint": "9.26.0",
-    "nodemon": "3.1.10",
-    "typescript": "5.8.3"
+    "eslint": "10.11.0",
+    "nodemon": "3.1.14",
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
     "@collabsoft-net/envify-nconf": "^1.0.0",
-    "@wdio/cli": "^9.12.0",
-    "chai": "^5.2.0",
+    "@wdio/cli": "^9.32.0",
+    "chai": "^6.3.0",
     "chai-string": "^1.6.0"
   }
 }

@@ -1,6 +1,6 @@
 import WarningIcon from '@atlaskit/icon/core/warning';
 import Spinner from '@atlaskit/spinner';
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { GridProps } from '../../Atoms/';
 import { ConfluenceProviders, IconWithLabel } from '../../index';

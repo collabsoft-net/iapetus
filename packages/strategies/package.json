@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -35,45 +35,42 @@
   },
   "devDependencies": {
     "@collabsoft-net/clients": "workspace:*",
-    "@collabsoft-net/controllers": "workspace:*",
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/entities": "workspace:*",
-    "@collabsoft-net/forge-functions": "workspace:*",
     "@collabsoft-net/functions": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
-    "@types/node": "<19.0.0",
+    "@eslint/js": "10.0.1",
+    "@types/express": "5.0.6",
+    "@types/node": "^22",
     "@types/passport": "1.0.17",
-    "@types/passport-http-bearer": "1.0.41",
+    "@types/passport-http-bearer": "1.0.42",
     "@types/passport-jwt": "4.0.1",
-    "@typescript-eslint/eslint-plugin": "8.32.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "axios": "1.13.2",
-    "eslint": "9.26.0",
-    "express": "5.1.0",
-    "jose": "6.1.0",
-    "nodemon": "3.1.10",
+    "axios": "1.20.0",
+    "eslint": "10.11.0",
+    "express": "4.21.1",
+    "jose": "6.2.12",
+    "nodemon": "3.1.14",
     "passport": "0.7.0",
-    "passport-custom": "1.1.1",
+    "passport-custom": "1.2.1",
     "passport-http-bearer": "1.0.1",
     "passport-jwt": "4.0.1",
-    "typescript": "5.8.3"
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0"
   },
   "peerDependencies": {
     "@collabsoft-net/clients": "*",
-    "@collabsoft-net/controllers": "*",
     "@collabsoft-net/dto": "*",
     "@collabsoft-net/entities": "*",
-    "@collabsoft-net/forge-functions": "*",
     "@collabsoft-net/functions": "*",
     "@collabsoft-net/services": "*",
-    "axios": "^1.13.0",
-    "express": "^5.1.0",
-    "jose": "*",
+    "axios": "^1.20.0",
+    "express": "^4.21.1",
+    "jose": "^6.2.12",
     "passport": "^0.7.0",
-    "passport-custom": "^1.1.0",
-    "passport-http-bearer": "^1.0.0",
-    "passport-jwt": "^4.0.0"
+    "passport-custom": "^1.2.1",
+    "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^4.0.1"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

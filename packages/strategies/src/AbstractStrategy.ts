@@ -1,5 +1,4 @@
-import '@collabsoft-net/functions';
-
+import type { Session } from '@collabsoft-net/functions';
 import * as express from 'express';
 import { injectable } from 'inversify';
 

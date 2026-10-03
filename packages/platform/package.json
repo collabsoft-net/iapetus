@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -41,13 +41,13 @@
     "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
-    "@types/node": "<19.0.0",
+    "@eslint/js": "10.0.1",
+    "@types/node": "^22",
     "@types/uniqid": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "6.19.1",
-    "@typescript-eslint/parser": "6.19.1",
-    "eslint": "8.56.0",
-    "nodemon": "3.0.3",
-    "typescript": "5.8.3",
+    "eslint": "10.11.0",
+    "nodemon": "3.1.14",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
@@ -57,7 +57,7 @@
     "@collabsoft-net/forge": "*",
     "@collabsoft-net/helpers": "*",
     "@collabsoft-net/services": "*",
-    "uniqid": "5.4.0"
+    "uniqid": "^5.4.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

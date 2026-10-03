@@ -7,6 +7,8 @@ import { CloudEvent } from 'firebase-functions/v2';
 import { MessagePublishedData } from 'firebase-functions/v2/pubsub';
 import { injectable } from 'inversify';
 
+import type { Session } from './session';
+
 @injectable()
 export abstract class AbstractPubSubHandler<T extends TenantAwareEvent, X extends Session, Y extends ConnectInstance|ForgeInstance, Z extends ConnectInstanceDTO|ForgeInstanceDTO> implements PubSubHandler<T> {
 

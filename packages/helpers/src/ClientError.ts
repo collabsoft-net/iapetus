@@ -137,7 +137,9 @@ export class ClientError<T> extends AxiosError {
       return new ClientError<T>(error);
     } else {
       const result = isOfType<Error>(error, 'message') ? new AxiosError(error.message) : new AxiosError();
-      result.cause = error;
+      if (isOfType<Error>(error, 'message')) {
+        result.cause = error;
+      }
       return new ClientError<T>(result);
     }
   }

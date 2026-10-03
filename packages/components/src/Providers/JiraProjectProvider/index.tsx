@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { useJiraProject } from '../../Hooks';
 
 interface JiraProjectProviderProps {

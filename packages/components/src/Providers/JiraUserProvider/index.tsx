@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { useJiraUser } from '../../Hooks';
 
 interface JiraUserProviderProps {

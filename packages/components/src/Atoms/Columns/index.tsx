@@ -1,5 +1,5 @@
 import { isOfType } from '@collabsoft-net/helpers';
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { Column,ColumnProps, Grid, GridProps } from '../Grid';
 

@@ -3,9 +3,9 @@
 import { MemoryEmitter } from '@collabsoft-net/emitters';
 import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { Entity, Event, EventListener, Paginated, QueryBuilder,QueryOptions, Repository, StorageProvider, User } from '@collabsoft-net/types';
-import { app, AppOptions, auth, firestore } from 'firebase-admin';
-import firebase from 'firebase-admin';
-import { getFirestore } from 'firebase-admin/firestore';
+import firebase, { App, AppOptions } from 'firebase-admin';
+import { DecodedIdToken, getAuth } from 'firebase-admin/auth';
+import { Firestore, GeoPoint, getFirestore, Primitive, Query, Timestamp } from 'firebase-admin/firestore';
 import { getFunctions,TaskOptions } from 'firebase-admin/functions';
 import uniqid from 'uniqid';
 
@@ -19,7 +19,7 @@ export interface FirebaseAdminRepositoryOptions {
   readOnly?: boolean;
 }
 
-type FirestorePrimitive = firestore.Primitive|firestore.GeoPoint|firestore.Timestamp;
+type FirestorePrimitive = Primitive|GeoPoint|Timestamp;
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface FirestoreObject extends Record<string, FirestorePrimitive|FirestoreObject|FirestoreArray|undefined> {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -30,8 +30,8 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
   protected name: string;
   protected readOnly?: boolean;
 
-  private fb: app.App;
-  private firestore: firestore.Firestore;
+  private fb: App;
+  private firestore: Firestore;
   private storageProvider: StorageProvider;
   private emitter: MemoryEmitter = new MemoryEmitter();
 
@@ -40,7 +40,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
     this.fb = firebase.initializeApp(options, name);
 
     this.firestore = typeof databaseId === 'string' ? getFirestore(this.fb, databaseId) : getFirestore(this.fb);
-    this.storageProvider = new FirebaseAdminStorageProvider(this.fb);
+    this.storageProvider = new FirebaseAdminStorageProvider();
     this.readOnly = readOnly;
   }
 
@@ -53,7 +53,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
   }
 
   async close(): Promise<void> {
-    await this.fb.delete();
+    await firebase.deleteApp(this.fb);
   }
 
   get storage(): StorageProvider {
@@ -74,14 +74,14 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
     return Promise.reject('This feature is not supported in "admin" mode');
   }
 
-  async verifyIdToken(token: string): Promise<auth.DecodedIdToken> {
-    return await this.fb.auth().verifyIdToken(token);
+  async verifyIdToken(token: string): Promise<DecodedIdToken> {
+    return getAuth().verifyIdToken(token);
   }
 
   async createCustomToken(uid: string): Promise<string> {
-    return this.fb.auth().createCustomToken(uid);
-  }
+    return getAuth().createCustomToken(uid);
 
+  }
   async signOut(): Promise<void> {
     return Promise.reject('This feature is not supported in "admin" mode');
   }
@@ -115,7 +115,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
       throw new Error('You can only use count for collections, not individual documents');
     }
 
-    let collection: firestore.Query = this.firestore.collection(options.path);
+    let collection: Query = this.firestore.collection(options.path);
     const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
@@ -205,7 +205,7 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
       throw new Error('You can only search within collections, not individual documents');
     }
 
-    let collection: firestore.Query = this.firestore.collection(options.path);
+    let collection: Query = this.firestore.collection(options.path);
     const queryBuilder: QueryBuilder<T> = typeof qb === 'function' ? qb(new QB()) : qb;
 
     queryBuilder.conditions.forEach((condition) => {
@@ -363,8 +363,8 @@ export class FirebaseAdminRepository<T extends Entity> implements Repository<T> 
       typeof entity === 'string' ||
       typeof entity === 'boolean' ||
       typeof entity === 'number' ||
-      isOfType<firestore.GeoPoint>(entity, 'latitude') ||
-      isOfType<firestore.Timestamp>(entity, 'seconds')
+      isOfType<GeoPoint>(entity, 'latitude') ||
+      isOfType<Timestamp>(entity, 'seconds')
   }
 
   static getIdentifier(): symbol {

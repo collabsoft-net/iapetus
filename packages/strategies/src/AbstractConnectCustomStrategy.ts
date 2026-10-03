@@ -1,7 +1,6 @@
-import '@collabsoft-net/functions';
-
 import { ConnectInstanceDTO } from '@collabsoft-net/dto';
 import { ConnectInstance } from '@collabsoft-net/entities';
+import type { AtlasSession } from '@collabsoft-net/functions';
 import { AbstractService } from '@collabsoft-net/services';
 import * as express from 'express';
 import { injectable } from 'inversify';

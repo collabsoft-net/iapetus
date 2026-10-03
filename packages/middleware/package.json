@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -41,18 +41,19 @@
     "@collabsoft-net/helpers": "workspace:*",
     "@collabsoft-net/services": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
-    "@types/node": "<19.0.0",
+    "@eslint/js": "10.0.1",
+    "@types/express": "5.0.6",
+    "@types/node": "^22",
     "@types/passport": "1.0.17",
-    "@typescript-eslint/eslint-plugin": "8.32.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "axios": "1.13.2",
-    "core-js": "3.42.0",
-    "eslint": "9.26.0",
-    "express": "5.1.0",
-    "nodemon": "3.1.10",
+    "axios": "1.20.0",
+    "core-js": "3.50.0",
+    "eslint": "10.11.0",
+    "express": "4.21.1",
+    "nodemon": "3.1.14",
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
-    "typescript": "5.8.3"
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0"
   },
   "peerDependencies": {
     "@atlassian/atlassian-jwt": "^2.2.0",
@@ -61,8 +62,8 @@
     "@collabsoft-net/functions": "*",
     "@collabsoft-net/helpers": "*",
     "@collabsoft-net/services": "*",
-    "axios": "^1.13.0",
-    "express": "^5.1.0",
+    "axios": "^1.20.0",
+    "express": "^4.21.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"
   },

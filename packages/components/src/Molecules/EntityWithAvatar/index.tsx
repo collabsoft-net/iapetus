@@ -4,7 +4,7 @@ import Link from '@atlaskit/link';
 import Spinner from '@atlaskit/spinner';
 import { isOfType } from '@collabsoft-net/helpers';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { Column, Grid, GridProps, Paragraph, Row } from '../../Atoms/';
 

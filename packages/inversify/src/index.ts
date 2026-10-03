@@ -1,6 +1,5 @@
 
-export * from './BindingLifecyclePhases';
-export * from './kernel';
+import { Container } from 'inversify';
 
-import kernel from './kernel';
-export default kernel;
+const instance = new Container();
+export default instance;

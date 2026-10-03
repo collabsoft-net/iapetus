@@ -1,5 +1,6 @@
 
 import { ConnectInstance } from '@collabsoft-net/entities';
+import { AtlasSession } from '@collabsoft-net/functions';
 import { isNullOrEmpty, isOfType, isProduction } from '@collabsoft-net/helpers';
 import * as express from 'express';
 import { logger } from 'firebase-functions';

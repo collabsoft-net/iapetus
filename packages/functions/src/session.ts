@@ -2,19 +2,17 @@
 import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { Modes } from '@collabsoft-net/enums';
 
-export {};
+export type Session = Record<string, unknown>
 
-declare global {
-
-  type Session = Record<string, unknown>
-
-  interface AtlasSession extends Session {
+export interface AtlasSession extends Session {
     accountId: string;
     instance: ConnectInstance|ForgeInstance;
     appSystemToken?: string;
     appUserToken?: string;
     mode: Modes;
   }
+
+declare global {
 
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Express {
@@ -23,3 +21,5 @@ declare global {
   }
 
 }
+
+export {};

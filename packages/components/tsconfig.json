@@ -6,9 +6,8 @@
       "es2015",
       "es2017"
     ],
-    "baseUrl": ".",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "es2020",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -23,12 +22,9 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "downlevelIteration": true,
     "skipLibCheck": true,
-    "rootDirs": [
-      "./src",
-    ],
-    "outDir": "./dist",
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "include": [
     "./src/**/*.ts",

@@ -1,9 +1,9 @@
 
 import { RestClientMethods } from '@collabsoft-net/enums';
-import { CachingService, RestClient } from '@collabsoft-net/types';
-import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { invoke, invokeRemote } from '@forge/bridge';
 import { isOfType } from '@collabsoft-net/helpers';
+import { CachingService, RestClient } from '@collabsoft-net/types';
+import { invoke, invokeRemote } from '@forge/bridge';
+import { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 export class ForgeInvokeClient implements RestClient {
 
@@ -20,7 +20,7 @@ export class ForgeInvokeClient implements RestClient {
   }
 
   cached(cacheService: CachingService, duration: number) {
-    return this.type === 'native' 
+    return this.type === 'native'
       ? new ForgeInvokeClient(this.type, this.name as string, cacheService, duration)
       : new ForgeInvokeClient(this.type, cacheService, duration);
   }
@@ -103,7 +103,7 @@ export class ForgeInvokeClient implements RestClient {
       Object.entries(config?.headers || {}).forEach(([ key, value ]) => headers[String(key)] = String(value));
 
       const invocation = typeof this.name === 'string'
-        ? invoke(this.name, { method, path, data, params, headers }) 
+        ? invoke(this.name, { method, path, data, params, headers })
         : invokeRemote({
           path,
           method: (method === RestClientMethods.HEAD ? 'GET' : method.toUpperCase()) as 'GET'|'POST'|'PUT'|'PATCH'|'DELETE',
@@ -127,12 +127,12 @@ export class ForgeInvokeClient implements RestClient {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
 
         const result = await this.cacheService.get(cacheKey, {
-          loader: fetchFromRemote, 
+          loader: fetchFromRemote,
           expiresInSeconds: cacheDuration || this.duration
         });
 
         return result || await fetchFromRemote();
-      } catch (err) {
+      } catch (_ignored) {
         return fetchFromRemote();
       }
     } else {
@@ -150,7 +150,7 @@ export class ForgeInvokeClient implements RestClient {
 
     try {
       data = typeof data === 'string' ? JSON.parse(data) : data;
-    } catch {}
+    } catch { /* We are ignoring this error, as the original data is preserved */ }
 
     return {
       data,

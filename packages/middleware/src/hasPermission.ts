@@ -1,5 +1,6 @@
 import { ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
 import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
+import { AtlasSession, Session } from '@collabsoft-net/functions';
 import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import * as express from 'express';

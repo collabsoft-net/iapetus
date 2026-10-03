@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { Grid, Row } from '../../Atoms/Grid';
 import { Header, Paragraph } from '../../Atoms/Typography';

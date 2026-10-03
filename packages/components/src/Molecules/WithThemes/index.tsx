@@ -1,5 +1,5 @@
 import { Themes } from '@collabsoft-net/theme';
-import React, { PropsWithChildren } from 'react';
+import React, { JSX, PropsWithChildren } from 'react';
 
 import { useThemes } from '../../Hooks';
 

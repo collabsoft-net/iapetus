@@ -69,7 +69,7 @@ export const loadAP = async <T extends AP.JiraInstance|AP.ConfluenceInstance|AP.
     }
 
     return { ...windowWithAP.AP } as T;
-  } catch (_ignored) {
-    throw new Error('Atlassian Javascript API (AP) is not available');
+  } catch (cause) {
+    throw new Error('Atlassian Javascript API (AP) is not available', { cause });
   }
 };

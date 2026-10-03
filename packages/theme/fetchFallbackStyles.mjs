@@ -1,3 +1,4 @@
+/* global fetch */
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';

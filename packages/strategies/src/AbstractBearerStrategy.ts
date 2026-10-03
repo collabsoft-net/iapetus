@@ -1,7 +1,6 @@
-import '@collabsoft-net/functions';
-
+import type { Session } from '@collabsoft-net/functions';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
-import * as express from 'express';
+import { Request } from 'express';
 import { injectable } from 'inversify';
 import * as passport from 'passport';
 import { IStrategyOptions, Strategy, VerifyFunctions } from 'passport-http-bearer';
@@ -27,7 +26,7 @@ export abstract class AbstractBearerStrategy<X extends Session> extends Abstract
 
     return new (class BearerStrategy<Y extends VerifyFunctions> extends Strategy<Y> {
       name = _name;
-    })(_options, async (request: express.Request, token: string, done: (err: Error|null, session?: X) => void) => {
+    })(_options, async (request: Request, token: string, done: (err: Error|null, session?: X) => void) => {
       try {
         const session = await this.process(request, token);
         done(null, session);

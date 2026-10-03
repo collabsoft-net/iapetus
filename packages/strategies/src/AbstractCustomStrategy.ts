@@ -1,5 +1,4 @@
-import '@collabsoft-net/functions';
-
+import type { Session } from '@collabsoft-net/functions';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
 import * as express from 'express';
 import { injectable } from 'inversify';
@@ -20,9 +19,7 @@ export abstract class AbstractCustomStrategy<T, X extends Session> extends Abstr
   }
 
   get strategy(): passport.Strategy {
-    const _name = this.name;
-    return new (class CustomStrategy extends Strategy {
-      name = _name;
+    const result = new (class CustomStrategy extends Strategy {
     })(async (request: express.Request, done: (err: Error|null, session?: X) => void) => {
       try {
         const session = await this.process(request);
@@ -31,6 +28,8 @@ export abstract class AbstractCustomStrategy<T, X extends Session> extends Abstr
         done(error as Error);
       }
     });
+    Object.defineProperty(result, 'name', { value: this.name });
+    return result;
   }
 
 }

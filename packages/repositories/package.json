@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "exports": {
     "./MemoryRepository": {
@@ -74,27 +74,29 @@
     "@collabsoft-net/dto": "workspace:*",
     "@collabsoft-net/emitters": "workspace:*",
     "@collabsoft-net/types": "workspace:*",
-    "@forge/kvs": "1.0.6",
-    "@google-cloud/storage": "7.16.0",
-    "@types/node": "<19.0.0",
+    "@eslint/js": "10.0.1",
+    "@forge/kvs": "2.0.7",
+    "@google-cloud/storage": "8.2.0",
+    "@types/node": "^22",
     "@types/uniqid": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "8.32.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "eslint": "9.26.0",
-    "firebase": "11.7.1",
-    "firebase-admin": "13.3.0",
-    "nodemon": "3.1.10",
-    "typescript": "5.8.3",
+    "eslint": "10.11.0",
+    "firebase": "12.19.0",
+    "firebase-admin": "14.5.0",
+    "nodemon": "3.1.14",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
     "uniqid": "5.4.0"
   },
   "peerDependencies": {
     "@collabsoft-net/dto": "*",
     "@collabsoft-net/emitters": "*",
-    "@forge/kvs": "*",
-    "@google-cloud/storage": "^7.16.0",
-    "firebase": "^11.7.0",
-    "firebase-admin": "^13.3.0",
     "uniqid": "^5.4.0"
+  },
+  "optionalDependencies": {
+    "@forge/kvs": "^2.0.7",
+    "@google-cloud/storage": "^8.2.0",
+    "firebase": "^12.19.0",
+    "firebase-admin": "^14.5.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

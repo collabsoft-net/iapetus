@@ -1,11 +1,11 @@
-import { Applications, Modes } from '@collabsoft-net/enums';
-import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
-import { events, router, view, Modal, showFlag } from '@forge/bridge';
 import { DocNode } from '@atlaskit/adf-schema';
 import { TokenExchangeDTO } from '@collabsoft-net/dto';
-import uniqid from 'uniqid';
+import { Applications, Modes } from '@collabsoft-net/enums';
+import { createPlaceholder, ForgeRestClient } from '@collabsoft-net/forge';
 import { isOfType } from '@collabsoft-net/helpers';
+import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { events, Modal, router, showFlag,view } from '@forge/bridge';
+import uniqid from 'uniqid';
 
 // We are defining bridge.dialog.open() here because it has a weird overload
 // Unfortunately, typescript does not support overload declaration within an object
@@ -72,14 +72,14 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
   let token: TokenExchangeDTO|null = null;
 
   return {
-    
+
     product,
     platform: Modes.FORGE,
     isCloud: true,
     isLicensed: context.environmentType === 'DEVELOPMENT' || context.license?.active || false,
     service,
 
-    client: (product === 'jira' 
+    client: (product === 'jira'
       ? new JiraClientService(new ForgeRestClient(product), Modes.FORGE)
       : product === 'confluence'
         ? new ConfluenceClientService(new ForgeRestClient(product), Modes.FORGE)
@@ -117,7 +117,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         if (!token || token.expires <= new Date().getTime()) {
           token = await service.getToken().catch(() => null);
         }
-        return token ? token.token : null; 
+        return token ? token.token : null;
       },
       content: async () => {
         if (product === Applications.JIRA) {

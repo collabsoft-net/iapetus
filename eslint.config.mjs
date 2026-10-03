@@ -1,23 +1,20 @@
 
-import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import tseslint from 'typescript-eslint';
+import typescriptParser from '@typescript-eslint/parser';
+import { defineConfig } from 'eslint/config';
 
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname
-});
-
-export default [
+export default defineConfig([
+  js.configs.recommended,
+  tseslint.configs.recommended,
   {
+    files: [
+      "**/*.js", 
+      "**/*.ts", 
+      "**/*.tsx"
+    ],
     ignores: [
       '.yarn',
       '**/lib/**',
@@ -26,23 +23,13 @@ export default [
       '**/typings/**',
       '**/node_modules/**'
     ],
-  },
-  {
     languageOptions: {
+      parser: typescriptParser,
       globals: {
         ...globals.node
-      }
-    }
-  },
-  js.configs.recommended,
-  ...compat.extends('plugin:@typescript-eslint/eslint-recommended'),
-  ...compat.extends('plugin:@typescript-eslint/recommended'),
-  {
-    languageOptions: {
-      parser: typescriptParser
+      },
     },
     plugins: {
-      '@typescript-eslint': typescriptPlugin,
       'simple-import-sort': simpleImportSortPlugin,
     },
     rules: {
@@ -64,4 +51,4 @@ export default [
       'no-trailing-spaces': 'error',
     }
   }
-];
+]);

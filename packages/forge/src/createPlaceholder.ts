@@ -1,7 +1,6 @@
-import { Property } from 'csstype';
-import { view, router } from '@forge/bridge';
 import { isOfType } from '@collabsoft-net/helpers';
-import { FullContext } from '@forge/bridge/out/types';
+import { FullContext, router,view } from '@forge/bridge';
+import { Property } from 'csstype';
 
 type ModuleType = 'page'|'editor'|'dialog'|'legacy';
 
@@ -33,7 +32,7 @@ const getModuleKey = async (context?: FullContext) => {
         if (route) {
           moduleKey = route;
         }
-      } catch (_ignored) {}
+      } catch (_ignored) { /* we are ignoring this error */}
     }
   }
 

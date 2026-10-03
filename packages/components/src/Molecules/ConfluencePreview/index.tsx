@@ -11,7 +11,7 @@ import { isOfType } from '@collabsoft-net/helpers';
 import { ConfluenceClientService } from '@collabsoft-net/services';
 import styled from '@emotion/styled';
 import { useQuery } from '@tanstack/react-query';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { JSX, PropsWithChildren, useState } from 'react';
 
 import { Column, Grid, Header, Row } from '../../Atoms';
 import { useContentContext,usePlatformBridge } from '../../Hooks';

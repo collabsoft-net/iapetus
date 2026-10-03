@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { useConfluenceUser } from '../../Hooks';
 
 interface ConfluenceUserProviderProps {

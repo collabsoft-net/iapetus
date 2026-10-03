@@ -2,7 +2,7 @@ import ChevronRight from '@atlaskit/icon/core/chevron-right';
 import { token } from '@atlaskit/tokens';
 import { isOfType } from '@collabsoft-net/helpers';
 import styled from '@emotion/styled';
-import React, { Fragment } from 'react';
+import React, { Fragment, JSX } from 'react';
 
 import { IconWithLabel } from '../../Molecules/IconWithLabel';
 import { Column, Grid, Row } from '../Grid';

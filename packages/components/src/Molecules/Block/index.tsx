@@ -1,5 +1,5 @@
 import { token } from '@atlaskit/tokens';
-import React, { PropsWithChildren } from 'react';
+import React, { JSX, PropsWithChildren } from 'react';
 
 import { Grid, Row } from '../../Atoms/Grid';
 import { Header } from '../../Atoms/Typography';

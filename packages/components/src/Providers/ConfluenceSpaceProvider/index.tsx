@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 import { useConfluenceSpace } from '../../Hooks';
 
 interface ConfluenceSpaceProviderProps {

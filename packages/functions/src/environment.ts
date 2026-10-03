@@ -56,6 +56,6 @@ export const getFirebaseAdminOptions = (): firebase.AppOptions|undefined => {
   return !process.env.FIREBASE_CONFIG ? {
     projectId: process.env.FB_PROJECTID,
     storageBucket: process.env.FB_STORAGEBUCKET,
-    credential: process.env.FB_ADMINKEY ? firebase.credential.cert(JSON.parse(Buffer.from(process.env.FB_ADMINKEY, 'base64').toString('utf-8'))) : undefined,
+    credential: process.env.FB_ADMINKEY ? firebase.cert(JSON.parse(Buffer.from(process.env.FB_ADMINKEY, 'base64').toString('utf-8'))) : undefined,
   } : undefined;
 }

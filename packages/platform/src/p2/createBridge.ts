@@ -1,8 +1,9 @@
 import { ServerRestClient } from '@collabsoft-net/clients';
-import { createBridge as createConnectBridge } from '../connect/createBridge';
+import { getUrl } from '@collabsoft-net/connect';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { getUrl } from '@collabsoft-net/connect';
+
+import { createBridge as createConnectBridge } from '../connect/createBridge';
 
 export const createBridge: Platform.CreateBridge = async <T extends Applications, X extends AbstractRestClientService> (product: T, service: X) => ({
 

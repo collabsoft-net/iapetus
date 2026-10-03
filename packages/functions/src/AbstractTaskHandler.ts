@@ -2,10 +2,11 @@ import { ConnectInstanceDTO, ForgeInstanceDTO } from '@collabsoft-net/dto';
 import { ConnectInstance, ForgeInstance } from '@collabsoft-net/entities';
 import { AbstractService } from '@collabsoft-net/services';
 import { CustomEvent, EventEmitter, TaskHandler, TenantAwareEvent } from '@collabsoft-net/types';
-import { captureException, captureMessage } from '@sentry/minimal';
 import { logger } from 'firebase-functions';
 import { TaskQueueOptions } from 'firebase-functions/v2/tasks';
 import { injectable } from 'inversify';
+
+import type { Session } from './session';
 
 @injectable()
 export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends Session, Y extends ConnectInstance|ForgeInstance, Z extends ConnectInstanceDTO|ForgeInstanceDTO> implements TaskHandler<T> {
@@ -44,8 +45,6 @@ export abstract class AbstractTaskHandler<T extends TenantAwareEvent, X extends 
       error('======================== Event processing failed ========================');
       error(`==> Failed to process ${this.name}`, err);
       error('=========================================================================');
-      captureMessage(`Failed to process ${this.name}`);
-      captureException(err);
       throw err;
     } finally {
       log(`==> Finished processing ${this.name}`);

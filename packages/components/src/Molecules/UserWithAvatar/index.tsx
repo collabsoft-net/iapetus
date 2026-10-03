@@ -1,7 +1,7 @@
 import WarningIcon from '@atlaskit/icon/core/warning';
 import Spinner from '@atlaskit/spinner';
 import { Applications } from '@collabsoft-net/enums';
-import React from 'react';
+import React, { JSX } from 'react';
 
 import { usePlatformBridge } from '../../Hooks';
 import * as ConfluenceProviders from '../../Providers/confluence';

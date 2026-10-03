@@ -116,7 +116,7 @@ export class BitbucketClientService<Mode extends Modes> extends AbstractAtlasCli
   }
 
   private async getSeatsPaginated(workspace: string|number, next?: string) {
-    let result = 0;
+    let result;
     const url = next ? next : this.getEndpointFor(this.endpoints.WORKSPACE_MEMBERS, { workspace: `${workspace}` });
     const { data } = await this.client.get<Bitbucket.Page<unknown>>(url);
     if (data.size && data.size > 0) {

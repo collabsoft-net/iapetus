@@ -17,7 +17,7 @@
     "url": "git+https://github.com/collabsoft-net/iapetus.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,18 +34,19 @@
     "url": "https://github.com/collabsoft-net/iapetus/issues"
   },
   "devDependencies": {
-    "@forge/api": "7.2.1",
-    "@types/node": "<19.0.0",
+    "@eslint/js": "10.0.1",
+    "@forge/api": "8.2.0",
+    "@types/express": "5.0.6",
+    "@types/node": "^22",
     "@types/passport": "1.0.17",
-    "@typescript-eslint/eslint-plugin": "8.32.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "axios": "1.13.2",
-    "eslint": "9.26.0",
-    "express": "5.1.0",
-    "firebase-admin": "13.3.0",
-    "firebase-functions": "6.3.2",
-    "nodemon": "3.1.10",
-    "typescript": "5.8.3"
+    "axios": "1.20.0",
+    "eslint": "10.11.0",
+    "express": "4.21.1",
+    "firebase-admin": "14.5.0",
+    "firebase-functions": "7.4.0",
+    "nodemon": "3.1.14",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }

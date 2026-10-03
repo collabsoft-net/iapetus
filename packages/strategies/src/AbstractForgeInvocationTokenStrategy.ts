@@ -1,9 +1,8 @@
-import '@collabsoft-net/functions';
-
 import { BitbucketRestClient, ConfluenceRestClient, JiraRestClient } from '@collabsoft-net/clients';
 import { ForgeInstanceDTO } from '@collabsoft-net/dto';
 import { ForgeInstance } from '@collabsoft-net/entities';
 import { Applications, Modes } from '@collabsoft-net/enums';
+import type { AtlasSession } from '@collabsoft-net/functions';
 import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { AbstractService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
 import { CachingService, ForgeUserSession } from '@collabsoft-net/types';

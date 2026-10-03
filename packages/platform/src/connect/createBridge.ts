@@ -1,9 +1,9 @@
+import { DocNode } from '@atlaskit/adf-schema';
 import { APRestClient } from '@collabsoft-net/clients';
+import { createPlaceholder,waitForAP } from '@collabsoft-net/connect';
 import { Applications, Modes } from '@collabsoft-net/enums';
 import { isOfType, isValidLicense } from '@collabsoft-net/helpers';
 import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
-import { waitForAP, createPlaceholder } from '@collabsoft-net/connect';
-import { DocNode } from '@atlaskit/adf-schema';
 import { Props } from '@collabsoft-net/types';
 import uniqid from 'uniqid';
 
@@ -19,7 +19,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
   function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback: Platform.DialogCallback<X>): Promise<X|undefined>;
   function open<X, T extends Platform.DialogContext> (options: Platform.DialogOptions<T, X>, callback?: Platform.DialogCallback<X>): Promise<X|undefined> {
 
-    const dialogSize = 
+    const dialogSize =
       options.size === 'xlarge'
         ? 'x-large'
         : options.size === 'max'
@@ -120,7 +120,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
         ? new ConfluenceClientService(new APRestClient(AP), Modes.CONNECT)
         : new BitbucketClientService(new APRestClient(AP), Modes.CONNECT)
     ) as Platform.ClientService<T>,
-    
+
     init: {
       createPlaceholder: createPlaceholder
     },
@@ -148,7 +148,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
     },
 
     user: {
-      getCurrentUser: async () => new Promise<string>((resolve, reject) => isOfType(AP, 'user') 
+      getCurrentUser: async () => new Promise<string>((resolve, reject) => isOfType(AP, 'user')
         ? AP.user.getCurrentUser(({ atlassianAccountId }) => resolve(atlassianAccountId))
         : reject(new Error(`AP.user.getCurrentUser() is not supported in ${product}`)))
     },
@@ -223,7 +223,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       navigate: (urlOrLocation: string|Platform.RouterNavigationLocation) => {
         if (isOfType(AP, 'navigator')) {
           if (typeof urlOrLocation === 'string') {
-            AP.navigator.go("site", {
+            AP.navigator.go('site', {
               absoluteUrl: urlOrLocation.startsWith('/') ? undefined : urlOrLocation,
               relativeUrl: urlOrLocation.startsWith('/') ? urlOrLocation : undefined
             });

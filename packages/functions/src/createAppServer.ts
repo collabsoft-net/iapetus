@@ -1,7 +1,6 @@
 
 import { isProduction } from '@collabsoft-net/helpers';
 import { Strategy as IStrategy } from '@collabsoft-net/types';
-import { captureException, setupExpressErrorHandler } from '@sentry/node';
 import cookies from 'cookie-parser';
 import type { Application } from 'express';
 import { logger } from 'firebase-functions';
@@ -66,10 +65,7 @@ export const createAppServer = (options: AppServerOptions, configure?: (app: App
           instance.next(req, res, next);
         });
       });
-
-      setupExpressErrorHandler(app);
     } catch (exp) {
-      captureException(exp);
       logger.error('Server error', { error: JSON.stringify(exp) });
     }
   }).build();

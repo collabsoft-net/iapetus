@@ -1,9 +1,9 @@
 
 import { RestClientMethods } from '@collabsoft-net/enums';
-import { CachingService, RestClient } from '@collabsoft-net/types';
-import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { invokeRemote } from '@forge/api';
 import { isOfType } from '@collabsoft-net/helpers';
+import { CachingService, RestClient } from '@collabsoft-net/types';
+import { invokeRemote } from '@forge/api';
+import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 export class ForgeInvokeClient implements RestClient {
 
@@ -108,11 +108,11 @@ export class ForgeInvokeClient implements RestClient {
       try {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
         const result = await this.cacheService.get(cacheKey, {
-          loader: fetchFromRemote, 
+          loader: fetchFromRemote,
           expiresInSeconds: cacheDuration || this.duration
         });
         return result || await fetchFromRemote();
-      } catch (err) {
+      } catch (_ignored) {
         return fetchFromRemote();
       }
     } else {
@@ -125,8 +125,8 @@ export class ForgeInvokeClient implements RestClient {
       let data = response.data;
 
       try {
-        data = JSON.parse(data);
-      } catch {}
+        data = typeof data === 'string' ? JSON.parse(data) : data;
+      } catch { /* We are ignoring this error, as the original data is preserved */ }
 
       return { ...response, data };
     } else {

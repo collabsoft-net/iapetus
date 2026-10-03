@@ -1,6 +1,5 @@
 import { PageDTO } from '@collabsoft-net/dto';
 import { DefaultService, Entity, EntityDTO, Paginated, QueryBuilder } from '@collabsoft-net/types';
-import { captureException } from '@sentry/minimal';
 import { StatusCodes } from 'http-status-codes';
 import { injectable } from 'inversify';
 
@@ -43,8 +42,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
       if (item.id && item.id !== '-1' || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
       return this.service.toDTO(result);
-    } catch (error) {
-      captureException(error);
+    } catch (_ignored) {
       return StatusCodes.BAD_REQUEST;
     }
   }
@@ -81,8 +79,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
       if (!id || item.id !== id || !this.service.isValidEntity(item)) throw new Error('IllegalArgumentException');
       const result = await this.service.save(item);
       return this.service.toDTO(result);
-    } catch (error) {
-      captureException(error);
+    } catch (_ignored) {
       return StatusCodes.BAD_REQUEST;
     }
   }
@@ -92,8 +89,7 @@ export abstract class AbstractServiceController<T extends Entity, X extends Enti
       if (!id) return StatusCodes.BAD_REQUEST;
       await this.service.deleteById(id);
       return StatusCodes.NO_CONTENT;
-    } catch (error) {
-      captureException(error);
+    } catch (_ignored) {
       return StatusCodes.BAD_REQUEST;
     }
   }

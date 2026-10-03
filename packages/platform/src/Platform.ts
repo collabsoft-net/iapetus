@@ -2,12 +2,13 @@
 // The reason these unused vars are here is because they are placeholders
 // They are taken from the Forge / AP / Connect documentation and can be used once the method is implemented
 
-import { Applications, Modes } from "@collabsoft-net/enums";
-import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from "@collabsoft-net/services";
-import { Props } from "@collabsoft-net/types";
-import { NavigationLocation } from "@forge/bridge/out/router/types";
 import { DocNode } from '@atlaskit/adf-schema';
-import { Subscription } from "@forge/bridge/out/types";
+import { Applications, Modes } from '@collabsoft-net/enums';
+import { AbstractRestClientService, BitbucketClientService, ConfluenceClientService, JiraClientService } from '@collabsoft-net/services';
+import { Props } from '@collabsoft-net/types';
+
+import type { NavigationLocation } from '../../../node_modules/@forge/bridge/out/router/types';
+import type { Subscription } from '../../../node_modules/@forge/bridge/out/types';
 
 export {};
 
@@ -73,7 +74,7 @@ declare global {
     interface DialogContext extends Record<string, unknown> {
       moduleKey: string
     }
-    
+
     type DialogCallback<T> = (data?: T) => void;
 
     type DialogOptions<T extends DialogContext, X> = {
@@ -116,8 +117,8 @@ declare global {
       isAutoDismiss?: boolean;
     }
 
-    type FlagType = "info" | "success" | "warning" | "error"; 
-    type FlagAppearance = "info" | "success" | "warning" | "error";
+    type FlagType = 'info' | 'success' | 'warning' | 'error';
+    type FlagAppearance = 'info' | 'success' | 'warning' | 'error';
 
     interface FlagAction {
       text: string;
@@ -138,7 +139,7 @@ declare global {
       init: {
         createPlaceholder: () => Promise<HTMLDivElement|null>;
       };
-    
+
       frame: {
         resize(width: string, height: string): void;
         sizeToParent(hideFooter?: boolean): void;
@@ -152,7 +153,7 @@ declare global {
       theming: {
         enable: () => Promise<void>;
       };
-    
+
       user: {
         getCurrentUser: () => Promise<string|undefined>;
       };
@@ -206,7 +207,7 @@ declare global {
         // Unfortunately, this is undocumented
         popState: (handler: (state: HistoryPopState) => void) => void;
       };
-    
+
       localStorage: {
         get: (key: string) => Promise<string|null>;
         set: (key: string, value: string) => Promise<void>;

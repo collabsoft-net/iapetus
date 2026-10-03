@@ -1,10 +1,10 @@
+import { TokenExchangeDTO } from '@collabsoft-net/dto';
 import { Applications, RestClientEndpoints, RestClientMethods } from '@collabsoft-net/enums';
 import { CachingService, RestClient as IRestClient } from '@collabsoft-net/types';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource, HttpStatusCode } from 'axios';
-import { TokenExchangeDTO } from '@collabsoft-net/dto';
 
-import { ForgeRestClient } from './ForgeRestClient';
 import { ForgeInvokeClient } from './ForgeInvokeClient';
+import { ForgeRestClient } from './ForgeRestClient';
 
 export class NativeRemoteRestClient extends ForgeRestClient implements IRestClient {
 
@@ -64,7 +64,7 @@ export class NativeRemoteRestClient extends ForgeRestClient implements IRestClie
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
 
         const result = await this.cacheService.get(cacheKey, {
-          loader: fetchFromRemote, 
+          loader: fetchFromRemote,
           expiresInSeconds: cacheDuration || this.duration
         });
 

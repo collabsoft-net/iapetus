@@ -1,7 +1,7 @@
 import Avatar, { AvatarPropTypes,SizeType } from '@atlaskit/avatar';
 import styled from '@emotion/styled';
 import { Property } from 'csstype';
-import React, { PropsWithChildren, ReactNode } from 'react';
+import React, { JSX, PropsWithChildren, ReactNode } from 'react';
 
 import { Column, Grid } from '../../Atoms/Grid'
 

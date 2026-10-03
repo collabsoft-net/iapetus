@@ -1,9 +1,9 @@
 
 import { Applications, RestClientMethods } from '@collabsoft-net/enums';
+import { isOfType } from '@collabsoft-net/helpers';
 import { CachingService, RestClient } from '@collabsoft-net/types';
 import { requestBitbucket,requestConfluence, requestJira } from '@forge/bridge';
 import { AxiosError, AxiosHeaders, AxiosRequestConfig,AxiosResponse, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
-import { isOfType } from '@collabsoft-net/helpers';
 
 export class ForgeRestClient implements RestClient {
 
@@ -101,7 +101,7 @@ export class ForgeRestClient implements RestClient {
 
     // JSON stringify any data that is going to be sent in the body
     // The body should be empty for GET and HEAD requests
-    const body = 
+    const body =
       method === RestClientMethods.GET || method === RestClientMethods.HEAD
         ? undefined
         : data || config?.data ? JSON.stringify(data || config?.data) : null;
@@ -127,12 +127,12 @@ export class ForgeRestClient implements RestClient {
         const cacheKey = this.cacheService.toCacheKey(method, endpoint, JSON.stringify(data), JSON.stringify(params), JSON.stringify(config?.headers || {}));
 
         const result = await this.cacheService.get(cacheKey, {
-          loader: fetchFromRemote, 
+          loader: fetchFromRemote,
           expiresInSeconds: cacheDuration || this.duration
         });
 
         return result || await fetchFromRemote();
-      } catch (err) {
+      } catch (_ignored) {
         return fetchFromRemote();
       }
     } else {
@@ -142,7 +142,7 @@ export class ForgeRestClient implements RestClient {
 
   private async toAxiosResponse<T>(response: Response, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const responseHeaders: RawAxiosResponseHeaders = {};
-    response.headers.forEach((value, key) => responseHeaders[key] = value);        
+    response.headers.forEach((value, key) => responseHeaders[key] = value);
 
     const result: AxiosResponse<T> = {
       data: await response.json() as T,

@@ -10,25 +10,23 @@
     "reinstall": "yarn clean && yarn && yarn run lerna exec yarn --concurrency 1",
     "start": "yarn run nodemon --watch ./**/src -e '.ts' --exec 'yarn run lerna run build'",
     "prerelease": "yarn run lerna publish prerelease -y",
-    "upgrade:all": "yarn up -E \"@*/*\" && yarn up -E \"*\"",
+    "upgrade:all": "yarn up -E \"@*/*\" -i && yarn up -E \"*\" -i",
     "upgrade:atlaskit": "yarn up -E \"@atlaskit/*\""
   },
   "devDependencies": {
-    "@types/node": "<19.0.0",
-    "@typescript-eslint/eslint-plugin": "8.32.0",
-    "@typescript-eslint/parser": "8.32.0",
-    "eslint": "9.26.0",
-    "eslint-plugin-simple-import-sort": "12.1.1",
-    "lerna": "8.2.2",
-    "node-gyp": "11.2.0",
-    "nodemon": "3.1.10",
-    "typescript": "5.8.3"
+    "@eslint/js": "10.0.1",
+    "@types/node": "^22",
+    "eslint": "10.11.0",
+    "eslint-plugin-simple-import-sort": "14.0.0",
+    "globals": "17.13.0",
+    "lerna": "10.0.1",
+    "node-gyp": "13.0.2",
+    "nodemon": "3.1.14",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0"
   },
   "resolutions": {
-    "react": "<19.0.0",
-    "react-dom": "<19.0.0",
-    "@types/react": "<19.0.0",
-    "@types/react-dom": "<19.0.0"
+    "@types/express": "5.0.6"
   },
   "packageManager": "yarn@4.0.2"
 }

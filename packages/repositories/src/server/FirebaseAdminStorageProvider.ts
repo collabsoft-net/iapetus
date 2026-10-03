@@ -1,19 +1,19 @@
 import { File, QueryOptions, StorageProvider } from '@collabsoft-net/types';
 import { Bucket, File as BucketFile, FileMetadata, GetSignedUrlConfig } from '@google-cloud/storage';
-import { app } from 'firebase-admin';
+import { getStorage } from 'firebase-admin/storage';
 import path from 'path';
 
 export class FirebaseAdminStorageProvider implements StorageProvider {
 
   private storage: Bucket;
 
-  constructor(firebase: app.App, bucket?: string) {
+  constructor(bucket?: string) {
     let name;
     if (bucket) {
-      name = bucket.startsWith('gs://') ? bucket.substr(5) : bucket;
+      name = bucket.startsWith('gs://') ? bucket.substring(5) : bucket;
     }
 
-    this.storage = firebase.storage().bucket(name);
+    this.storage = getStorage().bucket(name);
   }
 
   // ==========================================================================

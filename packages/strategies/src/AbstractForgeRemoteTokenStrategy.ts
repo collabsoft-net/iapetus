@@ -1,7 +1,6 @@
-import '@collabsoft-net/functions';
-
 import { ForgeInstanceDTO } from '@collabsoft-net/dto';
 import { ForgeInstance } from '@collabsoft-net/entities';
+import type { AtlasSession } from '@collabsoft-net/functions';
 import { isNullOrEmpty } from '@collabsoft-net/helpers';
 import { AbstractService, ForgeRemoteTokenService } from '@collabsoft-net/services';
 import { CachingService, ForgeRemoteToken, ForgeUserSession } from '@collabsoft-net/types';

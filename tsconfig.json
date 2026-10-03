@@ -3,10 +3,10 @@
     "target": "es2019",
     "lib": [
       "dom",
-      "es2021",
+      "es2022",
     ],
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -17,12 +17,15 @@
     "noUnusedParameters": true,
     "jsx": "preserve",
     "jsxFactory": "h",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
   },
   "include": [
-    "./src/**/*.ts",
     "./typings/*.d.ts",
-    "./typings/**/*.d.ts"
+    "./typings/**/*.d.ts",
+    "./node_modules/@types/**/*.d.ts"
   ],
   "compileOnSave": false
 }
