@@ -59,9 +59,9 @@
     "@collabsoft-net/types": "workspace:*",
     "@eslint/js": "10.0.1",
     "@types/memcached": "2.2.10",
-    "@types/node": "^22",
+    "@types/node": "22.20.4",
     "@types/store": "2.0.5",
-    "eslint": "10.11.0",
+    "eslint": "10.12.0",
     "memcached": "2.2.2",
     "nodemon": "3.1.14",
     "redis": "6.3.0",
@@ -73,12 +73,12 @@
   "peerDependencies": {
     "@collabsoft-net/encryption": "*",
     "@collabsoft-net/helpers": "*",
-    "serialize-error": "12.0.0"
+    "serialize-error": "13.0.2"
   },
   "optionalDependencies": {
-    "memcached": "^2.2.2",
-    "redis": "^6.3.0",
-    "store": "^2.0.12"
+    "memcached": "2.2.2",
+    "redis": "6.3.0",
+    "store": "2.0.12"
   },
   "gitHead": "90588ca94d4036648c49a76557e532e385259578"
 }
