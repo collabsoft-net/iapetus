@@ -1,6 +1,6 @@
 {
   "name": "@collabsoft-net/syncdeps",
-  "version": "1.1.2-alpha.331",
+  "version": "1.1.2-alpha.332",
   "description": "Synchronise dependencies in Yarn workspace projects",
   "author": "CollabSoft <info@collabsoft.net>",
   "homepage": "https://github.com/collabsoft-net/iapetus#readme",
