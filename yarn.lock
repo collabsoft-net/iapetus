@@ -1306,7 +1306,7 @@ __metadata:
   peerDependencies:
     "@collabsoft-net/encryption": "*"
     "@collabsoft-net/helpers": "*"
-    serialize-error: 12.0.0
+    serialize-error: 13.0.2
   dependenciesMeta:
     memcached:
       optional: true
