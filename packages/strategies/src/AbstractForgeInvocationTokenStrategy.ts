@@ -27,166 +27,171 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
   protected abstract toSession(token: Atlassian.Forge.FIT, instance: ForgeInstance|null, sessionId: string, appSystemToken?: string, appUserToken?: string): Promise<T>;
 
   protected async process(request: express.Request, token?: string): Promise<T> {
-    if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
+    try {
+      if (!token || typeof token !== 'string') throw new Error('Invalid Bearer token');
 
-    // Make sure to check if this is even a valid FIT
-    const unverifiedPayload: Atlassian.Forge.FIT = decodeJwt(token);
-    if (!unverifiedPayload.app?.id) {
-      throw new Error('Invalid Bearer token');
-    }
-
-    // Make sure that this is not an anonymous user (unless this is explicitly allowed)
-    if (!this.allowAnonymousAccess && isNullOrEmpty(unverifiedPayload.principal)) {
-      throw new Error('Anonymous access is not allowed');
-    }
-
-    // Extract the host product from the FIT
-    const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\/(.*)/.exec(unverifiedPayload.app.apiBaseUrl);
-    const product: 'jira'|'confluence'|undefined = baseUrlProductMatch ? baseUrlProductMatch[1] as 'jira'|'confluence' : undefined;
-    if (!product || (product !== 'jira' && product !== 'confluence')) throw new Error('Unable to determine host product, which is required for exchanging tokens');
-
-    // Check if the token has expired or not
-    const now = Math.round(new Date().getTime() / 1000);
-    if (unverifiedPayload && Number(unverifiedPayload.exp) < now) throw new Error('Session expired');
-
-    // Verify the token using the Atlassian public key
-    const JWKS = createRemoteJWKSet(new URL('https://forge.cdn.prod.atlassian-dev.net/.well-known/jwks.json'));
-    const { payload } = await jwtVerify<Atlassian.Forge.FIT>(token, JWKS, {
-      audience: unverifiedPayload.app.id,
-      issuer: 'forge/invocation-token',
-    });
-
-    // Try to find the Cloud ID
-    const cloudId =
-      (isOfType(payload, 'context') && isOfType(payload.context, 'cloudId'))
-        ? String(payload.context.cloudId)
-        : (isOfType(payload.app, 'context') && isOfType(payload.app.context, 'cloudId'))
-          ? String(payload.app.context.cloudId)
-          : baseUrlProductMatch && !isNullOrEmpty(baseUrlProductMatch[2])
-            ? String(baseUrlProductMatch[2])
-            : undefined;
-
-    // Get the Forge OAuth tokens from the headers
-    const appSystemToken = request.header('x-forge-oauth-system');
-    const appUserToken = request.header('x-forge-oauth-user');
-
-    // Get the instance service associated with this FIT
-    const service = await this.toForgeInstanceService(payload);
-
-    // Ok, we are ready to see if we can find a customer instance
-    // First, we try to find the instance based on the Forge installation ID
-    let instance = await service.findByProperty('installationId', payload.app.installationId);
-
-    // If we can't find the instance on installation ID, we need to check the Cloud ID
-    // Upon re-installation of an app, the installation ID might change.
-    // However, this does not mean that the app has not already been installed
-    // To prevent data loss on re-install, we need to make sure that we match on cloud ID
-    if (!instance) {
-
-      if (cloudId) {
-        // IMPORTANT: the cloud ID is the ID of the Atlassian instance, and is not app specific
-        // We need to make query for all instances with this cloud ID and then match the product
-        // This is to allow for multi-product installations in the same data store
-        const instancesByCloudId = await service.findAllByProperty('cloudId', cloudId);
-        instance = instancesByCloudId.values.find(item => item.product === product) || null;
+      // Make sure to check if this is even a valid FIT
+      const unverifiedPayload: Atlassian.Forge.FIT = decodeJwt(token);
+      if (!unverifiedPayload.app?.id) {
+        throw new Error('Invalid Bearer token');
       }
 
-    }
+      // Make sure that this is not an anonymous user (unless this is explicitly allowed)
+      if (!this.allowAnonymousAccess && isNullOrEmpty(unverifiedPayload.principal)) {
+        throw new Error('Anonymous access is not allowed');
+      }
 
-    // Check if this is an initial installation or if the instance is migrated from Connect
-    // Connect apps migrated to forge receive a lifecycle installation event with the installation ID
-    // However, they will not yet have the required Forge specific properties so we should update them
-    // We use the 'isForge' property to determine if an instance has been migrated succesfully
-    if (!instance || !instance.isForge) {
+      // Extract the host product from the FIT
+      const baseUrlProductMatch = /^https:\/\/api.atlassian.com\/ex\/(.*)\/(.*)/.exec(unverifiedPayload.app.apiBaseUrl);
+      const product: 'jira'|'confluence'|undefined = baseUrlProductMatch ? baseUrlProductMatch[1] as 'jira'|'confluence' : undefined;
+      if (!product || (product !== 'jira' && product !== 'confluence')) throw new Error('Unable to determine host product, which is required for exchanging tokens');
 
-      // We use Connect lifecycle events to match the clientKey with the installation ID
-      // If for some reason the Connect lifecycle event did not fire yet (i.e. because of a delay)
-      // and we failed to match the installation based on installation ID and cloud ID
-      // we can use this endpoint to retrieve the clientKey
-      // see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
-      const connectKey = await this.toConnectKey(payload);
-      if (!instance && appSystemToken && connectKey) {
+      // Check if the token has expired or not
+      const now = Math.round(new Date().getTime() / 1000);
+      if (unverifiedPayload && Number(unverifiedPayload.exp) < now) throw new Error('Session expired');
 
-        const clientService = product === Applications.JIRA
-          ? new JiraClientService(new JiraRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'jira' } as ForgeInstance, appSystemToken), Modes.FORGE)
-          : product === Applications.CONFLUENCE
-            ? new ConfluenceClientService(new ConfluenceRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'confluence' } as ForgeInstance, appSystemToken), Modes.FORGE)
-            : product === Applications.BITBUCKET
-              ? new BitbucketClientService(new BitbucketRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'bitbucket' } as ForgeInstance, appSystemToken), Modes.FORGE)
+      // Verify the token using the Atlassian public key
+      const JWKS = createRemoteJWKSet(new URL('https://forge.cdn.prod.atlassian-dev.net/.well-known/jwks.json'));
+      const { payload } = await jwtVerify<Atlassian.Forge.FIT>(token, JWKS, {
+        audience: unverifiedPayload.app.id,
+        issuer: 'forge/invocation-token',
+      });
+
+      // Try to find the Cloud ID
+      const cloudId =
+        (isOfType(payload, 'context') && isOfType(payload.context, 'cloudId'))
+          ? String(payload.context.cloudId)
+          : (isOfType(payload.app, 'context') && isOfType(payload.app.context, 'cloudId'))
+            ? String(payload.app.context.cloudId)
+            : baseUrlProductMatch && !isNullOrEmpty(baseUrlProductMatch[2])
+              ? String(baseUrlProductMatch[2])
               : undefined;
 
-        const clientKey = clientService && await clientService.getConnectClientKey(connectKey);
-        if (clientKey) {
-          instance = await service.findByProperty('clientKey', clientKey);
+      // Get the Forge OAuth tokens from the headers
+      const appSystemToken = request.header('x-forge-oauth-system');
+      const appUserToken = request.header('x-forge-oauth-user');
+
+      // Get the instance service associated with this FIT
+      const service = await this.toForgeInstanceService(payload);
+
+      // Ok, we are ready to see if we can find a customer instance
+      // First, we try to find the instance based on the Forge installation ID
+      let instance = await service.findByProperty('installationId', payload.app.installationId);
+
+      // If we can't find the instance on installation ID, we need to check the Cloud ID
+      // Upon re-installation of an app, the installation ID might change.
+      // However, this does not mean that the app has not already been installed
+      // To prevent data loss on re-install, we need to make sure that we match on cloud ID
+      if (!instance) {
+
+        if (cloudId) {
+          // IMPORTANT: the cloud ID is the ID of the Atlassian instance, and is not app specific
+          // We need to make query for all instances with this cloud ID and then match the product
+          // This is to allow for multi-product installations in the same data store
+          const instancesByCloudId = await service.findAllByProperty('cloudId', cloudId);
+          instance = instancesByCloudId.values.find(item => item.product === product) || null;
+        }
+
+      }
+
+      // Check if this is an initial installation or if the instance is migrated from Connect
+      // Connect apps migrated to forge receive a lifecycle installation event with the installation ID
+      // However, they will not yet have the required Forge specific properties so we should update them
+      // We use the 'isForge' property to determine if an instance has been migrated succesfully
+      if (!instance || !instance.isForge) {
+
+        // We use Connect lifecycle events to match the clientKey with the installation ID
+        // If for some reason the Connect lifecycle event did not fire yet (i.e. because of a delay)
+        // and we failed to match the installation based on installation ID and cloud ID
+        // we can use this endpoint to retrieve the clientKey
+        // see https://developer.atlassian.com/platform/adopting-forge-from-connect/migrate-connect-clientkey/
+        const connectKey = await this.toConnectKey(payload);
+        if (!instance && appSystemToken && connectKey) {
+
+          const clientService = product === Applications.JIRA
+            ? new JiraClientService(new JiraRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'jira' } as ForgeInstance, appSystemToken), Modes.FORGE)
+            : product === Applications.CONFLUENCE
+              ? new ConfluenceClientService(new ConfluenceRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'confluence' } as ForgeInstance, appSystemToken), Modes.FORGE)
+              : product === Applications.BITBUCKET
+                ? new BitbucketClientService(new BitbucketRestClient({ apiBaseUrl: payload.app.apiBaseUrl, product: 'bitbucket' } as ForgeInstance, appSystemToken), Modes.FORGE)
+                : undefined;
+
+          const clientKey = clientService && await clientService.getConnectClientKey(connectKey);
+          if (clientKey) {
+            instance = await service.findByProperty('clientKey', clientKey);
+          }
+        }
+
+        // Update the instance to migrate it to forge
+        // Preserve the existing property values and only set them if missing
+        instance = await service.save({
+          ...instance || {},
+          id: instance?.id || uniqid(),
+          appId: instance?.appId || payload.app.id,
+          salt: instance?.salt || randomBytes(32).toString('hex'),
+          oauthClientId: instance?.oauthClientId || uniqid(),
+          installationId: instance?.installationId || payload.app.installation.id,
+          cloudId: instance?.cloudId || cloudId,
+          apiBaseUrl: instance?.apiBaseUrl || payload.app.apiBaseUrl,
+          product: instance?.product || product,
+          isForge: true
+        });
+      }
+
+      // If we cannot find an instance, we should create one
+      // At this point we can assume that this is a valid request from a customer
+      // We can also assume that this is not a migration from Connect to Forge
+      // If we can't find an instance, this means that there is a race condition
+      // The customer is making requests before lifecycle events have been proceessed
+      if (!instance) {
+        instance = {
+          id: uniqid(),
+          appId: payload.app.id,
+          salt: randomBytes(32).toString('hex'),
+          oauthClientId: uniqid(),
+          installationId: payload.app.installation.id,
+          cloudId,
+          apiBaseUrl: payload.app.apiBaseUrl,
+          product,
+          isForge: true
         }
       }
 
-      // Update the instance to migrate it to forge
-      // Preserve the existing property values and only set them if missing
-      instance = await service.save({
-        ...instance || {},
-        id: instance?.id || uniqid(),
-        appId: instance?.appId || payload.app.id,
-        salt: instance?.salt || randomBytes(32).toString('hex'),
-        oauthClientId: instance?.oauthClientId || uniqid(),
-        installationId: instance?.installationId || payload.app.installation.id,
-        cloudId: instance?.cloudId || cloudId,
-        apiBaseUrl: instance?.apiBaseUrl || payload.app.apiBaseUrl,
-        product: instance?.product || product,
-        isForge: true
-      });
-    }
+      // Store the appSystemToken and appUserToken in a short-lived user-session object
+      const sessionId = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
 
-    // If we cannot find an instance, we should create one
-    // At this point we can assume that this is a valid request from a customer
-    // We can also assume that this is not a migration from Connect to Forge
-    // If we can't find an instance, this means that there is a race condition
-    // The customer is making requests before lifecycle events have been proceessed
-    if (!instance) {
-      instance = {
-        id: uniqid(),
-        appId: payload.app.id,
-        salt: randomBytes(32).toString('hex'),
-        oauthClientId: uniqid(),
-        installationId: payload.app.installation.id,
-        cloudId,
-        apiBaseUrl: payload.app.apiBaseUrl,
-        product,
-        isForge: true
-      }
-    }
+      // Get the cache service
+      const cacheService = await this.toCacheService(payload);
+      if (cacheService) {
 
-    // Store the appSystemToken and appUserToken in a short-lived user-session object
-    const sessionId = scryptSync(randomBytes(16).toString('hex'), instance.id, 16).toString('hex');
+        // Create the user-session object
+        const userSession: ForgeUserSession = {
+          id: sessionId,
+          instanceId: instance.id,
+          appId: instance.appId,
+          installationId: instance.installationId,
+          cloudId: instance.cloudId,
+          appSystemToken,
+          appUserToken
+        }
 
-    // Get the cache service
-    const cacheService = await this.toCacheService(payload);
-    if (cacheService) {
+        // Store the short-lived user-session object in cache (encrypted)
+        await cacheService.set(sessionId, userSession, {
+          expiresInSeconds: this.userSessionTTL,
+          expirationPolicy: 'expireAfterWrite',
+          encrypt: true
+        });
 
-      // Create the user-session object
-      const userSession: ForgeUserSession = {
-        id: sessionId,
-        instanceId: instance.id,
-        appId: instance.appId,
-        installationId: instance.installationId,
-        cloudId: instance.cloudId,
-        appSystemToken,
-        appUserToken
       }
 
-      // Store the short-lived user-session object in cache (encrypted)
-      await cacheService.set(sessionId, userSession, {
-        expiresInSeconds: this.userSessionTTL,
-        expirationPolicy: 'expireAfterWrite',
-        encrypt: true
-      });
+      instance = this.updateLastActive(instance, request);
+      instance = await service.save(instance);
 
+      return this.toSession(payload, instance, sessionId, appSystemToken, appUserToken);
+    } catch (error) {
+      console.error('Unable to validate Forge Invocation Token', token, error);
+      throw error;
     }
-
-    instance = this.updateLastActive(instance, request);
-    instance = await service.save(instance);
-
-    return this.toSession(payload, instance, sessionId, appSystemToken, appUserToken);
   }
 
   protected updateLastActive(instance: ForgeInstance, { headers }: express.Request): ForgeInstance {
