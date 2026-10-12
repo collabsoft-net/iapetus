@@ -35,6 +35,7 @@ export abstract class AbstractForgeRemoteTokenStrategy<T extends AtlasSession> e
           const hash = ForgeRemoteTokenService.getHash(instance);
           done(null, hash);
         } catch (error) {
+          console.error(`An error occurred while trying to authenticate a user request`, rawJwtToken, error)
           done(error as Error);
         }
       },
