@@ -89,7 +89,7 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
           // We need to make query for all instances with this cloud ID and then match the product
           // This is to allow for multi-product installations in the same data store
           const instancesByCloudId = await service.findAllByProperty('cloudId', cloudId);
-          instance = instancesByCloudId.values.find(item => item.product === product) || null;
+          instance = instancesByCloudId.values.find(item => item.product === product || item.productType === product) || null;
         }
 
       }
