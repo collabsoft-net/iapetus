@@ -184,6 +184,10 @@ export abstract class AbstractForgeInvocationTokenStrategy<T extends AtlasSessio
 
       }
 
+      // Given that we have received an invocation from an instance,
+      // we can assume that this is an active instance
+      instance.active = true;
+
       instance = this.updateLastActive(instance, request);
       instance = await service.save(instance);
 
