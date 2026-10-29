@@ -24,6 +24,37 @@ declare global {
 
     namespace Forge {
 
+      namespace Events {
+
+        interface JiraProjectEvent {
+          eventType: 'avi:jira:created:project'|'avi:jira:updated:project'|'avi:jira:softdeleted:project'|'avi:jira:deleted:project'|'avi:jira:archived:project'|'avi:jira:unarchived:project'|'avi:jira:restored:project';
+          selfGenerated: boolean;
+          project: {
+            id: string;
+            key: string;
+            scopeType: 'GLOBAL'|'PROJECT';
+            product: string;
+            projectTemplateKey?: string; // only present in avi:jira:created:project
+        }
+        }
+
+        interface JiraVersionEvent {
+          eventType: 'avi:jira:created:version'|'avi:jira:updated:version'|'avi:jira:deleted:version'|'avi:jira:released:version'|'avi:jira:unreleased:version'|'avi:jira:archived:version'|'avi:jira:unarchived:version'|'avi:jira:moved:version'|'avi:jira:merged:version';
+          selfGenerated: boolean;
+          version: Jira.Version;
+          mergedVersion?: Jira.Version;
+          atlassianId?: string;
+        }
+
+        interface JiraComponentEvent {
+          eventType: 'avi:jira:created:component'|'avi:jira:updated:component'|'avi:jira:deleted:component';
+          selfGenerated: boolean;
+          component: Jira.Component;
+          atlassianId?: string;
+        }
+
+      }
+
       interface ScheduledTriggerHandler {
         moduleKey: string;
         remoteKey?: string;
