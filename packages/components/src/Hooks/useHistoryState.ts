@@ -1,4 +1,4 @@
-import { isNullOrEmpty } from '@collabsoft-net/helpers';
+import { isNullOrEmpty, isOfType } from '@collabsoft-net/helpers';
 import { QueryObserverResult, RefetchOptions, useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { usePlatformBridge } from './usePlatformBridge';
@@ -6,12 +6,13 @@ import { usePlatformBridge } from './usePlatformBridge';
 export const HistoryStateQueryKey = [ 'bridge.history.getState()' ]
 
 const getHistoryState = (state: string|Platform.HistoryState): Record<string, string> => {
+  // Retrieve the hash from the state
+  const hash = typeof state === 'string' ? state : isOfType<Platform.HistoryState>(state, 'hash') ? state.hash : '';
   // Make sure that we have the URL hash without the '#!' prefix
-  state = typeof state === 'string' ? state : state.hash;
-  state = state.startsWith('#!') ? state.replace('#!', '') : state.startsWith('#') ? state.replace('#', '') : state.startsWith('!') ? state.replace('!', '') : state;
+  const queryString = hash.startsWith('#!') ? hash.replace('#!', '') : hash.startsWith('#') ? hash.replace('#', '') : hash.startsWith('!') ? hash.replace('!', '') : hash;
 
   const result: Record<string, string> = {};
-  const query = new URLSearchParams(state);
+  const query = new URLSearchParams(queryString);
   query.forEach((value, key) => {
     const values = result[key]?.split(',') || [];
     values.push(value)
