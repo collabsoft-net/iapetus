@@ -202,7 +202,7 @@ declare global {
           (type: 'hash'|'all'|undefined): string|HistoryState;
           (type: 'hash'|'all'|undefined, callback: (data: string|HistoryState) => void): string|HistoryState;
         };
-        pushState: (newState: string, title?: string, url?: string) => void;
+        pushState: (newState: string, title?: string, url?: string) => void|Promise<void>;
         replaceState: (url: string) => void;
         // Unfortunately, this is undocumented
         popState: (handler: (state: HistoryPopState) => void) => void;

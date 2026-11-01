@@ -68,7 +68,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
   }
 
   const context = await view.getContext();
-  const historyObj = await view.createHistory().catch(() => null);
+  let historyObj = await view.createHistory().catch(() => null);
   let token: TokenExchangeDTO|null = null;
 
   return {
@@ -215,18 +215,16 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
           return state;
         }
       },
-      pushState: (newState: string, _?: string, url?: string) => {
+      pushState: async (newState: string, _?: string, url?: string) => {
         if (!historyObj) throw new Error('History API is not available within this module.');
         const href = historyObj.createHref({ ...historyObj.location, pathname: url || historyObj.location.pathname, hash: `!${newState}` });
+
         // This is a precaution: the createHref() typings suggest that it returns a string, but in the past it has also returned a promise
-        if (isOfType<Promise<string>>(href, 'then')) {
-          href.then(url => historyObj.push(url, newState))
-        // If it is not a promise, let's make sure that it is a string
-        } else if (typeof href === 'string') {
-          historyObj.push(href, newState);
-        } else {
-          throw new Error('History API is not available within this module.');
-        }
+        const result = isOfType<Promise<string>>(href, 'then') ? await new Promise<string>(resolve => href.then(resolve)) : href;
+        historyObj.push(result, newState);
+
+        // Fetch a fresh copy of the history, because pushState is not preserved in the current instance
+        historyObj = await view.createHistory().catch(() => null);
       },
       replaceState: (url: string) => () => {
         if (!historyObj) throw new Error('History API is not available within this module.');
@@ -235,6 +233,7 @@ export const createBridge: Platform.CreateBridge = async <T extends Applications
       popState: (handler: (state: Platform.HistoryPopState) => void) => {
         if (!historyObj) throw new Error('History API is not available within this module.');
         historyObj.listen((location) => {
+          if (!historyObj) throw new Error('History API is not available within this module.');
           handler({
             hash: location.hash,
             href: historyObj.createHref(location),
