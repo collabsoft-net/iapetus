@@ -35,14 +35,14 @@ export const useHistoryState = <T extends Record<string, string>> (): [ T, UseMu
   });
 
   const setState = useMutation<string, Error, Partial<T>>({
-    mutationFn: (state) => {
+    mutationFn: async (state) => {
       const query = new URLSearchParams();
       Object.entries(state).forEach(([ key, value ]) => {
         if (typeof value === 'string' && !isNullOrEmpty(value)) {
           query.set(key, value);
         }
       });
-      bridge.history.pushState(query.toString());
+      await bridge.history.pushState(query.toString());
       return Promise.resolve(query.toString() || '');
     },
     onSuccess: (data) => {
