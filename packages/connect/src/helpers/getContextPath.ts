@@ -1,3 +1,5 @@
+import { isNullOrEmpty } from '@collabsoft-net/helpers';
+
 import { getMetaData } from '.';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,13 +11,16 @@ const cp = query.get('cp');
 
 export const getContextPath = (): string => {
   // Try to use the querystring baseUrl
-  if (cp && typeof cp === 'string') {
+  if (cp && typeof cp === 'string' && !isNullOrEmpty(cp)) {
     return cp;
   }
 
   // Try to use the WRM contextPath
   if (contextPath && typeof contextPath === 'function') {
-    return contextPath();
+    const wrmContextPath = contextPath();
+    if (wrmContextPath && typeof wrmContextPath === 'string' && !isNullOrEmpty(wrmContextPath)) {
+      return wrmContextPath;
+    }
   }
 
   // Finally try to get it from the META tag, or just give up
