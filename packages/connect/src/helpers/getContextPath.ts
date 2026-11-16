@@ -1,4 +1,4 @@
-import { getMetaData } from '../helpers';
+import { getMetaData } from '.';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const windowWithAJS = window as unknown as Window & { AJS: any };
@@ -19,5 +19,10 @@ export const getContextPath = (): string => {
   }
 
   // Finally try to get it from the META tag, or just give up
-  return getMetaData('context-path') || getMetaData('confluence-context-path') || getMetaData('jira-context-path') || '';
+  return getMetaData('context-path') ||
+    getMetaData('confluence-context-path') ||
+    getMetaData('jira-context-path') ||
+    getMetaData('bitbucket-context-path') ||
+    getMetaData('bamboo-context-path') ||
+    '';
 };

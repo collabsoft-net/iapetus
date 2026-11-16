@@ -35,7 +35,7 @@ export const NavigatorGoEventHandler = (event: MessageEvent<unknown>, AC: Host):
           if (moduleKey) {
             const app = AC.apps.find(app => app.modules?.includes(moduleKey));
             if (app) {
-              window.location.href = getUrl(getLocation(`/plugins/servlet/atlassian-connect/${app.appKey}/${moduleKey}`, context.customData || {}));
+              window.location.href = getUrl(getLocation(`/plugins/servlet/atlassian-connect/${app.appKey}/${moduleKey}`, context.customData || {}), AC);
             }
           }
         } else {
@@ -46,7 +46,7 @@ export const NavigatorGoEventHandler = (event: MessageEvent<unknown>, AC: Host):
         if (ctx.absoluteUrl) {
           window.location.href = ctx.absoluteUrl;
         } else if (ctx.relativeUrl) {
-          window.location.href = getUrl(ctx.relativeUrl);
+          window.location.href = getUrl(ctx.relativeUrl, AC);
         } else {
           throw new BadRequestError();
         }

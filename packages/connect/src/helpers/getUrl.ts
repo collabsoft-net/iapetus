@@ -1,4 +1,4 @@
-import { getContextPath } from '../host/ContextPath';
+import { getContextPath } from './getContextPath';
 
 const query = new URLSearchParams(window.location.search);
 const baseUrl = query.get('xdm_e') || '/';
